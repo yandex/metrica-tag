@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "importHelpers": true,
+    "paths": {
+      "@inject": ["./src/inject/inject.test.ts"],
+    },
+  },
+  "include": [
+    "src/**/*",
+    "**/*.d.ts",
+  ],
+  "ts-node": {
+    "files": true,
+    "transpileOnly": true
+  },
+  "files": ["src/types.ts"],
+}

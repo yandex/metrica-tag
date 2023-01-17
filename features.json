@@ -1,0 +1,198 @@
+[
+  {
+    "code": "FIRST_PARTY_METHOD_FEATURE",
+    "desc": "Enables method firstPartyMethodParams that sends first party data to the back end",
+    "path": "firstPartyMethod"
+  },
+  {
+    "code": "GET_COUNTERS_FEATURE",
+    "path": "getCounters",
+    "desc": "Enables method getCounters in window.Ya._metrika object that is used to get active metrika counters internally"
+  },
+  {
+    "code": "DEBUG_EVENTS_FEATURE",
+    "path": "debugEvents",
+    "desc": "Creates dataLayer bus for debugging purpouses"
+  },
+  {
+    "code": "LOCAL_FEATURE",
+    "disabled": true,
+    "desc": "Feature that indicates that bundle is used for local development and debugging"
+  },
+  {
+    "code": "FETCH_FEATURE",
+    "desc": "Enables fetch transport"
+  },
+  {
+    "code": "PARAMS_FEATURE",
+    "desc": "Enables method params that sends hit with params to the back end",
+    "path": "params"
+  },
+  {
+    "code": "YAN_FEATURE",
+    "path": "yan",
+    "desc": "Listens for the yandex advertisement events and sends them as params (including iframe ones)"
+  },
+  {
+    "code": "ARTIFICIAL_HIT_FEATURE",
+    "desc": "Enables method hit that sends artificial hit to back end, and constructor option defer, that defers init",
+    "path": "artificialHit"
+  },
+  {
+    "code": "GOAL_FEATURE",
+    "path": "goal",
+    "desc": "Enables method reachGoal, that sends goal reaches hits to the back end"
+  },
+  {
+    "code": "GET_CLIENT_ID_FEATURE",
+    "path": "getClientID",
+    "desc": "Enables method getClientID, that returns client id"
+  },
+  {
+    "code": "TRACK_HASH_FEATURE",
+    "path": "trackHash",
+    "desc": "Enables tracking changes of the hash part of the page url"
+  },
+  {
+    "code": "EXTERNAL_LINK_FEATURE",
+    "path": "clicks",
+    "desc": "Enables tracking of internal and external links navigation"
+  },
+  {
+    "code": "RETRANSMIT_FEATURE",
+    "path": "retransmit",
+    "desc": "Saves failed hits into the local storage and attempts to resend them after subsequent page loads"
+  },
+  {
+    "code": "NOT_BOUNCE_HIT_FEATURE",
+    "path": "notBounce",
+    "desc": "Enables method notBounce that forcibly marks hit as not bounce, and constructor option accurateTrackBounce"
+  },
+  {
+    "code": "PREPROD_FEATURE",
+    "disabled": true,
+    "exp": true,
+    "desc": "Feature that indicates that bundle is used for limited production deployment (i.g. experiments or stability checks)"
+  },
+  {
+    "code": "POLYFILLS_FEATURE",
+    "desc": "Enables polyfills for some js native functions and components if they aren't present or non-native (i.g. Promise)"
+  },
+  {
+    "code": "CLICK_MAP_FEATURE",
+    "path": "clickmap",
+    "desc": "Enables tracking of user's clicks to make a clickmap"
+  },
+  {
+    "code": "TRIGGER_EVENT_FEATURE",
+    "path": "triggerEvent",
+    "desc": "triggers event yacounterXXXXXinited on counter initialization (needed for internal use)"
+  },
+  {
+    "code": "SEND_TITLE_FEATURE",
+    "desc": "Enables sendTitle option in the constructor"
+  },
+  {
+    "code": "JSONP_FEATURE",
+    "desc": "Enables JSONP transport (needed for work of some features in some legacy browsers)"
+  },
+  {
+    "code": "CLICK_MAP_METHOD_FEATURE",
+    "path": "clickmapMethod",
+    "desc": "Enables method clickmap, that enables or disables click tracking"
+  },
+  {
+    "code": "ACCURATE_TRACK_BOUNCE_METHOD_FEATURE",
+    "desc": "Enables method accurateTrackBounce, that enables not bounce tracking keeping in mind periods of inactivity (i.g. when page is open but not selected)"
+  },
+  {
+    "code": "COUNTERS_FEATURE",
+    "desc": "Enables static method counters for counter constructor (used internally)"
+  },
+  {
+    "code": "SAME_SITE_FEATURE",
+    "desc": "Adds sameSite for the client domain cookies"
+  },
+  {
+    "code": "SUBMIT_TRACKING_FEATURE",
+    "path": "submitTracking",
+    "desc": "Enables tracking of form submits (for quick goals)"
+  },
+  {
+    "code": "BEACON_TRANSPORT_FEATURE",
+    "desc": "Enables sendBeacon transport"
+  },
+  {
+    "code": "CLICK_TRACKING_FEATURE",
+    "path": "clickTracking",
+    "desc": "Enables user clicks tracking for quick goals"
+  },
+  {
+    "code": "ECOMMERCE_FEATURE",
+    "desc": "dataLayer listener. Enabled with the ecommerce option or ecommerce setting. The ecommerce can be used to define the variable name for dataLayer",
+    "path": "ecommerce"
+  },
+  {
+    "code": "HIDE_PHONES_FEATURE",
+    "path": "phoneHide",
+    "desc": "Hides phone numbers on the page, that match patterns from counter settings"
+  },
+  {
+    "code": "CHECK_STATUS_FEATURE",
+    "path": "statusCheck",
+    "desc": "Feature used to check counter status (used for counter status notification in metrika interface)"
+  },
+  {
+    "code": "TELEMETRY_FEATURE",
+    "desc": "Enables telemetry parameter for sending data (it is mostly used for diagnostics and internal use)"
+  },
+  {
+    "code": "SET_USER_ID_FEATURE",
+    "path": "setUserID",
+    "desc": "Enables method setUserID"
+  },
+  {
+    "code": "INSERT_SITE_STATISTICS_SCRIPT",
+    "path": "siteStatistics",
+    "desc": "Inserts iframe with site statistics for site owners"
+  },
+  {
+    "code": "USER_PARAMS_FEATURE",
+    "path": "userParams",
+    "desc": "Enables userParams method and userParams constructor option"
+  },
+  {
+    "code": "TELEMETRY_REQUEST_ENUMERATION_FEATURE",
+    "desc": "Enables sequential enumeration of requests in telemetry for a distinct counterID + counterClass"
+  },
+  {
+    "code": "DEBUG_CONSOLE_FEATURE",
+    "path": "debugConsole",
+    "desc": "Enables logging of debug info if get parameter _ym_debug=1 is set"
+  },
+  {
+    "code": "DEBUG_FEATURE",
+    "desc": "Enables internal errors console messages"
+  },
+  {
+    "code": "ENABLE_ALL_METHOD_FEATURE",
+    "path": "enableAll",
+    "desc": "Enables method enableAll, that enables or disables clicks and link tracking"
+  },
+  {
+    "code": "SENDER_COLLECT_FEATURE",
+    "disabled": true,
+    "desc": "Enables use of Measurement Protocol for hits data. Data is sent to the /pcollect/ back end url"
+  },
+  {
+    "code": "REMOTE_CONTROL_FEATURE",
+    "path": "remoteControl",
+    "desc": "Enables metrika inpage scripts work (i.g. selecting buttons for quick goals in the metrika interface)"
+  },
+  {
+    "weight": 1000,
+    "code": "STACK_PROXY_FEATURE",
+    "path": "stackProxy",
+    "desc": "Enables ability of window.ym() to call counter's methods before it is initialized"
+  }
+]

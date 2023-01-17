@@ -1,0 +1,38 @@
+{
+    "experimentalDecorators": true,
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
+        "incremental": true,
+        "strict": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "keyofStringsOnly": true,
+        "noUnusedLocals": true,
+        "noEmit": true,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "checkJs": false,
+        "lib": [ "esnext", "dom" ],
+        "types": [
+            "node",
+            "mocha",
+            "chai"
+        ],
+        "typeRoots": [
+            "./types",
+            "./node_modules/@types"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@inject": ["./src/inject"],
+        }
+    },
+    "include": [
+        "src/**/*",
+        "scripts/**/*",
+        "types/**/*"
+    ]
+}

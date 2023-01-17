@@ -1,0 +1,221 @@
+import { flags } from '@inject';
+import {
+    ACCURATE_TRACK_BOUNCE_METHOD_FEATURE,
+    PREPROD_FEATURE,
+    TELEMETRY_FEATURE,
+} from 'generated/features';
+import {
+    NOT_BOUNCE_TELEMETRY_EXP_BR_KEY,
+    WATCH_URL_PARAM,
+    ARTIFICIAL_BR_KEY,
+    NOT_BOUNCE_BR_KEY,
+    NOT_BOUNCE_CLIENT_TIME_BR_KEY,
+} from 'src/api/watch';
+import { browserInfo } from 'src/utils/browserInfo';
+import { UNSUBSCRIBE_PROPERTY } from 'src/providers';
+import {
+    counterStateGetter,
+    counterStateSetter,
+} from 'src/providers/getCounters/getCounters';
+import { COUNTER_STATE_NOT_BOUNCE } from 'src/providers/getCounters/const';
+import { getSender } from 'src/sender';
+import { SenderInfo } from 'src/sender/SenderInfo';
+import { counterLocalStorage } from 'src/storage/localStorage';
+import { getConsole } from 'src/utils/console';
+import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
+import { getCounterSettings } from 'src/utils/counterSettings';
+import { ctxErrorLogger } from 'src/utils/errorLogger';
+import {
+    bindArg,
+    call,
+    CallWithoutArguments,
+    noop,
+    pipe,
+} from 'src/utils/function';
+import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
+import { getLocation } from 'src/utils/location';
+import { ctxPath } from 'src/utils/object';
+import { getMs, TimeOne } from 'src/utils/time';
+import { isSameDomainInUrls } from 'src/utils/url';
+import { setUserTimeDefer } from 'src/utils/userTimeDefer';
+import { addTelemetryToSenderParams } from 'src/utils/telemetry/telemetry';
+import { getUid } from 'src/utils/uid';
+import { parseDecimalInt } from 'src/utils/number';
+import { getArtificialState } from '../artificialHit/artificialHit';
+import {
+    AccurateTrackBounceHandler,
+    APPROXIMATE_VISIT_DURATION,
+    DEFAULT_NOT_BOUNCE_TIMEOUT,
+    LAST_NOT_BOUNCE_LS_KEY,
+    NotBounceHandler,
+    EXPERIMENTAL_NOT_BOUNCE_TIMEOUT,
+    METHOD_NAME_ACCURATE_TRACK_BOUNCE,
+    METHOD_NAME_NOT_BOUNCE,
+    NOT_BOUNCE_HIT_PROVIDER,
+} from './const';
+
+type ProviderResult = {
+    [METHOD_NAME_NOT_BOUNCE]: NotBounceHandler;
+    [METHOD_NAME_ACCURATE_TRACK_BOUNCE]?: AccurateTrackBounceHandler;
+    [UNSUBSCRIBE_PROPERTY]?: () => void;
+};
+
+const useNotBounceProviderRaw = (
+    ctx: Window,
+    counterOpt: CounterOptions,
+): ProviderResult => {
+    let isExperiment = false;
+    let defaultTimeout = DEFAULT_NOT_BOUNCE_TIMEOUT;
+    if (flags[PREPROD_FEATURE]) {
+        const uid = getUid(ctx, counterOpt);
+        isExperiment = parseDecimalInt(uid.substr(uid.length - 1) || '0') < 5;
+        if (isExperiment) {
+            defaultTimeout = EXPERIMENTAL_NOT_BOUNCE_TIMEOUT;
+        }
+    }
+
+    const sender = getSender(ctx, NOT_BOUNCE_HIT_PROVIDER, counterOpt);
+    const counterKey = getCounterKey(counterOpt);
+    const counterLS = counterLocalStorage(ctx, counterOpt.id);
+    const getTrackBounce = bindArg(
+        bindArg(counterKey, counterStateGetter(ctx)),
+        pipe(call as CallWithoutArguments, ctxPath(COUNTER_STATE_NOT_BOUNCE)),
+    );
+    const setTrackBounce: () => void = bindArg(
+        { [COUNTER_STATE_NOT_BOUNCE]: true },
+        counterStateSetter(ctx, counterKey),
+    );
+    const timer = TimeOne(ctx);
+    const startTime = timer(getMs);
+    let notBounceHitSent = false;
+    let firstHitClientOffset = 0;
+    let destroy: (() => void) | undefined;
+
+    getCounterSettings(counterOpt, (options) => {
+        firstHitClientOffset = options.firstHitClientTime - startTime;
+    });
+
+    const makeNotBounceHit =
+        (force: boolean) =>
+        (
+            options: { ctx: any; callback: (...args: any) => any } = {
+                ['ctx']: {},
+                ['callback']: noop,
+            },
+        ) => {
+            if (force || (!notBounceHitSent && !counterLS.isBroken)) {
+                notBounceHitSent = true;
+                setTrackBounce();
+
+                if (destroy) {
+                    destroy();
+                }
+
+                const notBounceClientStamp = timer(getMs);
+                const previousNotBounceClientStamp =
+                    parseDecimalInt(
+                        counterLS.getVal(LAST_NOT_BOUNCE_LS_KEY) as string,
+                    ) || 0;
+                const newVisitStarted =
+                    previousNotBounceClientStamp <
+                    notBounceClientStamp - APPROXIMATE_VISIT_DURATION;
+                const isInControlGroup = Math.random() < 0.1;
+                counterLS.setVal(LAST_NOT_BOUNCE_LS_KEY, notBounceClientStamp);
+
+                const brInfo = browserInfo({
+                    [NOT_BOUNCE_BR_KEY]: 1,
+                    [NOT_BOUNCE_CLIENT_TIME_BR_KEY]: firstHitClientOffset,
+                    [ARTIFICIAL_BR_KEY]: 1,
+                });
+                const artificialState = getArtificialState(counterOpt);
+
+                const senderOpt: SenderInfo = {
+                    urlParams: {
+                        [WATCH_URL_PARAM]:
+                            artificialState.url || getLocation(ctx).href,
+                    },
+                    brInfo,
+                    middlewareInfo: {
+                        force,
+                    },
+                };
+
+                if (flags[PREPROD_FEATURE] && flags[TELEMETRY_FEATURE]) {
+                    addTelemetryToSenderParams(
+                        senderOpt,
+                        NOT_BOUNCE_TELEMETRY_EXP_BR_KEY,
+                        isExperiment ? 1 : 0,
+                    );
+                }
+
+                const { warn } = getConsole(ctx, getCounterKey(counterOpt));
+
+                if (!options['callback'] && options['ctx']) {
+                    warn('"callback" argument missing');
+                }
+
+                if (
+                    force ||
+                    newVisitStarted ||
+                    isInControlGroup ||
+                    !isSameDomainInUrls(
+                        ctx.location.href,
+                        ctx.document.referrer,
+                    )
+                ) {
+                    const result = sender(senderOpt, counterOpt);
+                    return finallyCallUserCallback(
+                        ctx,
+                        'l.o.l',
+                        result,
+                        options['callback'],
+                        options['ctx'],
+                    );
+                }
+            }
+
+            return null;
+        };
+
+    const accurateTrackBounce = (time?: number | boolean) => {
+        if (getTrackBounce()) {
+            return;
+        }
+
+        const notBounceTimeout =
+            typeof time === 'number' ? time : defaultTimeout;
+
+        destroy = setUserTimeDefer(
+            ctx,
+            makeNotBounceHit(false),
+            notBounceTimeout,
+        );
+
+        setTrackBounce();
+    };
+
+    if (counterOpt.accurateTrackBounce) {
+        accurateTrackBounce(counterOpt.accurateTrackBounce);
+    }
+
+    const providerResult: ProviderResult = {
+        [METHOD_NAME_NOT_BOUNCE]: makeNotBounceHit(true),
+        [UNSUBSCRIBE_PROPERTY]: destroy!,
+    };
+
+    if (flags[ACCURATE_TRACK_BOUNCE_METHOD_FEATURE]) {
+        providerResult[METHOD_NAME_ACCURATE_TRACK_BOUNCE] = accurateTrackBounce;
+    }
+
+    return providerResult;
+};
+
+/**
+ * Sends a notBounce hit automatically, or provides functions for manually send the hit.
+ * notBounce is a technical event indicating that the user spent sufficient amount of time on the page
+ * @param ctx - Current window
+ * @param counterOpt - Counter options during initialization
+ */
+const useNotBounceProvider = ctxErrorLogger('nb.p', useNotBounceProviderRaw);
+
+export { useNotBounceProvider, useNotBounceProviderRaw };
