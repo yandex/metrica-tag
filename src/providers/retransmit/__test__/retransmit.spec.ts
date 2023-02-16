@@ -2,13 +2,13 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sender from 'src/sender';
 import * as timeUtils from 'src/utils/time';
-import * as retransmitMW from 'src/middleware/retransmit';
 import * as browserInfo from 'src/utils/browserInfo';
 import * as settings from 'src/utils/counterSettings';
 import * as errorLoggerUtils from 'src/utils/errorLogger';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { useRetransmitProvider } from '../retransmit';
+import * as getRetransmitRequests from '../getRetransmitRequests';
 
 describe('provider / retransmit', () => {
     const win = {} as Window;
@@ -90,7 +90,7 @@ describe('provider / retransmit', () => {
             ),
         );
         retransmitRequestsStub = sandbox.stub(
-            retransmitMW,
+            getRetransmitRequests,
             'getRetransmitRequests',
         );
         getSenderStub = sandbox.stub(sender, 'getSender');

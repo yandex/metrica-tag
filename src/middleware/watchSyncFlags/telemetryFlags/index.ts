@@ -4,6 +4,7 @@ import {
     CLICK_MAP_FEATURE,
     TELEMETRY_FEATURE,
     TELEMETRY_REQUEST_ENUMERATION_FEATURE,
+    SENDER_COLLECT_FEATURE,
 } from 'generated/features';
 import {
     MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE,
@@ -15,7 +16,7 @@ import { getGlobalStorage, globalStorage } from 'src/storage/global';
 import { entries } from 'src/utils/object';
 import { cReduce } from 'src/utils/array';
 import { getMainThreadBlockingTime } from 'src/utils/errorLogger/executionTimeErrorDecorator';
-import { GLOBAL_STORAGE_CLICKS_KEY } from 'src/providers/clickmap/constants';
+import { GLOBAL_STORAGE_CLICKS_KEY } from 'src/providers/clickmap/const';
 import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from 'src/utils/methodDecorators/telCallCount/consts';
 import { FlagGettersHash } from '../consts';
 import { numRequestsTelemetry } from './numRequests';
@@ -41,7 +42,7 @@ if (flags[TELEMETRY_FEATURE]) {
         return null;
     };
 
-    if (flags[CLICK_MAP_FEATURE]) {
+    if (flags[CLICK_MAP_FEATURE] && !flags[SENDER_COLLECT_FEATURE]) {
         TELEMETRY_FLAG_GETTERS[CLMAP_CLICKS_TEL_KEY] = (ctx: Window) => {
             const { clicks, x, y } = getGlobalStorage(ctx).getVal<{
                 x: number;

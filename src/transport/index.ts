@@ -7,7 +7,6 @@ import {
     ProvidersMap,
     HIT_PROVIDER,
     LOGGER_PROVIDER,
-    RETRANSMIT_PROVIDER,
 } from 'src/providers';
 import { useImage } from 'src/transport/image';
 import { useJsonp } from 'src/transport/jsonp';
@@ -17,7 +16,6 @@ import {
     FETCH_FEATURE,
     JSONP_FEATURE,
     PREPROD_FEATURE,
-    RETRANSMIT_FEATURE,
 } from 'generated/features';
 import { throwKnownError } from 'src/utils/errorLogger/knownError';
 import { flags } from '@inject';
@@ -78,16 +76,15 @@ export const withoutBeacon = getTransportsCheckList([
     useImage,
 ]);
 
+/**
+ * Mapping between providers and transport lists.
+ */
 export const nameMap: ProvidersMap<MaybeTransport[]> = {
     [HIT_PROVIDER]: hitTransports,
 };
 
 if (flags[PREPROD_FEATURE]) {
     nameMap[LOGGER_PROVIDER] = imageTransportOnly;
-}
-
-if (flags[RETRANSMIT_FEATURE]) {
-    nameMap[RETRANSMIT_PROVIDER] = withoutBeacon;
 }
 
 export const EMPTY_TRANSPORT_LIST = 'et';

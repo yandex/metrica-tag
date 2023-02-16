@@ -1,4 +1,4 @@
-import { TClickMapParams } from 'src/providers/clickmap/constants';
+import { TClickMapParams } from 'src/providers/clickmap/const';
 
 export const METHOD_NAME_CLICK_MAP = 'clickmap';
 

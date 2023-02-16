@@ -6,10 +6,12 @@ import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 import * as time from 'src/utils/time';
 import * as localStorage from 'src/storage/localStorage';
 import * as globalStorage from 'src/storage/global';
-import { CLICKMAP_RESOURCE } from 'src/sender/clickmap';
+import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
-import * as state from '../state';
-import { getRetransmitRequestsRaw } from '../retransmit';
+import * as state from 'src/middleware/retransmit/state';
+import { startsWith } from 'src/utils/string/startsWith';
+import * as constants from '../const';
+import { getRetransmitRequestsRaw } from '../getRetransmitRequests';
 
 describe('getRetransmitRequests', () => {
     const counterId = 123;
@@ -35,6 +37,9 @@ describe('getRetransmitRequests', () => {
     >;
 
     beforeEach(() => {
+        sandbox
+            .stub(constants, 'RETRANSMITTABLE_RESOURCE_CALLBACKS')
+            .value([startsWith(WATCH_RESOURCE), startsWith(CLICKMAP_RESOURCE)]);
         timeStub = sandbox.stub(time, 'TimeOne');
         sandbox.stub(state, 'getRetransmitLsState').value(() => lsState);
         timeStub.returns(<R>() => now as unknown as R);
@@ -42,7 +47,7 @@ describe('getRetransmitRequests', () => {
         globalStorageStub.callsFake(() => {
             return {
                 getVal: sinon.stub().returns(CURRENT_HID),
-            } as any;
+            } as unknown as globalStorage.GlobalStorage;
         });
         localStorageStub = sandbox.stub(localStorage, 'globalLocalStorage');
         localStorageStub.returns(mockLs);

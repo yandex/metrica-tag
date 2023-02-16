@@ -6,7 +6,7 @@ import { host } from 'src/config';
 import { CLICKMAP_POINTER_PARAM } from 'src/api/clmap';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 import { browserInfo } from 'src/utils/browserInfo';
-import { CLICKMAP_RESOURCE } from 'src/sender/clickmap';
+import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import * as time from 'src/utils/time';
 import * as localStorage from 'src/storage/localStorage';
 import * as globalStorage from 'src/storage/global';

@@ -1,3 +1,5 @@
+export const CLICKMAP_RESOURCE = 'clmap';
+
 export const DELTA_SAME_CLICKS = 2;
 export const TIMEOUT_CLICK = 50;
 export const TIMEOUT_SAME_CLICKS = 1000;

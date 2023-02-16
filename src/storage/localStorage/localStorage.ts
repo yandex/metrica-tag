@@ -56,7 +56,7 @@ const isStorageBroken = memo((ctx: Window) => {
     return broken;
 });
 
-const localStorage = (
+export const localStorage = (
     ctx: Window,
     nameSpace: string | number = '',
     prefix: string = DEFAULT_LS_PREFIX,
@@ -90,5 +90,3 @@ export const counterLocalStorage = memo(
     localStorage,
     (ctx, nameSpace, prefix) => `${nameSpace}${prefix}`,
 );
-
-export { localStorage };

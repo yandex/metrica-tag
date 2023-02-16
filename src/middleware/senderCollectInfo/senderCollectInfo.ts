@@ -10,6 +10,7 @@ import {
 import type { MiddlewareGetter } from 'src/middleware/types';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import type { SenderInfo, UrlParams } from 'src/sender/SenderInfo';
+import { TransportOptions } from 'src/transport/types';
 import { browserInfo } from 'src/utils/browserInfo';
 import { mix } from 'src/utils/object';
 import { COLLECT_RESOURCE } from './const';
@@ -41,7 +42,7 @@ export const senderCollectInfo: MiddlewareGetter = (ctx, counterOptions) => ({
                         !brInfo.getVal(ARTIFICIAL_BR_KEY) &&
                         !brInfo.getVal(TRACK_HASH_BR_KEY),
                 ),
-            }),
+            } as TransportOptions),
             urlParams: mix(cSenderInfo.urlParams || {}, collectUrlParams),
         };
         mix(cSenderInfo, newSenderInfo);

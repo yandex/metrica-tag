@@ -85,6 +85,9 @@ describe('retransmit middleware', () => {
             Array,
         } as Window;
         const senderParams = {
+            urlInfo: {
+                resource: WATCH_RESOURCE,
+            },
             urlParams: {
                 [WATCH_URL_PARAM]: 'url',
             },

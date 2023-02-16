@@ -28,7 +28,7 @@ export const getLocation = (ctx: Window): Props => {
             return result;
         },
         {} as Props,
-        props as any as PropsList[],
+        props,
     );
 };
 

@@ -1,13 +1,8 @@
 import { useSenderWatch } from 'src/sender/watch';
-import {
-    HIT_PROVIDER,
-    RETRANSMIT_PROVIDER,
-    LOGGER_PROVIDER,
-    Provider,
-} from 'src/providers';
+import { HIT_PROVIDER, LOGGER_PROVIDER, Provider } from 'src/providers';
 import { getProviderMiddlewares } from 'src/middleware';
 import { getTransportList } from 'src/transport';
-import { RETRANSMIT_FEATURE, PREPROD_FEATURE } from 'generated/features';
+import { PREPROD_FEATURE } from 'generated/features';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { mix } from 'src/utils/object';
@@ -34,10 +29,6 @@ if (flags[PREPROD_FEATURE]) {
         fallbackSender,
         firstArg as FirstArgOfType<() => Promise<unknown>>,
     );
-}
-
-if (flags[RETRANSMIT_FEATURE]) {
-    providerMap[RETRANSMIT_PROVIDER] = useSenderWatch;
 }
 
 type GetSender = <P extends Provider>(

@@ -1,60 +1,69 @@
-import { CounterOptions } from 'src/utils/counterOptions';
+import { flags } from '@inject';
+import { TELEMETRY_FEATURE } from 'generated/features';
+import { RetransmitInfo } from 'src/middleware/retransmit';
 import { getSender } from 'src/sender';
-import { RETRANSMIT_PROVIDER } from 'src/providers';
-import { errorLogger } from 'src/utils/errorLogger';
-import {
-    getRetransmitRequests,
-    RetransmitInfo,
-} from 'src/middleware/retransmit';
+import { DefaultSenderResult } from 'src/sender/default';
+import { SenderInfo } from 'src/sender/SenderInfo';
+import { PolyPromise } from 'src/utils';
 import { cReduce } from 'src/utils/array';
 import { browserInfo } from 'src/utils/browserInfo';
+import { CounterOptions } from 'src/utils/counterOptions';
 import { getCounterSettings } from 'src/utils/counterSettings';
-import { bind, bindArg, firstArg } from 'src/utils/function';
-import { PolyPromise } from 'src/utils';
+import { errorLogger } from 'src/utils/errorLogger';
+import { bindArg, bindArgs, firstArg } from 'src/utils/function';
+import { telemetry } from 'src/utils/telemetry/telemetry';
+import { RETRANSMIT_PROVIDER } from './const';
+import { getRetransmitRequests } from './getRetransmitRequests';
 
 /**
- * If hit was not delivered, save it and try to transmit later
+ * Looks for saved requests in local storage and tries to retransmit them
  * @param ctx - Current window
  * @param counterOpt - Counter options during initialization
  */
-const useRetransmitProvider = (ctx: Window, counterOpt: CounterOptions) => {
+export const useRetransmitProvider = (
+    ctx: Window,
+    counterOpt: CounterOptions,
+) => {
     const retransmitRequests = getRetransmitRequests(ctx);
     const retransmitSender = getSender(ctx, RETRANSMIT_PROVIDER, counterOpt);
     const errorCatcher = errorLogger(ctx, 'rts.p');
-    const makeRetransmit = (prev: Promise<string>, req: RetransmitInfo) => {
+    const makeRetransmit = (
+        prev: Promise<DefaultSenderResult>,
+        req: RetransmitInfo,
+    ) => {
         const counterOptions: CounterOptions = {
             id: req.counterId,
             counterType: req.counterType,
         };
 
-        const result = retransmitSender(
-            {
-                transportInfo: { rBody: req.postParams },
-                brInfo: browserInfo(req.browserInfo),
-                urlParams: req.params,
-                middlewareInfo: {
-                    retransmitIndex: req.retransmitIndex,
-                },
-                urlInfo: {
-                    resource: req.resource,
-                },
+        const senderInfo: SenderInfo = {
+            transportInfo: { rBody: req.postParams },
+            brInfo: browserInfo(req.browserInfo),
+            urlParams: req.params,
+            middlewareInfo: {
+                retransmitIndex: req.retransmitIndex,
             },
-            counterOptions,
-        ).catch(errorCatcher);
+            urlInfo: {
+                resource: req.resource,
+            },
+        };
+
+        if (flags[TELEMETRY_FEATURE] && req.telemetry) {
+            senderInfo.telemetry = telemetry(req.telemetry);
+        }
+
+        const result = retransmitSender(senderInfo, counterOptions).catch(
+            errorCatcher,
+        );
 
         return prev.then(bindArg(result, firstArg));
     };
 
     return getCounterSettings(
         counterOpt,
-        bind(
+        bindArgs(
+            [makeRetransmit, PolyPromise.resolve(), retransmitRequests],
             cReduce,
-            null,
-            makeRetransmit,
-            PolyPromise.resolve(),
-            retransmitRequests,
         ),
-    ).catch(errorCatcher) as Promise<void>;
+    ).catch(errorCatcher);
 };
-
-export { useRetransmitProvider };

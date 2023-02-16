@@ -1,18 +1,14 @@
+import { flags } from '@inject';
+import { TELEMETRY_FEATURE } from 'generated/features';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 import { config, host } from 'src/config';
 import { MiddlewareGetter } from 'src/middleware/types';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
-import { globalLocalStorage } from 'src/storage/localStorage';
-import { arrayJoin, cReduce } from 'src/utils/array';
+import { arrayJoin } from 'src/utils/array';
 import { browserInfo } from 'src/utils/browserInfo';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { parseDecimalInt } from 'src/utils/number';
-import { entries, getPath, isNull } from 'src/utils/object';
+import { getPath, isNull } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time';
-import { flags } from '@inject';
-import { TELEMETRY_FEATURE } from 'generated/features';
 import {
     getRetransmitLsState,
     LS_BRINFO,
@@ -26,9 +22,7 @@ import {
     LS_RESOURCE,
     LS_TELEMETRY,
     LS_TIME,
-    RetransmitInfo,
-    RETRANSMIT_EXPIRE,
-    RETRANSMIT_KEY,
+    saveRetransmitLsState,
 } from './state';
 import { getHid } from '../watchSyncFlags/brinfoFlags/hid';
 
@@ -38,70 +32,6 @@ declare module 'src/sender/SenderInfo' {
         retransmitIndex?: number;
     }
 }
-
-/**
- * Тут вся логика на мутации запомненного объекта
- */
-const saveRetransmitLsState = (ctx: Window) => {
-    const retransmitLsRequests = getRetransmitLsState(ctx);
-    const ls = globalLocalStorage(ctx);
-    ls.setVal(RETRANSMIT_KEY, retransmitLsRequests);
-};
-
-export const getRetransmitRequestsRaw = (ctx: Window): RetransmitInfo[] => {
-    const time = TimeOne(ctx);
-    const requests = getRetransmitLsState(ctx);
-    const currentTime = time(getMs);
-    const hid = getHid(ctx);
-    return cReduce(
-        (result, [key, req]) => {
-            if (
-                req &&
-                // однажды на window отдаем ретрансмиты
-                !req.d &&
-                req[LS_HID] &&
-                req[LS_HID] !== hid &&
-                req[LS_TIME] &&
-                /*
-                    не нужно пытаться ретрасмитить запросы которые
-                    еще выполнятся в соседнем iframe
-                */
-                currentTime - req[LS_TIME] > 500 &&
-                req[LS_TIME] + RETRANSMIT_EXPIRE > currentTime &&
-                req[LS_BRINFO][RETRANSMIT_BRINFO_KEY] <= 2
-            ) {
-                req.d = 1;
-                const parsedRequest: RetransmitInfo = {
-                    protocol: req[LS_PROTOCOL],
-                    host: req[LS_HOST],
-                    resource: req[LS_RESOURCE],
-                    postParams: req[LS_POST],
-                    params: req[LS_PARAMS],
-                    browserInfo: req[LS_BRINFO],
-                    ghid: req[LS_HID],
-                    time: req[LS_TIME],
-                    retransmitIndex: parseDecimalInt(key),
-                    counterId: req[LS_COUNTER],
-                    counterType: req[LS_COUNTER_TYPE],
-                };
-
-                if (flags[TELEMETRY_FEATURE] && req[LS_TELEMETRY]) {
-                    parsedRequest.telemetry = req[LS_TELEMETRY];
-                }
-
-                result.push(parsedRequest);
-            }
-            return result;
-        },
-        [] as RetransmitInfo[],
-        entries(requests),
-    );
-};
-
-export const getRetransmitRequests = ctxErrorLogger(
-    'g.r',
-    getRetransmitRequestsRaw,
-);
 
 export const registerRequest = (
     ctx: Window,
@@ -130,7 +60,7 @@ export const registerRequest = (
     reqList[retransmitIndex] = {
         [LS_PROTOCOL]: config.cProtocol,
         [LS_HOST]: host,
-        [LS_RESOURCE]: WATCH_RESOURCE,
+        [LS_RESOURCE]: senderParams.urlInfo!.resource!, // The resource shall be always set within provider middleware.
         [LS_POST]: transportInfo.rBody,
         [LS_TIME]: timeOne(getMs),
         [LS_COUNTER_TYPE]: opt.counterType,
@@ -159,6 +89,16 @@ export const unRegisterRequest = (ctx: Window, senderParams: SenderInfo) => {
     saveRetransmitLsState(ctx);
 };
 
+/**
+ * Saves requests in local storage. If sent successfully deletes it,
+ * otherwise the request stays in the local storage available for retransmitting.
+ *
+ * NOTE: The retransmit middleware should be able to pick all flags set on the request.
+ * Therefore you need keep it at the end of the middleware chain.
+ *
+ * @param ctx - Current window
+ * @param opt - Counter options
+ */
 export const retransmit: MiddlewareGetter = (
     ctx: Window,
     opt: CounterOptions,
@@ -174,7 +114,8 @@ export const retransmit: MiddlewareGetter = (
 });
 
 /**
- * Retransmits request if it's not sent successfully
+ * Updates retry index for the request being retransmitted.
+ * Deletes the request from local storage if sent successfully.
  * @param ctx - Current window
  */
 export const retransmitProviderMiddleware: MiddlewareGetter = (

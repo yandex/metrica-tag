@@ -24,7 +24,10 @@ export const setUid = (
     );
 };
 
-const getUidState = (ctx: Window, counterOptions: CounterOptions) => {
+const getUidState = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+): [lsUid: string | null, cookieUid: string | null] => {
     const ls = globalLocalStorage(ctx);
     const cookie = globalCookieStorage(ctx);
     const cookieName = counterOptions.ldc || 'uid';

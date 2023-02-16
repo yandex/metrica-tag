@@ -11,7 +11,7 @@ import {
 } from 'src/utils/array';
 import { trimText } from 'src/utils/string/remove';
 import { pipe, bindThisForMethod, bindArg, memo } from 'src/utils/function';
-import { TAGS } from 'src/providers/clickmap/constants';
+import { TAGS } from 'src/providers/clickmap/const';
 import {
     getBody,
     getBoundingClientRect,

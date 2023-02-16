@@ -1,20 +1,28 @@
 import { flags } from '@inject';
-import { CLICK_MAP_FEATURE } from 'generated/features';
-import { providersSync } from 'src/providersEntrypoint';
-import { nameMap, queryStringTransports } from 'src/transport';
-import { SenderClickmap, useSenderClickMap } from 'src/sender/clickmap';
-import { providerMap } from 'src/sender';
-import { retransmit } from 'src/middleware/retransmit';
-import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
+import {
+    CLICK_MAP_FEATURE,
+    RETRANSMIT_FEATURE,
+    SENDER_COLLECT_FEATURE,
+} from 'generated/features';
 import {
     BUILD_FLAGS_BR_KEY,
     BUILD_VERSION_BR_KEY,
     UID_BR_KEY,
 } from 'src/api/watch';
 import { addMiddlewareForProvider } from 'src/middleware';
-import { useClickmapProvider } from './clickmap';
-import { CLICKMAP_PROVIDER, TClickMapParams } from './constants';
+import { retransmit } from 'src/middleware/retransmit';
+import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
+import { providersSync } from 'src/providersEntrypoint';
+import { providerMap } from 'src/sender';
+import { SENDER_CLICKMAP } from 'src/sender/const';
+import {
+    MiddlewareBasedSender,
+    useMiddlewareBasedSender,
+} from 'src/sender/middleware';
+import { nameMap, queryStringTransports } from 'src/transport';
 import { addCounterOptions } from '../counterOptions';
+import { useClickmapProvider } from './clickmap';
+import { CLICKMAP_PROVIDER, TClickMapParams } from './const';
 
 declare module 'src/providers/index' {
     interface PROVIDERS {
@@ -25,7 +33,11 @@ declare module 'src/providers/index' {
 declare module 'src/sender/types' {
     interface NameMap {
         /** Sender for heat map of clicks */
-        [CLICKMAP_PROVIDER]: SenderClickmap;
+        [CLICKMAP_PROVIDER]: MiddlewareBasedSender;
+    }
+
+    interface Senders {
+        SENDER_CLICKMAP: typeof SENDER_CLICKMAP;
     }
 }
 
@@ -37,9 +49,11 @@ declare module 'src/utils/counterOptions/types' {
 }
 
 export const initProvider = () => {
-    if (flags[CLICK_MAP_FEATURE]) {
+    // NOTE: The clickmap feature works with a separate route (/clmap/) which is not yet compatible with MP.
+    if (flags[CLICK_MAP_FEATURE] && !flags[SENDER_COLLECT_FEATURE]) {
         providersSync.push(useClickmapProvider);
-        providerMap[CLICKMAP_PROVIDER] = useSenderClickMap;
+        providerMap[CLICKMAP_PROVIDER] =
+            useMiddlewareBasedSender(SENDER_CLICKMAP);
         nameMap[CLICKMAP_PROVIDER] = queryStringTransports;
         addMiddlewareForProvider(
             CLICKMAP_PROVIDER,
@@ -50,7 +64,9 @@ export const initProvider = () => {
             ]),
             1,
         );
-        addMiddlewareForProvider(CLICKMAP_PROVIDER, retransmit, 2);
+        if (flags[RETRANSMIT_FEATURE]) {
+            addMiddlewareForProvider(CLICKMAP_PROVIDER, retransmit, 2);
+        }
         addCounterOptions({
             clickmap: {
                 optKey: 'clickmap',

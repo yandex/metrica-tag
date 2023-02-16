@@ -36,12 +36,13 @@ import { ctxPath, getPath, has, isUndefined } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time';
 import {
     CLICKMAP_PROVIDER,
+    CLICKMAP_RESOURCE,
     DELTA_SAME_CLICKS,
     GLOBAL_STORAGE_CLICKS_KEY,
     TClickMapParams,
     TIMEOUT_CLICK,
     TIMEOUT_SAME_CLICKS,
-} from './constants';
+} from './const';
 
 import { ClickInfo } from './type';
 
@@ -124,6 +125,9 @@ const sendClick = (
         urlParams: {
             [CLICKMAP_URL_PARAM]: url,
             [CLICKMAP_POINTER_PARAM]: pointerClick,
+        },
+        urlInfo: {
+            resource: `${CLICKMAP_RESOURCE}/${counterOptions.id}`,
         },
     };
 

@@ -1,11 +1,14 @@
 import { host as defaultHost } from 'src/config';
 import { combineMiddlewares } from 'src/middleware/combine';
+import { getSenderMiddlewares } from 'src/middleware/senderMiddlewares';
 import type { Middleware } from 'src/middleware/types';
 import { useDefaultSender } from 'src/sender/default';
 import type { InternalSenderInfo, UrlInfo } from 'src/sender/SenderInfo';
+import { Sender } from 'src/sender/types';
 import type { TransportList } from 'src/transport';
 import type { TransportResponse } from 'src/transport/types';
-import { cMap } from 'src/utils/array';
+import { arrayMerge, cMap } from 'src/utils/array';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import { bindArg, firstArg, FirstArgOfType } from 'src/utils/function';
 import { returnFullHost } from './returnFullHost';
 
@@ -16,8 +19,8 @@ export const useMiddlewareSender = (
 ) => {
     const sender = useDefaultSender(ctx, transports);
 
-    return (senderInfo: InternalSenderInfo) => {
-        return combineMiddlewares(middlewareList, senderInfo, true)
+    return (senderInfo: InternalSenderInfo) =>
+        combineMiddlewares(middlewareList, senderInfo, true)
             .then(() => {
                 const {
                     hostPrefix = '',
@@ -43,5 +46,25 @@ export const useMiddlewareSender = (
                     ),
                 );
             });
-    };
 };
+
+export type MiddlewareBasedSender = (
+    ctx: Window,
+    transports: TransportList,
+    middlewareList: Middleware[],
+) => (
+    senderParams: InternalSenderInfo,
+    counterOptions: CounterOptions,
+) => ReturnType<ReturnType<typeof useMiddlewareSender>>;
+
+export const useMiddlewareBasedSender =
+    (senderType: Sender): MiddlewareBasedSender =>
+    (ctx: Window, transports: TransportList, middlewareList: Middleware[]) =>
+    (rawSenderParams: InternalSenderInfo, counterOpt: CounterOptions) => {
+        const middlewares = arrayMerge(
+            getSenderMiddlewares(ctx, senderType, counterOpt),
+            middlewareList,
+        );
+        const sender = useMiddlewareSender(ctx, transports, middlewares);
+        return sender(rawSenderParams);
+    };

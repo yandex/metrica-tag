@@ -4,7 +4,7 @@ import { counterStateSetter } from 'src/providers/getCounters/getCounters';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { COUNTER_STATE_CLICKMAP } from 'src/providers/getCounters/const';
 import { isUndefined } from 'src/utils/object';
-import { TClickMapParams } from '../clickmap/constants';
+import { TClickMapParams } from '../clickmap/const';
 import { METHOD_NAME_CLICK_MAP } from './const';
 
 export const trackClicks = (

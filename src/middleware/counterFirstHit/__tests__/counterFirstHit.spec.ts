@@ -1,5 +1,6 @@
 import * as sinon from 'sinon';
 import { WATCH_URL_PARAM, PAGE_VIEW_BR_KEY } from 'src/api/watch';
+import { GlobalStorage } from 'src/storage/global';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { browserInfo } from 'src/utils/browserInfo';
 import * as storage from 'src/storage/global';
@@ -16,20 +17,25 @@ describe('wait for first hit', () => {
     const win = () => {
         return {} as Window;
     };
-    const fakeGlobalStorage: any = { setVal: sinon.stub() };
 
     const sandbox = sinon.createSandbox();
+    const fakeGlobalStorage = {
+        setVal: sandbox.stub(),
+    } as unknown as GlobalStorage;
+
     beforeEach(() => {
         sandbox.stub(storage, 'getGlobalStorage').returns(fakeGlobalStorage);
     });
+
     afterEach(() => {
         sandbox.restore();
     });
+
     it('waits for first hit', () => {
         const winInfo = win();
         const brInfo = browserInfo();
         const middleware = counterFirstHit(winInfo, opt());
-        const next = sinon.stub();
+        const next = sandbox.stub();
 
         // not first hit
         middleware.beforeRequest!(
@@ -50,7 +56,7 @@ describe('wait for first hit', () => {
             urlParams: {},
         };
         middleware.beforeRequest!(firstHitParams, next);
-        const afterRequestNext = sinon.stub();
+        const afterRequestNext = sandbox.stub();
         middleware.afterRequest!(firstHitParams, afterRequestNext);
 
         sinon.assert.calledOnce(afterRequestNext);
