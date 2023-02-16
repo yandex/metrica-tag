@@ -44,7 +44,7 @@ In order to add a new provider, do the following:
     "path": "someNewProvider", // The path to the folder within src/providers with the module that defined the new provider.
     "desc": "Any meaningful description goes here",
     "disabled": true, // Set only if you want to exclude a feature from build.
-    "exp": true, // A semantic attribute indicating an experimental feature. Dos not affect the build process.
+    "exp": true, // A semantic attribute indicating an experimental feature. Doesn't affect the build process.
     "weight": 1000, /* A feature weight; defaults to 0 if not specified.
         Used for sorting features within feature initialization code in ascending order
         (the lower the weight, the earlier the provider initializes).
