@@ -1,4 +1,4 @@
-import { toArray, flatMap, cFilter, cIndexOf } from 'src/utils/array';
+import { flatMap, cFilter, cIndexOf, arrayFrom } from 'src/utils/array';
 import { bindArg } from 'src/utils/function';
 import { isQuerySelectorSupported } from './queySelect';
 
@@ -13,13 +13,13 @@ export const select = <
 >(
     selector: string,
     node: T,
-) => {
+): R[] => {
     if (!node) {
         return [];
     }
-    const result = node.querySelectorAll(selector);
+    const result = node.querySelectorAll<R>(selector);
 
-    return result ? toArray<R>(result) : [];
+    return result ? arrayFrom(result) : [];
 };
 
 export const selectOne = <
@@ -50,29 +50,31 @@ export const querySelectorByTagNamePolyfill = (
     const elements = target.getElementsByTagName(tag);
 
     if (!copiedTags.length) {
-        return toArray(elements);
+        return arrayFrom(elements);
     }
 
     return flatMap(
         bindArg(copiedTags, querySelectorByTagNamePolyfill),
-        toArray(elements),
+        arrayFrom(elements),
     );
 };
 
-// path - работает только для тэгов разделенных пробелами
+/**
+ * @param path - Works only with tag names split by space.
+ */
 export const querySelectorByTagName = (
     ctx: Window,
     path: string,
     target: Element | Document,
 ) => {
     if (isQuerySelectorSupported(ctx)) {
-        return toArray(target.querySelectorAll(path));
+        return arrayFrom(target.querySelectorAll(path));
     }
 
     const tags = path.split(' ');
     const all = querySelectorByTagNamePolyfill(tags, target);
 
-    // Фильтр против дубликатов
+    // Filter off duplicates
     return cFilter((val, index) => {
         return cIndexOf(ctx)(val, all) === index;
     }, all);

@@ -8,7 +8,13 @@ import {
 import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
 import { ctxPath, isNil, getPath, isFunction } from 'src/utils/object';
-import { toArray, cIndexOf, cFind, cSome, arrayJoin } from 'src/utils/array';
+import {
+    arrayFrom,
+    cFind,
+    cSome,
+    arrayJoin,
+    cIndexOfWin,
+} from 'src/utils/array';
 import { isString, convertToString } from 'src/utils/string';
 import { isIE } from 'src/utils/browser';
 
@@ -98,7 +104,7 @@ export const getTagName = (tag: { nodeName: string }) => {
     return tag && tag.nodeName && `${tag.nodeName}`.toLowerCase();
 };
 
-export const hasClass = (className: string, el: HTMLElement) => {
+export const hasClass = (className: string, el: Element) => {
     try {
         return new RegExp(`(?:^|\\s)${className}(?:\\s|$)`).test(el.className);
     } catch (e) {
@@ -305,7 +311,7 @@ export const createAndDispatchEvent = (
 export const getFormNumber = (ctx: Window, form: HTMLElement) => {
     const { document: doc } = ctx;
     const forms = doc.getElementsByTagName('form');
-    return cIndexOf(ctx)(form, toArray(forms));
+    return cIndexOfWin(form, arrayFrom(forms));
 };
 /* Тяжело и медленно! 68324 bytes => 68380
 export const getNodeName = pipe(
