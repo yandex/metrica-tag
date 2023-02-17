@@ -56,7 +56,6 @@ export const YANDEX_WHITE_LIST_TLD = [
     'com.ru',
 ];
 
-export const YA_RU_DOMAIN = 'ya.ru';
 export const YANDEX_RU_DOMAIN = 'yandex.ru';
 const YANDEX_DOMAIN_REGEX = /(?:^|\.)(?:(ya\.ru)|(?:yandex)\.(\w+|com?\.\w+))$/;
 
