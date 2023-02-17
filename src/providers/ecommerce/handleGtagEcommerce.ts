@@ -1,13 +1,9 @@
 import { isArray } from 'src/utils/array';
-import {
-    dataGTagFormatToEcommerceFormat,
-    ECOMMERCE_ITEMS,
-} from 'src/utils/ecommerce';
+import { dataGTagFormatToEcommerceFormat } from 'src/utils/ecommerce';
 import { argsToArray } from 'src/utils/function/args';
 import { isNumber } from 'src/utils/number';
 import { isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
-import { GTAG_EVENTS } from './const';
 
 /**
  * Handle `gtag` calls (indirect push of function arguments into datalayer). E.g.:
@@ -52,11 +48,11 @@ export const handleGtagEcommerce = (
     if (!isString(method) || !isObject<Record<string, string>>(data)) {
         return undefined;
     }
-    const eventName = GTAG_EVENTS[method];
 
-    if (!(nameSpace === 'event' && eventName)) {
+    if (nameSpace !== 'event') {
         return undefined;
     }
+    const result = dataGTagFormatToEcommerceFormat(method, data);
 
-    return dataGTagFormatToEcommerceFormat(eventName, data, ECOMMERCE_ITEMS);
+    return result;
 };

@@ -5,7 +5,8 @@ import {
     ECOMMERCE_ITEMS,
     ECOMMERCE_PRODUCTS,
     GTAG_CURRENCY,
-    GTAG_EVENT_ADD,
+    UA_EVENT_ADD,
+    GTAG_EVENT_ADD_TO_CART,
 } from '../const';
 import { dataGTagFormatToEcommerceFormat } from '../transform';
 
@@ -13,9 +14,8 @@ describe('Ecommerce', () => {
     describe('dataGTagFormatToEcommerceFormat: ', () => {
         it('returns undefined if no items field found', () => {
             const transformed = dataGTagFormatToEcommerceFormat(
-                GTAG_EVENT_ADD,
+                GTAG_EVENT_ADD_TO_CART,
                 {},
-                ECOMMERCE_ITEMS,
             );
 
             chai.expect(transformed).to.be.undefined;
@@ -31,13 +31,12 @@ describe('Ecommerce', () => {
                 ],
             };
             const transformed = dataGTagFormatToEcommerceFormat(
-                GTAG_EVENT_ADD,
+                GTAG_EVENT_ADD_TO_CART,
                 data,
-                ECOMMERCE_ITEMS,
             );
 
             chai.expect(transformed).to.deep.eq({
-                [GTAG_EVENT_ADD]: {
+                [UA_EVENT_ADD]: {
                     [ECOMMERCE_PRODUCTS]: [
                         {
                             id: 1,
@@ -54,13 +53,12 @@ describe('Ecommerce', () => {
                 [GTAG_CURRENCY]: 'RUB',
             };
             const transformed = dataGTagFormatToEcommerceFormat(
-                GTAG_EVENT_ADD,
+                GTAG_EVENT_ADD_TO_CART,
                 data,
-                ECOMMERCE_ITEMS,
             );
 
             chai.expect(transformed).to.deep.eq({
-                [GTAG_EVENT_ADD]: {
+                [UA_EVENT_ADD]: {
                     [ECOMMERCE_PRODUCTS]: [],
                     [ECOMMERCE_ACTION_FIELD]: {},
                 },
@@ -75,13 +73,12 @@ describe('Ecommerce', () => {
                 value: 2,
             };
             const transformed = dataGTagFormatToEcommerceFormat(
-                GTAG_EVENT_ADD,
+                GTAG_EVENT_ADD_TO_CART,
                 data,
-                ECOMMERCE_ITEMS,
             );
 
             chai.expect(transformed).to.deep.eq({
-                [GTAG_EVENT_ADD]: {
+                [UA_EVENT_ADD]: {
                     [ECOMMERCE_PRODUCTS]: [],
                     [ECOMMERCE_ACTION_FIELD]: {
                         id: 1,
@@ -97,13 +94,12 @@ describe('Ecommerce', () => {
                 transaction_hash: 'abc',
             };
             const transformed = dataGTagFormatToEcommerceFormat(
-                GTAG_EVENT_ADD,
+                GTAG_EVENT_ADD_TO_CART,
                 data,
-                ECOMMERCE_ITEMS,
             );
 
             chai.expect(transformed).to.deep.eq({
-                [GTAG_EVENT_ADD]: {
+                [UA_EVENT_ADD]: {
                     [ECOMMERCE_PRODUCTS]: [],
                     [ECOMMERCE_ACTION_FIELD]: {
                         transaction_hash: 'abc',

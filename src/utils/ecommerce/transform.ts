@@ -1,21 +1,33 @@
 import { cForEach, cMap, cReduce } from 'src/utils/array';
 import { cKeys } from 'src/utils/object';
+import { bindArg } from '../function';
+import { isString } from '../string';
 import {
     ECOMMERCE_ACTION_FIELD,
     ECOMMERCE_CURRENCY,
-    ECOMMERCE_PRODUCTS,
     GTAG_CATEGORY,
     GTAG_CURRENCY,
-    GTAG_EVENT_PURCHASE,
-    GTAG_REPLACE_KEYS,
+    UA_EVENT_PURCHASE,
+    GTAG_EVENT_REPLACE_KEYS,
+    GtagToUaMappingObject,
+    GTAG_TO_UA_EVENT_MAP,
+    ECOMMERCE_ITEMS,
+    GTAG_COMMON_REPLACE_KEYS,
 } from './const';
 
-const itemsMappingField = (item: Record<string, any>) => {
+const getMappedKey = (mappings: Record<string, string>, key: string) => {
+    return mappings[key] || GTAG_COMMON_REPLACE_KEYS[key] || key;
+};
+
+const mapItemsFields = (
+    mappings: Record<string, string>,
+    item: Record<string, any>,
+) => {
     const formattedItem: Record<string, any> = {};
     cForEach((key) => {
-        const iteKey = GTAG_REPLACE_KEYS[key] || key;
+        const iteKey = getMappedKey(mappings, key);
         if (key.indexOf(GTAG_CATEGORY) !== -1) {
-            const categoryKey = GTAG_REPLACE_KEYS[GTAG_CATEGORY];
+            const categoryKey = GTAG_COMMON_REPLACE_KEYS[GTAG_CATEGORY];
             if (!formattedItem[categoryKey]) {
                 formattedItem[categoryKey] = item[key];
             } else {
@@ -30,31 +42,47 @@ const itemsMappingField = (item: Record<string, any>) => {
 
 // https://developers.google.com/tag-manager/ecommerce-ga4
 export const dataGTagFormatToEcommerceFormat = (
-    methodName: string,
+    eventObject: string | GtagToUaMappingObject,
     data: Record<string, any>,
-    itemsField: string,
 ) => {
-    const ecommerceData = data[GTAG_EVENT_PURCHASE] || data;
-    const items: Array<Record<string, string>> = ecommerceData[itemsField];
+    const mapping = isString(eventObject)
+        ? GTAG_TO_UA_EVENT_MAP[eventObject]
+        : eventObject;
+
+    if (!mapping) {
+        return undefined;
+    }
+    const {
+        event,
+        mappings,
+        uaItemsField,
+        gtagItemsField = ECOMMERCE_ITEMS,
+    } = mapping;
+    const ecommerceData = data[UA_EVENT_PURCHASE] || data;
+    const items: Array<Record<string, string>> = ecommerceData[gtagItemsField];
 
     if (!items) {
         return undefined;
     }
 
+    const mappedItems = cMap(bindArg(mappings, mapItemsFields), items);
+
     const result: Record<string, any> = {
-        [methodName]: {
-            [ECOMMERCE_PRODUCTS]: cMap(itemsMappingField, items),
-        },
+        [event]: uaItemsField
+            ? {
+                  [uaItemsField]: mappedItems,
+              }
+            : mappedItems,
     };
 
     const ecommerceKeys = cKeys(ecommerceData);
-    if (ecommerceKeys.length > 1) {
-        result[methodName][ECOMMERCE_ACTION_FIELD] = cReduce<
+    if (uaItemsField && ecommerceKeys.length > 1) {
+        result[event][ECOMMERCE_ACTION_FIELD] = cReduce<
             string,
             Record<string, string>
         >(
             (itemObj, key) => {
-                if (key === itemsField) {
+                if (key === gtagItemsField) {
                     return itemObj;
                 }
 
@@ -63,7 +91,8 @@ export const dataGTagFormatToEcommerceFormat = (
                     return itemObj;
                 }
 
-                itemObj[GTAG_REPLACE_KEYS[key] || key] = ecommerceData[key];
+                itemObj[getMappedKey(GTAG_EVENT_REPLACE_KEYS, key)] =
+                    ecommerceData[key];
                 return itemObj;
             },
             {},

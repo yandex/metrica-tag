@@ -2,11 +2,9 @@ import { cFilter, cReduce, ctxIncludes, isEmptyArray } from 'src/utils/array';
 import {
     dataGTagFormatToEcommerceFormat,
     ECOMMERCE_ALLOWED_EVENTS,
-    ECOMMERCE_ITEMS,
 } from 'src/utils/ecommerce';
 import { cKeys, getPath, isObject } from 'src/utils/object';
 import { isString } from 'src/utils/string';
-import { GTAG_EVENTS } from './const';
 
 /**
  * Handle direct pushes to datalayer with event name set as a separate property. E.g.:
@@ -39,16 +37,7 @@ export const handleTagManagerEcommerce = (
         return undefined;
     }
 
-    const eventName = GTAG_EVENTS[eventType];
-    if (!eventName) {
-        return undefined;
-    }
-
-    return dataGTagFormatToEcommerceFormat(
-        eventName,
-        ecommerce,
-        ECOMMERCE_ITEMS,
-    );
+    return dataGTagFormatToEcommerceFormat(eventType, ecommerce);
 };
 
 /**

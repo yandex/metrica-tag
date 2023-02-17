@@ -35,6 +35,7 @@ const handleEvent = (
         handleTagManagerEcommerce(event) ||
         handleGtagEcommerce(ctx, event) ||
         handleEcommerce(event);
+
     if (!result) {
         return;
     }

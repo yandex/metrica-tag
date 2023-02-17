@@ -238,6 +238,7 @@ describe('ecommerce', () => {
             index: 1,
             quantity: '1',
         };
+
         dataLayerHandleSpy!({
             event: 'view_item',
             ecommerce: {
