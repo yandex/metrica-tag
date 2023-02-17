@@ -106,11 +106,13 @@ const request = (
         } catch {}
     });
 };
-// Opera12 криво посылает заголовок Origin на кириллических хостах, отчего БК не присылает его обратно.
-// И, следовательно, запрос не получается кроссдоменным, и, следовательно, статус ответа получается 0,
-// и, следовательно, не срабатывает колбек, и, следовательно, не удаляется запрос из очереди на отправку,
-// и, следовательно, очередь постоянно растёт, а зачем нам это надо, пусть отправляет картинкой.
-// {}.toString из-за всяких мудаков, переопределяющих Object.prototype, не используем.
+/*
+  Opera 12 sends malformed "origin" on cyrillic hosts, which is why it is sometimes poorly processed.
+  And, therefore, the request does not turn out to be cross-domain, and, therefore, the response status turns out to be 0.
+  And, therefore, the callback does not work, and, therefore, the request is not deleted from queues for sending.
+  And, consequently, the queue is constantly growing, and why do we need it, let it send a picture.
+  We don't use {}.toString because sometimes Object.prototype is overridden.
+*/
 const isOperaXHR = (ctx: Window) => {
     if (
         CYRILLIC_DOMAIN_REGEXP.test(ctx.location.host) &&
