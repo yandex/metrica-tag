@@ -45,6 +45,8 @@ import {
 } from 'src/providers/getCounters/getCounters';
 import { COUNTER_STATE_TRACK_LINKS } from 'src/providers/getCounters/const';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
+import { flags } from '@inject';
+import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import {
     INTERNAL_LINK_STORAGE_KEY,
     MAX_LEN_INTERNAL_LINK,
@@ -66,6 +68,7 @@ import type {
     AddFileExtensionHandler,
 } from './types';
 import { textFromLink } from './getTextFromLink';
+import { dispatchDebuggerEvent } from '../debugEvents';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {
@@ -126,6 +129,19 @@ export const sendClickLink = (
         prefix = options.isExternalLink ? 'Ext link - File' : 'File';
     } else if (options.isExternalLink) {
         prefix = 'Ext link';
+    }
+
+    if (flags[DEBUG_EVENTS_FEATURE]) {
+        dispatchDebuggerEvent(ctx, {
+            counterKey: getCounterKey(counterOptions),
+            name: 'event',
+            data: {
+                schema: 'Link click',
+                name: `${
+                    options.isExternalLink ? 'external' : 'interlal'
+                } url: ${options.url}`,
+            },
+        });
     }
 
     const result = options
