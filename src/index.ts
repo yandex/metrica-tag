@@ -97,7 +97,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         ];
 
         if (flags[TELEMETRY_FEATURE]) {
-            decorators.unshift(telemetryCallCountDecorator);
+            decorators.push(telemetryCallCountDecorator);
         }
 
         const initMethod = <FN extends (...args: any) => ReturnType<FN>>(
