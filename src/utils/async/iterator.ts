@@ -15,7 +15,7 @@ export const iterIsEnd = <T, R>(iterParams: IterParams<T, R>) => {
     const params = iterParams;
     return params.stopIter || params.itemList.length <= params.iterCursor;
 };
-// отсанавливаем обход без возврата
+// останавливаем обход без возврата
 export const iterBreak = <T, R>(iterParams: IterParams<T, R>) => {
     const params = iterParams;
     params.iterCursor = params.itemList.length;
