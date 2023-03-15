@@ -10,7 +10,6 @@ type FeatureTypeRaw = {
     exp?: true;
     disabled?: true;
     path?: string;
-    include?: string;
 };
 type FeatureType = FeatureTypeRaw & {
     weight: number;
@@ -104,30 +103,6 @@ ${featureBlocks
     return [...importBlocks, exportBlock].join('\n\n');
 };
 
-const generateMappingsCode = (features: FeatureType[]) => {
-    const groupFeatures: Record<string, string[]> = {};
-
-    features.forEach((feature) => {
-        if (!feature.include) {
-            return;
-        }
-
-        const groups = feature.include.split(',');
-
-        groups.forEach((group) => {
-            if (!groupFeatures[group]) {
-                groupFeatures[group] = [];
-            }
-
-            groupFeatures[group].push(feature.code);
-        });
-    });
-
-    return `import { Feature } from "./features";\n\nexport const updateFeatureList: Record<string, Feature[]> = ${JSON.stringify(
-        groupFeatures,
-    )}`;
-};
-
 const GEN_DIR = './generated';
 const run = async () => {
     fs.ensureDirSync(GEN_DIR);
@@ -152,10 +127,6 @@ const run = async () => {
         fs.writeFile(
             `${GEN_DIR}/features.ts`,
             generateFeaturesCode(allFeatures),
-        ),
-        fs.writeFile(
-            `${GEN_DIR}/mappings.ts`,
-            generateMappingsCode(allFeatures),
         ),
     ]);
     await spawnAsPromised(`prettier --write ${GEN_DIR}/*.ts`, {
