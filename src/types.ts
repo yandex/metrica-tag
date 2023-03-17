@@ -104,6 +104,29 @@ declare global {
         getElementsByClassName(classNames: string): HTMLCollectionOf<Element>;
     }
 
+    interface Brand {
+        brand: string;
+        version: string;
+    }
+
+    interface HintsData {
+        architecture: string;
+        bitness: string;
+        brands: Brand[];
+        fullVersionList: Brand[];
+        mobile: boolean;
+        model: string;
+        platform: string;
+        platformVersion: string;
+        uaFullVersion: string;
+    }
+
+    interface Navigator {
+        userAgentData?: {
+            getHighEntropyValues: (hints: string[]) => Promise<HintsData>;
+        };
+    }
+
     // Define global.window within NodeJS (e.g. for tests).
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
