@@ -102,6 +102,7 @@ declare global {
 
     interface Element {
         getElementsByClassName(classNames: string): HTMLCollectionOf<Element>;
+        nonce?: string;
     }
 
     interface Brand {
