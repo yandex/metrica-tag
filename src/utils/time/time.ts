@@ -1,7 +1,7 @@
 import { arrayJoin, cMap } from 'src/utils/array';
 import { cEvent } from 'src/utils/events';
 import { cont, memo } from 'src/utils/function';
-import { perfomanceInfo, getMsFromPerfomance } from './performance';
+import { performanceInfo, getMsFromPerfomance } from './performance';
 
 const leadingZeroFormatter = (n: number) => {
     return (n < 10 ? '0' : '') + n;
@@ -18,7 +18,7 @@ export type TimeState = {
 
 const Time = (ctx: Window): (<R>(fn: (a: TimeState) => R) => R) => {
     const event = cEvent(ctx);
-    const perf = perfomanceInfo(ctx);
+    const perf = performanceInfo(ctx);
     const timeState = {
         ctx,
         unloadTime: 0,

@@ -4,11 +4,11 @@ import { getPath, isFunction } from 'src/utils/object';
 type PerfomanceNow = typeof window.performance.now;
 type PerformanceInfo = [number, PerfomanceNow];
 
-export const getPerformance = (ctx: Window) => {
+export const getPerformance = (ctx: Window): Performance | null => {
     return getPath(ctx, `performance`) || getPath(ctx, `webkitPerformance`);
 };
 
-export const perfomanceInfo = (ctx: Window): PerformanceInfo => {
+export const performanceInfo = (ctx: Window): PerformanceInfo => {
     const performance = getPerformance(ctx);
     const ns = getPath(performance, `timing.navigationStart`);
     let now = getPath(performance, `now`);
@@ -23,7 +23,7 @@ export const getMsDate = (ctx: Window) => {
 };
 
 export const getMsFromPerfomance = (ctx: Window, info?: PerformanceInfo) => {
-    const [ns, now] = info || perfomanceInfo(ctx);
+    const [ns, now] = info || performanceInfo(ctx);
     // eslint-disable-next-line no-restricted-globals
     if (!isNaN(ns) && isFunction(now)) {
         return Math.round(now() + ns);
