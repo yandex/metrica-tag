@@ -1,6 +1,6 @@
 import {
     cForEach,
-    arrayFrom,
+    toArray,
     cMap,
     cReduce,
     cFilter,
@@ -73,7 +73,7 @@ export const reformatPhone = (orig: string, res: string) => {
     return arrayJoin('', out) + res.slice(posRes + 1);
 };
 
-// NOTE: The arrow function is necessary and provides a new map on every call.
+// стрелочка не лишняя, нужна новая мапа на каждый вызов
 const genPhoneMap = () =>
     /* @__PURE__ */ ctxReduce((accum: PhoneChangeMap, tuple: PhoneTuple) => {
         const [from, replaceTo] = cMap(removeNonDigits, tuple);
@@ -189,7 +189,7 @@ export const selectLink = (ctx: Window, phoneChangeMap: PhoneChangeMap) => {
             return accum;
         },
         [],
-        arrayFrom(rootNode.querySelectorAll('a')),
+        toArray<HTMLAnchorElement>(rootNode.querySelectorAll('a')),
     );
 };
 

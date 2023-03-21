@@ -1,9 +1,11 @@
 import { memo } from 'src/utils/function/memo';
 import { notFn } from 'src/utils/function/identity';
 import { pipe } from 'src/utils/function/pipe';
+import { arrayFrom, arrayFromPoly } from './arrayFrom';
 import { cIndexOf } from './indexOf';
 import { cFilter } from './filter';
 import { ctxIncludes } from './includes';
+import { isArray } from './isArray';
 import { ctxPath } from '../object/path';
 
 export const getRange = (n: number) => {
@@ -17,6 +19,26 @@ export const getRange = (n: number) => {
     }
 
     return result;
+};
+
+export const toArray = <R = any>(smth: any): R[] => {
+    if (!smth) {
+        return [];
+    }
+
+    if (isArray<R>(smth)) {
+        return smth;
+    }
+
+    if (arrayFrom) {
+        return arrayFrom(smth);
+    }
+
+    if (typeof smth.length === 'number' && smth.length >= 0) {
+        return arrayFromPoly(smth);
+    }
+
+    return [];
 };
 
 export const indexOfWin = memo(cIndexOf);

@@ -1,5 +1,5 @@
 import { isNativeFunction } from 'src/utils/function';
-import { arrayFrom, cIndexOf } from 'src/utils/array';
+import { toArray, cIndexOf } from 'src/utils/array';
 import { getMatchesFunction } from './dom';
 import { isQuerySelectorSupported } from './queySelect';
 
@@ -35,7 +35,7 @@ export const closest = (selector: string, ctx: Window, el: HTMLElement) => {
         return cursor;
     }
     if (isQuerySelectorSupported(ctx)) {
-        const matches = arrayFrom(
+        const matches = toArray(
             (ctx.document || (ctx as any).ownerDocument).querySelectorAll(
                 selector,
             ),

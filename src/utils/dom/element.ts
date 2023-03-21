@@ -3,7 +3,7 @@ import {
     includes,
     isArray,
     cMap,
-    arrayFrom,
+    toArray,
     flatMap,
     cFilter,
     arrayJoin,
@@ -22,6 +22,7 @@ import {
     getNodeName,
     hasClass,
 } from './dom';
+/* eslint-disable */
 
 export const getElementXY = (ctx: Window, el: HTMLElement | null) => {
     let element = el;
@@ -174,33 +175,41 @@ export const getElementsByClassName = (
     node: HTMLElement,
 ) => {
     const classes = isArray(classNames) ? classNames : [classNames];
-    const cNode = node || document;
 
-    if (cNode.querySelectorAll) {
+    // eslint-disable-next-line no-param-reassign
+    node = node || document;
+
+    if (node.querySelectorAll) {
         const sel = arrayJoin(
             ', ',
             cMap((cls) => `.${cls}`, classes),
         );
-        return arrayFrom(cNode.querySelectorAll(sel));
+        return toArray(node.querySelectorAll(sel));
     }
 
     // @ts-expect-error
-    if (cNode.getElementsByClassName) {
+    if (node.getElementsByClassName) {
         return flatMap(
-            pipe(bindThisForMethod('getElementsByClassName', cNode), arrayFrom),
+            pipe(
+                bindThisForMethod('getElementsByClassName', node as any),
+                toArray,
+            ),
             classes,
         );
     }
 
-    const nodes = cNode.getElementsByTagName('*');
+    const nodes = node.getElementsByTagName('*');
     const someClassRegexp = `(${arrayJoin('|', classes)})`;
-    return cFilter(bindArg(someClassRegexp, hasClass), arrayFrom(nodes));
+    return cFilter(bindArg(someClassRegexp, hasClass), toArray(nodes));
 };
 
 /**
- * Returns an array of the element children, skipping hidden elements inside forms.
+ * Возвращает массив детей элемента, пропуская hidden элементы формы.
  *
- * @param nodeName Node names to select, skip this parameter to select all nodes.
+ * @param {HTMLElement} el
+ * @param {String} [nodeName] Если указан этот параметр, то выбираются только дети с таким nodeName.
+ *
+ * @returns {Array}
  */
 export const getElementChildren = (
     ctx: Window,

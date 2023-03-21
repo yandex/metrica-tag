@@ -16,7 +16,7 @@ import {
     pipe,
     curry2,
 } from 'src/utils/function';
-import { arrayFrom, cForEach, cReduce } from 'src/utils/array';
+import { cForEach, cReduce, toArray } from 'src/utils/array';
 import { parseDecimalInt } from 'src/utils/number';
 import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
 import { consoleLog } from '../debugConsole/debugConsole';
@@ -93,7 +93,7 @@ export const getCounterAndOptions = (
 export const handleCall = curry2((ctx: Window, item: StackCall) => {
     const anyCtx = ctx as any;
     const state = getProxyState(ctx);
-    const [counterKey, method, ...args] = arrayFrom(item) as StackCall;
+    const [counterKey, method, ...args] = toArray(item) as StackCall;
     if (!method) {
         return;
     }

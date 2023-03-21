@@ -6,7 +6,7 @@ import {
     ReplaceElementLink,
 } from 'src/utils/phones/const';
 import { getElemCreateFunction } from 'src/utils/dom';
-import { cFilter, cForEach, cMap, cReduce, arrayFrom } from 'src/utils/array';
+import { cFilter, cForEach, cMap, cReduce, toArray } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
 import { METHOD_NAME_EXTERNAL_LINK_CLICK } from 'src/providers/clicks/const';
 import {
@@ -47,7 +47,7 @@ const setEnterHandler = (
     const show = () => {
         cForEach(
             bindArg(['style', 'opacity', ''], genPath),
-            arrayFrom(phoneWrapper.childNodes),
+            toArray(phoneWrapper.childNodes),
         );
 
         if (counterOpts) {

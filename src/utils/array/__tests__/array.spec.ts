@@ -6,7 +6,7 @@ import {
     exclude,
     isArray,
     getRange,
-    arrayFrom,
+    toArray,
     cSome,
     cFind,
     flatMap,
@@ -164,18 +164,16 @@ describe('Array utils', () => {
         chai.expect(getRange(-1)).to.deep.equal([]);
     });
 
-    it('arrayFrom', () => {
+    it('toArray', () => {
         const set = new Set();
         set.add(1);
         set.add(2);
-        chai.expect(arrayFrom(set)).to.deep.equal([1, 2]);
-        chai.expect(arrayFrom({ 0: 'a', 1: 'b', length: 2 })).to.deep.equal([
+        chai.expect(toArray(set)).to.deep.equal([1, 2]);
+        chai.expect(toArray({ 0: 'a', 1: 'b', length: 2 })).to.deep.equal([
             'a',
             'b',
         ]);
-        // @ts-expect-error
-        chai.expect(arrayFrom.bind(null, null)).to.throw();
-        chai.expect(arrayFrom).to.throw();
+        chai.expect(toArray(null)).to.deep.equal([]);
     });
 
     it('cSome', () => {
