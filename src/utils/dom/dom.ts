@@ -414,3 +414,20 @@ export const isEmptyField = (field: HTMLElement | Element) => {
 
     return true;
 };
+
+export const calculateVisibleVolume = (
+    ctx: Window,
+    clientRect: CustomDOMRect,
+    viewportSize: { h: number; w: number },
+) => {
+    const { top, bottom, right, left } = clientRect;
+    const { w, h } = viewportSize;
+    const math = ctx.Math;
+
+    const visibleWidth =
+        math.min(math.max(right, 0), w) - math.min(math.max(left, 0), w);
+    const visibleHeight =
+        math.min(math.max(bottom, 0), h) - math.min(math.max(top, 0), h);
+
+    return visibleHeight * visibleWidth;
+};
