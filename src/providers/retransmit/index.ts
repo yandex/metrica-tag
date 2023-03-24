@@ -1,11 +1,12 @@
 import { flags } from '@inject';
-import { RETRANSMIT_FEATURE } from 'generated/features';
+import { PARAMS_FEATURE, RETRANSMIT_FEATURE } from 'generated/features';
 import { addCommonMiddleware, addMiddlewareForProvider } from 'src/middleware';
 import {
     retransmit,
     retransmitProviderMiddleware,
 } from 'src/middleware/retransmit';
 import { providersAsync } from 'src/providersEntrypoint';
+import { PARAMS_PROVIDER } from 'src/providers/params/const';
 import { providerMap } from 'src/sender';
 import { SENDER_RETRANSMIT } from 'src/sender/const';
 import {
@@ -56,5 +57,9 @@ export const initProvider = () => {
          * in order to keep the middleware at the end of the chain.
          */
         addCommonMiddleware(retransmit, 100);
+
+        if (flags[PARAMS_FEATURE]) {
+            addMiddlewareForProvider(PARAMS_PROVIDER, retransmit, 100);
+        }
     }
 };
