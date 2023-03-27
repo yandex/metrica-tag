@@ -30,6 +30,13 @@ export const BROWSERINFO_QUERY_KEY = 'browser-info';
 export const TELEMETRY_QUERY_KEY = 't';
 
 /**
+ * API token required for authorized traffic
+ *
+ * Value Type: string
+ */
+export const CSRF_TOKEN_URL_PARAM = 'hittoken';
+
+/**
  * Type of expected response
  *
  * Value Type: number

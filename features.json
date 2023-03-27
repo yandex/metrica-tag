@@ -190,6 +190,11 @@
     "desc": "Enables metrika inpage scripts work (i.g. selecting buttons for quick goals in the metrika interface)"
   },
   {
+    "code": "CSRF_TOKEN_FEATURE",
+    "desc": "Add API token required for authorized traffic",
+    "path": "csrf"
+  },
+  {
     "weight": 1000,
     "code": "STACK_PROXY_FEATURE",
     "path": "stackProxy",
