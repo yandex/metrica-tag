@@ -42,7 +42,7 @@ export const markPureFunctions = <T extends ts.Node>(
 };
 
 export const pureFunctions = [
-    'curry',
+    'curry2',
     'memo',
     'pipe',
     'noop',
