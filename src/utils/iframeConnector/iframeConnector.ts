@@ -195,6 +195,9 @@ export const handleInputMessage = (
     counterInfo: CounterInfo,
     event: MessageEvent,
 ) => {
+    if (event.data[0] !== '{') {
+        return;
+    }
     let messageInfo: FullMessage | null = null;
     let meta: string | null = null;
     const state = getIframeState(ctx);

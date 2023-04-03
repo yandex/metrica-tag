@@ -155,7 +155,7 @@ export const selectLink = (ctx: Window, phoneChangeMap: PhoneChangeMap) => {
             const originalHref = getPath(link, 'href');
             const href = safeDecodeURI(originalHref || '');
             if (href.slice(0, 4) === 'tel:') {
-                const [foundPhone] = phonesRegExp.exec(href) || [];
+                const [foundPhone] = phonesRegExp.exec(href) || [''];
                 const purePhone = foundPhone ? removeNonDigits(foundPhone) : '';
 
                 const phoneChangeMapItem = phoneChangeMap[purePhone];

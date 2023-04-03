@@ -10,7 +10,10 @@
   "scripts": {
     "build": "npm run features && npm run ts-node -- ./scripts/build/build.ts",
     "build:raw": "npm run build -- --no-uglify",
+    "perf": "npm run ts-node -- ./scripts/runPerformanceTest.ts",
+    "code-linter": "eslint --cache --ext .js,.ts",
     "features": "ts-node -- ./scripts/genFeatures.ts --files ./features.json -d",
+    "size": "ts-node ./scripts/size.ts",
     "fix": "npm run lint -- --fix",
     "fix:code": "npm run lint -- --fix --code",
     "fix:prettier": "npm run lint -- --fix --prettier",
@@ -28,7 +31,8 @@
   },
   "dependencies": {
     "promise-polyfill": "8.1.3",
-    "tslib": "1.14.1"
+    "tslib": "1.14.1",
+    "parse5": "6.0.1"
   },
   "devDependencies": {
     "@ampproject/rollup-plugin-closure-compiler": "0.27.0",
@@ -64,6 +68,7 @@
     "jsdom": "19.0.0",
     "mocha": "9.2.2",
     "mochawesome": "7.1.3",
+    "nock": "13.3.0",
     "prettier": "2.3.0",
     "ps-tree": "1.2.0",
     "regenerator-runtime": "0.14.0",

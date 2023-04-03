@@ -59,7 +59,7 @@ export const walkTree = (
     ) {
         callback(root);
         if (!isTextNode(root)) {
-            const walker = ctx.document.createTreeWalker(
+            const walker = (ctx.document as any).createTreeWalker(
                 root,
                 whatToSeek,
                 filterCb ? { acceptNode } : null,

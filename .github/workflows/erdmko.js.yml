@@ -1,0 +1,159 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: PR CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  perf:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: 'main'
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'npm'
+    - run: npm ci --legacy-peer-deps
+    - run: |
+        echo MAIN_BRANCH_PERFORMANCE="$(npm run -s perf)" >> $GITHUB_ENV
+    - uses: actions/checkout@v3
+    - run: npm ci --legacy-peer-deps
+    - run: |
+        echo BRANCH_PERFORMANCE="$(npm run -s perf)" >> $GITHUB_ENV
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          let result = ['## Performance info'];
+          const mainInfoStr = `${{ env.MAIN_BRANCH_PERFORMANCE }}`;
+          const newInfoStr = `${{ env.BRANCH_PERFORMANCE }}`;
+          try {
+            const mainInfo = JSON.parse(mainInfoStr);
+            const newInfo = JSON.parse(newInfoStr);
+            result.push(
+              '| Type | Average | Deviation | New average | New deviation | Avg diff |',
+              '| ---- | ------- | --------- | ----------- | ------------- | -------- |'
+            );
+            for (const [ticksType, info] of Object.entries(mainInfo)) {
+                const {
+                  average,
+                  deviation,
+                } = info;
+
+                const {
+                  average: new_average,
+                  deviation: new_deviation,
+                } = newInfo[ticksType];
+
+                result.push(`| ${[
+                    ticksType,
+                    average.toFixed(0),
+                    deviation.toFixed(0),
+                    new_average.toFixed(0),
+                    new_deviation.toFixed(0),
+                    (new_average - average).toFixed(2)
+                  ].join(' | ')} |`)
+              }
+          } catch (e) {
+            console.error(e);
+            result = [
+              'Error',
+              e.message,
+              mainInfoStr,
+              newInfoStr
+            ];
+          }
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: result.join('\n')
+          })
+  size:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: 'main'
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'npm'
+    - run: npm ci --legacy-peer-deps
+    - run: npm run build
+    - name: CompressFiles
+      uses: stefh/ghaction-CompressFiles@v2
+      with:
+        path: './_build/public'
+        extensions: '.js,.css,.html'
+        tools: 'brotli,gzip'
+    - run: |
+        echo MAIN_BRANCH="$(npm run -s size)" >> $GITHUB_ENV
+    - uses: actions/checkout@v3
+    - run: npm ci --legacy-peer-deps
+    - run: npm run lint 
+    - run: npm run test:unit
+    - run: npm run build
+    - name: CompressFiles
+      uses: stefh/ghaction-CompressFiles@v2
+      with:
+        path: './_build/public'
+        extensions: '.js,.css,.html'
+        tools: 'brotli,gzip'
+    - run: |
+        echo SIZE_INFO="$(npm run -s size)" >> $GITHUB_ENV
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          const result = ['## Size info'];
+          const info = `${{ env.SIZE_INFO }}`;
+          const sizeInfo = JSON.parse(info);
+          result.push(
+            '| Script | Extention | Original | New | Diff |',
+            '| ------ | --------- | -------- | --- | ---- |'
+          );
+          try {
+            for (const [scriptName, extention] of Object.entries(sizeInfo)) {
+              for (const [ext, sizeInfo] of Object.entries(extention)) {
+                const {
+                  beforeString,
+                  currentString,
+                  current,
+                  before
+                } = sizeInfo;
+                const diffNum = ((current - before) / before) || 0;
+                let diffStr = diffNum
+                  .toFixed(3);
+                if (Math.abs(diffNum) > 0.01) {
+                  diffStr = diffNum > 0 ? `⬆️ ${diffStr}` :
+                    `⬇️ ${diffStr}`
+                }
+                result.push(`| ${[
+                    scriptName,
+                    ext,
+                    beforeString,
+                    currentString,
+                    diffStr
+                  ].join(' | ')} |`)
+              }
+
+            }
+          } catch (e) {
+            console.error(e);
+            result = ['Error', e.message, info];
+          }
+
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: result.join('\n')
+          })

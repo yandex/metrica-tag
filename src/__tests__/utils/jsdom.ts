@@ -8,7 +8,6 @@ import {
     CookieJar,
     ReconfigureSettings,
 } from 'jsdom';
-import { ElementLocation } from 'parse5';
 import { Context } from 'vm';
 
 /**
@@ -64,7 +63,7 @@ export class JSDOMWrapper {
      *
      * @throws {Error} If the JSDOM was not created with `includeNodeLocations`
      */
-    nodeLocation(node: Node): ElementLocation | null {
+    nodeLocation(node: Node): any | null {
         return this.instance.nodeLocation(node);
     }
 

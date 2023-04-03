@@ -22,7 +22,7 @@ export const request = (
         if (!getPath(ctx, 'navigator.onLine')) {
             return reject();
         }
-        const query = mix(options.rQuery, {
+        const query = mix(options.rQuery || {}, {
             [FORCE_URLENCODED_KEY]: 1,
         });
 
