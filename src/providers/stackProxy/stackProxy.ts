@@ -8,7 +8,7 @@ import {
 import { getCounterInstance } from 'src/utils/counter';
 import { CounterObject } from 'src/utils/counter/type';
 import { config } from 'src/config';
-import { yaNamespace } from 'src/storage/global';
+import { yaNamespace } from 'src/const';
 import {
     memo,
     constructObject,

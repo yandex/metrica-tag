@@ -1,5 +1,6 @@
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
 import { CounterObject } from 'src/utils/counter/type';
+import { yaNamespace } from './const';
 import { OLD_CODE_KEY } from './providers/getCounters/const';
 import { CounterOptions } from './utils/counterOptions';
 
@@ -45,12 +46,15 @@ declare global {
         new (format: 'gzip' | 'deflate'): GenericTransformStream;
     };
 
-    type yaNamespaceStorage = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface yaNamespaceStorage {}
+
+    type yaNamespaceMetrikaCounter = {
         [construct in Constructor]: MetrikaCounter;
     };
 
     interface Window {
-        Ya?: yaNamespaceStorage;
+        [yaNamespace]?: yaNamespaceStorage & yaNamespaceMetrikaCounter;
         [OLD_CODE_KEY]?: boolean;
         XMLHttpRequest: typeof XMLHttpRequest;
         Error: typeof Error;

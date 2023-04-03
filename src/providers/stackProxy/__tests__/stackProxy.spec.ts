@@ -1,10 +1,11 @@
 import * as chai from 'chai';
+import sinon from 'sinon';
+import { config } from 'src/config';
+import { yaNamespace } from 'src/const';
 import * as dlObserver from 'src/utils/dataLayerObserver';
 import * as counterInstance from 'src/utils/counter';
-import sinon from 'sinon';
 import * as counterOptions from 'src/utils/counterOptions';
-import { metrikaNamespace, yaNamespace } from 'src/storage/global';
-import { config } from 'src/config';
+import { metrikaNamespace } from 'src/storage/global';
 import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter';
 import { METHOD_NAME_HIT } from 'src/providers/artificialHit/const';
 import {

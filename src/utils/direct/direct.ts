@@ -1,11 +1,21 @@
+import { yaNamespace } from 'src/const';
 import { CounterTypeInterface, isRsyaCounter } from '../counterOptions';
 
+const DIRECT = 'Direct';
+
+declare global {
+    interface yaNamespaceStorage {
+        [DIRECT]?: boolean;
+    }
+}
+
 /**
- * Наличие на странице объявлений Директа
- *
- * @param {CounterTypeInterface} counterType - тип счётчика, 0 - обычный, 1 - РСЯ
- * @return {boolean}
+ * Detects Direct ads on the page.
  */
 export function yaDirectExists(ctx: Window, counterType: CounterTypeInterface) {
-    return isRsyaCounter(counterType) && ctx.Ya && ctx.Ya.Direct;
+    return (
+        isRsyaCounter(counterType) &&
+        ctx[yaNamespace] &&
+        ctx[yaNamespace]![DIRECT]
+    );
 }

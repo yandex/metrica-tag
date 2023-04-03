@@ -14,7 +14,7 @@ import {
     ctxBindArgs,
 } from 'src/utils/function';
 import { entries, isFunction, isObject } from 'src/utils/object';
-import { getGlobalStorage, yaNamespace } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global';
 import { HIT_PARAMS_KEY, LAST_REFERRER_KEY } from 'src/storage/global/consts';
 import { useHitProvider } from 'src/providers/hit';
 import { callbackInit } from 'src/providers/callbackInit';
@@ -47,6 +47,7 @@ import { destructingDecorator } from './utils/methodDecorators/destructing';
 import { throwKnownError } from './utils/errorLogger/knownError';
 import { cForEach, cMap } from './utils/array';
 import { throwFunction } from './utils/errorLogger/throwFunction';
+import { yaNamespace } from './const';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);

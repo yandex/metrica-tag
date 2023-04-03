@@ -1,3 +1,4 @@
+import { yaNamespace } from 'src/const';
 import { isUndefined } from 'src/utils/object/assertions';
 import { hasOwnProperty } from 'src/utils/object/has';
 
@@ -6,24 +7,20 @@ export type GlobalStorage = {
     setVal<T>(name: string, value: T): GlobalStorage;
     getVal<T>(name: string, defVal?: T): T;
 };
-export const yaNamespace = 'Ya';
+
 export const metrikaNamespace = '_metrika';
 
-export type Storage = {
-    [metrikaNamespace]?: {
-        [key: string]: any;
-    };
-};
-
-export type GlobalCtx = {
-    [yaNamespace]?: Storage;
-};
+declare global {
+    interface yaNamespaceStorage {
+        [metrikaNamespace]?: Record<string, unknown>;
+    }
+}
 
 export const globalStorage = (ctx: Window): GlobalStorage => {
     /* eslint-disable no-multi-assign */
-    const winCtx = ctx as GlobalCtx;
-    const yan = (winCtx[yaNamespace] = winCtx[yaNamespace] || {});
+    const yan = (ctx[yaNamespace] = ctx[yaNamespace] || {});
     const metrika = (yan[metrikaNamespace] = yan[metrikaNamespace] || {});
+    /* eslint-enable no-multi-assign */
     const storage: Record<string, any> = metrika;
 
     return {

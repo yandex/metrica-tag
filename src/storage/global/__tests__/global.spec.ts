@@ -1,15 +1,16 @@
 /* eslint-env mocha */
 import * as chai from 'chai';
-import { globalStorage, GlobalCtx, GlobalStorage } from '..';
-import { yaNamespace, metrikaNamespace } from '../global';
+import { yaNamespace } from 'src/const';
+import { globalStorage, GlobalStorage } from '..';
+import { metrikaNamespace } from '../global';
 
 describe('GlobalStorage', () => {
-    let storage: GlobalCtx;
+    let storage: Window;
     let inStorage: Window;
     let gs: GlobalStorage;
 
     beforeEach(() => {
-        storage = {};
+        storage = {} as Window;
         inStorage = storage as Window;
         gs = globalStorage(inStorage);
     });

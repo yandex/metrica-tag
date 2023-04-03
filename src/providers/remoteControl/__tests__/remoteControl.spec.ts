@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import Sinon, * as sinon from 'sinon';
-import { metrikaNamespace, yaNamespace } from 'src/storage/global';
+import { yaNamespace } from 'src/const';
+import { metrikaNamespace } from 'src/storage/global';
 import * as functionUtils from 'src/utils/function';
 import * as events from 'src/utils/events';
 import * as global from 'src/storage/global';
