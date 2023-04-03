@@ -1,5 +1,4 @@
 import {
-    ANTIFRAUD_FACTORS_FEATURE,
     CSRF_TOKEN_FEATURE,
     NOT_BOUNCE_HIT_FEATURE,
     PARAMS_FEATURE,
@@ -34,7 +33,7 @@ export const initProvider = () => {
         };
 
         // Add the middleware to all providers posting to watch/ route.
-        if (flags[PREPROD_FEATURE] && flags[ANTIFRAUD_FACTORS_FEATURE]) {
+        if (flags[PREPROD_FEATURE]) {
             // HIT_PROVIDER uses commonMiddlewares in prod and a slice of commonMiddlewares if antifraud set.
             addCsrfMiddlewareForProvider(HIT_PROVIDER);
         }
