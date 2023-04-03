@@ -8,6 +8,7 @@
     "build:raw": "npm run build -- --no-uglify",
     "code-linter": "eslint --cache --ext .js,.ts",
     "features": "ts-node -- ./scripts/genFeatures.ts --files ./features.json -d",
+    "size": "ts-node ./scripts/size.ts",
     "fix": "npm run lint -- --fix",
     "fix:code": "npm run lint -- --fix --code",
     "fix:prettier": "npm run lint -- --fix --prettier",
