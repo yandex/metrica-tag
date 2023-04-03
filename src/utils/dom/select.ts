@@ -14,7 +14,7 @@ export const select = <
     selector: string,
     node: T,
 ) => {
-    if (!node) {
+    if (!node || !node.querySelectorAll) {
         return [];
     }
     const result = node.querySelectorAll(selector);
