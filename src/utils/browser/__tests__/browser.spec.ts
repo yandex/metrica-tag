@@ -32,6 +32,7 @@ describe('browser Utils', () => {
     const ffWin = (isPrivateMode = false) =>
         ({
             navigator: {
+                userAgent: 'Firefox/123',
                 serviceWorker: !isPrivateMode || undefined,
             },
             document: {

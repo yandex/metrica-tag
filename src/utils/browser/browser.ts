@@ -18,7 +18,7 @@ import {
     indexOfWin,
 } from 'src/utils/array';
 import { ctxPath, getPath, isUndefined } from 'src/utils/object';
-import { isFF } from 'src/utils/browser/firefox';
+import { isFF, isFFVersionRegExp } from 'src/utils/browser/firefox';
 import { MIN_EDGE_VERSION, MIN_FIREFOX_VERSION } from 'src/utils/browser/const';
 import { checkUserAgent, getAppleUAProps, getAgent } from './utils';
 import { parseDecimalInt } from '../number';
@@ -290,8 +290,6 @@ export const isEdgeMinVersion = (ctx: Window, minVersion: number) => {
     }
     return false;
 };
-
-const isFFVersionRegExp = /Firefox\/([0-9]+)/;
 
 export const isFFVersion = (ctx: Window, minVersion: number) => {
     if (isFF(ctx) && minVersion) {
