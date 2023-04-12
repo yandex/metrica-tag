@@ -1,7 +1,7 @@
 import { REQUEST_BODY_KEY } from 'src/api/watch';
 import { entries, isUndefined, isNil } from 'src/utils/object';
-import { ctxJoin, pipe } from 'src/utils/function';
-import { ctxReduce, ctxMap } from 'src/utils/array';
+import { pipe } from 'src/utils/function';
+import { ctxJoin, ctxReduce, ctxMap } from 'src/utils/array';
 import { safeEncodeURIComponent } from './safeEncodeURI';
 
 export const safeDecodeURIComponent = (encodedURIComponent: string) => {

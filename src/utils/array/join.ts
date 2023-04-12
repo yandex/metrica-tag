@@ -1,6 +1,6 @@
-import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
+import { curry2, toNativeOrFalse } from '../function';
 
-export const joinPoly = <A>(str: string, array: A[]): string => {
+export const joinPoly = <A>(str: string, array: A[] | readonly A[]): string => {
     let result = '';
     for (let i = 0; i < array.length; i += 1) {
         result += `${i ? str : ''}${array[i]}`;
@@ -11,7 +11,9 @@ export const joinPoly = <A>(str: string, array: A[]): string => {
 const nativeJoin = toNativeOrFalse(Array.prototype.join, 'join');
 
 export const arrayJoin = nativeJoin
-    ? <A>(str: string, array: A[]): string => {
+    ? <A>(str: string, array: A[] | readonly A[]): string => {
           return nativeJoin.call(array, str);
       }
     : joinPoly;
+
+export const ctxJoin = curry2(arrayJoin);

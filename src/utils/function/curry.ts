@@ -1,5 +1,5 @@
-import { arrayJoin } from '../array/join';
 import { cCont } from './cont';
+import { AnyFunc } from './types';
 
 export const curry2 =
     <A, B, R>(func: (a: A, b: B) => R) =>
@@ -13,28 +13,19 @@ export const curry2SwapArgs =
     (a: A) =>
         func(a, b);
 
-/**
- * @type function(...?): ?
- */
 export const equal: <T>(a: T) => (b: T) => boolean = curry2((a, b) => {
     return a === b;
 });
 
 /**
- * @type function(...?): ?
+ * Run a function with argument and return the argument
  */
-export const asSideEffect = curry2((fn: Function, arg: any) => {
-    fn(arg);
-    return arg;
-}) as any;
-
-export interface CtxJoin {
-    <A>(str: string, array: A[]): string;
-    <A>(str: string): (array: A[]) => string;
-    <A>(): (str: string, array: A[]) => string;
-}
-
-export const ctxJoin: CtxJoin = curry2(arrayJoin) as any;
+export const asSideEffect = curry2(
+    <F extends AnyFunc, A extends Parameters<F>[0]>(fn: F, arg: A) => {
+        fn(arg);
+        return arg;
+    },
+);
 
 /**
  * continuation monad
