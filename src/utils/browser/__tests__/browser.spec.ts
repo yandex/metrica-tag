@@ -3,7 +3,6 @@ import * as sinon from 'sinon';
 import { mix } from 'src/utils/object';
 import {
     isMobile,
-    isSearchRobot,
     isFacebookInstantArticles,
     isSameSiteBrowser,
     isHeadLess,
@@ -296,42 +295,6 @@ describe('browser Utils', () => {
                 document: { webkitVisibilityState: 'prerender' },
             } as any),
         ).to.be.equal(true);
-    });
-    it('checks detect bot', () => {
-        chai.expect(
-            isSearchRobot({
-                navigator: {
-                    userAgent:
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.101 Safari/537.36',
-                },
-            } as any),
-        ).to.be.equal(false);
-
-        const bots = [
-            'AdsBot-Google (+http://www.google.com/adsbot.html)',
-            'Googlebot-Video/1.0',
-            'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)',
-            'Mozilla/5.0 (compatible; Mail.RU_Bot/Fast/2.0)',
-            'StackRambler/2.0 (MSIE incompatible)',
-            'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)',
-            'msnbot/1.1 (+http://search.msn.com/msnbot.htm)',
-            'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm',
-            'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
-            // Google crawlers (Googlebot Desktop, Googlebot Smartphone) from https://developers.google.com/search/docs/advanced/crawling/overview-google-crawlers
-            'Mozilla/5.0 (Linux; Android 7.0; Moto G (4)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4695.0 Mobile Safari/537.36 Chrome-Lighthouse',
-            'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-            'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/W.X.Y.Z Safari/537.36',
-            'Googlebot/2.1 (+http://www.google.com/bot.html)',
-            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        ];
-
-        bots.map((bot) =>
-            chai
-                .expect(
-                    isSearchRobot({ navigator: { userAgent: bot } } as Window),
-                )
-                .to.be.equal(true),
-        );
     });
     it('check isITPSafari', () => {
         chai.expect(

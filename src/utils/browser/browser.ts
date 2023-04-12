@@ -9,7 +9,6 @@ import {
 } from 'src/utils/function';
 import { isString } from 'src/utils/string';
 import {
-    arrayJoin,
     cEvery,
     cMap,
     cReduce,
@@ -232,32 +231,6 @@ export const isPrerender = (ctx: Window) =>
             'visibilityState',
         ]),
     );
-
-const botRegExp = new RegExp(
-    arrayJoin('|', [
-        'yandex.com/bots',
-        'Googlebot',
-        'APIs-Google',
-        'Mediapartners-Google',
-        'AdsBot-Google',
-        'FeedFetcher-Google',
-        'Google-Read-Aloud',
-        'DuplexWeb-Google',
-        'Google Favicon',
-        'googleweblight',
-        'Chrome-Lighthouse',
-        'Mail.RU_Bot',
-        'StackRambler',
-        'Slurp',
-        'msnbot',
-        'bingbot',
-        'www.baidu.com/search/spi_?der.htm',
-    ]).replace(/[./]/g, '\\$&'),
-);
-
-export const isSearchRobot = memo(
-    pipe(ctxPath('navigator.userAgent'), bindThisForMethodTest(botRegExp)),
-);
 
 export const isITP = memo((ctx: Window) => {
     const agent = getAgent(ctx) || '';
