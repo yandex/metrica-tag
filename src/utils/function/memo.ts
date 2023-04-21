@@ -1,19 +1,18 @@
-/* eslint-disable */
 import { cIndexOfWin } from 'src/utils/array/indexOf';
 import { firstArg } from './identity';
 import { argsToArray } from './args';
 import { AnyFunc } from './types';
 
-export type MemoFn = <FN extends (...a: any) => any>(
-    fn: FN,
-    keyFn?: (...args: Parameters<FN>) => any,
-) => FN;
-
 /**
- * @type function(...?): ?
+ * Creates a memoized function.
  *
+ * @param fn A function to memoize
+ * @param rawKeyFn A function that determines the cache key
+ * for storing the result based on the arguments provided to the function.
+ * Defaults to the first argument.
+ * The function is invoked only if no previous result is found for the key.
  */
-export const memo: MemoFn = <FN extends AnyFunc, K>(
+export const memo = <FN extends AnyFunc, K = Parameters<FN>[0]>(
     fn: FN,
     rawKeyFn?: (...arg: Parameters<FN>) => K,
 ): FN => {
@@ -27,7 +26,7 @@ export const memo: MemoFn = <FN extends AnyFunc, K>(
         keyFn = rawKeyFn;
     }
     // @ts-expect-error
-    return function a() {
+    return function memoized() {
         // eslint-disable-next-line prefer-rest-params
         const fnArgs = argsToArray(arguments) as Parameters<FN>;
         const key = keyFn(...fnArgs);
