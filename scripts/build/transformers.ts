@@ -1,6 +1,6 @@
 import ts from 'typescript';
 
-export const markPureFunctions = <T extends ts.Node>(
+const markPureFunctions = <T extends ts.Node>(
     pureFunctions: string[],
     before: boolean,
 ): ts.TransformerFactory<T> => {
@@ -41,7 +41,7 @@ export const markPureFunctions = <T extends ts.Node>(
     };
 };
 
-export const pureFunctions = [
+const pureFunctions = [
     'curry2',
     'memo',
     'pipe',
@@ -77,4 +77,11 @@ export const pureFunctions = [
     'convertToString',
 ];
 
-export const pureTsHelpers = ['___spreadArrays'];
+const pureTsHelpers = ['___spreadArrays'];
+
+export const pureFunctionMarker = (): ts.CustomTransformers => {
+    return {
+        before: [markPureFunctions(pureFunctions, true)],
+        after: [markPureFunctions(pureTsHelpers, false)],
+    };
+};

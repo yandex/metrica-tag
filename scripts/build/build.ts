@@ -1,7 +1,6 @@
 import replace from '@rollup/plugin-replace';
 import clean from 'rollup-plugin-cleanup';
 import { rollup, RollupOptions, OutputOptions } from 'rollup';
-import ts from 'typescript';
 import typescript from 'rollup-plugin-typescript2';
 import compiler from '@ampproject/rollup-plugin-closure-compiler';
 import progress from 'rollup-plugin-progress';
@@ -10,11 +9,7 @@ import visualizer from 'rollup-plugin-visualizer';
 import resolve from '@rollup/plugin-node-resolve';
 import commandLineArgs from 'command-line-args';
 import { disabledFeatures, features } from 'generated/features';
-import {
-    markPureFunctions,
-    pureFunctions,
-    pureTsHelpers,
-} from './transformers';
+import { pureFunctionMarker } from './transformers';
 import { addBOMMark, buildDir, DEFAULT_BUNDLE_VERSION } from './utils';
 
 if (!process.env.VERSION) {
@@ -42,13 +37,6 @@ const flags = features.reduce((carry: Record<string, boolean>, feature) => {
     carry[feature] = !disabledFeatures.includes(feature);
     return carry;
 }, {});
-
-const transformer = (): ts.CustomTransformers => {
-    return {
-        before: [markPureFunctions(pureFunctions, true)],
-        after: [markPureFunctions(pureTsHelpers, false)],
-    };
-};
 
 const inputOptions: RollupOptions = {
     input: 'src/index.ts',
@@ -84,7 +72,7 @@ const inputOptions: RollupOptions = {
         typescript({
             clean: true,
             tsconfig: './tsconfig.rollup.json',
-            transformers: [transformer],
+            transformers: [pureFunctionMarker],
         }),
         progress(),
         argOptions['no-uglify']
