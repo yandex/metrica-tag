@@ -3,7 +3,8 @@ import sinon from 'sinon';
 import * as globalConfig from 'src/storage/global';
 import * as closureStorageModule from 'src/storage/closureStorage';
 import type { GlobalStorage } from 'src/storage/global';
-import type { ClosureState } from 'src/storage/closureStorage/types';
+import type { StateManager } from 'src/storage/closureStorage/types';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import { createCountersGetter, getCountersProvider } from '../getCounters';
 import {
     OLD_CODE_KEY,
@@ -13,40 +14,47 @@ import {
     COUNTER_STATE_TYPE,
     COUNTER_STATE_TRACK_HASH,
 } from '../const';
+import type { CounterInfo } from '../types';
 
 describe('getCounters feature', () => {
     const sandbox = sinon.createSandbox();
-    const ctx: any = { [OLD_CODE_KEY]: 1 };
+    const ctx = { [OLD_CODE_KEY]: true } as Window;
     afterEach(() => {
         sandbox.restore();
     });
     it('createCountersGetter', () => {
-        const counter1 = 'counterId1';
-        const counter2 = 'counterId2';
+        const counter1 = 11;
+        const counter2 = 22;
         const getGSVal = sandbox.stub().returns({
             [counter1]: {},
             [counter2]: {},
         });
+        const setGSVal = sandbox.spy();
         const closureState = {
             [counter1]: {
                 id: counter1,
-                [COUNTER_STATE_CLICKMAP]: 1,
+                [COUNTER_STATE_CLICKMAP]: true,
             },
             [counter2]: {
                 id: counter2,
             },
         };
         const stateManager = sandbox
-            .stub<[fn: (state: ClosureState<unknown>) => void], unknown>()
+            .stub<
+                Parameters<StateManager<CounterInfo>>,
+                ReturnType<StateManager<CounterInfo>>
+            >()
             .callsFake((stateHandler) => stateHandler(closureState));
         sandbox
             .stub(globalConfig, 'getGlobalStorage')
             .onFirstCall()
             .returns({
                 getVal: getGSVal,
+                setVal: setGSVal,
             } as unknown as GlobalStorage)
             .returns({
                 getVal: sandbox.stub().returns(stateManager),
+                setVal: setGSVal,
                 setSafe: sandbox.spy(),
             } as unknown as GlobalStorage);
         const getter = createCountersGetter(ctx);
@@ -76,7 +84,7 @@ describe('getCounters feature', () => {
             clickmap: 1,
             webvisor: false,
             trackHash: true,
-        } as any);
+        } as CounterOptions);
         const [callCtx, key, counterState] = setValStub.getCall(0).args;
         chai.expect(key).to.equal(counterKey);
         chai.expect(callCtx).to.equal(ctx);

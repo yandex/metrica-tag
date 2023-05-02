@@ -9,6 +9,7 @@ import { getVal, setVal, deleteVal } from 'src/storage/closureStorage';
 import {
     GetCountersMethod,
     CounterInfo,
+    ExtraCounterInfo,
     RawCounterInfo,
     ExportedCounterInfo,
 } from './types';
@@ -19,6 +20,8 @@ import {
     COUNTER_STATE_CLICKMAP,
     COUNTER_STATE_TRACK_HASH,
     COUNTER_STATE_OLD_CODE,
+    OLD_CODE_GS_KEY,
+    OLD_CODE_ACCESS_GS_KEY,
 } from './const';
 
 export const counterStateSetter =
@@ -39,13 +42,30 @@ export const createCountersGetter = ctxErrorLogger(
 
         const iterateKeys = pipe(
             counterStateGetter(ctx),
-            (counterState: CounterInfo): ExportedCounterInfo =>
-                // делаем shallow copy объекта:
-                mix({}, counterState, {
-                    [COUNTER_STATE_OLD_CODE]: !!ctx[OLD_CODE_KEY],
+            (counterState: CounterInfo): ExportedCounterInfo => {
+                const extraOptions: ExtraCounterInfo = {
                     [COUNTER_STATE_CLICKMAP]:
                         !!counterState[COUNTER_STATE_CLICKMAP],
-                }),
+                };
+                const oldCode = !!ctx[OLD_CODE_KEY];
+                if (oldCode) {
+                    globalConfig.setVal(OLD_CODE_GS_KEY, 1);
+                }
+                const result: ExtraCounterInfo = {};
+                try {
+                    ctx.Object.defineProperty(result, COUNTER_STATE_OLD_CODE, {
+                        get() {
+                            globalConfig.setVal(OLD_CODE_ACCESS_GS_KEY, 1);
+                            return oldCode;
+                        },
+                    });
+                } catch {
+                    extraOptions[COUNTER_STATE_OLD_CODE] = oldCode;
+                    globalConfig.setVal(OLD_CODE_ACCESS_GS_KEY, 0);
+                }
+                // делаем shallow copy объекта:
+                return mix(result, counterState, extraOptions);
+            },
         );
 
         return errorLogger(
@@ -61,7 +81,7 @@ export const createCountersGetter = ctxErrorLogger(
                 cKeys,
                 ctxMap(iterateKeys),
             ),
-        ) as any;
+        );
     },
 );
 

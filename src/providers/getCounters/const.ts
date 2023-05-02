@@ -8,3 +8,6 @@ export const COUNTER_STATE_OLD_CODE = 'oldCode';
 export const COUNTER_STATE_NOT_BOUNCE = 'accurateTrackBounce';
 export const COUNTER_STATE_TRACK_LINKS = 'trackLinks';
 export const METHOD_NAME_COUNTERS = 'counters';
+
+export const OLD_CODE_GS_KEY = 'oc';
+export const OLD_CODE_ACCESS_GS_KEY = 'oca';

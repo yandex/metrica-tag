@@ -51,3 +51,17 @@ export const REQUEST_NUMBER_TEL_KEY = 'rqnt';
  * Value Type: number
  */
 export const MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE = 'mtb';
+
+/**
+ * The presence of old code on the page.
+ *
+ * Value Type: 1
+ */
+export const OLD_CODE_TEL_KEY = 'oc';
+
+/**
+ * Access attempts to oldCode property.
+ *
+ * Value Type: 0 | 1
+ */
+export const OLD_CODE_ACCESS_TEL_KEY = 'oca';

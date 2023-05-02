@@ -22,13 +22,15 @@ export interface CounterInfo {
     trackLinks?: boolean;
 }
 
+export type ExtraCounterInfo = {
+    clickmap?: boolean;
+    oldCode?: boolean;
+};
+
 /**
  * Reduced set of counter parameters for Ya.Metrika.counters()
  */
-export type ExportedCounterInfo = CounterInfo & {
-    clickmap?: boolean;
-    oldCode: boolean;
-};
+export type ExportedCounterInfo = CounterInfo & ExtraCounterInfo;
 
 export type RawCounterInfo = Partial<CounterInfo>;
 
