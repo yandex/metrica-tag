@@ -18,10 +18,18 @@ if (!process.env.VERSION) {
 
 interface ArgOptions {
     'no-uglify'?: boolean;
+    sourcemap: 'inline' | 'hidden' | boolean | null;
 }
 
 const argOptions = commandLineArgs([
     { name: 'no-uglify', alias: 'u', type: Boolean },
+    {
+        name: 'sourcemap',
+        alias: 'o',
+        type: (input: string) =>
+            ['inline', 'hidden'].includes(input) ? input : true,
+        defaultValue: false,
+    },
 ]) as ArgOptions;
 
 const fileName = 'watch.js';
@@ -37,6 +45,11 @@ const flags = features.reduce((carry: Record<string, boolean>, feature) => {
     carry[feature] = !disabledFeatures.includes(feature);
     return carry;
 }, {});
+
+const sourcemap =
+    argOptions.sourcemap === null
+        ? true // Option set but with no value
+        : argOptions.sourcemap; // Option set to a value or not set
 
 const inputOptions: RollupOptions = {
     input: 'src/index.ts',
@@ -73,6 +86,11 @@ const inputOptions: RollupOptions = {
             clean: true,
             tsconfig: './tsconfig.rollup.json',
             transformers: [pureFunctionMarker],
+            tsconfigOverride: {
+                compilerOptions: {
+                    sourceMap: !!sourcemap,
+                },
+            },
         }),
         progress(),
         argOptions['no-uglify']
@@ -90,9 +108,11 @@ const inputOptions: RollupOptions = {
               }),
         clean({
             comments: 'none',
+            sourcemap: !!sourcemap,
         }),
         visualizer({
             filename: path.replace(/\.js$/, '.html'),
+            sourcemap: !!sourcemap,
         }),
     ],
 };
@@ -102,6 +122,7 @@ const outputOptions: OutputOptions = {
     freeze: false,
     banner: 'try {',
     footer: '} catch (e) { }',
+    sourcemap,
 };
 
 const build = async () => {

@@ -1,11 +1,19 @@
 declare module 'rollup-plugin-visualizer' {
     import { Plugin } from 'rollup';
+    import * as open from 'open';
 
     /**
      * Options for rollup-plugin-visualizer
      * @see https://github.com/btd/rollup-plugin-visualizer
      */
     export interface VisualizerOption {
+        /**
+         * Create JSON output if `filename` option is not set.
+         *
+         * @default false
+         */
+        json?: boolean;
+
         /**
          * Name of the file with diagram to generate
          *
@@ -28,6 +36,13 @@ declare module 'rollup-plugin-visualizer' {
         open?: boolean;
 
         /**
+         * Options provided to the open process.
+         *
+         * @default {}
+         */
+        openOptions?: open.Options;
+
+        /**
          * Which diagram type to use: sunburst, treemap, network, raw-data, list.
          *
          * @default treemap
@@ -47,6 +62,13 @@ declare module 'rollup-plugin-visualizer' {
          * @default false
          */
         brotliSize?: boolean;
+
+        /**
+         * Use sourcemaps to calculate sizes (e.g. after UglifyJs or Terser). Always add plugin as last option.
+         *
+         * @default false
+         */
+        sourcemap?: boolean;
     }
 
     export default (options?: VisualizerOption): Plugin => {};
