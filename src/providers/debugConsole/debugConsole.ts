@@ -49,7 +49,8 @@ export const isDebugUrlWithValue = (ctx: Window, value: string) =>
 export const debugEnabled = (ctx: Window) => {
     const cookie = globalCookieStorage(ctx);
     const hasCookieFlag = cookie.getVal(DEBUG_STORAGE_FLAG) === '1';
-    const hasUrlFlag = isDebugUrlWithValue(ctx, '1');
+    const hasUrlFlag =
+        isDebugUrlWithValue(ctx, '1') || isDebugUrlWithValue(ctx, '2');
     const hasCtxFlag = ctx[DEBUG_CTX_FLAG];
     return {
         hasCookieFlag,
