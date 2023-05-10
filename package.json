@@ -1,8 +1,12 @@
 {
   "name": "@metrica/tag",
   "version": "0.0.1",
-  "license": "UNLICENSED",
+  "license" : "SEE LICENSE IN LICENSE.md",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yandex/metrica-tag.git"
+  },
   "scripts": {
     "build": "npm run features && npm run ts-node -- ./scripts/build/build.ts",
     "build:raw": "npm run build -- --no-uglify",
