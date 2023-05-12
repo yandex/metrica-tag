@@ -6,7 +6,7 @@ import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 type isArrayType = <T>(arg: any) => arg is T[];
 /* eslint-disable-next-line import/no-mutable-exports */
 export let isArrayFn: isArrayType;
-export const isArrayPolyfil: (smth: any) => boolean = pipe(
+export const isArrayPolyfill: (smth: any) => boolean = pipe(
     protoToString,
     equal('[object Array]'),
 );
@@ -17,7 +17,7 @@ export const isArray = ((obj: any) => {
     }
     isArrayFn = toNativeOrFalse(Array.isArray, 'isArray') as any;
     if (!isArrayFn) {
-        isArrayFn = isArrayPolyfil as isArrayType;
+        isArrayFn = isArrayPolyfill as isArrayType;
     }
     return isArrayFn(obj);
 }) as isArrayType;

@@ -23,7 +23,7 @@ describe('isNativeFunction', () => {
         chai.assert(!isNativeFunction('func', {} as any));
     });
 
-    it("Doesn't throw exception if something wierd happens", () => {
+    it("Doesn't throw exception if something weird happens", () => {
         const func = function a() {
             // do nothing
         };

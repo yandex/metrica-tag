@@ -1,9 +1,10 @@
-import { getPath } from 'src/utils/object/path';
+import { getPath as getFunctionUtils } from 'src/utils/object/path';
 
 export const getNativeFunction = (functionName: string, owner: any) => {
-    const ownerFn = getPath(owner, functionName);
+    const ownerFn = getFunctionUtils(owner, functionName);
     const fn =
-        getPath(owner, `constructor.prototype.${functionName}`) || ownerFn;
+        getFunctionUtils(owner, `constructor.prototype.${functionName}`) ||
+        ownerFn;
     try {
         if (fn && fn.apply) {
             return function nativeFunction() {

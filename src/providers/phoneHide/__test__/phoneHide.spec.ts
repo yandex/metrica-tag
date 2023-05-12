@@ -38,7 +38,7 @@ describe('phoneHide / phoneHide', () => {
         sinon.assert.notCalled(getCounterSettingsStub);
     });
 
-    it('do nothig if phone change enabled', async () => {
+    it('does nothing if phone change enabled', async () => {
         getCounterSettingsStub.callsFake((options, fn) => {
             fn({
                 settings: {
@@ -55,7 +55,7 @@ describe('phoneHide / phoneHide', () => {
         sinon.assert.notCalled(hidePhonesUtilStub);
     });
 
-    it('do nothig if phone change enabled', async () => {
+    it('does nothing if phone change enabled', async () => {
         const phones = ['*'];
         getCounterSettingsStub.callsFake((options, fn) => {
             fn({

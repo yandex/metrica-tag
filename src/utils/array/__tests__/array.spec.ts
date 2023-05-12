@@ -21,7 +21,7 @@ import {
 } from '..';
 import { reversePoly } from '../reverse';
 // @ts-ignore
-import { isArrayFn, isArrayPolyfil } from '../isArray';
+import { isArrayFn, isArrayPolyfill } from '../isArray';
 
 describe('Array utils', () => {
     const sandbox = sinon.createSandbox();
@@ -136,9 +136,9 @@ describe('Array utils', () => {
         ]);
     });
 
-    it('isArray Polyfil', () => {
-        chai.expect(isArrayPolyfil([])).to.be.true;
-        chai.expect(isArrayPolyfil({ length: 10 })).to.be.false;
+    it('isArray Polyfill', () => {
+        chai.expect(isArrayPolyfill([])).to.be.true;
+        chai.expect(isArrayPolyfill({ length: 10 })).to.be.false;
     });
 
     it('valuesPoly iterate array', () => {

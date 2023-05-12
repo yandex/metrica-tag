@@ -12,4 +12,4 @@ export const INIT_MESSAGE_CHILD = 'initToChild';
 export const INIT_MESSAGE_PARENT = 'initToParent';
 export const INIT_MESSAGE = 'parentConnect';
 export const OUT_DIRECTION = 0 as const;
-export const SPLITER = ':';
+export const SPLITTER = ':';

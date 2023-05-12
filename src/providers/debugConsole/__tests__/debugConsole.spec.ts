@@ -60,9 +60,9 @@ describe('providers / DebugConsole', () => {
         ).to.be.true;
 
         dConsole.log('1');
-        const commonDconsole = DebugConsole(ctx as any, '');
-        commonDconsole.warn('2');
-        commonDconsole.error('3');
+        const commonDConsole = DebugConsole(ctx as any, '');
+        commonDConsole.warn('2');
+        commonDConsole.error('3');
 
         sinon.assert.notCalled(myConsole.log);
         sinon.assert.notCalled(myConsole.warn);

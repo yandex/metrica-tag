@@ -75,8 +75,8 @@ export const setCookie = (
             cookie += `expires=${date.toUTCString()};`;
         }
         if (domain) {
-            const domainWihoutPort: string = domain.replace(PORT_REGEXP, '');
-            cookie += `domain=${domainWihoutPort};`;
+            const domainWithoutPort: string = domain.replace(PORT_REGEXP, '');
+            cookie += `domain=${domainWithoutPort};`;
         }
         cookie += `path=${path || '/'}`;
         try {

@@ -1,7 +1,7 @@
 import { arrayJoin, cMap } from 'src/utils/array';
 import { cEvent } from 'src/utils/events';
 import { cont, memo } from 'src/utils/function';
-import { performanceInfo, getMsFromPerfomance } from './performance';
+import { performanceInfo, getMsFromPerformance } from './performance';
 
 const leadingZeroFormatter = (n: number) => {
     return (n < 10 ? '0' : '') + n;
@@ -23,7 +23,7 @@ const Time = (ctx: Window): (<R>(fn: (a: TimeState) => R) => R) => {
         ctx,
         unloadTime: 0,
         perf,
-        initTime: getMsFromPerfomance(ctx, perf),
+        initTime: getMsFromPerformance(ctx, perf),
     };
 
     /**
@@ -39,7 +39,10 @@ const Time = (ctx: Window): (<R>(fn: (a: TimeState) => R) => R) => {
     if (!(ns && now)) {
         event.on(ctx, ['beforeunload', 'unload'], () => {
             if (timeState.unloadTime === 0) {
-                timeState.unloadTime = getMsFromPerfomance(ctx, timeState.perf);
+                timeState.unloadTime = getMsFromPerformance(
+                    ctx,
+                    timeState.perf,
+                );
             }
         });
     }
@@ -55,7 +58,7 @@ export const getMs = (timeState: TimeState) => {
     if (unloadTime !== 0) {
         return unloadTime;
     }
-    return getMsFromPerfomance(ctx, perf);
+    return getMsFromPerformance(ctx, perf);
 };
 export const initTime = (timeState: TimeState) => {
     return timeState.initTime;

@@ -15,7 +15,7 @@ describe('index Middleware', () => {
     afterEach(() => {
         sandbox.restore();
     });
-    it('getMidlewares same length every call', () => {
+    it('getMiddlewares same length every call', () => {
         const provider = '1';
         const win = {} as any;
         const counterOptions: CounterOptions = {

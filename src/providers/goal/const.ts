@@ -15,7 +15,7 @@ export type GoalHandler<T = any> = (
     /** The function that will be called after sending the goal */
     rawCallback?: (() => any) | any,
     /** Callback context */
-    rawfnCtx?: any,
+    rawFnCtx?: any,
 ) => T;
 
 declare module 'src/utils/counter/type' {

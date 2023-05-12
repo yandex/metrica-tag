@@ -1,8 +1,8 @@
 import { bind } from 'src/utils/function';
 import { getPath, isFunction } from 'src/utils/object';
 
-type PerfomanceNow = typeof window.performance.now;
-type PerformanceInfo = [number, PerfomanceNow];
+type PerformanceNow = typeof window.performance.now;
+type PerformanceInfo = [number, PerformanceNow];
 
 export const getPerformance = (ctx: Window): Performance | null => {
     return getPath(ctx, `performance`) || getPath(ctx, `webkitPerformance`);
@@ -22,7 +22,7 @@ export const getMsDate = (ctx: Window) => {
     return ctx.Date.now ? ctx.Date.now() : new ctx.Date().getTime();
 };
 
-export const getMsFromPerfomance = (ctx: Window, info?: PerformanceInfo) => {
+export const getMsFromPerformance = (ctx: Window, info?: PerformanceInfo) => {
     const [ns, now] = info || performanceInfo(ctx);
     // eslint-disable-next-line no-restricted-globals
     if (!isNaN(ns) && isFunction(now)) {

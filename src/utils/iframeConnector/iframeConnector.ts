@@ -55,7 +55,7 @@ import {
     INIT_MESSAGE_PARENT,
     INIT_MESSAGE,
     OUT_DIRECTION,
-    SPLITER,
+    SPLITTER,
 } from './const';
 
 export const getIframeState = memo((() => ({
@@ -81,7 +81,7 @@ export const genMessage =
         mix(data, sigin);
         const out = {
             data,
-            [NAME_SPACE]: arrayJoin(SPLITER, [
+            [NAME_SPACE]: arrayJoin(SPLITTER, [
                 NAME_SPACE,
                 meta.date,
                 meta.key,
@@ -96,14 +96,14 @@ export const genMessage =
 
 export const sendToFrame = (
     ctx: Window,
-    serialise: (data: Record<string, any>) => Message,
+    serialize: (data: Record<string, any>) => Message,
     iframeCtx: Window,
     data: Record<string, any>,
     cb: MessageHandler,
 ) => {
-    const message = serialise(data);
+    const message = serialize(data);
     const state = getIframeState(ctx);
-    const key = arrayJoin(SPLITER, [message.meta.date, message.meta.key]);
+    const key = arrayJoin(SPLITTER, [message.meta.date, message.meta.key]);
     if (!checkIframe(iframeCtx)) {
         return;
     }
@@ -188,11 +188,11 @@ export const addHandlers = (
 export const handleInputMessage = (
     ctx: Window,
     opt: CounterOptions,
-    serialise: (
+    serialize: (
         metaList: (string | number)[],
         data: Record<string, any>,
     ) => Message,
-    emiter: Emitter<EventInfo, void>,
+    emitterInstance: Emitter<EventInfo, void>,
     counterInfo: CounterInfo,
     event: MessageEvent,
 ) => {
@@ -215,7 +215,7 @@ export const handleInputMessage = (
     ) {
         return;
     }
-    const metaList = meta.split(SPLITER);
+    const metaList = meta.split(SPLITTER);
     if (metaList.length !== 4) {
         return;
     }
@@ -241,7 +241,7 @@ export const handleInputMessage = (
             if (isNull(returnWinCtx) || !checkIframe(returnWinCtx)) {
                 return;
             }
-            const resp = emiter.trigger(message[IFRAME_MESSAGE_TYPE], [
+            const resp = emitterInstance.trigger(message[IFRAME_MESSAGE_TYPE], [
                 event,
                 message,
             ]);
@@ -249,7 +249,7 @@ export const handleInputMessage = (
                 pipe(firstArg, ctxMix(counterInfo) as any),
                 resp.concat([{}]),
             );
-            const data = serialise(
+            const data = serialize(
                 [dateInfo, key, message[IFRAME_MESSAGE_COUNTER_ID]!],
                 normResp,
             );
@@ -264,7 +264,7 @@ export const handleInputMessage = (
         ).length === message.length
     ) {
         const callback = state.pending[
-            arrayJoin(SPLITER, [dateInfo, key])
+            arrayJoin(SPLITTER, [dateInfo, key])
         ] as any;
         if (callback) {
             // eslint-disable-next-line prefer-spread

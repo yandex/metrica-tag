@@ -1,4 +1,4 @@
-const APPROXIMATE_LENGHT_OF_NATIVE_FN_STRINGIFIED = 35;
+const APPROXIMATE_LENGTH_OF_NATIVE_FN_STRINGIFIED = 35;
 const nativeCode = '[native code]';
 const NATIVE_CODE_LENGTH = nativeCode.length;
 const SEPARATOR_INDEX = 7;
@@ -21,7 +21,7 @@ export const isNativeFn = (functionName: string, fn: Function) => {
 
     if (
         fnLength >
-        APPROXIMATE_LENGHT_OF_NATIVE_FN_STRINGIFIED + functionName.length
+        APPROXIMATE_LENGTH_OF_NATIVE_FN_STRINGIFIED + functionName.length
     ) {
         return false;
     }

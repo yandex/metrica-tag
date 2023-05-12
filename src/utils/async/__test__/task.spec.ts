@@ -12,7 +12,7 @@ import {
 } from '../task';
 
 describe('task', () => {
-    it('tranforms from promise', (done) => {
+    it('transforms from promise', (done) => {
         let resolve: Function = () => {};
         const testResult = 123123;
         const promise = new Promise((pResolve) => {

@@ -56,7 +56,7 @@ describe('Prerender', () => {
         chai.expect(next.called).to.be.ok;
     });
 
-    it('waits for visibility state not prenender', () => {
+    it('waits for visibility state not prerender', () => {
         const next = sinon.spy();
         const ctx = { document: { visibilityState: 'prerender' } } as any;
         const senderParams = {

@@ -22,7 +22,7 @@ describe('searchTLD', () => {
         sinon.assert.calledWith(override, ctx, 'watch');
     });
 
-    it('returns overriden host if override is defined', () => {
+    it('returns overridden host if override is defined', () => {
         const override = sinon.stub().returns('example.com');
         sandbox.stub(searchTLD, 'TLD_OVERRIDES').value([override]);
         chai.expect(searchTLD.getDomainAndTLD(ctx, 'watch')).to.equal(

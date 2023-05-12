@@ -36,10 +36,10 @@ export const callPoly = (
 export const bindPoly = function b() {
     // eslint-disable-next-line prefer-rest-params
     const bindArgs = argsToArray(arguments);
-    const [fn, ctx, ...topargs] = bindArgs;
+    const [fn, ctx, ...topArgs] = bindArgs;
     return function a() {
         // eslint-disable-next-line prefer-rest-params
-        const args = [...topargs, ...argsToArray(arguments)];
+        const args = [...topArgs, ...argsToArray(arguments)];
         if (Function.prototype.call) {
             // eslint-disable-next-line
             return Function.prototype.call.apply(fn, [ctx, ...args]);

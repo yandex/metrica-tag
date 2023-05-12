@@ -69,7 +69,7 @@ describe('params middleware', () => {
             });
         }
     });
-    it('dont call big callback', (done) => {
+    it("doen't call big callback", (done) => {
         const winInfo = win();
         const brInfo = browserInfo();
         brInfo.setVal(PAGE_VIEW_BR_KEY, 1);

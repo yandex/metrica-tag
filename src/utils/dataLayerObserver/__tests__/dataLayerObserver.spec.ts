@@ -17,7 +17,7 @@ describe('dataLayerObserver', () => {
         });
         chai.expect(counter).to.be.equal(0);
     });
-    it('rewirite push function twise', (done) => {
+    it('rewrite push function twice', (done) => {
         const layer: number[] = [];
         const winInfo = win();
         const testNo = 1;
@@ -40,7 +40,7 @@ describe('dataLayerObserver', () => {
         }, 10);
         layer.push(testNo);
     });
-    it('rewirite push function', (done) => {
+    it('rewrite push function', (done) => {
         const winInfo = win();
         const testElem = 'testElem';
         const testElem2 = 'testElem2';

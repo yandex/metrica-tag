@@ -24,11 +24,11 @@ export const hiddenFrameRecord = memo(
 export const hiddenFrameCreate = (
     ctx: Window,
     url: string,
-    ownerid: string,
+    ownerId: string,
 ) => {
     const frameRecord = hiddenFrameRecord(url);
-    if (!includes(ownerid, frameRecord.owners)) {
-        frameRecord.owners.push(ownerid);
+    if (!includes(ownerId, frameRecord.owners)) {
+        frameRecord.owners.push(ownerId);
     }
 
     if (isNull(frameRecord.frameEle)) {
@@ -63,14 +63,14 @@ export const hiddenFrameCreate = (
     return frameRecord.frameEle;
 };
 
-export const hiddenFrameRemove = (url: string, ownerid: string) => {
+export const hiddenFrameRemove = (url: string, ownerId: string) => {
     const frameRecord = hiddenFrameRecord(url);
-    if (!includes(ownerid, frameRecord.owners)) {
+    if (!includes(ownerId, frameRecord.owners)) {
         return;
     }
 
     frameRecord.owners = cFilter(
-        pipe(equal(ownerid), notFn),
+        pipe(equal(ownerId), notFn),
         frameRecord.owners,
     );
     if (!frameRecord.owners.length) {

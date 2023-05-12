@@ -220,7 +220,7 @@ describe('remoteControl/onMessage', () => {
 
     it('ignores events with unknown action', () => {
         remoteControl.onMessage(ctx, {
-            data: JSON.stringify({ action: 'somethign_wrong' }),
+            data: JSON.stringify({ action: 'something_wrong' }),
             origin: 'https://metrika.yandex.com',
         } as unknown as MessageEvent);
         sinon.assert.notCalled(handleMessageStub);
@@ -254,7 +254,7 @@ describe('remoteControl', () => {
     beforeEach(() => {
         sandbox.stub(fnv32a, 'fnv32a').returns(hashResult);
         sandbox
-            .stub(functionUtils as any, 'bindArg') // as any потому что падает из-за рекурсионных типов
+            .stub(functionUtils, 'bindArg')
             .callsFake((arg: any, callback: (...args: any[]) => any) => {
                 return callback;
             });

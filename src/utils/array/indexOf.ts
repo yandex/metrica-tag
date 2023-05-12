@@ -27,9 +27,9 @@ export const cIndexOf = (ctx: Window) => {
     } catch {
         // empty
     }
-    const isAccesebleArray = ctx.Array && ctx.Array.prototype;
+    const isAccessibleArray = ctx.Array && ctx.Array.prototype;
     const nativeFn =
-        isAccesebleArray &&
+        isAccessibleArray &&
         toNativeOrFalse(ctx.Array.prototype.indexOf, 'indexOf');
     let indexFn: IndexFn;
     if (checkIndexFn && nativeFn) {

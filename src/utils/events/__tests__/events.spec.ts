@@ -36,7 +36,7 @@ describe('EventHelper', () => {
             chai.expect(c).to.be.false;
         }
     });
-    it('Uses correct methods for target with addEventListender', () => {
+    it('Uses correct methods for target with addEventListener', () => {
         const addableTarget: any = {
             addEventListener: sinon.spy(),
             removeEventListener: sinon.spy(),
@@ -62,7 +62,7 @@ describe('EventHelper', () => {
             addableTarget.removeEventListener.calledWith('event', cb, options),
         ).to.be.ok;
     });
-    it('Uses correct methods for target without addEventListender', () => {
+    it('Uses correct methods for target without addEventListener', () => {
         const attachableTarget: any = {
             attachEvent: sinon.spy(),
             detachEvent: sinon.spy(),

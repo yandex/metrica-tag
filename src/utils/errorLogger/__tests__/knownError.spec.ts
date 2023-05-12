@@ -13,22 +13,22 @@ describe('known error', () => {
     it('should create an error with a valid message', () => {
         [
             {
-                expcectedMessage: defaultMessage,
+                expectedMessage: defaultMessage,
                 param: undefined,
             },
             {
-                expcectedMessage: defaultMessage + randomMessages[0],
+                expectedMessage: defaultMessage + randomMessages[0],
                 param: randomMessages[0],
             },
             {
-                expcectedMessage:
+                expectedMessage:
                     defaultMessage +
                     [randomMessages[1], randomMessages[2]].join('.'),
                 param: [randomMessages[1], randomMessages[2]],
             },
-        ].forEach(({ expcectedMessage, param }) => {
+        ].forEach(({ expectedMessage, param }) => {
             const { message } = createKnownError(param);
-            chai.expect(message).to.eq(expcectedMessage);
+            chai.expect(message).to.eq(expectedMessage);
         });
     });
 

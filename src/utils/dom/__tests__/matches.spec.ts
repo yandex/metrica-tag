@@ -23,14 +23,14 @@ describe('getMatchesFunction', () => {
         expect(res).to.be.null;
     });
     it('find function if it exist', () => {
-        const excpetResult = {};
+        const expectResult = {};
         const res = getMatchesFunction({
             Element: {
                 prototype: {
-                    matches: excpetResult,
+                    matches: expectResult,
                 },
             },
         } as any);
-        expect(res).to.be.eq(excpetResult);
+        expect(res).to.be.eq(expectResult);
     });
 });

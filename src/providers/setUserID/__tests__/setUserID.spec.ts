@@ -85,7 +85,7 @@ describe('user params', () => {
         provider.setUserID(invalidUserID, mockCallback, mockCallbackCtx);
         chai.expect(
             paramsStub.called,
-            "counterInstance.params() shoudln't have been called",
+            "counterInstance.params() shouldn't have been called",
         ).to.be.false;
     });
 

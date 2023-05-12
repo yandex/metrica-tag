@@ -5,7 +5,7 @@ import { iterForOf } from '../iterator';
 import { executeIterator, EXEC_TIMEOUT } from '../executor';
 import { taskFork } from '../task';
 
-describe('Async Excecutor', () => {
+describe('Async Executor', () => {
     const { window } = new JSDOMWrapper();
 
     it('execIter callTasks async', (done) => {

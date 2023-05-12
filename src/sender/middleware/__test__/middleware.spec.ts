@@ -29,7 +29,7 @@ describe('sender/middleware', () => {
         ],
         Promise<void>
     >;
-    let fullhostStub: sinon.SinonStub<
+    let fullHostStub: sinon.SinonStub<
         [resource: string, argHost?: string | undefined],
         string
     >;
@@ -46,8 +46,8 @@ describe('sender/middleware', () => {
             urlIndex: 1,
         });
 
-        fullhostStub = sandbox.stub(host, 'returnFullHost');
-        fullhostStub.returns(testHost);
+        fullHostStub = sandbox.stub(host, 'returnFullHost');
+        fullHostStub.returns(testHost);
 
         combineMiddlewaresStub = sandbox.stub(middleware, 'combineMiddlewares');
 

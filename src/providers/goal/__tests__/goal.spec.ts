@@ -47,8 +47,8 @@ describe('goal', () => {
     afterEach(() => {
         sandbox.restore();
     });
-    it('get domain from artificial state', (done) => {
-        const artificialDomain = 'artificialurl';
+    it('gets domain from artificial state', (done) => {
+        const artificialDomain = 'artificialUrl';
         const artificialPath = 'artificialPath';
         const artificialUrl = `http://${artificialDomain}/${artificialPath}/`;
         const promise = PolyPromise.resolve({});
@@ -82,7 +82,7 @@ describe('goal', () => {
         chai.expect(callback.called).to.be.ok;
         chai.expect(callback.calledOn(testCtx)).to.be.ok;
     });
-    it('do nothig if target is invalid', () => {
+    it('does nothing if target is invalid', () => {
         const spy = senderStub
             .withArgs(winInfo, GOAL_PROVIDER, counterOptions)
             .returns(() => PolyPromise.resolve({}));
@@ -90,7 +90,7 @@ describe('goal', () => {
         goalSender('');
         chai.expect(spy.called).to.be.not.ok;
     });
-    it('return fn wich sends goal', (done) => {
+    it('returns fn which sends goal', (done) => {
         senderStub
             .withArgs(winInfo, GOAL_PROVIDER, counterOptions)
             .returns((senderParams: SenderInfo, opt: CounterOptions) => {
@@ -114,7 +114,7 @@ describe('goal', () => {
             testCtx,
         );
     });
-    it('send form goal', (done) => {
+    it('sends form goal', (done) => {
         senderStub
             .withArgs(winInfo, GOAL_PROVIDER, counterOptions)
             .returns((senderParams: SenderInfo, opt: CounterOptions) => {

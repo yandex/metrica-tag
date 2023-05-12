@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import sinon from 'sinon';
 import * as functionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
-import * as getfunctionUtils from 'src/utils/function/isNativeFunction/getNativeFunction';
+import * as getFunctionUtils from 'src/utils/function/isNativeFunction/getNativeFunction';
 import { createAndDispatchEvent } from '../dom';
 
 describe('dom / utils - createAndDispatchEvent', () => {
@@ -19,7 +19,7 @@ describe('dom / utils - createAndDispatchEvent', () => {
             .callsFake((name, val) => !!val);
 
         sandbox
-            .stub(getfunctionUtils, 'getNativeFunction')
+            .stub(getFunctionUtils, 'getNativeFunction')
             .callsFake((name) => {
                 const result = {
                     dispatchEvent: fakeDispatchEvent,

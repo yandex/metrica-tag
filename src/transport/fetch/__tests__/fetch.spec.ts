@@ -16,7 +16,7 @@ describe('Fetch', () => {
     const sandbox = sinon.createSandbox();
     let createKnownErrStub: sinon.SinonStub;
     let debugStack: string[];
-    const createRandomDebugstack = () => {
+    const createRandomDebugStack = () => {
         debugStack = new Array(3)
             .fill(undefined)
             .map(() => Math.random().toString().slice(0, 3));
@@ -62,7 +62,7 @@ describe('Fetch', () => {
 
         if (checkResult) {
             checkResult(someTestUrl, {
-                debugStack: createRandomDebugstack(),
+                debugStack: createRandomDebugStack(),
                 timeOut: 100,
             })
                 .then(() => {
@@ -81,7 +81,7 @@ describe('Fetch', () => {
 
         if (checkResult) {
             checkResult(someTestUrl, {
-                debugStack: createRandomDebugstack(),
+                debugStack: createRandomDebugStack(),
                 timeOut: 100,
             })
                 .then(() => {
@@ -136,7 +136,7 @@ describe('Fetch', () => {
         const checkResult = useFetch(ctx);
         if (checkResult) {
             checkResult(someTestUrl, {
-                debugStack: createRandomDebugstack(),
+                debugStack: createRandomDebugStack(),
                 wmode: true,
             })
                 .then(() => {

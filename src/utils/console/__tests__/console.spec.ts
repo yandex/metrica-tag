@@ -5,19 +5,19 @@ import * as nf from 'src/utils/function/isNativeFunction/isNativeFn';
 import { createConsole } from '../console';
 
 describe('utils/console', () => {
-    let isNatieveStub: sinon.SinonStub<any, any>;
+    let isNativeStub: sinon.SinonStub<any, any>;
     let logStub: sinon.SinonStub<any, any>;
     let noopStub: sinon.SinonStub<any, any>;
     let console: {
         log?: sinon.SinonStub<any, any>;
-        wran?: sinon.SinonStub<any, any>;
+        warn?: sinon.SinonStub<any, any>;
         error?: sinon.SinonStub<any, any>;
     };
     const sandbox = sinon.createSandbox();
     beforeEach(() => {
         logStub = sandbox.stub();
-        isNatieveStub = sandbox.stub(nf, 'isNativeFn');
-        isNatieveStub.callsFake((name, func) => !!func);
+        isNativeStub = sandbox.stub(nf, 'isNativeFn');
+        isNativeStub.callsFake((name, func) => !!func);
         noopStub = sandbox.stub(fn, 'noop');
         console = {
             log: logStub,

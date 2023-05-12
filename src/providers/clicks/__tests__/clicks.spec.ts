@@ -76,7 +76,7 @@ describe('clicks.ts', () => {
             sandbox.restore();
         });
 
-        it('add file extention list and just string', () => {
+        it('add file extension list and just string', () => {
             const mut: string[] = [];
             addFileExtensionFn(mut)('a');
             expect(mut).to.be.deep.eq(['a']);
@@ -185,7 +185,7 @@ describe('clicks.ts', () => {
             assert.calledOn(callbackSpy, 'hey');
         });
 
-        describe('calls getLoggerFn with propper message', () => {
+        describe('calls getLoggerFn with proper message', () => {
             const defaultOptions: Partial<SendOptions> = {
                 url,
                 isDownload: false,

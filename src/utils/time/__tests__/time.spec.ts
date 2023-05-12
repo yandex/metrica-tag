@@ -24,7 +24,7 @@ describe('Time', () => {
         sandbox.restore();
     });
 
-    it('get ms from perfomance and sets unload time', () => {
+    it('get ms from performance and sets unload time', () => {
         let now = 100;
         const ctx: any = {
             performance: {

@@ -13,13 +13,13 @@ import { ConnectorState } from '../types';
 
 describe('iframeConnector', () => {
     const sandbox = sinon.createSandbox();
-    let serialiseStub: sinon.SinonStub<any, any>;
+    let serializeStub: sinon.SinonStub<any, any>;
     let deferStub: sinon.SinonStub<any, any>;
 
     beforeEach(() => {
         deferStub = sandbox.stub(def, 'setDefer');
-        serialiseStub = sandbox.stub();
-        serialiseStub.returns({
+        serializeStub = sandbox.stub();
+        serializeStub.returns({
             meta: {},
         });
     });
@@ -41,7 +41,7 @@ describe('iframeConnector', () => {
             const state = getIframeState(win);
             expect(state.pending).to.be.empty;
         });
-        const result = sendToFrame(win, serialiseStub, iframeCtx, {}, () => {});
+        const result = sendToFrame(win, serializeStub, iframeCtx, {}, () => {});
         expect(result).to.be.undefined;
         sinon.assert.calledOnce(postMessageStub);
         sinon.assert.calledOnce(deferStub);
@@ -53,7 +53,7 @@ describe('iframeConnector', () => {
         } as any;
         const result = sendToFrame(
             {} as any,
-            serialiseStub,
+            serializeStub,
             iframeCtx,
             {},
             () => {},
@@ -66,7 +66,7 @@ describe('iframeConnector', () => {
         const iframeCtx = {} as any;
         const result = sendToFrame(
             {} as any,
-            serialiseStub,
+            serializeStub,
             iframeCtx,
             {},
             () => {},

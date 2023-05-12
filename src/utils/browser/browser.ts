@@ -275,7 +275,7 @@ export const isFFVersion = (ctx: Window, minVersion: number) => {
     return false;
 };
 
-// All tracking protection browsers: intillectual TP, enhanced TP, etc
+// All tracking protection browsers: intellectual TP, enhanced TP, etc
 export const isTP = memo((ctx: Window) => {
     return (
         isITP(ctx) ||

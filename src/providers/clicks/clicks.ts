@@ -138,7 +138,7 @@ export const sendClickLink = (
             data: {
                 schema: 'Link click',
                 name: `${
-                    options.isExternalLink ? 'external' : 'interlal'
+                    options.isExternalLink ? 'external' : 'internal'
                 } url: ${options.url}`,
             },
         });

@@ -6,7 +6,7 @@ import { UNCATCHABLE_ERROR_PROPERTY } from './consts';
 export type LoggerError = Error & {
     [UNCATCHABLE_ERROR_PROPERTY]?: boolean;
 };
-let ErrorCounstruct: typeof Error;
+let ErrorConstruct: typeof Error;
 
 const polyError = function PolyError(this: any, errorMessage: string) {
     this.message = errorMessage;
@@ -16,14 +16,14 @@ const createErrorWin =
     (ctx: Window) =>
     (message: string, uncatchable = false) => {
         let error: LoggerError;
-        if (ErrorCounstruct) {
-            error = new ErrorCounstruct(message);
+        if (ErrorConstruct) {
+            error = new ErrorConstruct(message);
         } else if (isNativeFunction('Error', ctx.Error)) {
-            ErrorCounstruct = ctx.Error;
+            ErrorConstruct = ctx.Error;
             error = new ctx.Error(message);
         } else {
-            ErrorCounstruct = polyError;
-            error = new ErrorCounstruct(message) as LoggerError;
+            ErrorConstruct = polyError;
+            error = new ErrorConstruct(message) as LoggerError;
         }
         if (uncatchable) {
             error[UNCATCHABLE_ERROR_PROPERTY] = true;

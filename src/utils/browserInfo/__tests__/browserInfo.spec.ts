@@ -21,15 +21,15 @@ describe('BrowserInfo', () => {
             q: 1,
         });
         chai.expect(info.serialize()).to.equal('test:1:q:1');
-        const titleinfo = browserInfo();
-        const titleText = 'some tiltle with : as text';
-        titleinfo.setVal(TITLE_BR_KEY, titleText);
-        titleinfo.setVal('q', '1');
-        chai.expect(titleinfo.ctx()).to.be.deep.equal({
+        const titleInfo = browserInfo();
+        const titleText = 'some title with : as text';
+        titleInfo.setVal(TITLE_BR_KEY, titleText);
+        titleInfo.setVal('q', '1');
+        chai.expect(titleInfo.ctx()).to.be.deep.equal({
             [TITLE_BR_KEY]: titleText,
             q: '1',
         });
-        chai.expect(titleinfo.serialize()).to.equal(
+        chai.expect(titleInfo.serialize()).to.equal(
             `q:1:${TITLE_BR_KEY}:${titleText}`,
         );
     });

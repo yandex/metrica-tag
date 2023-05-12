@@ -10,19 +10,19 @@ const win = () => {
 describe('emitter', () => {
     it('calls event handlers on trigger', (done) => {
         const winInfo = win();
-        const eventEmiter = emitter(winInfo);
-        const eventName = 'testEmiterEvent';
+        const eventEmitter = emitter(winInfo);
+        const eventName = 'testEmitterEvent';
         const eventData = 'testData';
         let handleCounter = 0;
         let callCounter = 0;
         const handlerResultAdd = 'counterAdd';
         const handlerResult = 'handleInfo';
-        const couterAdd = () => {
+        const counterAdd = () => {
             callCounter += 1;
             return handlerResultAdd;
         };
-        const info = eventEmiter
-            .on([eventName], couterAdd)
+        const info = eventEmitter
+            .on([eventName], counterAdd)
             .on([eventName], (data) => {
                 handleCounter += 1;
                 chai.expect(data).to.be.equal(eventData);
@@ -35,12 +35,12 @@ describe('emitter', () => {
             .trigger(eventName, eventData);
         chai.expect(info).to.be.deep.equal([handlerResultAdd, handlerResult]);
 
-        const nextInfo = eventEmiter
-            .off([eventName], couterAdd)
+        const nextInfo = eventEmitter
+            .off([eventName], counterAdd)
             .trigger(eventName, eventData);
 
         chai.expect(nextInfo).to.be.deep.equal([handlerResult]);
 
-        eventEmiter.off(['someDoesNotExist'], () => {});
+        eventEmitter.off(['someDoesNotExist'], () => {});
     });
 });

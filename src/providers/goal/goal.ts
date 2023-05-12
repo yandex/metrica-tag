@@ -63,7 +63,7 @@ export const useGoal = ctxErrorLogger(
                 goalName,
                 rawParams?,
                 rawUserCallback?,
-                rawfnCtx?,
+                rawFnCtx?,
             ) => {
                 if (
                     !goalName ||
@@ -73,7 +73,7 @@ export const useGoal = ctxErrorLogger(
                     return null;
                 }
                 let params: Record<string, any> | undefined = rawParams;
-                let fnCtx = rawfnCtx;
+                let fnCtx = rawFnCtx;
                 let userCallback = rawUserCallback || noop;
                 if (isFunction(rawParams)) {
                     userCallback = rawParams as () => any;

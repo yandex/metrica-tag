@@ -161,7 +161,7 @@ describe('JSONP', () => {
         sinon.assert.calledOnce(removeNode.withArgs(scriptStub));
         sinon.assert.calledOnce(setDeferStub);
     });
-    it('callabck should catch errors', () => {
+    it('callaback should catch errors', () => {
         const error = new Error('test error');
         const scriptStub = {} as any;
         const transportOpt: InternalTransportOptions = {

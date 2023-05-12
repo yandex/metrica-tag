@@ -34,7 +34,7 @@ describe('stackProxy', () => {
         counterKeyStub.restore();
         getCounterInstanceStub.restore();
     });
-    it('hanlde items in dataLayer', () => {
+    it('handle items in dataLayer', () => {
         const constructorSpy = sinon.stub();
         const counters: Record<string, 1> = {};
         const win = {

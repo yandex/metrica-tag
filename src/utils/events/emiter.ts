@@ -4,8 +4,8 @@ import { errorLogger } from 'src/utils/errorLogger';
 import { Observer, observer, Listener } from './observer';
 
 export type Emitter<T, U> = {
-    on: (a: string[], listner: Listener<T, U>) => Emitter<T, U>;
-    off: (a: string[], listner: Listener<T, U>) => Emitter<T, U>;
+    on: (a: string[], listener: Listener<T, U>) => Emitter<T, U>;
+    off: (a: string[], listener: Listener<T, U>) => Emitter<T, U>;
     trigger: (a: string, d?: any) => any[];
 };
 

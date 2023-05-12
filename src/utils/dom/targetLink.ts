@@ -8,7 +8,7 @@ export const getTargetLink = (event: MouseEvent): HTMLAnchorElement | null => {
     let target = null;
     try {
         // Выглядит так будто иногда мы можем поймать события из фреймов?
-        // Соотвествтенно мы можем словить ошибку пытаясь получить доступ к нему
+        // Соответственно мы можем словить ошибку пытаясь получить доступ к нему
         target = (event.target || event.srcElement) as HTMLElement;
     } catch (e) {}
 
