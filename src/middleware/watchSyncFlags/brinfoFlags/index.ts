@@ -13,8 +13,6 @@ import {
     SECONDS_BR_KEY,
     COOKIES_ENABLED_BR_KEY,
     RANDOM_NUMBER_BR_KEY,
-    IS_TURBO_PAGE_BR_KEY,
-    TURBO_PAGE_ID_BR_KEY,
     VIEWPORT_SIZE_BR_KEY,
     SCREEN_SIZE_BR_KEY,
     DEVICE_PIXEL_RATIO_BR_KEY,
@@ -41,7 +39,6 @@ import {
     isTopWindowAccessible,
     netType,
 } from 'src/utils/browser';
-import { getTurboPageId, isTurboPage } from 'src/utils/counterOptions';
 import { getDocumentEncoding, getViewportSize } from 'src/utils/dom';
 import {
     bindArg,
@@ -61,7 +58,7 @@ import { getHid } from './hid';
 import { getParentHid } from './parentHid';
 import { getUidFlag } from './uid';
 import { timeZone, timeStamp, timeSeconds } from './timeFlags';
-import { LS_ID_KEY, FlagGettersHash } from '../consts';
+import { LS_ID_KEY, FlagGettersHash } from '../const';
 import { numRequests } from './numRequests';
 import { getDesktopFlag } from './desktop';
 import { getCounterNumber } from './getCounterNumber';
@@ -115,8 +112,6 @@ export const BRINFO_FLAG_GETTERS: FlagGettersHash = {
     [RANDOM_NUMBER_BR_KEY]: pipe(firstArg, getRandom),
     [REQUEST_NUMBER_BR_KEY]: numRequests,
     [UID_BR_KEY]: getUidFlag,
-    [IS_TURBO_PAGE_BR_KEY]: pipe(secondArg, isTurboPage, toOneOrNull),
-    [TURBO_PAGE_ID_BR_KEY]: pipe(secondArg, getTurboPageId),
     [VIEWPORT_SIZE_BR_KEY]: (ctx: Window) => {
         const [width, height] = getViewportSize(ctx);
         return `${width}x${height}`;

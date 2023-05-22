@@ -192,6 +192,11 @@
   {
     "code": "CSRF_TOKEN_FEATURE",
     "desc": "Add API token required for authorized traffic",
+    "path": "turboParams"
+  },
+  {
+    "code": "TURBO_PARAMS_FEATURE",
+    "desc": "Track turbo page parameters",
     "path": "csrf"
   },
   {

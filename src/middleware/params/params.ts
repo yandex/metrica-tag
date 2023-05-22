@@ -1,31 +1,32 @@
-import { DEFER_KEY, REQUEST_BODY_KEY, PAGE_VIEW_BR_KEY } from 'src/api/watch';
-import { MiddlewareGetter } from 'src/middleware/types';
-import { stringify } from 'src/utils/json';
+import { flags } from '@inject';
+import { DEBUG_EVENTS_FEATURE, TURBO_PARAMS_FEATURE } from 'generated/features';
+import { DEFER_KEY, PAGE_VIEW_BR_KEY, REQUEST_BODY_KEY } from 'src/api/watch';
 import { config } from 'src/config';
-import { memo, equal, pipe, constructArray } from 'src/utils/function';
+import { MiddlewareGetter } from 'src/middleware/types';
+import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
+import type { SenderInfo } from 'src/sender/SenderInfo';
+import { cFilter, cForEach, head, indexOfWin } from 'src/utils/array';
+import { BrowserInfo } from 'src/utils/browserInfo';
+import { getCounterInstance } from 'src/utils/counter';
 import {
     CounterOptions,
     getCounterKey,
-    setTurboInfo,
+    Params,
 } from 'src/utils/counterOptions';
-import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
-import { BrowserInfo } from 'src/utils/browserInfo';
-import { cFilter, cForEach, head, indexOfWin } from 'src/utils/array';
-import type { SenderInfo } from 'src/sender/SenderInfo';
-import { getCounterInstance } from 'src/utils/counter';
-import { flags } from '@inject';
-import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
+import { constructArray, equal, memo, pipe } from 'src/utils/function';
+import { stringify } from 'src/utils/json';
+import { setTurboInfo } from 'src/utils/turboParams';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {
         /** Visit parameters */
-        params?: Record<string, any>;
+        params?: Params;
     }
 }
 
 const getParamsState = memo(
-    constructArray as (a: Window) => [BrowserInfo, Record<string, any>][],
+    constructArray as (a: Window) => [BrowserInfo, Params][],
 );
 
 const handleParams = (
@@ -37,7 +38,9 @@ const handleParams = (
     const { params } = senderParams.middlewareInfo || {};
     const { transportInfo = {} } = senderParams;
     if (params) {
-        setTurboInfo(counterOptions, params);
+        if (flags[TURBO_PARAMS_FEATURE]) {
+            setTurboInfo(counterOptions, params);
+        }
 
         if (
             !transportInfo.rBody &&

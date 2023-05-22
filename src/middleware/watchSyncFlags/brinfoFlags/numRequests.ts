@@ -2,7 +2,7 @@ import { DEFER_KEY } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { counterLocalStorage } from 'src/storage/localStorage';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { REQUEST_NUMBER_KEY } from '../consts';
+import { REQUEST_NUMBER_KEY } from '../const';
 
 export const numRequests = (
     ctx: Window,

@@ -5,7 +5,7 @@ import {
 } from 'src/utils/iframeConnector';
 import { cKeys } from 'src/utils/object';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { FlagGetter } from 'src/middleware/watchSyncFlags/consts';
+import { FlagGetter } from 'src/middleware/watchSyncFlags/const';
 
 // Uses iframeConnector parent hid, that is written in counterFirstHit/waitParentDuid middleware
 export const getParentHid: FlagGetter = (ctx: Window, opt: CounterOptions) => {

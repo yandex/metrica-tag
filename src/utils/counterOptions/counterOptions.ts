@@ -1,53 +1,18 @@
+import { flags } from '@inject';
+import { TURBO_PARAMS_FEATURE } from 'generated/features';
 import { RSYA_COUNTER_TYPE } from 'src/providers/counterOptions/const';
 import { OptionsKeysMaps } from 'src/providers/counterOptions/types';
 import { cReduce } from 'src/utils/array';
-import { entries, getPath } from 'src/utils/object';
-import { equal, memo } from '../function';
+import { equal } from 'src/utils/function';
+import { entries } from 'src/utils/object';
+import { setTurboInfo } from 'src/utils/turboParams';
 import { CounterOptions, CounterTypeInterface } from './types';
 
-const turboInfo: Record<
-    string,
-    {
-        tp?: number;
-        tpid?: number;
-    }
-> = {};
+// NOTE: Extend the type in order to be able to check all string inputs.
+export const isRsyaCounter =
+    equal<CounterTypeInterface | string>(RSYA_COUNTER_TYPE);
 
-const TURBO_PARAMS_PATH = '__ym.turbo_page';
-
-const getCounterKey = memo((opt: CounterOptions) => {
-    return `${opt.id}:${opt.counterType}`;
-});
-
-const setTurboInfo = (options: CounterOptions, params: any) => {
-    const counterId = getCounterKey(options);
-    const tp = getPath(params, TURBO_PARAMS_PATH);
-    const tpid = getPath(params, `${TURBO_PARAMS_PATH}_id`);
-
-    if (!turboInfo[counterId]) {
-        turboInfo[counterId] = {};
-    }
-
-    if (tp || tpid) {
-        turboInfo[counterId].tp = tp;
-        turboInfo[counterId].tpid = tpid;
-    }
-};
-
-const isTurboPage = (options: CounterOptions) => {
-    const id = getCounterKey(options);
-    return turboInfo[id] && turboInfo[id].tp;
-};
-
-// Добавляем в типизацию строку, чтобы можно было проверять любые инпуты
-const isRsyaCounter = equal<CounterTypeInterface | string>(RSYA_COUNTER_TYPE);
-
-const getTurboPageId = (options: CounterOptions) => {
-    const id = getCounterKey(options);
-    return (turboInfo[id] && turboInfo[id].tpid) || null;
-};
-
-const getOriginalOptions = (
+export const getOriginalOptions = (
     counterOptions: CounterOptions,
     optionsKeysMap: OptionsKeysMaps,
 ): CounterOptions => {
@@ -64,7 +29,7 @@ const getOriginalOptions = (
     ) as unknown as CounterOptions;
 };
 
-const normalizeOptions = (
+export const normalizeOptions = (
     counterId: Record<string, unknown> | number,
     optionsKeysMap: OptionsKeysMaps,
     counterParams?: Record<string, unknown>,
@@ -95,17 +60,9 @@ const normalizeOptions = (
         entries(optionsKeysMap),
     ) as unknown as CounterOptions;
 
-    setTurboInfo(options, options.params || {});
+    if (flags[TURBO_PARAMS_FEATURE]) {
+        setTurboInfo(options, options.params || {});
+    }
 
     return options;
-};
-
-export {
-    getCounterKey,
-    getOriginalOptions,
-    normalizeOptions,
-    isTurboPage,
-    getTurboPageId,
-    setTurboInfo,
-    isRsyaCounter,
 };

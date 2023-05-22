@@ -9,19 +9,18 @@ export type CounterTypeInterface =
     | typeof DEFAULT_COUNTER_TYPE
     | typeof RSYA_COUNTER_TYPE;
 
+export interface Params {
+    [key: string]: unknown;
+}
+
 /**
  * Options passed for initialization
  */
 export interface CounterOptions {
     /** Counter id */
     id: number;
-    /** Turbo page settings */
-    params?: {
-        __ym?: {
-            tp?: boolean;
-            tpid?: number;
-        };
-    } & Record<string, any>;
+    /** Additional parameters */
+    params?: Params;
     /** Defer hits */
     counterDefer?: boolean;
     /** Internal private option */

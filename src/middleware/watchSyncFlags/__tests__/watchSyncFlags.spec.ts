@@ -10,9 +10,7 @@ import {
     DEVICE_PIXEL_RATIO_BR_KEY,
     RANDOM_NUMBER_BR_KEY,
     REQUEST_NUMBER_BR_KEY,
-    IS_TURBO_PAGE_BR_KEY,
     IS_IFRAME_BR_KEY,
-    TURBO_PAGE_ID_BR_KEY,
     IS_JAVA_ENABLED_BR_KEY,
     IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY,
     VIEWPORT_SIZE_BR_KEY,
@@ -21,13 +19,14 @@ import {
 } from 'src/api/watch';
 import { browserInfo } from 'src/utils/browserInfo';
 import { config } from 'src/config';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import * as timeFlags from 'src/middleware/watchSyncFlags/brinfoFlags/timeFlags';
 import * as timeUtils from 'src/utils/time';
 import * as globalStorage from 'src/storage/global';
 import * as random from 'src/utils/number';
 import * as localStorageStorage from 'src/storage/localStorage';
-import { setTurboInfo } from 'src/utils/counterOptions';
-import { REQUEST_NUMBER_KEY, LS_ID_KEY } from '../consts';
+import { SenderInfo } from 'src/sender/SenderInfo';
+import { REQUEST_NUMBER_KEY, LS_ID_KEY } from '../const';
 import { BRINFO_FLAG_GETTERS } from '../brinfoFlags';
 import { watchSyncFlags } from '..';
 import { COUNTER_NO } from '../brinfoFlags/getCounterNumber';
@@ -37,34 +36,48 @@ describe('watchSyncFlags', () => {
     const testHid = 'testHid';
     const testLsID = 11111;
     const randomNumber = 1488;
-    const testTpid = 123;
-    const counterOpt: any = {
+    const counterOpt: CounterOptions = {
         id: 1,
         counterType: '0',
     };
     const nowMs = 100;
-    const senderParams: any = {};
+    const senderParams: SenderInfo = {};
     const sandbox = sinon.createSandbox();
-    let globalStorageStub: sinon.SinonStub<any, any>;
-    let getRandomStub: sinon.SinonStub<any, any>;
+    let globalStorageStub: sinon.SinonStub<
+        Parameters<typeof globalStorage.getGlobalStorage>,
+        ReturnType<typeof globalStorage.getGlobalStorage>
+    >;
+    let getRandomStub: sinon.SinonStub<
+        Parameters<typeof random.getRandom>,
+        ReturnType<typeof random.getRandom>
+    >;
     const lsGetValStub = sandbox.stub();
     const lsSetValStub = sandbox.stub();
     const lsDelValStub = sandbox.stub();
     const globalGetValStub = sandbox.stub();
     const globalSetValStub = sandbox.stub();
-    let timeZoneStub: sinon.SinonStub<any, any>;
-    let timeOneStub: sinon.SinonStub<any, any>;
-    let globalLocalStorageStub: sinon.SinonStub<any, any>;
+    let timeZoneStub: sinon.SinonStub<
+        Parameters<typeof timeFlags.timeZone>,
+        ReturnType<typeof timeFlags.timeZone>
+    >;
+    let timeOneStub: sinon.SinonStub<
+        Parameters<typeof timeUtils.TimeOne>,
+        ReturnType<typeof timeUtils.TimeOne>
+    >;
+    let globalLocalStorageStub: sinon.SinonStub<
+        Parameters<typeof localStorageStorage.counterLocalStorage>,
+        ReturnType<typeof localStorageStorage.counterLocalStorage>
+    >;
     beforeEach(() => {
         globalStorageStub = sandbox.stub(globalStorage, 'getGlobalStorage');
         globalStorageStub.returns({
             getVal: globalGetValStub,
             setVal: globalSetValStub,
-        });
+        } as unknown as globalStorage.GlobalStorage);
         getRandomStub = sandbox.stub(random, 'getRandom');
         getRandomStub.returns(randomNumber);
         timeOneStub = sandbox.stub(timeUtils, 'TimeOne');
-        timeOneStub.returns(() => nowMs);
+        timeOneStub.returns(<T>() => nowMs as unknown as T);
         timeZoneStub = sandbox.stub(timeFlags, 'timeZone');
         timeZoneStub.returns(nowMs);
         globalLocalStorageStub = sandbox.stub(
@@ -75,7 +88,7 @@ describe('watchSyncFlags', () => {
             getVal: lsGetValStub,
             setVal: lsSetValStub,
             delVal: lsDelValStub,
-        });
+        } as unknown as localStorageStorage.LocalStorage);
     });
 
     afterEach(() => {
@@ -83,7 +96,7 @@ describe('watchSyncFlags', () => {
     });
 
     it(`sets ${HID_BR_KEY}`, () => {
-        const winInfo = {} as any;
+        const winInfo = {} as Window;
         const fn = BRINFO_FLAG_GETTERS[HID_BR_KEY];
         globalGetValStub.returns(testHid);
         const result = fn(winInfo, counterOpt, {});
@@ -96,7 +109,7 @@ describe('watchSyncFlags', () => {
     });
 
     it(`sets ${COUNTER_NUMBER_BR_KEY}`, () => {
-        const winInfo = {} as any;
+        const winInfo = {} as Window;
         const no = 10;
         const expectNo = no + 1;
         globalGetValStub.returns(no);
@@ -109,9 +122,7 @@ describe('watchSyncFlags', () => {
     it(`sets ${LS_ID_BR_KEY}`, () => {
         const newCounterOpt = () => Object.assign({}, counterOpt);
         const fn = BRINFO_FLAG_GETTERS[LS_ID_BR_KEY];
-        const win = {
-            Math,
-        } as Window;
+        const win = { Math } as Window;
         // 1. Кейс когда запись в ls уже есть
         lsGetValStub.returns(testLsID);
         const result = fn(win, newCounterOpt(), senderParams);
@@ -130,7 +141,7 @@ describe('watchSyncFlags', () => {
     });
 
     it(`sets ${BUILD_VERSION_BR_KEY}`, () => {
-        const winInfo = {} as any;
+        const winInfo = {} as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[BUILD_VERSION_BR_KEY](
                 winInfo,
@@ -145,7 +156,7 @@ describe('watchSyncFlags', () => {
             navigator: {
                 cookieEnabled: true,
             },
-        } as any;
+        } as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[COOKIES_ENABLED_BR_KEY](
                 winInfo,
@@ -159,9 +170,7 @@ describe('watchSyncFlags', () => {
     // так как функция определяется при импорте
     // и переписать ее не получится
     it(`sets ${RANDOM_NUMBER_BR_KEY}`, () => {
-        const winInfo: any = {
-            Math,
-        };
+        const winInfo = { Math } as Window;
         const result = BRINFO_FLAG_GETTERS[RANDOM_NUMBER_BR_KEY](
             winInfo,
             counterOpt,
@@ -171,7 +180,7 @@ describe('watchSyncFlags', () => {
     });
 
     it(`sets ${REQUEST_NUMBER_BR_KEY}`, () => {
-        const win = {} as any;
+        const win = {} as Window;
         const fn = BRINFO_FLAG_GETTERS[REQUEST_NUMBER_BR_KEY];
         let newVal = 0;
         lsSetValStub.callsFake((key, val) => {
@@ -206,60 +215,6 @@ describe('watchSyncFlags', () => {
         sinon.assert.calledWith(lsDelValStub, REQUEST_NUMBER_KEY);
     });
 
-    it(`sets ${IS_TURBO_PAGE_BR_KEY}`, () => {
-        const winInfo: any = {};
-        const counterOptions: any = {
-            ...counterOpt,
-            id: 100,
-        };
-        chai.expect(
-            BRINFO_FLAG_GETTERS[IS_TURBO_PAGE_BR_KEY](
-                winInfo,
-                counterOptions,
-                senderParams,
-            ),
-        ).to.be.equal(null);
-
-        setTurboInfo(counterOptions, {
-            // eslint-disable-next-line camelcase
-            __ym: { turbo_page: 1, turbo_page_id: testTpid },
-        });
-        chai.expect(
-            BRINFO_FLAG_GETTERS[IS_TURBO_PAGE_BR_KEY](
-                winInfo,
-                counterOptions,
-                senderParams,
-            ),
-        ).to.be.equal(1);
-    });
-
-    it(`sets ${TURBO_PAGE_ID_BR_KEY}`, () => {
-        const winInfo: any = {};
-        const counterOptions: any = {
-            ...counterOpt,
-            id: 101,
-        };
-        chai.expect(
-            BRINFO_FLAG_GETTERS[TURBO_PAGE_ID_BR_KEY](
-                winInfo,
-                counterOptions,
-                senderParams,
-            ),
-        ).to.be.equal(null);
-
-        setTurboInfo(counterOptions, {
-            // eslint-disable-next-line camelcase
-            __ym: { turbo_page: 1, turbo_page_id: testTpid },
-        });
-        chai.expect(
-            BRINFO_FLAG_GETTERS[TURBO_PAGE_ID_BR_KEY](
-                winInfo,
-                counterOptions,
-                senderParams,
-            ),
-        ).to.be.equal(testTpid);
-    });
-
     it(`sets ${VIEWPORT_SIZE_BR_KEY}`, () => {
         const winInfo = {
             document: {
@@ -275,8 +230,8 @@ describe('watchSyncFlags', () => {
                     clientHeight: 100,
                     clientWidth: 200,
                 },
-            },
-        } as any;
+            } as unknown as Document,
+        } as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[VIEWPORT_SIZE_BR_KEY](
                 winInfo,
@@ -293,7 +248,7 @@ describe('watchSyncFlags', () => {
                 height: 200,
                 colorDepth: 10,
             },
-        } as any;
+        } as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[SCREEN_SIZE_BR_KEY](
                 winInfo,
@@ -304,9 +259,7 @@ describe('watchSyncFlags', () => {
     });
 
     it(`sets ${DEVICE_PIXEL_RATIO_BR_KEY}`, () => {
-        const winInfo: any = {
-            devicePixelRatio: 3,
-        };
+        const winInfo = { devicePixelRatio: 3 } as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[DEVICE_PIXEL_RATIO_BR_KEY](
                 winInfo,
@@ -316,12 +269,13 @@ describe('watchSyncFlags', () => {
         ).to.be.equal(3);
     });
     it(`sets ${NOINDEX_BR_KEY}`, () => {
-        const winInfo: any = {
+        const winInfo = {
             location: {
                 hostname: 'yandex.ru',
             },
-        };
+        } as Window;
         const urlParams: Record<string, any> = {};
+        // @ts-expect-error
         winInfo.top = winInfo;
         BRINFO_FLAG_GETTERS[NOINDEX_BR_KEY](winInfo, counterOpt, {
             urlParams,
@@ -329,7 +283,8 @@ describe('watchSyncFlags', () => {
         chai.expect(urlParams[NOINDEX_BR_KEY]).to.be.equal('noindex');
     });
     it(`sets ${IS_IFRAME_BR_KEY}`, () => {
-        let winInfo: any = {};
+        let winInfo = {} as Window;
+        // @ts-expect-error
         winInfo.top = winInfo;
         chai.expect(
             BRINFO_FLAG_GETTERS[IS_IFRAME_BR_KEY](
@@ -339,7 +294,7 @@ describe('watchSyncFlags', () => {
             ),
         ).to.be.equal(null);
 
-        winInfo = { top: {} };
+        winInfo = { top: {} } as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[IS_IFRAME_BR_KEY](
                 winInfo,
@@ -370,7 +325,11 @@ describe('watchSyncFlags', () => {
     });
 
     it(`sets ${IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY}`, () => {
-        let winInfo = { top: { contentWindow: {} } } as any;
+        let winInfo = {
+            top: {
+                contentWindow: {},
+            } as unknown as Window,
+        } as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY](
                 winInfo,
@@ -379,7 +338,7 @@ describe('watchSyncFlags', () => {
             ),
         ).to.be.equal('1');
 
-        winInfo = {};
+        winInfo = {} as Window;
         chai.expect(
             BRINFO_FLAG_GETTERS[IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY](
                 winInfo,
@@ -393,9 +352,9 @@ describe('watchSyncFlags', () => {
         const flags = [COUNTER_NUMBER_BR_KEY, BUILD_VERSION_BR_KEY];
         globalGetValStub.withArgs(COUNTER_NO).returns(1);
 
-        const ctx = {} as any;
+        const ctx = {} as Window;
         const brInfo = browserInfo();
-        const newCounterOpt: any = {
+        const newCounterOpt: CounterOptions = {
             id: counterOpt.id + 1,
             counterType: '0',
         };

@@ -1,21 +1,25 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { PAGE_VIEW_BR_KEY } from 'src/api/watch';
-import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
+import {
+    CounterOptions,
+    getCounterKey,
+    Params,
+} from 'src/utils/counterOptions';
 import { browserInfo } from 'src/utils/browserInfo';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import * as storage from 'src/storage/global';
 import * as config from 'src/config';
 import * as json from 'src/utils/json';
 import * as debug from 'src/providers/debugEvents';
-import { getRange, cMap } from 'src/utils/array';
+import { getRange } from 'src/utils/array';
 import { paramsMiddleware } from '../params';
 
 describe('params middleware', () => {
     const win = () => {
         return {
             JSON,
-        } as any as Window;
+        } as unknown as Window;
     };
     const sandbox = sinon.createSandbox();
     const params = { hi: 1 };
@@ -69,7 +73,7 @@ describe('params middleware', () => {
             });
         }
     });
-    it("doen't call big callback", (done) => {
+    it("doesn't call a heavy callback", (done) => {
         const winInfo = win();
         const brInfo = browserInfo();
         brInfo.setVal(PAGE_VIEW_BR_KEY, 1);
@@ -88,8 +92,11 @@ describe('params middleware', () => {
                     },
                 };
             },
-        } as any);
-        const bigParams = cMap(() => params, getRange(100));
+        } as unknown as storage.GlobalStorage);
+        const bigParams = Array(getRange(100)).reduce(
+            (acc, x, i) => Object.assign(acc, { [i]: params }),
+            {} as Params,
+        );
         const senderParams: SenderInfo = {
             brInfo,
             middlewareInfo: {

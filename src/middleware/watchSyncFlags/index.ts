@@ -10,7 +10,7 @@ import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { addTelemetryToSenderParams } from 'src/utils/telemetry/telemetry';
 import { TELEMETRY_FLAG_GETTERS } from './telemetryFlags';
 import { BRINFO_FLAG_GETTERS } from './brinfoFlags';
-import { BRINFO_LOGGER_PREFIX } from './consts';
+import { BRINFO_LOGGER_PREFIX } from './const';
 
 const getDefaultFlags = memo(() =>
     arrayMerge(cKeys(BRINFO_FLAG_GETTERS), cKeys(TELEMETRY_FLAG_GETTERS)),

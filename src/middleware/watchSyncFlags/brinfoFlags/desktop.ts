@@ -3,7 +3,7 @@ import { getGlobalStorage } from 'src/storage/global';
 import { toZeroOrOne } from 'src/utils/boolean';
 import { errorLogger } from 'src/utils/errorLogger';
 import { getPath, isUndefined } from 'src/utils/object';
-import { BRINFO_LOGGER_PREFIX } from '../consts';
+import { BRINFO_LOGGER_PREFIX } from '../const';
 
 const BATTERY_INFO = 'bt';
 

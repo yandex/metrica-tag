@@ -25,7 +25,7 @@ import {
 } from 'src/providers/getCounters/const';
 import { GLOBAL_STORAGE_CLICKS_KEY } from 'src/providers/clickmap/const';
 import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from 'src/utils/methodDecorators/telCallCount/consts';
-import { FlagGettersHash } from '../consts';
+import { FlagGettersHash } from '../const';
 import { numRequestsTelemetry } from './numRequests';
 import { getGSFlag } from '../utils';
 
