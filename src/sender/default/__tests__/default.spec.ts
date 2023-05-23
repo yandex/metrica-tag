@@ -93,6 +93,7 @@ describe('sender/default', () => {
         sinon.assert.calledOnceWithExactly(transport1, url1, {
             debugStack: [0],
             rQuery: {},
+            resource: undefined,
             verb: 'GET',
         });
     });
@@ -128,6 +129,7 @@ describe('sender/default', () => {
                 [CONTENT_TYPE_HEADER]: 'application/x-www-form-urlencoded',
             },
             verb: 'POST',
+            resource: undefined,
             rBody: `${REQUEST_BODY_KEY}=${rBody}`,
             rQuery: {
                 ['browser-info']: brInfo.setVal('st', 100).serialize(),
@@ -167,6 +169,7 @@ describe('sender/default', () => {
         sinon.assert.calledWith(transport2.getCall(1), url2, {
             debugStack: ['smth', 0, 1, 0, 1],
             rQuery: {},
+            resource: undefined,
             verb: 'GET',
         });
     });

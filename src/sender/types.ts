@@ -1,6 +1,6 @@
 import { Tuple } from 'ts-toolbelt';
 import { TransportList } from 'src/transport';
-import { SenderInfo, InternalSenderInfo } from 'src/sender/SenderInfo';
+import type { SenderInfo, InternalSenderInfo } from 'src/sender/SenderInfo';
 import { Middleware } from 'src/middleware/types';
 import { HIT_PROVIDER, Provider, LOGGER_PROVIDER } from 'src/providers';
 import { SENDER_COLLECT, SENDER_MIDDLEWARE, SENDER_WATCH } from './const';

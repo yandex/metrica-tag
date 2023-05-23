@@ -90,6 +90,7 @@ declare global {
         HTMLImageElement: typeof HTMLImageElement;
         HTMLInputElement: typeof HTMLInputElement;
         MouseEvent: typeof MouseEvent;
+        WebSocket: typeof WebSocket;
     }
 
     interface Document {

@@ -57,6 +57,7 @@ const iterateTransports = (
 
     opt.verb = opt.rBody ? 'POST' : 'GET';
     opt.rQuery = createQuery(ctx, senderInfo, id);
+    opt.resource = (senderInfo.urlInfo || {}).resource;
     opt.debugStack.push(id);
     mix(senderInfo.transportInfo, opt);
     const noRedirect =

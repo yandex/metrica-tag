@@ -1,6 +1,6 @@
 import { closest } from 'src/utils/dom/closest';
 import { Queryable, select } from 'src/utils/dom/select';
-import { cFilter, cMap } from 'src/utils/array';
+import { cMap, filterFalsy } from 'src/utils/array';
 import {
     CONTENT,
     getData,
@@ -66,7 +66,7 @@ export const getButtonData = (
         getData(
             ctx,
             button!,
-            cFilter(Boolean, [PATH, TAG_DATA[nodeName], CONTENT]),
+            filterFalsy([PATH, TAG_DATA[nodeName], CONTENT]),
             selectButtons,
             ignored,
         )

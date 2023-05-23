@@ -7,6 +7,7 @@ import {
     isArray,
     ctxReduce,
     arrayJoin,
+    filterFalsy,
 } from 'src/utils/array';
 import { waitForBodyTask } from 'src/utils/dom/waitForBody';
 import { memo, bindArg } from 'src/utils/function';
@@ -116,7 +117,7 @@ export const selectText = (
                 return;
             }
             const text = node.textContent || '';
-            const phones = cFilter(Boolean, phonesRegExp.exec(text) || []);
+            const phones = filterFalsy(phonesRegExp.exec(text) || []);
             cForEach((phone) => {
                 const purePhone = removeNonDigits(phone);
                 if (!isUndefined(phoneChangeMap[purePhone])) {

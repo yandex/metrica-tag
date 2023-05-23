@@ -32,8 +32,8 @@ import {
     arrayJoin,
     cForEach,
     cSome,
-    ctxFilter,
     ctxMap,
+    filterFalsy,
     includes,
 } from 'src/utils/array';
 import { closestButton, selectButtons } from 'src/utils/dom/button';
@@ -178,7 +178,7 @@ export const getResourceUrl = (message: InlineMessageProps): string => {
         SPLITTER,
         pipe(
             ctxMap(pipe(firstArg, parseDecimalInt)),
-            ctxFilter(Boolean),
+            filterFalsy,
         )(appVersion.split(SPLITTER)),
     );
 

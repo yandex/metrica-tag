@@ -22,6 +22,8 @@ export type TransportOptions = {
     withCreds?: boolean;
     /** Should return raw response */
     returnRawResponse?: boolean;
+    /** Needed for some transports that do not require full url */
+    resource?: string;
 };
 
 export type TransportResponse = Record<string, unknown> | string | null;
