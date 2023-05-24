@@ -1,14 +1,21 @@
+import {
+    INTERNAL_PARAMS_KEY,
+    METHOD_NAME_PARAMS,
+} from 'src/providers/params/const';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { getConsole } from 'src/utils/console';
-import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
 import { getCounterInstance } from 'src/utils/counter';
 import { isNumber } from 'src/utils/number';
 import { genPath } from 'src/utils/object';
 import { isString } from 'src/utils/string';
 import { noop } from 'src/utils/function';
 import { AnyFunc } from 'src/utils/function/types';
-import { METHOD_NAME_SET_USER_ID, SetUserIDHandler } from './const';
+import {
+    METHOD_NAME_SET_USER_ID,
+    SetUserIDHandler,
+    USER_ID_PARAM,
+} from './const';
 
 export const rawSetUserID = (
     ctx: Window,
@@ -30,7 +37,7 @@ export const rawSetUserID = (
             }
 
             const counterInstance = getCounterInstance(ctx, counterOptions);
-            const newData = genPath(['__ym', 'user_id', id]);
+            const newData = genPath([INTERNAL_PARAMS_KEY, USER_ID_PARAM, id]);
 
             counterInstance![METHOD_NAME_PARAMS]!(
                 newData,

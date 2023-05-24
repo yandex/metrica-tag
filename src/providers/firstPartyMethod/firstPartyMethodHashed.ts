@@ -1,22 +1,25 @@
+import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
+import {
+    INTERNAL_PARAMS_KEY,
+    METHOD_NAME_PARAMS,
+} from 'src/providers/params/const';
 import { cReduce } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { cKeys, entries, isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
-import { getLoggerFn } from '../debugConsole/debugConsole';
-import { METHOD_NAME_PARAMS } from '../params/const';
-import { FirstPartyInputData, FirstPartyOutputData } from './const';
+import {
+    FirstPartyInputData,
+    FirstPartyOutputData,
+    FIRST_PARTY_HASHED_PARAMS_KEY,
+} from './const';
 
 const LOGGER_PREFIX = 'First party params error.';
 
 export const encodeRecursiveHashed = (
     obj: FirstPartyInputData,
-): FirstPartyOutputData[] => {
-    const entry = entries(obj);
-    return cReduce<
-        [string, string | FirstPartyInputData],
-        FirstPartyOutputData[]
-    >(
+): FirstPartyOutputData[] =>
+    cReduce<[string, string | FirstPartyInputData], FirstPartyOutputData[]>(
         (accum, [key, val]) => {
             const valIsObject = isObject(val);
             if (!isString(val) && !valIsObject) {
@@ -32,9 +35,8 @@ export const encodeRecursiveHashed = (
             return accum;
         },
         [],
-        entry,
+        entries(obj),
     );
-};
 
 /**
  * Sends contact information of site users in hashed and depersonalized form. Site owners do hashing by themselves
@@ -67,11 +69,12 @@ export const useFirstPartyMethodHashed =
         }
 
         const result = encodeRecursiveHashed(data);
-        if (result && len(result)) {
-            counter[METHOD_NAME_PARAMS]!({
-                ['__ym']: {
-                    [`fpmh`]: result,
-                },
-            });
+        if (!result || !len(result)) {
+            return;
         }
+        counter[METHOD_NAME_PARAMS]!({
+            [INTERNAL_PARAMS_KEY]: {
+                [FIRST_PARTY_HASHED_PARAMS_KEY]: result,
+            },
+        });
     };

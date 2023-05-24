@@ -11,7 +11,10 @@ import {
 import { cForEach } from 'src/utils/array';
 import { getPath } from 'src/utils/object';
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
-import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
+import {
+    INTERNAL_PARAMS_KEY,
+    METHOD_NAME_PARAMS,
+} from 'src/providers/params/const';
 import { getCounterSettings } from 'src/utils/counterSettings';
 import { getGlobalStorage } from 'src/storage/global';
 import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
@@ -20,6 +23,7 @@ import {
     handleEcommerce,
 } from './handleTagManagerEcommerce';
 import { handleGtagEcommerce } from './handleGtagEcommerce';
+import { ECOMMERCE_PARAMS_KEY } from './const';
 
 const handleEvent = (
     ctx: Window,
@@ -49,8 +53,8 @@ const handleEvent = (
     }
 
     sendParams({
-        ['__ym']: {
-            ['ecommerce']: [result],
+        [INTERNAL_PARAMS_KEY]: {
+            [ECOMMERCE_PARAMS_KEY]: [result],
         },
     });
 };

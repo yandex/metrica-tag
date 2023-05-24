@@ -1,29 +1,39 @@
+import { flags } from '@inject';
+import { SET_USER_ID_FEATURE, USER_PARAMS_FEATURE } from 'generated/features';
 import {
-    WATCH_URL_PARAM,
     ARTIFICIAL_BR_KEY,
     PARAMS_BR_KEY,
+    WATCH_URL_PARAM,
 } from 'src/api/watch';
-import type { CounterOptions } from 'src/utils/counterOptions';
-import { cReduce, includes, isArray } from 'src/utils/array';
-import { noop } from 'src/utils/function';
-import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
+import { getArtificialState } from 'src/providers/artificialHit/artificialHit';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
+import { USER_ID_PARAM } from 'src/providers/setUserID/const';
+import { USER_PARAMS_KEY } from 'src/providers/userParams/const';
 import { getSender } from 'src/sender';
+import { cReduce, includes, isArray } from 'src/utils/array';
 import { browserInfo } from 'src/utils/browserInfo';
-import { getLocation } from 'src/utils/location';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { noop } from 'src/utils/function';
+import { argsToArray } from 'src/utils/function/args';
+import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
+import { isCounterSilent } from 'src/utils/isCounterSilent';
+import { getLocation } from 'src/utils/location';
 import {
-    isFunction,
+    cKeys,
     genPath,
     getPath,
-    cKeys,
+    isFunction,
     isObject,
     mix,
 } from 'src/utils/object';
-import { isCounterSilent } from 'src/utils/isCounterSilent';
-import { argsToArray } from 'src/utils/function/args';
-import { METHOD_NAME_PARAMS, ParamsHandler, PARAMS_PROVIDER } from './const';
-import { getArtificialState } from '../artificialHit/artificialHit';
+import {
+    INTERNAL_PARAMS_KEY,
+    METHOD_NAME_PARAMS,
+    ParamsHandler,
+    PARAMS_PROVIDER,
+    YM_LOG_WHITELIST_KEYS,
+} from './const';
 
 /**
  * Normalized session parameters
@@ -36,8 +46,6 @@ export type ParamsOptions = {
     /** The object to be converted to an array of string arrays that correspond to paths in the parameter tree */
     params: Record<string, any>;
 };
-
-const YM_LOG_WHITELIST_KEYS = ['ecommerce', 'user_id', 'fpp'];
 
 export const argsToParams = (args: any[]): ParamsOptions | undefined => {
     let callback = noop;
@@ -99,43 +107,59 @@ export const rawParams = (
             const sender = getSender(ctx, PARAMS_PROVIDER, counterOptions);
             const { url } = getArtificialState(counterOptions);
 
-            const userId = getPath(params, '__ym.user_id');
-            const paramKeys = cKeys(params);
-
-            const isUser = includes('__ymu', paramKeys);
-            const isUserID = includes('__ym', paramKeys) && userId;
-
             let shouldLogParams = !isCounterSilent(counterOptions);
-            let paramsToLog: any = params;
-            if (paramsToLog['__ym']) {
+            const logMessageTail = `arams. Counter ${counterOptions['id']}`;
+            let logMessage = `P${logMessageTail}`;
+            let paramsToLog: Record<string, any> | string | undefined = params;
+            let userId = '';
+
+            if (flags[SET_USER_ID_FEATURE]) {
+                userId = getPath(
+                    params,
+                    `${INTERNAL_PARAMS_KEY}.${USER_ID_PARAM}`,
+                );
+                if (userId) {
+                    logMessage = `Set user id ${userId}`;
+                }
+            }
+
+            if (flags[USER_PARAMS_FEATURE]) {
+                const isUser = includes(USER_PARAMS_KEY, cKeys(params));
+                if (isUser) {
+                    logMessage = `${'User p'}${logMessageTail}`;
+                }
+            }
+
+            if (paramsToLog[INTERNAL_PARAMS_KEY]) {
                 paramsToLog = mix({}, params);
-                paramsToLog['__ym'] = cReduce(
+                paramsToLog[INTERNAL_PARAMS_KEY] = cReduce(
                     (result, key) => {
-                        const val = getPath(params, `__ym.${key}`);
+                        const val = getPath(
+                            params,
+                            `${INTERNAL_PARAMS_KEY}.${key}`,
+                        );
                         if (val) {
                             result[key] = val;
                         }
 
                         return result;
                     },
-                    {} as any,
+                    {} as Record<string, unknown>,
                     YM_LOG_WHITELIST_KEYS,
                 );
-                if (!cKeys(paramsToLog['__ym']).length) {
-                    delete paramsToLog['__ym'];
+                if (!cKeys(paramsToLog[INTERNAL_PARAMS_KEY]).length) {
+                    delete paramsToLog[INTERNAL_PARAMS_KEY];
                 }
                 shouldLogParams = !!cKeys(paramsToLog).length;
             }
 
+            paramsToLog = !userId ? JSON.stringify(paramsToLog) : undefined;
+
             const logParams = getLoggerFn(
                 ctx,
                 counterOptions,
-                isUserID
-                    ? `Set user id ${userId}`
-                    : `${isUser ? 'User p' : 'P'}arams. Counter ${
-                          counterOptions['id']
-                      }`,
-                !isUserID ? JSON.stringify(paramsToLog) : undefined,
+                logMessage,
+                paramsToLog,
             );
 
             const result = sender(

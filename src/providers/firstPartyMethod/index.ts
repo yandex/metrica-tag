@@ -1,7 +1,10 @@
 import { FIRST_PARTY_METHOD_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import { providersSync } from 'src/providersEntrypoint';
+import { YM_LOG_WHITELIST_KEYS } from 'src/providers/params/const';
 import {
+    FIRST_PARTY_HASHED_PARAMS_KEY,
+    FIRST_PARTY_PARAMS_KEY,
     METHOD_NAME_FIRST_PARTY,
     METHOD_NAME_FIRST_PARTY_HASHED,
 } from './const';
@@ -17,5 +20,10 @@ export const initProvider = () => {
                 counterOptions,
             ),
         }));
+
+        YM_LOG_WHITELIST_KEYS.push(
+            FIRST_PARTY_PARAMS_KEY,
+            FIRST_PARTY_HASHED_PARAMS_KEY,
+        );
     }
 };

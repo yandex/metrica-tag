@@ -5,7 +5,8 @@ import { getCounterInstance } from 'src/utils/counter';
 import { DebugConsole } from 'src/providers/debugConsole/debugConsole';
 import { isObject } from 'src/utils/object';
 import { noop } from 'src/utils/function';
-import { METHOD_NAME_USER_PARAMS, UserParamsHandler } from './const';
+import { METHOD_NAME_USER_PARAMS, USER_PARAMS_KEY } from './const';
+import { UserParamsHandler } from './types';
 
 export const rawUserParams = (
     ctx: Window,
@@ -37,7 +38,7 @@ export const rawUserParams = (
                 }
 
                 const newData = {
-                    ['__ymu']: data,
+                    [USER_PARAMS_KEY]: data,
                 };
                 const userParamsFn = counterInstance[METHOD_NAME_PARAMS];
 

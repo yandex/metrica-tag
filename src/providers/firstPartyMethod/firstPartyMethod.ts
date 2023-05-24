@@ -1,3 +1,7 @@
+import {
+    INTERNAL_PARAMS_KEY,
+    METHOD_NAME_PARAMS,
+} from 'src/providers/params/const';
 import { PolyPromise } from 'src/utils';
 import { cReduce } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
@@ -18,13 +22,13 @@ import { cKeys, entries, getPath, isObject } from 'src/utils/object';
 import { removeNonDigits, trimText } from 'src/utils/string/remove';
 import { DOT_REGEX_GLOBAL, isString, stringIndexOf } from 'src/utils/string';
 import { consoleLog } from '../debugConsole/debugConsole';
-import { METHOD_NAME_PARAMS } from '../params/const';
 import {
     FirstPartyInputData,
     FirstPartyOutputData,
     FirstPartyMethodHandler,
     GOOGLEMAIL_DOMAIN,
     GMAIL_DOMAIN,
+    FIRST_PARTY_PARAMS_KEY,
 } from './const';
 
 export const isEncoderSupported = memo<(ctx: Window) => boolean>((ctx) => {
@@ -166,13 +170,14 @@ export const rawFirstPartyMethod = (
             }
             return resolve(
                 encodeRecursive(ctx, data).then((result) => {
-                    if (result && result.length) {
-                        counter[METHOD_NAME_PARAMS]!({
-                            ['__ym']: {
-                                [`fpp`]: result,
-                            },
-                        });
+                    if (!result || !result.length) {
+                        return;
                     }
+                    counter[METHOD_NAME_PARAMS]!({
+                        [INTERNAL_PARAMS_KEY]: {
+                            [FIRST_PARTY_PARAMS_KEY]: result,
+                        },
+                    });
                 }, noop),
             );
         }).catch(errorLogger(ctx, 'fpm.en'));
