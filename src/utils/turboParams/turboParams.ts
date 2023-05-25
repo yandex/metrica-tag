@@ -1,3 +1,4 @@
+import { INTERNAL_PARAMS_KEY } from 'src/providers/params/const';
 import { getCounterKey } from 'src/utils/counterOptions/getCounterKey';
 import type { CounterOptions, Params } from 'src/utils/counterOptions/types';
 import { getPath } from 'src/utils/object';
@@ -9,7 +10,7 @@ export type TurboInfo = {
 
 const turboInfo: Record<string, TurboInfo> = {};
 
-const TURBO_PARAMS_PATH = '__ym.turbo_page';
+const TURBO_PARAMS_PATH = `${INTERNAL_PARAMS_KEY}.turbo_page`;
 
 export const setTurboInfo = (options: CounterOptions, params: Params) => {
     const counterId = getCounterKey(options);

@@ -3,6 +3,7 @@ import { TURBO_PARAMS_FEATURE } from 'generated/features';
 import { IS_TURBO_PAGE_BR_KEY, TURBO_PAGE_ID_BR_KEY } from 'src/api/watch';
 import { BRINFO_FLAG_GETTERS } from 'src/middleware/watchSyncFlags/brinfoFlags';
 import { FlagGettersHash } from 'src/middleware/watchSyncFlags/const';
+import { INTERNAL_PARAMS_KEY } from 'src/providers/params/const';
 import { toOneOrNull } from 'src/utils/boolean';
 import { pipe, secondArg } from 'src/utils/function';
 import { mix } from 'src/utils/object';
@@ -11,7 +12,7 @@ import { getTurboPageId, isTurboPage } from 'src/utils/turboParams';
 declare module 'src/utils/counterOptions/types' {
     interface Params {
         /** Turbo page settings */
-        __ym?: Record<string, unknown>;
+        [INTERNAL_PARAMS_KEY]?: Record<string, unknown>;
     }
 }
 
