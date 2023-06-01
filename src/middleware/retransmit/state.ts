@@ -1,6 +1,9 @@
 import { globalLocalStorage } from 'src/storage/localStorage';
+import { cForEach } from 'src/utils/array';
 import { CounterTypeInterface } from 'src/utils/counterOptions';
 import { globalMemoWin } from 'src/utils/function';
+import { entries } from 'src/utils/object';
+import { getMs, TimeOne } from 'src/utils/time';
 
 export const LS_PROTOCOL = 'protocol';
 export const LS_HOST = 'host';
@@ -13,6 +16,7 @@ export const LS_BRINFO = 'browserInfo';
 export const LS_TELEMETRY = 'telemetry';
 export const LS_TIME = 'time';
 export const LS_HID = 'ghid';
+const LOCKED = 'd';
 
 export const RETRANSMIT_KEY = 'retryReqs';
 
@@ -34,13 +38,11 @@ export type RetransmitInfo = {
 
     // The following flags are stored in memory only and not in LS
     retransmitIndex?: number; // ls - index
-    /**
-     * Lock the request for sending by only a single counter.
-     * NOTE: The short field name prevents obfuscation
-     * and thus persists between different script versions.
-     */
-    d?: number;
+    /** Lock the request for sending by only a single counter. */
+    [LOCKED]?: number;
 };
+
+type RetransmitStorage = Record<string, RetransmitInfo>;
 
 /**
  * Get the `retryReqs` value from localStorage.
@@ -51,7 +53,23 @@ export const getRetransmitLsState = globalMemoWin(
     RETRANSMIT_KEY,
     (ctx: Window) => {
         const ls = globalLocalStorage(ctx);
-        return ls.getVal<Record<string, RetransmitInfo>>(RETRANSMIT_KEY, {});
+        const state = ls.getVal<RetransmitStorage>(RETRANSMIT_KEY, {});
+
+        // On each page load check for expired requests and delete them.
+        const time = TimeOne(ctx);
+        const currentTime = time(getMs);
+        cForEach(([key, req]) => {
+            if (
+                !req ||
+                !req[LS_TIME] ||
+                req[LS_TIME] + RETRANSMIT_EXPIRE < currentTime
+            ) {
+                delete state[key];
+            }
+        }, entries(state));
+        ls.setVal(RETRANSMIT_KEY, state);
+
+        return state;
     },
     true /* NOTE: We need a single storage for ALL counters. 
         Otherwise in case of different version present on a page,
