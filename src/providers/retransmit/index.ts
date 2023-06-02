@@ -14,6 +14,7 @@ import {
     useMiddlewareBasedSender,
 } from 'src/sender/middleware';
 import { nameMap, withoutBeacon } from 'src/transport';
+import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { RETRANSMIT_PROVIDER } from './const';
 import { useRetransmitProvider } from './retransmit';
 
@@ -44,7 +45,7 @@ export const initProvider = () => {
             useMiddlewareBasedSender(RETRANSMIT_PROVIDER);
         nameMap[RETRANSMIT_PROVIDER] = withoutBeacon;
 
-        providersAsync.push(useRetransmitProvider);
+        providersAsync.push(ctxErrorLogger('p.r', useRetransmitProvider));
         addMiddlewareForProvider(
             RETRANSMIT_PROVIDER,
             retransmitProviderMiddleware,

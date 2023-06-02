@@ -23,7 +23,7 @@ import { getRetransmitRequests } from './getRetransmitRequests';
 export const useRetransmitProvider = (
     ctx: Window,
     counterOpt: CounterOptions,
-) => {
+): Promise<void> => {
     const retransmitRequests = getRetransmitRequests(ctx);
     const retransmitSender = getSender(ctx, RETRANSMIT_PROVIDER, counterOpt);
     const errorCatcher = errorLogger(ctx, 'rts.p');

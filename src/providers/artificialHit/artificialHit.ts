@@ -13,7 +13,6 @@ import { isObject, mix } from 'src/utils/object';
 import { memo, noop, constructObject } from 'src/utils/function';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { ArtificialHitOptions, ArtificialHandler } from './type';
 import { METHOD_NAME_HIT, ARTIFICIAL_HIT_PROVIDER } from './const';
 
@@ -63,6 +62,12 @@ const argsToOptions = (
         ctx,
     };
 };
+
+/**
+ * Hit created manually by calling .hit()
+ * @param ctx - Current window
+ * @param counterOpt - Counter options during initialization
+ */
 export const artificialHitProvider = (
     ctx: Window,
     counterOpt: CounterOptions,
@@ -138,13 +143,3 @@ export const artificialHitProvider = (
         },
     };
 };
-
-/**
- * Hit created manually by calling .hit()
- * @param ctx - Current window
- * @param counterOpt - Counter options during initialization
- */
-export const useArtificialHitProvider = ctxErrorLogger(
-    'p.ar',
-    artificialHitProvider,
-);
