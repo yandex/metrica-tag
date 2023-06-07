@@ -36,6 +36,10 @@ export const isDocumentFragment = (node?: Node | null) => {
     return nodeType === 11;
 };
 
+export const getDocumentElement: (ctx: Window) => HTMLHtmlElement = memo(
+    ctxPath('document.documentElement'),
+);
+
 export const getDocumentEncoding = memo((ctx: Window) => {
     const doc = getPath(ctx, 'document') || {};
     return `${doc.characterSet || doc.charset || ''}`.toLowerCase();
