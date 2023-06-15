@@ -91,6 +91,11 @@ declare global {
         HTMLInputElement: typeof HTMLInputElement;
         MouseEvent: typeof MouseEvent;
         WebSocket: typeof WebSocket;
+        chrome: {
+            runtime: {
+                getURL: (url: string) => string;
+            };
+        };
     }
 
     interface Document {

@@ -13,6 +13,7 @@ const MAX_EVENT_NUMBER = 1000;
 export const getEvents = globalMemoWin<DebuggerEvent[]>(
     'debuggerEvents',
     constructArray,
+    true,
 );
 
 /**
@@ -40,10 +41,18 @@ export const dispatchDebuggerEvent = (ctx: Window, event: DebuggerEvent) => {
 export const initProvider = () => {
     if (flags[DEBUG_EVENTS_FEATURE]) {
         providersSync.push((ctx, counterOptions) => {
+            const { id, counterType, webvisor, clickmap, trustedDomains } =
+                counterOptions;
             dispatchDebuggerEvent(ctx, {
-                counterKey: getCounterKey(counterOptions),
-                name: 'counter',
-                data: counterOptions,
+                ['counterKey']: getCounterKey(counterOptions),
+                ['name']: 'counter',
+                ['data']: {
+                    id,
+                    counterType,
+                    webvisor,
+                    trustedDomains,
+                    clickmap,
+                },
             });
         });
     }

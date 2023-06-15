@@ -8,12 +8,19 @@ export const debugLogRequest = (
     senderParams: InternalTransportOptions,
 ) => {
     const requestId = getRandom(ctx);
+    const { debugStack, rBody, rHeaders, rQuery, verb } = senderParams;
     dispatchDebuggerEvent(ctx, {
         name: 'request',
         data: {
             url,
             requestId,
-            senderParams,
+            senderParams: {
+                rBody,
+                debugStack,
+                rHeaders,
+                rQuery,
+                verb,
+            },
         },
     });
     return requestId;
