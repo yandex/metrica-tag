@@ -7,9 +7,7 @@ import type { StateManager } from 'src/storage/closureStorage/types';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { createCountersGetter, getCountersProvider } from '../getCounters';
 import {
-    OLD_CODE_KEY,
     COUNTER_STATE_CLICKMAP,
-    COUNTER_STATE_OLD_CODE,
     COUNTER_STATE_ID,
     COUNTER_STATE_TYPE,
     COUNTER_STATE_TRACK_HASH,
@@ -18,7 +16,7 @@ import type { CounterInfo } from '../types';
 
 describe('getCounters feature', () => {
     const sandbox = sinon.createSandbox();
-    const ctx = { [OLD_CODE_KEY]: true } as Window;
+    const ctx = {} as Window;
     afterEach(() => {
         sandbox.restore();
     });
@@ -62,12 +60,10 @@ describe('getCounters feature', () => {
         chai.expect(counters).to.deep.equal([
             {
                 id: counter1,
-                [COUNTER_STATE_OLD_CODE]: true,
                 [COUNTER_STATE_CLICKMAP]: true,
             },
             {
                 id: counter2,
-                [COUNTER_STATE_OLD_CODE]: true,
                 [COUNTER_STATE_CLICKMAP]: false,
             },
         ]);
@@ -76,25 +72,25 @@ describe('getCounters feature', () => {
         const counterId = 123;
         const counterType = '0';
         const counterKey = `${counterId}:${counterType}`;
-        const setValStub = sandbox.stub(closureStorageModule, 'setVal');
-        const delValStub = sandbox.stub(closureStorageModule, 'deleteVal');
-        const destroy = getCountersProvider(ctx, {
+        const counterOptions: CounterOptions = {
             counterType,
             id: counterId,
-            clickmap: 1,
+            clickmap: true,
             webvisor: false,
             trackHash: true,
-        } as CounterOptions);
-        const [callCtx, key, counterState] = setValStub.getCall(0).args;
-        chai.expect(key).to.equal(counterKey);
-        chai.expect(callCtx).to.equal(ctx);
-        chai.expect(counterState).to.deep.equal({
+        };
+        const setValStub = sandbox.stub(closureStorageModule, 'setVal');
+        const delValStub = sandbox.stub(closureStorageModule, 'deleteVal');
+
+        const destroy = getCountersProvider(ctx, counterOptions);
+        sinon.assert.calledWith(setValStub.getCall(0), ctx, counterKey, {
             [COUNTER_STATE_ID]: counterId,
             [COUNTER_STATE_TYPE]: 0,
-            [COUNTER_STATE_CLICKMAP]: 1,
+            [COUNTER_STATE_CLICKMAP]: true,
             [COUNTER_STATE_TRACK_HASH]: true,
         });
+
         destroy();
-        sinon.assert.calledWith(delValStub, ctx, counterKey);
+        sinon.assert.calledOnceWithExactly(delValStub, ctx, counterKey);
     });
 });

@@ -24,7 +24,6 @@ export interface CounterInfo {
 
 export type ExtraCounterInfo = {
     clickmap?: boolean;
-    oldCode?: boolean;
 };
 
 /**

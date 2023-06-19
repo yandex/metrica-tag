@@ -5,29 +5,21 @@ import {
     TELEMETRY_FEATURE,
     TELEMETRY_REQUEST_ENUMERATION_FEATURE,
     SENDER_COLLECT_FEATURE,
-    GET_COUNTERS_FEATURE,
 } from 'generated/features';
 import {
     MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE,
     METHODS_CALLED_TEL_KEY,
     REQUEST_NUMBER_TEL_KEY,
     CLMAP_CLICKS_TEL_KEY,
-    OLD_CODE_TEL_KEY,
-    OLD_CODE_ACCESS_TEL_KEY,
 } from 'src/api/watch';
 import { getGlobalStorage, globalStorage } from 'src/storage/global';
 import { entries } from 'src/utils/object';
 import { cReduce } from 'src/utils/array';
 import { getMainThreadBlockingTime } from 'src/utils/errorLogger/executionTimeErrorDecorator';
-import {
-    OLD_CODE_GS_KEY,
-    OLD_CODE_ACCESS_GS_KEY,
-} from 'src/providers/getCounters/const';
 import { GLOBAL_STORAGE_CLICKS_KEY } from 'src/providers/clickmap/const';
 import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from 'src/utils/methodDecorators/telCallCount/consts';
 import { FlagGettersHash } from '../const';
 import { numRequestsTelemetry } from './numRequests';
-import { getGSFlag } from '../utils';
 
 export const TELEMETRY_FLAG_GETTERS: FlagGettersHash = {};
 
@@ -74,12 +66,5 @@ if (flags[TELEMETRY_FEATURE]) {
 
     if (flags[TELEMETRY_REQUEST_ENUMERATION_FEATURE]) {
         TELEMETRY_FLAG_GETTERS[REQUEST_NUMBER_TEL_KEY] = numRequestsTelemetry;
-    }
-
-    if (flags[GET_COUNTERS_FEATURE]) {
-        TELEMETRY_FLAG_GETTERS[OLD_CODE_TEL_KEY] = getGSFlag(OLD_CODE_GS_KEY);
-        TELEMETRY_FLAG_GETTERS[OLD_CODE_ACCESS_TEL_KEY] = getGSFlag(
-            OLD_CODE_ACCESS_GS_KEY,
-        );
     }
 }

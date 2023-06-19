@@ -1,7 +1,6 @@
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
 import { CounterObject } from 'src/utils/counter/type';
 import { yaNamespace } from './const';
-import { OLD_CODE_KEY } from './providers/getCounters/const';
 import { CounterOptions } from './utils/counterOptions';
 
 export type MetrikaCounterConstructor = (
@@ -55,7 +54,6 @@ declare global {
 
     interface Window {
         [yaNamespace]?: yaNamespaceStorage & yaNamespaceMetrikaCounter;
-        [OLD_CODE_KEY]?: boolean;
         XMLHttpRequest: typeof XMLHttpRequest;
         Error: typeof Error;
         Promise: typeof Promise;
