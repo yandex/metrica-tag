@@ -10,16 +10,16 @@ export const debugLogRequest = (
     const requestId = getRandom(ctx);
     const { debugStack, rBody, rHeaders, rQuery, verb } = senderParams;
     dispatchDebuggerEvent(ctx, {
-        name: 'request',
-        data: {
-            url,
-            requestId,
-            senderParams: {
-                rBody,
-                debugStack,
-                rHeaders,
-                rQuery,
-                verb,
+        ['name']: 'request',
+        ['data']: {
+            ['url']: url,
+            ['requestId']: requestId,
+            ['senderParams']: {
+                ['rBody']: rBody,
+                ['debugStack']: debugStack,
+                ['rHeaders']: rHeaders,
+                ['rQuery']: rQuery,
+                ['verb']: verb,
             },
         },
     });
@@ -32,10 +32,10 @@ export const logRequestSuccess = (
     body?: any,
 ) => {
     dispatchDebuggerEvent(ctx, {
-        name: 'requestSuccess',
-        data: {
-            body,
-            requestId,
+        ['name']: 'requestSuccess',
+        ['data']: {
+            ['body']: body,
+            ['requestId']: requestId,
         },
     });
 };
@@ -46,10 +46,10 @@ export const logRequestFailure = (
     error: Error,
 ) => {
     dispatchDebuggerEvent(ctx, {
-        name: 'requestFail',
-        data: {
-            error,
-            requestId,
+        ['name']: 'requestFail',
+        ['data']: {
+            ['error']: error,
+            ['requestId']: requestId,
         },
     });
 };

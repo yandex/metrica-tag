@@ -133,11 +133,11 @@ export const sendClickLink = (
 
     if (flags[DEBUG_EVENTS_FEATURE]) {
         dispatchDebuggerEvent(ctx, {
-            counterKey: getCounterKey(counterOptions),
-            name: 'event',
-            data: {
-                schema: 'Link click',
-                name: `${
+            ['counterKey']: getCounterKey(counterOptions),
+            ['name']: 'event',
+            ['data']: {
+                ['schema']: 'Link click',
+                ['name']: `${
                     options.isExternalLink ? 'external' : 'internal'
                 } url: ${options.url}`,
             },

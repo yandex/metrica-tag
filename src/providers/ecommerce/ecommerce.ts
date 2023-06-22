@@ -46,9 +46,9 @@ const handleEvent = (
 
     if (flags[DEBUG_EVENTS_FEATURE]) {
         dispatchDebuggerEvent(ctx, {
-            counterKey,
-            name: 'ecommerce',
-            data: result,
+            ['counterKey']: counterKey,
+            ['name']: 'ecommerce',
+            ['data']: result,
         });
     }
 

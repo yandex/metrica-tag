@@ -64,11 +64,11 @@ export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
         );
         if (flags[DEBUG_EVENTS_FEATURE]) {
             dispatchDebuggerEvent(ctx, {
-                data: {
-                    scopeName,
-                    error: e,
+                ['data']: {
+                    ['scopeName']: scopeName,
+                    ['error']: e,
                 },
-                name: 'error',
+                ['name']: 'error',
             });
         }
         // eslint-disable-next-line ban/ban

@@ -23,10 +23,10 @@ export const setSettings = (
 
     if (flags[DEBUG_EVENTS_FEATURE]) {
         dispatchDebuggerEvent(ctx, {
-            counterKey,
-            name: 'counterSettings',
-            data: {
-                settings,
+            ['counterKey']: counterKey,
+            ['name']: 'counterSettings',
+            ['data']: {
+                ['settings']: settings,
             },
         });
     }

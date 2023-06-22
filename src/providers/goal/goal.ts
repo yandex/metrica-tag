@@ -117,11 +117,11 @@ export const useGoal = ctxErrorLogger(
                     }
                     if (flags[DEBUG_EVENTS_FEATURE]) {
                         dispatchDebuggerEvent(ctx, {
-                            counterKey: getCounterKey(counterOptions),
-                            name: 'event',
-                            data: {
-                                schema: schemePrefix,
-                                name: goalName,
+                            ['counterKey']: getCounterKey(counterOptions),
+                            ['name']: 'event',
+                            ['data']: {
+                                ['schema']: schemePrefix,
+                                ['name']: goalName,
                             },
                         });
                     }

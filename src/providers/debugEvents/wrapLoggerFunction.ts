@@ -12,11 +12,11 @@ export const wrapLogFunction = (
         // eslint-disable-next-line prefer-rest-params
         const args = argsToArray(arguments);
         dispatchDebuggerEvent(ctx, {
-            counterKey,
-            name: 'log',
-            data: {
-                args,
-                type,
+            ['counterKey']: counterKey,
+            ['name']: 'log',
+            ['data']: {
+                ['args']: args,
+                ['type']: type,
             },
         });
         return func(...args);

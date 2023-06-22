@@ -55,10 +55,10 @@ const handleParams = (
             }
             if (flags[DEBUG_EVENTS_FEATURE]) {
                 dispatchDebuggerEvent(ctx, {
-                    counterKey: getCounterKey(counterOptions),
-                    name: 'params',
-                    data: {
-                        val: params,
+                    ['counterKey']: getCounterKey(counterOptions),
+                    ['name']: 'params',
+                    ['data']: {
+                        ['val']: params,
                     },
                 });
             }

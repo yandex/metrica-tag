@@ -47,11 +47,11 @@ export const initProvider = () => {
                 ['counterKey']: getCounterKey(counterOptions),
                 ['name']: 'counter',
                 ['data']: {
-                    id,
-                    counterType,
-                    webvisor,
-                    trustedDomains,
-                    clickmap,
+                    ['id']: id,
+                    ['counterType']: counterType,
+                    ['webvisor']: webvisor,
+                    ['trustedDomains']: trustedDomains,
+                    ['clickmap']: clickmap,
                 },
             });
         });
