@@ -1,6 +1,15 @@
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { cEvent } from 'src/utils/events';
-import { bindArg, bindArgs, memo, pipe, secondArg } from 'src/utils/function';
+import {
+    bindArg,
+    bindArgs,
+    call,
+    curry2SwapArgs,
+    memo,
+    noop,
+    pipe,
+    secondArg,
+} from 'src/utils/function';
 import { cIndexOf } from 'src/utils/array';
 import { ctxPath, getPath } from 'src/utils/object';
 import { setDefer } from 'src/utils/defer';
@@ -11,21 +20,19 @@ import { stringify } from 'src/utils/querystring';
 import { closestForm, getFormData } from 'src/utils/dom/form';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { closest } from 'src/utils/dom';
+import { ternary } from 'src/utils/condition';
 import { METHOD_NAME_GOAL } from '../goal/const';
 
 const CLICK_DELAY = 300;
 
-export const getAttribute = (form: HTMLFormElement, name: string) => {
-    return form.getAttribute && form.getAttribute(name);
-};
-
-export const shouldLogCheck = memo(
-    (ctx: Window, counterOptions: CounterOptions) => {
-        return getCounterSettings(
-            counterOptions,
-            ctxPath('settings.form_goals'),
-        );
-    },
+const shouldLogCheck: (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => Promise<boolean> = memo(
+    pipe(
+        secondArg,
+        curry2SwapArgs(getCounterSettings)(ctxPath('settings.form_goals')),
+    ),
     secondArg,
 );
 
@@ -33,13 +40,16 @@ export const log = (
     ctx: Window,
     counterOptions: CounterOptions,
     message: string,
-) => {
-    return shouldLogCheck(ctx, counterOptions).then((shouldLog: boolean) => {
-        if (shouldLog) {
-            getLoggerFn(ctx, counterOptions, message)();
-        }
-    });
-};
+) =>
+    shouldLogCheck(ctx, counterOptions).then(
+        pipe(
+            bindArgs(
+                [getLoggerFn(ctx, counterOptions, message), noop],
+                ternary,
+            ),
+            call,
+        ),
+    );
 
 export const submit = (
     force: boolean,

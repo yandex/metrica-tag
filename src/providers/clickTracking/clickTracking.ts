@@ -3,8 +3,6 @@ import { cEvent } from 'src/utils/events';
 import { bindArgs, pipe } from 'src/utils/function';
 import { ctxPath, getPath } from 'src/utils/object';
 import { CounterOptions } from 'src/utils/counterOptions';
-
-import { getLocation } from 'src/utils/location';
 import { destructingDecorator } from 'src/utils/methodDecorators/destructing';
 import { CounterSettings, getCounterSettings } from 'src/utils/counterSettings';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
@@ -20,24 +18,28 @@ export const handleClick = (
     counterOptions: CounterOptions,
     target?: HTMLElement,
 ) => {
-    if (target) {
-        const button = closestButton(ctx, target);
-        const data = getButtonData(ctx, button);
-
-        if (data) {
-            const query = `?${stringify(data)}`;
-
-            const logGoals = getLoggerFn(
-                ctx,
-                counterOptions,
-                `Button goal. Counter ${counterOptions.id}. Button: ${query}.`,
-            );
-
-            useGoal(ctx, counterOptions, GOAL_PREFIX, logGoals)[
-                METHOD_NAME_GOAL
-            ](query);
-        }
+    if (!target) {
+        return;
     }
+
+    const button = closestButton(ctx, target);
+    const data = getButtonData(ctx, button);
+
+    if (!data) {
+        return;
+    }
+
+    const query = `?${stringify(data)}`;
+
+    const logGoals = getLoggerFn(
+        ctx,
+        counterOptions,
+        `Button goal. Counter ${counterOptions.id}. Button: ${query}.`,
+    );
+
+    useGoal(ctx, counterOptions, GOAL_PREFIX, logGoals)[METHOD_NAME_GOAL](
+        query,
+    );
 };
 
 /**
@@ -47,42 +49,42 @@ export const handleClick = (
  */
 export const useClickTracking = ctxErrorLogger(
     's.f.i',
-    (ctx: Window, counterOptions: CounterOptions) => {
-        return getCounterSettings(
+    (ctx: Window, counterOptions: CounterOptions) =>
+        getCounterSettings(
             counterOptions,
             (counterSettings: CounterSettings) => {
-                if (
-                    getPath(counterSettings, 'settings.button_goals') ||
-                    getLocation(ctx).href.indexOf('yagoalsbuttons=1') !== -1
-                ) {
-                    cEvent(ctx).on(
-                        ctx,
-                        ['click'],
-                        errorLogger(
-                            ctx,
-                            'c.t.c',
-                            pipe(
-                                ctxPath('target'),
-                                bindArgs(
-                                    [ctx, counterOptions],
-                                    destructingDecorator(
-                                        ctx,
-                                        counterOptions,
-                                        '',
-                                        handleClick,
-                                    ),
-                                ) as (target: HTMLElement) => void,
-                            ),
-                        ),
-                    );
-
-                    getLoggerFn(
-                        ctx,
-                        counterOptions,
-                        `Button goal. Counter ${counterOptions.id}. Init.`,
-                    )();
+                if (!getPath(counterSettings, 'settings.button_goals')) {
+                    return undefined;
                 }
+
+                const unsubscribe = cEvent(ctx).on(
+                    ctx,
+                    ['click'],
+                    errorLogger(
+                        ctx,
+                        'c.t.c',
+                        pipe(
+                            ctxPath('target'),
+                            bindArgs(
+                                [ctx, counterOptions],
+                                destructingDecorator(
+                                    ctx,
+                                    counterOptions,
+                                    '',
+                                    handleClick,
+                                ),
+                            ) as (target: HTMLElement) => void,
+                        ),
+                    ),
+                );
+
+                getLoggerFn(
+                    ctx,
+                    counterOptions,
+                    `Button goal. Counter ${counterOptions.id}. Init.`,
+                )();
+
+                return unsubscribe;
             },
-        );
-    },
+        ),
 );

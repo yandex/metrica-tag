@@ -16,6 +16,8 @@ import {
     NOINDEX_BR_KEY,
 } from 'src/api/watch';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
+import { CounterOptions } from 'src/utils/counterOptions';
+import { noop } from 'src/utils/function';
 import { useTrackHash, HASH_CHECKS_INTERVAL } from '../trackHash';
 
 describe('track hash provider', () => {
@@ -23,28 +25,24 @@ describe('track hash provider', () => {
     const lastRef = 'http://example.com';
     const sandbox = sinon.createSandbox();
 
-    const senderStub = sinon.stub().returns({
-        catch: () => {},
-    } as any);
-    let counterStateStub: sinon.SinonStub;
-
-    const lastArg = (...args: unknown[]) => args[args.length - 1] as any;
-    const verifyCounterStateCall = (callIndex: number, expectedValue: any) => {
-        const { args } = counterStateStub.getCall(callIndex);
-        chai.expect(args[0]).to.deep.eq({
-            trackHash: expectedValue,
-        });
-        chai.expect(args.length).to.eq(1);
-    };
+    const senderStub = sandbox.stub().resolves();
+    let counterStateStub: sinon.SinonStub<
+        Parameters<ReturnType<typeof getCountersUtils.counterStateSetter>>,
+        ReturnType<ReturnType<typeof getCountersUtils.counterStateSetter>>
+    >;
 
     beforeEach(() => {
         sandbox.stub(globalConfig, 'getGlobalStorage').returns({
-            setVal: sinon.stub(),
-            getVal: sinon.stub().returns(lastRef),
-        } as any);
+            setVal: sandbox.stub(),
+            getVal: sandbox.stub().returns(lastRef),
+        } as unknown as globalConfig.GlobalStorage);
         sandbox.stub(sender, 'getSender').returns(senderStub);
-        sandbox.stub(errorLoggerUtils, 'errorLogger').callsFake(lastArg);
-        sandbox.stub(errorLoggerUtils, 'ctxErrorLogger').callsFake(lastArg);
+        sandbox
+            .stub(errorLoggerUtils, 'errorLogger')
+            .callsFake((_, __, fn) => fn || noop);
+        sandbox
+            .stub(errorLoggerUtils, 'ctxErrorLogger')
+            .callsFake((_, fn) => fn);
         counterStateStub = sandbox.stub();
         sandbox
             .stub(getCountersUtils, 'counterStateSetter')
@@ -57,21 +55,21 @@ describe('track hash provider', () => {
     });
 
     it('works correctly in old browser', () => {
-        const setIntervalStub = sinon
+        const setIntervalStub = sandbox
             .stub(defer, 'setDeferInterval')
             .returns(intervalId);
-        const clearIntervalStub = sinon.stub(defer, 'clearDeferInterval');
-        const directExistsStub = sinon
+        const clearIntervalStub = sandbox.stub(defer, 'clearDeferInterval');
+        const directExistsStub = sandbox
             .stub(direct, 'yaDirectExists')
-            .returns(true as any);
+            .returns(true);
 
         const title = 'title';
-        const oldBrowserCtx: any = {
+        const oldBrowserCtx = {
             location: { hash: '#', href: 'https://google.com' },
             document: { title },
-        };
-        const counterOptions: any = {
-            counterId: 123,
+        } as Window;
+        const counterOptions: CounterOptions = {
+            id: 123,
             counterType: '0',
             trackHash: true,
             ut: true,
@@ -81,10 +79,11 @@ describe('track hash provider', () => {
         const [ctx, callback, timeout] = setIntervalStub.getCall(0).args;
         chai.expect(ctx).to.equal(oldBrowserCtx);
         chai.expect(timeout).to.equal(HASH_CHECKS_INTERVAL);
-        chai.expect(senderStub.called).to.be.false;
+        sinon.assert.notCalled(senderStub);
         oldBrowserCtx.location.hash = '#hash?some-get-param=123';
         callback();
 
+        sinon.assert.calledOnce(senderStub);
         const [senderOptions, counterOptionsCalled] =
             senderStub.getCall(0).args;
         chai.expect(senderOptions.brInfo.getVal(NOINDEX_BR_KEY)).to.equal('1');
@@ -100,8 +99,7 @@ describe('track hash provider', () => {
         });
 
         result[UNSUBSCRIBE_PROPERTY]();
-        chai.expect(clearIntervalStub.calledWith(oldBrowserCtx, intervalId)).to
-            .be.true;
+        sinon.assert.calledWith(clearIntervalStub, oldBrowserCtx, intervalId);
 
         setIntervalStub.restore();
         clearIntervalStub.restore();
@@ -109,35 +107,41 @@ describe('track hash provider', () => {
     });
 
     it('works correctly in new browser and trackHash is working', () => {
-        const unsubscribeCallback = sinon.stub();
+        const unsubscribeCallback = sandbox.stub();
+        const eventsHandlerOn = sandbox
+            .stub<
+                Parameters<events.EventSetter['on']>,
+                ReturnType<events.EventSetter['on']>
+            >()
+            .returns(unsubscribeCallback);
         const eventsHandler = {
-            on: sinon.stub().returns(unsubscribeCallback),
-        } as any;
+            on: eventsHandlerOn,
+        } as unknown as events.EventSetter;
         const eventsStub = sandbox
             .stub(events, 'cEvent')
             .returns(eventsHandler);
-        const directExistsStub = sinon
+        const directExistsStub = sandbox
             .stub(direct, 'yaDirectExists')
-            .returns(false as any);
+            .returns(false);
 
         const title = 'title';
-        const newBrowserCtx: any = {
+        const newBrowserCtx = {
             onhashchange: () => {},
             location: { hash: '#', href: 'https://google.com' },
             document: { title },
-        };
-        const counterOptions: any = {
-            counterId: 123,
+        } as unknown as Window;
+        const counterOptions: CounterOptions = {
+            id: 123,
             counterType: '0',
         };
         const { trackHash } = useTrackHash(newBrowserCtx, counterOptions);
 
-        chai.expect(eventsHandler.on.called).to.be.false;
+        sinon.assert.notCalled(eventsHandlerOn);
         trackHash(true);
-        const [ctx, eventName, callback] = eventsHandler.on.getCall(0).args;
+        const [ctx, eventName, callback] = eventsHandlerOn.getCall(0).args;
         chai.expect(ctx).to.equal(newBrowserCtx);
         chai.expect(eventName).to.deep.equal(['hashchange']);
-        chai.expect(senderStub.called).to.be.false;
+        sinon.assert.notCalled(senderStub);
 
         callback();
 
@@ -158,20 +162,24 @@ describe('track hash provider', () => {
     });
 
     it('sets counter state', () => {
-        const ctxStub: any = {
+        const ctxStub = {
             onhashchange: () => {},
             location: { hash: '#', href: 'https://google.com' },
             document: { title: 'title' },
-        };
+        } as unknown as Window;
         const { trackHash } = useTrackHash(ctxStub, {
             trackHash: undefined,
-        } as any);
-        chai.expect(counterStateStub.getCalls().length).to.eq(0);
+        } as CounterOptions);
+        sinon.assert.notCalled(counterStateStub);
 
         trackHash(false);
-        verifyCounterStateCall(0, false);
+        sinon.assert.calledWith(counterStateStub.getCall(0), {
+            trackHash: false,
+        });
 
         trackHash(true);
-        verifyCounterStateCall(1, true);
+        sinon.assert.calledWith(counterStateStub.getCall(1), {
+            trackHash: true,
+        });
     });
 });

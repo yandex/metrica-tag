@@ -7,6 +7,7 @@ import {
     useSubmitTracking,
 } from 'src/providers/submitTracking/submitTracking';
 import { CounterOptions } from 'src/utils/counterOptions';
+import * as asyncMap from 'src/utils/asyncMap';
 import * as domUtils from 'src/utils/dom';
 import * as goalProvider from 'src/providers/goal/goal';
 import * as deferUtils from 'src/utils/defer';
@@ -19,6 +20,7 @@ import { ID, NAME, PATH } from 'src/utils/dom';
 import * as formUtils from 'src/utils/dom/form';
 import * as debugConsole from 'src/providers/debugConsole/debugConsole';
 import { METHOD_NAME_GOAL } from 'src/providers/goal/const';
+import { CounterSettings } from 'src/utils/counterSettings';
 
 describe('submitTracking', () => {
     const win = {
@@ -36,9 +38,15 @@ describe('submitTracking', () => {
     } as any as HTMLDivElement;
 
     let sendGoalSpy: sinon.SinonSpy;
-    let setDeferStub: sinon.SinonStub;
+    let setDeferStub: sinon.SinonStub<
+        Parameters<typeof deferUtils.setDefer>,
+        ReturnType<typeof deferUtils.setDefer>
+    >;
     let cEventSpy: sinon.SinonSpy;
-    let counterSettingsStorageStub: sinon.SinonStub;
+    let counterSettingsStorageStub: sinon.SinonStub<
+        Parameters<typeof counterSettingUtils.getCounterSettings>,
+        ReturnType<typeof counterSettingUtils.getCounterSettings>
+    >;
     let logFnSpy: sinon.SinonSpy;
 
     const FORM_ID = 'searchFormId';
@@ -51,7 +59,7 @@ describe('submitTracking', () => {
             [ID]: FORM_ID,
             [NAME]: FORM_NAME,
             [PATH]: FORM_PATH,
-        } as any);
+        } as ReturnType<typeof formUtils.getFormData>);
 
         form = {
             nodeName: 'FORM',
@@ -65,26 +73,26 @@ describe('submitTracking', () => {
                 return { [METHOD_NAME_GOAL]: sendGoalSpy };
             });
         setDeferStub = sandbox.stub(deferUtils, 'setDefer');
-        sandbox
-            .stub(functionUtils, 'bindArgs')
-            .callsFake(((args: any[], fn: any) => fn) as any);
+        sandbox.stub(functionUtils, 'bindArgs').callsFake((args, fn) => fn);
         sandbox
             .stub(errorLoggerUtils, 'errorLogger')
-            .callsFake((a: any, b: any, c: any) => c);
-        sandbox
-            .stub(errorLoggerUtils, 'ctxErrorLogger')
-            .callsFake((a: any, b: any) => b);
+            .callsFake((a, b, c) => c!);
+        sandbox.stub(errorLoggerUtils, 'ctxErrorLogger').callsFake((a, b) => b);
         cEventSpy = sandbox.spy();
         sandbox.stub(eventUtils, 'cEvent').returns({
             on: cEventSpy,
-        } as any);
-
-        sandbox.stub(debugConsole, 'getLoggerFn').callsFake(() => logFnSpy);
+        } as unknown as eventUtils.EventSetter);
 
         logFnSpy = sandbox.spy();
-        counterSettingsStorageStub = sandbox
-            .stub(counterSettingUtils, 'getCounterSettings')
-            .callsFake((_, fn) => Promise.resolve(fn({} as any)));
+        sandbox.stub(debugConsole, 'getLoggerFn').returns(logFnSpy);
+
+        counterSettingsStorageStub = sandbox.stub(
+            counterSettingUtils,
+            'getCounterSettings',
+        );
+        counterSettingsStorageStub.callsFake((_, fn) =>
+            Promise.resolve(fn({} as CounterSettings)),
+        );
 
         sandbox.stub(counterOptionsUtils, 'getCounterKey');
     });
@@ -147,24 +155,35 @@ describe('submitTracking', () => {
         chai.expect(events).to.deep.equal(['submit']);
     });
 
-    it('should log', () => {
-        counterSettingsStorageStub.callsFake((_, fn) =>
-            Promise.resolve(
-                fn({
-                    settings: {
-                        ['form_goals']: 1,
-                    },
-                }),
-            ),
-        );
-        const message = 'message';
-        return log(win, {} as CounterOptions, message).then(() => {
+    it('log', () => {
+        // NOTE: Can't stub getCounterSettings here, so stub its internals instead.
+        let getAsyncStub: sinon.SinonStub<
+            Parameters<typeof asyncMap.getAsync>,
+            ReturnType<typeof asyncMap.getAsync>
+        >;
+
+        beforeEach(() => {
+            getAsyncStub = sandbox.stub(asyncMap, 'getAsync');
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should log', async () => {
+            getAsyncStub.resolves({
+                settings: {
+                    ['form_goals']: 1,
+                },
+            });
+            const message = 'message';
+            await log(win, {} as CounterOptions, message);
             sinon.assert.calledOnce(logFnSpy);
         });
-    });
 
-    it('should not log', () => {
-        return log(win, {} as CounterOptions, 'message').then(() => {
+        it('should not log', async () => {
+            getAsyncStub.resolves({});
+            await log(win, {} as CounterOptions, 'message');
             sinon.assert.notCalled(logFnSpy);
         });
     });

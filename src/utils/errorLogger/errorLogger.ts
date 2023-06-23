@@ -1,5 +1,6 @@
 import { PREPROD_FEATURE } from 'generated/features';
 import { flags } from '@inject';
+import { AnyFunc } from 'src/utils/function/types';
 import { handleError } from './handleError';
 import { throwFunction } from './throwFunction';
 import { executionTimeErrorDecorator } from './executionTimeErrorDecorator';
@@ -29,7 +30,7 @@ export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
         let result: any = defaultReturn;
         try {
             // eslint-disable-next-line prefer-rest-params, prefer-spread
-            result = callFn!.apply(callContext || null, arguments as any);
+            result = callFn!.apply(callContext || null, arguments);
         } catch (e) {
             handleError(ctx, scopeName, e as Error);
         }
@@ -38,7 +39,7 @@ export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
     } as FN;
 };
 
-export const ctxErrorLogger = <FN extends (...args: any[]) => any>(
+export const ctxErrorLogger = <FN extends AnyFunc>(
     scope: string,
     fn: FN,
     defaultReturn?: any,

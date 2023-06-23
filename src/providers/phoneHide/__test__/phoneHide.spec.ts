@@ -1,16 +1,26 @@
 import * as sinon from 'sinon';
 import * as browser from 'src/utils/browser';
-import * as counterSettings from 'src/utils/counterSettings';
-import { CounterOptions } from 'src/utils/counterOptions';
+import * as counterSettingsUtil from 'src/utils/counterSettings';
+import type { CounterSettings } from 'src/utils/counterSettings';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import * as hidePhonesUtils from 'src/utils/phones/phonesHide';
 import * as isBrokenPhones from 'src/utils/phones/isBrokenPhones';
 import { usePhoneHideProvider } from '../phoneHide';
 
 describe('phoneHide / phoneHide', () => {
     const sandbox = sinon.createSandbox();
-    let isMobileStub: sinon.SinonStub;
-    let getCounterSettingsStub: sinon.SinonStub;
-    let hidePhonesUtilStub: sinon.SinonStub;
+    let isMobileStub: sinon.SinonStub<
+        Parameters<typeof browser.isMobile>,
+        ReturnType<typeof browser.isMobile>
+    >;
+    let getCounterSettingsStub: sinon.SinonStub<
+        Parameters<typeof counterSettingsUtil.getCounterSettings>,
+        ReturnType<typeof counterSettingsUtil.getCounterSettings>
+    >;
+    let hidePhonesUtilStub: sinon.SinonStub<
+        Parameters<typeof hidePhonesUtils.hidePhones>,
+        ReturnType<typeof hidePhonesUtils.hidePhones>
+    >;
 
     const win = {} as Window;
     const counterOptions = {} as CounterOptions;
@@ -21,7 +31,7 @@ describe('phoneHide / phoneHide', () => {
         sandbox.stub(browser, 'isBrokenFromCharCode').returns(false);
 
         getCounterSettingsStub = sandbox.stub(
-            counterSettings,
+            counterSettingsUtil,
             'getCounterSettings',
         );
         hidePhonesUtilStub = sandbox.stub(hidePhonesUtils, 'hidePhones');
@@ -34,38 +44,40 @@ describe('phoneHide / phoneHide', () => {
     it('not desktop', async () => {
         isMobileStub.returns(true);
 
-        usePhoneHideProvider(win, counterOptions);
+        await usePhoneHideProvider(win, counterOptions);
         sinon.assert.notCalled(getCounterSettingsStub);
     });
 
     it('does nothing if phone change enabled', async () => {
-        getCounterSettingsStub.callsFake((options, fn) => {
-            fn({
-                settings: {
-                    phchange: {
-                        clientId: '1',
-                        orderId: '2',
-                        phones: [['87776665522', '87776665523']],
-                    },
+        const counterSettings = {
+            settings: {
+                phchange: {
+                    clientId: '1',
+                    orderId: '2',
+                    phones: [['87776665522', '87776665523']],
                 },
-            });
-        });
+            },
+        } as CounterSettings;
+        getCounterSettingsStub.callsFake((options, fn) =>
+            Promise.resolve(counterSettings).then(fn),
+        );
 
-        usePhoneHideProvider(win, counterOptions);
+        await usePhoneHideProvider(win, counterOptions);
         sinon.assert.notCalled(hidePhonesUtilStub);
     });
 
     it('does nothing if phone change enabled', async () => {
         const phones = ['*'];
-        getCounterSettingsStub.callsFake((options, fn) => {
-            fn({
-                settings: {
-                    phhide: phones,
-                },
-            });
-        });
+        const counterSettings = {
+            settings: {
+                phhide: phones,
+            },
+        } as unknown as CounterSettings;
+        getCounterSettingsStub.callsFake((options, fn) =>
+            Promise.resolve(counterSettings).then(fn),
+        );
 
-        usePhoneHideProvider(win, counterOptions);
+        await usePhoneHideProvider(win, counterOptions);
         sinon.assert.calledWith(
             hidePhonesUtilStub,
             win,

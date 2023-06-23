@@ -16,6 +16,7 @@ import {
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
 import { getCounterSettings } from 'src/utils/counterSettings';
+import { isString } from 'src/utils/string';
 import { getGlobalStorage } from 'src/storage/global';
 import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
 import {
@@ -107,22 +108,14 @@ export const ecommerce = ctxErrorLogger(
             return observeEcommerce(ctx, counterOptions.ecommerce, handle);
         }
 
-        const unsubscribePromise = getCounterSettings(
-            counterOptions,
-            (settings) => {
-                const dataLayer: string = getPath(
-                    settings,
-                    'settings.ecommerce',
-                );
-                if (!dataLayer) {
-                    return undefined;
-                }
+        return getCounterSettings(counterOptions, (settings) => {
+            const dataLayer = getPath(settings, 'settings.ecommerce');
+            if (!dataLayer || !isString(dataLayer)) {
+                return undefined;
+            }
 
-                globalStorage.setVal(ECOMMERCE_SETTINGS_SOURCE_FLAG, 1);
-                return observeEcommerce(ctx, dataLayer, handle);
-            },
-        );
-
-        return unsubscribePromise;
+            globalStorage.setVal(ECOMMERCE_SETTINGS_SOURCE_FLAG, 1);
+            return observeEcommerce(ctx, dataLayer, handle);
+        });
     },
 );
