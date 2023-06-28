@@ -12,8 +12,9 @@ import { entries, isObject, isUndefined } from 'src/utils/object';
 import { cForEach, cReduce, isArray } from 'src/utils/array';
 import { flags } from '@inject';
 import { parseDecimalInt } from 'src/utils/number';
+import type { CounterOption, CounterOptions } from 'src/utils/counterOptions';
 import { DEFAULT_ID, DEFAULT_COUNTER_TYPE } from './const';
-import { NormalizeFunction, OptionsKeysMaps } from './types';
+import type { OptionInitializerMap, OptionsKeysMaps } from './types';
 
 export const obfuscatedKeysMap: Record<string, string> = {
     id: 'id',
@@ -92,10 +93,10 @@ if (flags[ENABLE_ALL_METHOD_FEATURE]) {
  * Normalization functions bound to params
  */
 export const optionsKeysMap = cReduce(
-    (acc: OptionsKeysMaps, [key, obfuscatedKey]) => {
-        acc[key] = {
-            optKey: obfuscatedKey,
-            normalizeFunction: normalizeOptionsMap[key],
+    (acc: OptionsKeysMaps, [obfuscatedKey, optKey]) => {
+        acc[obfuscatedKey] = {
+            optKey,
+            normalizeFunction: normalizeOptionsMap[obfuscatedKey],
         };
         return acc;
     },
@@ -104,21 +105,32 @@ export const optionsKeysMap = cReduce(
 );
 
 /**
- * Function for parameters normalization
+ * Append counter options with new values.
  */
-export const addCounterOptions = (
-    options: Record<
-        string,
-        {
-            optKey: string;
-            normalizeFunction?: NormalizeFunction;
-        }
-    >,
+export const addCounterOptions = <T extends CounterOption>(
+    options: OptionInitializerMap<T>,
 ) => {
-    cForEach(([obfuscatedKey, { optKey, normalizeFunction }]) => {
+    cForEach(([obfuscatedKey, initializer]) => {
+        const { optKey, normalizeFunction } = initializer!;
         optionsKeysMap[obfuscatedKey] = {
             optKey,
             normalizeFunction,
         };
     }, entries(options));
+};
+
+export const getOriginalOptions = (
+    counterOptions: CounterOptions,
+): CounterOptions => {
+    return cReduce(
+        (futureOptions: Record<string, unknown>, [obfuscatedKey, value]) => {
+            const { optKey } = optionsKeysMap[obfuscatedKey];
+
+            futureOptions[optKey] = value;
+
+            return futureOptions;
+        },
+        {},
+        entries(counterOptions),
+    ) as unknown as CounterOptions;
 };

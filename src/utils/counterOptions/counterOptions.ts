@@ -12,23 +12,6 @@ import { CounterOptions, CounterTypeInterface } from './types';
 export const isRsyaCounter =
     equal<CounterTypeInterface | string>(RSYA_COUNTER_TYPE);
 
-export const getOriginalOptions = (
-    counterOptions: CounterOptions,
-    optionsKeysMap: OptionsKeysMaps,
-): CounterOptions => {
-    return cReduce(
-        (futureOptions: Record<string, any>, [obfuscatedKey, value]) => {
-            const { optKey } = optionsKeysMap[obfuscatedKey];
-
-            futureOptions[optKey] = value;
-
-            return futureOptions;
-        },
-        {},
-        entries(counterOptions),
-    ) as unknown as CounterOptions;
-};
-
 export const normalizeOptions = (
     counterId: Record<string, unknown> | number,
     optionsKeysMap: OptionsKeysMaps,
@@ -48,7 +31,7 @@ export const normalizeOptions = (
 
     const options = cReduce(
         (
-            acc: Record<string, any>,
+            acc: Record<string, unknown>,
             [obfuscatedKey, { optKey: key, normalizeFunction: normalize }],
         ) => {
             const value = counterData[key];

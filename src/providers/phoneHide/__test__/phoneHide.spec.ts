@@ -57,7 +57,7 @@ describe('phoneHide / phoneHide', () => {
                     phones: [['87776665522', '87776665523']],
                 },
             },
-        } as CounterSettings;
+        } as unknown as CounterSettings;
         getCounterSettingsStub.callsFake((options, fn) =>
             Promise.resolve(counterSettings).then(fn),
         );

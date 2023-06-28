@@ -1,17 +1,24 @@
+import type { CounterOption } from 'src/utils/counterOptions';
+
 /**
  * Function for parsing parameters into a single format
  */
 export type NormalizeFunction = (value: unknown) => unknown;
 
 /**
- * Options to initialize parameter
+ * Option definition object
  */
 export type OptionInitializer = {
-    /** Parameter name */
+    /** Option name */
     optKey: string;
-    /** Function for parsing parameters into a single format */
+    /** A function for parsing the option into a unified format */
     normalizeFunction?: NormalizeFunction;
 };
+
+export type OptionInitializerMap<T extends CounterOption> = Record<
+    T,
+    OptionInitializer
+>;
 
 /**
  * Normalization functions of the corresponding parameters

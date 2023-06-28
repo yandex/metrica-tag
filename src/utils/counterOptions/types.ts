@@ -50,3 +50,5 @@ export interface CounterOptions {
     /** Enable trackLinks + clickmap + notBounce */
     enableAll?: boolean;
 }
+
+export type CounterOption = keyof CounterOptions;

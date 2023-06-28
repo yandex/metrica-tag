@@ -1,5 +1,5 @@
 import { InternalTransportOptions } from 'src/transport/types';
-import { CounterOptions } from 'src/utils/counterOptions/types';
+import { CounterOptions } from 'src/utils/counterOptions';
 import { CounterSettings } from 'src/utils/counterSettings/types';
 
 export type DebuggerEventGeneric<N, D> = {
