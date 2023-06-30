@@ -1,5 +1,5 @@
 import { flags } from '@inject';
-import { PARAMS_FEATURE, PREPROD_FEATURE } from 'generated/features';
+import { PARAMS_FEATURE } from 'generated/features';
 import { addCommonMiddleware, providerMiddlewareList } from 'src/middleware';
 import { counterFirstHit } from 'src/middleware/counterFirstHit';
 import { paramsMiddleware } from 'src/middleware/params';
@@ -8,7 +8,7 @@ import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
-import { fullList, nameMap, withoutBeacon } from 'src/transport';
+import { fullList, nameMap } from 'src/transport';
 import { PARAMS_PROVIDER } from './const';
 import { useParams } from './params';
 
@@ -28,9 +28,7 @@ export const initProvider = () => {
     if (flags[PARAMS_FEATURE]) {
         providerMap[PARAMS_PROVIDER] = useSenderWatch;
         providersSync.push(useParams);
-        nameMap[PARAMS_PROVIDER] = flags[PREPROD_FEATURE]
-            ? fullList
-            : withoutBeacon;
+        nameMap[PARAMS_PROVIDER] = fullList;
         addCommonMiddleware(paramsMiddleware, -1);
         providerMiddlewareList[PARAMS_PROVIDER] = [
             [paramsMiddleware, -1],
