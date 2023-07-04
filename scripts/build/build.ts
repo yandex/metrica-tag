@@ -128,7 +128,7 @@ const outputOptions: OutputOptions = {
 const build = async () => {
     try {
         const rollUpBundle = await rollup(inputOptions);
-        console.log('Writing output');
+        console.log('\nWriting output');
         await rollUpBundle.write(outputOptions);
         console.log('Adding BOM mark');
         addBOMMark(outputOptions.file!);
