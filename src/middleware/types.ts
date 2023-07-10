@@ -9,9 +9,13 @@ export type MiddlewareHandler = (
 ) => void;
 
 export type Middleware = {
-    /** Handler to run before request */
+    /** Handler to run before request
+     * - NOTE: This function mutates the `senderParams` parameter
+     */
     beforeRequest?: MiddlewareHandler;
-    /** Handler to run after request */
+    /** Handler to run after request
+     * - NOTE: This function mutates the `senderParams` parameter
+     */
     afterRequest?: MiddlewareHandler;
 };
 

@@ -18,16 +18,27 @@ const hitSenderInfo = flags[SENDER_COLLECT_FEATURE]
     ? senderCollectInfo
     : senderWatchInfo;
 
+/** The mapping between sender and corresponding middleware list */
 export const senderMiddlewareList: SenderMap<MiddlewareWeightTuple[]> = {
     [SENDER_WATCH]: [[hitSenderInfo, 1]],
 };
 
+/** Add new middleware for the provided sender to the mapping
+ * - NOTE: It mutates `senderMiddlewareList` (the mapping)
+ * - NOTE: Middlewares are sorted with ascending weight
+ * @param providerName - Unique sender name
+ * @param middleware
+ * @param weight
+ */
 export const addMiddlewareForSender: (
     providerName: Sender,
     middleware?: MiddlewareGetter,
     weight?: number,
 ) => void = bindArg(senderMiddlewareList, addMiddlewareFor);
 
+/**
+ * Get a middleware for the provided sender from the mapping
+ */
 export const getSenderMiddlewares = (
     ctx: Window,
     sender: Sender,
