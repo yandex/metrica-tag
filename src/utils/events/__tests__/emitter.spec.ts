@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { emitter } from '../emiter';
+import { emitter } from '../emitter';
 
 const win = () => {
     const out = {

@@ -33,19 +33,18 @@ const timeoutMock = () => {
             timeoutId = 0;
             timeoutsHash = {};
         },
-        getNowTime: () => {
-            return now;
-        },
+        getNowTime: () => now,
         makeTimePass: (time: number) => {
             now += time;
-            Object.keys(timeoutsHash).forEach((id) => {
-                const [callback, timeoutTime] = timeoutsHash[id as any];
+            Object.keys(timeoutsHash).forEach((stringId) => {
+                const id = +stringId;
+                const [callback, timeoutTime] = timeoutsHash[id];
                 if (timeoutTime <= time) {
                     callback();
-                    delete timeoutsHash[id as any];
+                    delete timeoutsHash[id];
                 }
 
-                timeoutsHash[id as any] = [callback, timeoutTime - time] as [
+                timeoutsHash[id] = [callback, timeoutTime - time] as [
                     Function,
                     number,
                 ];
@@ -64,7 +63,7 @@ describe('userTimeDefer', () => {
         [ctx: Window],
         <R>(fn: (a: timeUtils.TimeState) => R) => R
     >;
-    let isIEStub: sinon.SinonStub<[ctx: any], boolean>;
+    let isIEStub: sinon.SinonStub<[ctx: Window], boolean>;
     let eventsStub: sinon.SinonStub<[ctx: Window], eventUtils.EventSetter>;
 
     beforeEach(() => {

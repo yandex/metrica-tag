@@ -30,11 +30,11 @@ export const emitter = <T, U>(ctx: Window): Emitter<T, U> => {
         },
         trigger: (eventName: string, event?: T) =>
             getPath(observers, eventName)
-                ? (errorLogger(
+                ? errorLogger(
                       ctx,
                       `e.${event}`,
                       observers[eventName].trigger,
-                  )(event) as any)
+                  )(event)
                 : [],
     };
 };

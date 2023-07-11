@@ -19,7 +19,7 @@ const getTime = (ctx: Window): number | undefined => {
     const getEntriesByType = getPath(ctx, 'performance.getEntriesByType');
     if (isFunction(getEntriesByType)) {
         const data = cFilter(
-            pipe(firstArg, ctxPath('name'), equal(CONTENTFUL_PAINT) as any),
+            pipe(firstArg, ctxPath('name'), equal(CONTENTFUL_PAINT)),
             getEntriesByType.call(ctx.performance, 'paint'),
         ) as { startTime: number }[];
         if (data.length) {
@@ -29,8 +29,10 @@ const getTime = (ctx: Window): number | undefined => {
     }
     const chromeLoadTimes = getPath(ctx, 'chrome.loadTimes');
     if (isFunction(chromeLoadTimes)) {
-        const time = chromeLoadTimes.call((ctx as any)['chrome']);
-        const fp = getPath(time, 'firstPaintTime');
+        const time: { firstPaintTime: number } = chromeLoadTimes.call(
+            ctx['chrome'],
+        );
+        const fp: number = getPath(time, 'firstPaintTime');
         if (ns && fp) {
             return fp * 1000 - ns;
         }
@@ -42,7 +44,7 @@ const getTime = (ctx: Window): number | undefined => {
     return undefined;
 };
 const getCounterState = memo(
-    constructObject as (s: Window) => Record<string, any>,
+    constructObject as (ctx: Window) => Record<string, number | undefined>,
 );
 
 export const firstPaint = (

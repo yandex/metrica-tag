@@ -4,7 +4,10 @@ import { isNull, isUndefined } from './assertions';
 
 export type Primitive = null | undefined | number | string | boolean;
 
-export const isPrimitive = (ctx: Window, object: any): object is Primitive => {
+export const isPrimitive = (
+    ctx: Window,
+    object: unknown,
+): object is Primitive => {
     return (
         isNull(object) ||
         isUndefined(object) ||

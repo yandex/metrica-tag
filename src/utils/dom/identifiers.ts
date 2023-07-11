@@ -25,11 +25,16 @@ export const TYPE = 'ty';
 const IDENTIFIERS = [ID, NAME, HREF, PATH, CONTENT, TYPE] as const;
 
 export type Identifier = typeof IDENTIFIERS[number];
-export type IdentifierGetter = (
+type GenericGetter = (ctx: Window, element: HTMLElement) => string | null;
+type ContentGetter = (
     ctx: Window,
     element: HTMLElement,
-    ...args: any[]
+    selectFn?: (node: Queryable) => HTMLElement[],
 ) => string | null;
+export type IdentifierGetter =
+    | typeof getElementPath
+    | ContentGetter
+    | GenericGetter;
 
 export const DEFAULT_SIZE_LIMIT = 100;
 const SIZE_LIMITS: Record<string, number> = {};
@@ -63,7 +68,12 @@ if (flags[CLICK_TRACKING_FEATURE]) {
     HASH[CONTENT] = true;
 }
 
-export const GETTERS_MAP: Partial<Record<Identifier, IdentifierGetter>> = {};
+export const GETTERS_MAP: Partial<
+    {
+        p: typeof getElementPath;
+        c: ContentGetter;
+    } & Record<Exclude<Identifier, typeof PATH | typeof CONTENT>, GenericGetter>
+> = {};
 
 if (flags[SUBMIT_TRACKING_FEATURE] || flags[CLICK_TRACKING_FEATURE]) {
     GETTERS_MAP[PATH] = getElementPath;

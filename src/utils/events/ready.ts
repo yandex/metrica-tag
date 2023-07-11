@@ -2,14 +2,12 @@ import { includes } from 'src/utils/array';
 import { cEvent } from 'src/utils/events/events';
 
 import { runAsync } from 'src/utils/async';
+import { AnyFunc } from '../function/types';
 
 const INTERACTIVE_READY_STATE = 'interactive';
 const COMPLETE_READY_STATE = 'complete';
 
-export const runCallbackOnReady = (
-    ctx: Window,
-    callback: (...args: any) => any,
-): void => {
+export const runCallbackOnReady = (ctx: Window, callback: AnyFunc): void => {
     const { document: doc } = ctx;
     const state: string = doc.readyState;
     if (includes(state, [INTERACTIVE_READY_STATE, COMPLETE_READY_STATE])) {

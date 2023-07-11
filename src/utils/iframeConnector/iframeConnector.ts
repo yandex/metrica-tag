@@ -58,11 +58,13 @@ import {
     SPLITTER,
 } from './const';
 
-export const getIframeState = memo((() => ({
-    parents: {},
-    pending: {},
-    children: {},
-})) as (ctx: Window) => ConnectorState);
+export const getIframeState = memo(
+    (ctx: Window): ConnectorState => ({
+        parents: {},
+        pending: {},
+        children: {},
+    }),
+);
 
 export const checkIframe = ctxPath('postMessage');
 export const genMessage =
@@ -124,10 +126,7 @@ export const sendToFrame = (
     );
 };
 
-const safeSendToFrame: typeof sendToFrame = ctxErrorLogger(
-    's.f',
-    sendToFrame,
-) as any;
+const safeSendToFrame: typeof sendToFrame = ctxErrorLogger('s.f', sendToFrame);
 
 export const watchFramesRemoval = (ctx: Window) => {
     if (!isNativeFunction('MutationObserver', ctx.MutationObserver)) {
@@ -246,7 +245,7 @@ export const handleInputMessage = (
                 message,
             ]);
             const normResp = cMap(
-                pipe(firstArg, ctxMix(counterInfo) as any),
+                pipe(firstArg, ctxMix(counterInfo)),
                 resp.concat([{}]),
             );
             const data = serialize(
@@ -263,19 +262,21 @@ export const handleInputMessage = (
             message,
         ).length === message.length
     ) {
-        const callback = state.pending[
-            arrayJoin(SPLITTER, [dateInfo, key])
-        ] as any;
+        const callback = state.pending[arrayJoin(SPLITTER, [dateInfo, key])];
         if (callback) {
+            const cbArgs: Parameters<MessageHandler> = [event];
             // eslint-disable-next-line prefer-spread
-            callback.apply(null, [event].concat(message as any));
+            callback.apply(
+                null,
+                cbArgs.concat(message) as Parameters<MessageHandler>,
+            );
         }
     }
 };
 const safeHandleInputMessage: typeof handleInputMessage = ctxErrorLogger(
     's.fh',
     handleInputMessage,
-) as any;
+);
 
 export const iframeConnector = (
     ctx: Window,
@@ -304,7 +305,7 @@ export const iframeConnector = (
 
     addHandlers(ctx, emitterObj);
     watchFramesRemoval(ctx);
-    const serializer = genMessage(ctx, counterInfo) as any;
+    const serializer = genMessage(ctx, counterInfo);
     const sendInfo = bindArgs(
         [ctx, bindArg([], serializer)],
         safeSendToFrame,

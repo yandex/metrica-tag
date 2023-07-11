@@ -73,7 +73,7 @@ export const isCurrentClickTracked = (
     }
 
     // Пользовательский фильтр на теги
-    if (cSome(equal(nodeName) as any, ignoreTags)) {
+    if (cSome(equal(nodeName), ignoreTags)) {
         return false;
     }
 

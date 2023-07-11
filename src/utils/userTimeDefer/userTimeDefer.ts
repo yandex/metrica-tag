@@ -2,16 +2,13 @@ import { cForEach } from 'src/utils/array';
 import { isIE } from 'src/utils/browser';
 import { clearDefer, setDefer } from 'src/utils/defer';
 import { cEvent } from 'src/utils/events';
+import { AnyFunc } from 'src/utils//function/types';
 import { getMs, TimeOne } from 'src/utils/time';
 
 // Это скорректированный таймаут который перезапускает таймер если всякие блюры были
 // Потому что таймауты работают фигово, если окно рефокусится и блюрится
 // Причём если был блюр, пользовательским временем считается только время после
-export function setUserTimeDefer(
-    ctx: Window,
-    callback: (...args: any[]) => any,
-    time: number,
-) {
+export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
     let id = 0;
     let executedOrCleared = false;
     const destroyTimer = () => {

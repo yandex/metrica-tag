@@ -34,7 +34,7 @@ export const paramsHandler = (
     }
     const params = event[IFRAME_MESSAGE_DATA];
     const stringCounterId = `${counterOptions.id}`;
-    const sended = event[SENDED_KEY] || [];
+    const sended = (event[SENDED_KEY] || []) as string[];
     if (!event[SENDED_KEY]) {
         event[SENDED_KEY] = sended;
     }

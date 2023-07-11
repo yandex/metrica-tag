@@ -41,6 +41,7 @@ import { closestForm, getFormData, selectForms } from 'src/utils/dom/form';
 import { hidePhones } from 'src/utils/phones/phonesHide';
 import { checkStatusFn } from 'src/providers/statusCheck/statusCheckFn';
 import { parseDecimalInt } from 'src/utils/number';
+import { AnyFunc } from 'src/utils/function/types';
 
 /* eslint-disable camelcase */
 type ExtendedWindow = Window & {
@@ -209,7 +210,10 @@ export const setupUtilsAndLoadScript = (
 ) => {
     if (flags[CLICK_TRACKING_FEATURE] || flags[SUBMIT_TRACKING_FEATURE]) {
         const globalConfig = getGlobalStorage(ctx);
-        const utils: Record<string, any> = {};
+        const utils: Record<
+            string,
+            typeof getCachedTags | Record<string, AnyFunc>
+        > = {};
 
         utils['getCachedTags'] = getCachedTags;
         if (flags[SUBMIT_TRACKING_FEATURE]) {

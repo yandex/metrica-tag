@@ -29,7 +29,7 @@ export type RetransmitInfo = {
     [LS_RESOURCE]: string; // Used in retransmitSender
     [LS_COUNTER]: number;
     [LS_COUNTER_TYPE]: CounterTypeInterface;
-    [LS_POST]: any;
+    [LS_POST]: string | Uint8Array | undefined;
     [LS_PARAMS]: Record<string, any>;
     [LS_BRINFO]: Record<string, any>;
     [LS_TELEMETRY]?: Record<string, any>;

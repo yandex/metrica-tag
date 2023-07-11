@@ -26,7 +26,7 @@ export type MessageData = {
     [IFRAME_MESSAGE_HID]?: string;
     [IFRAME_MESSAGE_DUID]?: string;
     [IFRAME_MESSAGE_COUNTER_ID]?: number;
-    [key: string]: any;
+    [key: string]: unknown;
 };
 
 export type Message = {
@@ -34,7 +34,7 @@ export type Message = {
     string: string;
 };
 
-export type MessageHandler = (e: Event, ...data: Record<string, any>[]) => any;
+export type MessageHandler = (e: Event, ...data: Record<string, any>[]) => void;
 
 export type EventInfo = [MessageEvent, MessageData];
 

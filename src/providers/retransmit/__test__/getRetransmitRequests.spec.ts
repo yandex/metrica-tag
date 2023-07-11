@@ -66,7 +66,7 @@ describe('getRetransmitRequests', () => {
                 host,
                 resource: CLICKMAP_RESOURCE,
                 time: now - 1000,
-                postParams: null,
+                postParams: undefined,
                 counterType: '0',
                 params: {
                     [CLICKMAP_POINTER_PARAM]: '4',
@@ -97,7 +97,7 @@ describe('getRetransmitRequests', () => {
                 protocol: 'http:',
                 host,
                 params: undefined,
-                postParams: null,
+                postParams: undefined,
                 resource: WATCH_RESOURCE,
                 time: now - state.RETRANSMIT_EXPIRE * 2,
                 browserInfo: {
@@ -108,7 +108,7 @@ describe('getRetransmitRequests', () => {
             '4': {
                 counterId,
                 params: undefined,
-                postParams: null,
+                postParams: undefined,
                 counterType: '0',
                 protocol: 'http:',
                 host,
@@ -122,7 +122,7 @@ describe('getRetransmitRequests', () => {
             '5': {
                 counterId,
                 params: undefined,
-                postParams: null,
+                postParams: undefined,
                 counterType: '0',
                 protocol: 'http:',
                 host,
@@ -148,7 +148,7 @@ describe('getRetransmitRequests', () => {
                 },
                 ghid: HID,
                 params: undefined,
-                postParams: null,
+                postParams: undefined,
                 counterId,
                 retransmitIndex: 4,
             },

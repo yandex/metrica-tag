@@ -93,6 +93,7 @@ declare global {
             runtime: {
                 getURL: (url: string) => string;
             };
+            loadTimes(): { firstPaintTime: number };
         };
     }
 

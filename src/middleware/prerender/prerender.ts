@@ -12,11 +12,11 @@ const EVENTS = ['webkitvisibilitychange', 'visibilitychange'];
  */
 const prerender: MiddlewareGetter = (ctx: Window) => ({
     beforeRequest(senderParams: SenderInfo, next) {
-        const { document: doc } = ctx as any;
+        const { document: doc } = ctx;
         const { brInfo } = senderParams;
         if (brInfo && isPrerender(ctx)) {
             const event: EventSetter = cEvent(ctx);
-            const onVisibilityChange = (e: any) => {
+            const onVisibilityChange = (e: unknown) => {
                 if (!isPrerender(ctx)) {
                     event.un(doc, EVENTS, onVisibilityChange);
                     next();

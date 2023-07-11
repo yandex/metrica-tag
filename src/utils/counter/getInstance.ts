@@ -18,7 +18,7 @@ export const getCounterInstance = (
 };
 
 export const removeCounter = (ctx: Window, counterKey: string) => {
-    const counters = getGlobalStorage(ctx).getVal<Record<string, any>>(
+    const counters = getGlobalStorage(ctx).getVal<Record<string, unknown>>(
         COUNTERS_GLOBAL_KEY,
         {},
     );

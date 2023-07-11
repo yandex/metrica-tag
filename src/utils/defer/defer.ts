@@ -1,11 +1,12 @@
-import { errorLogger } from 'src/utils/errorLogger';
 import { setDeferBase } from 'src/utils/defer/base';
+import { errorLogger } from 'src/utils/errorLogger';
+import { AnyFunc } from 'src/utils/function/types';
 
 const SCOPE_KEY = 'def';
 
 export const setDefer = (
     ctx: Window,
-    fn: (...args: any[]) => any,
+    fn: AnyFunc,
     timeOut: number,
     errorScope?: string,
 ) => {
@@ -18,7 +19,7 @@ export const setDefer = (
 
 export const setDeferInterval = (
     ctx: Window,
-    fn: (...args: any[]) => any,
+    fn: AnyFunc,
     timeOut: number,
     errorScope?: string,
 ) => {

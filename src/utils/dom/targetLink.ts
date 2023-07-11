@@ -13,7 +13,7 @@ export const getTargetLink = (event: MouseEvent): HTMLAnchorElement | null => {
     } catch (e) {}
 
     if (target) {
-        if ((target as any).nodeType === 3) {
+        if ((target as Node).nodeType === 3) {
             // Текстовая нода, Safari bug
             target = target.parentNode as HTMLElement;
         }

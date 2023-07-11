@@ -16,7 +16,7 @@ export const asyncObserver = <T, U>(
     let buffer: Function[] = [];
     let inProgress = false;
 
-    const recursive = (): any => {
+    const recursive = (): void => {
         if (!buffer.length) {
             inProgress = false;
             return;

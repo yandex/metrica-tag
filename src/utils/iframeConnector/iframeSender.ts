@@ -84,7 +84,7 @@ export const resend = (
         dict: IframeCollection,
         newItem: BufferItem,
         data: MessageData,
-    ) => Promise<any>,
+    ) => Promise<MessageData>,
     itemList: BufferItem[],
     iframeInfo: IframeInfo,
 ) => {

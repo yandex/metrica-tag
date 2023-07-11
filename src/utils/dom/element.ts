@@ -190,10 +190,7 @@ export const getElementsByClassName = (
     // @ts-expect-error
     if (node.getElementsByClassName) {
         return flatMap(
-            pipe(
-                bindThisForMethod('getElementsByClassName', node as any),
-                toArray,
-            ),
+            pipe(bindThisForMethod('getElementsByClassName', node), toArray),
             classes,
         );
     }
