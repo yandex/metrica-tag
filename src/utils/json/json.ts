@@ -1,4 +1,12 @@
-function parse(ctx: Window, text: string | null): unknown | null {
+export type JSONValue =
+    | null
+    | boolean
+    | number
+    | string
+    | unknown[]
+    | Record<string, unknown>;
+
+function parse(ctx: Window, text: string | null): JSONValue {
     if (!text) {
         return null;
     }
