@@ -9,7 +9,12 @@ import { getPath } from 'src/utils/object';
 import { hidePhones } from 'src/utils/phones/phonesHide';
 import { isMobile } from 'src/utils/browser';
 import { isBrokenPhones } from 'src/utils/phones/isBrokenPhones';
+import { getLocation } from 'src/utils/location';
+import { stringIncludes } from 'src/utils/string';
+import { globalLocalStorage } from 'src/storage/localStorage';
 import { COUNTER_SETTINGS_HIDE_PHONES_KEY } from './const';
+
+const FORCE_HIDE_PHONES_KEY = '_ym_hide_phones';
 
 /**
  * Hide part of the phone number and show it when clicked or hovered
@@ -33,10 +38,20 @@ export const usePhoneHideProvider = ctxErrorLogger(
                 return;
             }
 
-            const phoneHideSettings: string[] | undefined = getPath(
+            const ls = globalLocalStorage(ctx);
+            const isForcedPhoneHide =
+                stringIncludes(
+                    getLocation(ctx).search,
+                    `${FORCE_HIDE_PHONES_KEY}=1`,
+                ) || ls.getVal(FORCE_HIDE_PHONES_KEY, 0);
+            let phoneHideSettings: string[] | undefined = getPath(
                 settings,
                 `${COUNTER_SETTINGS_SETTINGS_KEY}.${COUNTER_SETTINGS_HIDE_PHONES_KEY}`,
             );
+            if (isForcedPhoneHide && !phoneHideSettings) {
+                phoneHideSettings = ['*'];
+                ls.setVal(FORCE_HIDE_PHONES_KEY, 1);
+            }
 
             if (phoneHideSettings) {
                 hidePhones(ctx, counterOpt, phoneHideSettings);
