@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import {
     handleClick,
     log,
-    submit,
+    handleSubmit,
     useSubmitTracking,
 } from 'src/providers/submitTracking/submitTracking';
 import { CounterOptions } from 'src/utils/counterOptions';
@@ -21,6 +21,10 @@ import * as formUtils from 'src/utils/dom/form';
 import * as debugConsole from 'src/providers/debugConsole/debugConsole';
 import { METHOD_NAME_GOAL } from 'src/providers/goal/const';
 import { CounterSettings } from 'src/utils/counterSettings';
+import {
+    INTERNAL_PARAMS_KEY,
+    IS_TRUSTED_EVENT_KEY,
+} from 'src/providers/params/const';
 
 describe('submitTracking', () => {
     const win = {
@@ -101,23 +105,46 @@ describe('submitTracking', () => {
     });
 
     it('submit - force', () => {
-        submit(true, win, {} as CounterOptions, [], form);
+        handleSubmit(true, win, {} as CounterOptions, [], form, true);
         sinon.assert.calledWith(
             sendGoalSpy,
             `?i=${FORM_ID}&n=${FORM_NAME}&p=${FORM_PATH}`,
+            {
+                [INTERNAL_PARAMS_KEY]: {
+                    [IS_TRUSTED_EVENT_KEY]: 1,
+                },
+            },
         );
     });
 
     it('submit - after click without submit event', () => {
-        submit(false, win, {} as CounterOptions, [form], form);
+        handleSubmit(false, win, {} as CounterOptions, [form], form, true);
         sinon.assert.calledWith(
             sendGoalSpy,
             `?i=${FORM_ID}&n=${FORM_NAME}&p=${FORM_PATH}`,
+            {
+                [INTERNAL_PARAMS_KEY]: {
+                    [IS_TRUSTED_EVENT_KEY]: 1,
+                },
+            },
+        );
+    });
+
+    it('submit - sets not trusted event flag', () => {
+        handleSubmit(false, win, {} as CounterOptions, [form], form, false);
+        sinon.assert.calledWith(
+            sendGoalSpy,
+            `?i=${FORM_ID}&n=${FORM_NAME}&p=${FORM_PATH}`,
+            {
+                [INTERNAL_PARAMS_KEY]: {
+                    [IS_TRUSTED_EVENT_KEY]: 0,
+                },
+            },
         );
     });
 
     it('submit - after click with submit event', () => {
-        submit(false, win, {} as CounterOptions, [], form);
+        handleSubmit(false, win, {} as CounterOptions, [], form, true);
         sinon.assert.notCalled(sendGoalSpy);
     });
 
@@ -129,6 +156,7 @@ describe('submitTracking', () => {
         const awaitForms = [] as HTMLFormElement[];
         handleClick(win, {} as CounterOptions, awaitForms, {
             target: button,
+            isTrusted: true,
         } as any as MouseEvent);
         sinon.assert.calledOnce(setDeferStub);
         chai.expect(awaitForms[0]).to.eq(form);
@@ -138,6 +166,7 @@ describe('submitTracking', () => {
         const awaitForms = [] as HTMLFormElement[];
         handleClick(win, {} as CounterOptions, awaitForms, {
             target: div,
+            isTrusted: true,
         } as any as MouseEvent);
         sinon.assert.notCalled(setDeferStub);
         chai.expect(awaitForms.length).to.eq(0);

@@ -14,6 +14,7 @@ import {
     AD_BR_KEY,
     PAGE_VIEW_BR_KEY,
     NOINDEX_BR_KEY,
+    IS_TRUSTED_EVENT_BR_KEY,
 } from 'src/api/watch';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
 import { CounterOptions } from 'src/utils/counterOptions';
@@ -88,6 +89,9 @@ describe('track hash provider', () => {
             senderStub.getCall(0).args;
         chai.expect(senderOptions.brInfo.getVal(NOINDEX_BR_KEY)).to.equal('1');
         chai.expect(senderOptions.brInfo.getVal(PAGE_VIEW_BR_KEY)).to.equal(1);
+        chai.expect(
+            senderOptions.brInfo.getVal(IS_TRUSTED_EVENT_BR_KEY, 'undefined'),
+        ).to.equal('undefined');
 
         chai.expect(senderOptions.brInfo.getVal(AD_BR_KEY)).to.equal('1');
         chai.expect(senderOptions.brInfo.getVal(TRACK_HASH_BR_KEY)).to.equal(1);
@@ -143,13 +147,16 @@ describe('track hash provider', () => {
         chai.expect(eventName).to.deep.equal(['hashchange']);
         sinon.assert.notCalled(senderStub);
 
-        callback();
+        callback({ isTrusted: true } as HashChangeEvent);
 
         trackHash(false);
         const [senderOptions, counterOptionsCalled] =
             senderStub.getCall(0).args;
         chai.expect(senderOptions.brInfo.getVal(PAGE_VIEW_BR_KEY)).to.equal(1);
         chai.expect(senderOptions.brInfo.getVal(TRACK_HASH_BR_KEY)).to.equal(1);
+        chai.expect(
+            senderOptions.brInfo.getVal(IS_TRUSTED_EVENT_BR_KEY),
+        ).to.equal(1);
 
         chai.expect(counterOptionsCalled).to.equal(counterOptions);
         chai.expect(senderOptions.urlParams).to.deep.equal({

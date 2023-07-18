@@ -3,6 +3,7 @@ import {
     WATCH_REFERER_PARAM,
     IS_DOWNLOAD_BR_KEY,
     IS_EXTERNAL_LINK_BR_KEY,
+    IS_TRUSTED_EVENT_BR_KEY,
 } from 'src/api/watch';
 import { hasClass, getTargetLink } from 'src/utils/dom';
 import { getGlobalStorage } from 'src/storage/global';
@@ -47,6 +48,7 @@ import { COUNTER_STATE_TRACK_LINKS } from 'src/providers/getCounters/const';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
+import { toZeroOrOne } from 'src/utils/boolean';
 import {
     INTERNAL_LINK_STORAGE_KEY,
     MAX_LEN_INTERNAL_LINK,
@@ -98,6 +100,13 @@ export const sendClickLink = (
     options: SendOptions,
 ) => {
     const brInfo = browserInfo();
+
+    if (options.isTrustedEvent !== undefined) {
+        brInfo.setVal(
+            IS_TRUSTED_EVENT_BR_KEY,
+            toZeroOrOne(options.isTrustedEvent),
+        );
+    }
 
     if (options.isDownload) {
         brInfo.setVal(IS_DOWNLOAD_BR_KEY, 1);
@@ -194,12 +203,14 @@ const handleClickEventRaw = (
     const targetHref = target.href;
     let title = textFromLink(target);
     title = targetHref === title ? '' : title;
+    const isTrustedEvent = event.isTrusted;
 
     if (hasClass('ym-external-link', target)) {
         sendClickLink(ctx, counterOptions, {
             url: targetHref,
             isExternalLink: true,
             title,
+            isTrustedEvent,
             sender,
         });
         return;
@@ -235,6 +246,7 @@ const handleClickEventRaw = (
             sendClickLink(ctx, counterOptions, {
                 url: targetHref,
                 isDownload: true,
+                isTrustedEvent,
                 title,
                 sender,
             });
@@ -255,6 +267,7 @@ const handleClickEventRaw = (
             noIndex: true,
             isExternalLink: true,
             isDownload,
+            isTrustedEvent,
             title,
             sender,
         });
@@ -366,6 +379,7 @@ const useClicksProviderRaw = (
 
 /**
  * Track clicks, link navigations and file downloads
+ * - NOTE: To activate use `counterOptions.trackLinks` option
  * @param ctx - Current window
  * @param counterOptions - Counter options on initialization
  */

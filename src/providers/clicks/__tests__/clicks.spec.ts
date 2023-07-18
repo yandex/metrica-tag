@@ -5,6 +5,7 @@ import {
     WATCH_REFERER_PARAM,
     IS_DOWNLOAD_BR_KEY,
     IS_EXTERNAL_LINK_BR_KEY,
+    IS_TRUSTED_EVENT_BR_KEY,
 } from 'src/api/watch';
 import { mix } from 'src/utils/object';
 import type { SenderInfo } from 'src/sender/SenderInfo';
@@ -94,6 +95,7 @@ describe('clicks.ts', () => {
                 },
                 isExternalLink: true,
                 isDownload: true,
+                isTrustedEvent: true,
                 sender: senderStub,
             });
 
@@ -111,6 +113,14 @@ describe('clicks.ts', () => {
                 match(
                     ({ brInfo }: SenderInfo) =>
                         brInfo!.getVal(IS_DOWNLOAD_BR_KEY) === 1,
+                ),
+                counterOptions,
+            );
+            assert.calledWith(
+                senderStub,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(IS_TRUSTED_EVENT_BR_KEY) === 1,
                 ),
                 counterOptions,
             );
@@ -183,6 +193,57 @@ describe('clicks.ts', () => {
 
             assert.calledOnce(callbackSpy);
             assert.calledOn(callbackSpy, 'hey');
+        });
+
+        it('properly sets the isTrustedEvent option', () => {
+            sendClickLink(win, counterOptions, {
+                url,
+                sender: senderStub,
+            });
+
+            assert.calledOnce(senderStub);
+            assert.calledWith(
+                senderStub,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(
+                            IS_TRUSTED_EVENT_BR_KEY,
+                            'notDefined',
+                        ) === 'notDefined',
+                ),
+                counterOptions,
+            );
+
+            sendClickLink(win, counterOptions, {
+                url,
+                sender: senderStub,
+                isTrustedEvent: false,
+            });
+
+            assert.calledTwice(senderStub);
+            assert.calledWith(
+                senderStub,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(IS_TRUSTED_EVENT_BR_KEY) === 0,
+                ),
+                counterOptions,
+            );
+
+            sendClickLink(win, counterOptions, {
+                url,
+                isTrustedEvent: true,
+                sender: senderStub,
+            });
+            assert.calledThrice(senderStub);
+            assert.calledWith(
+                senderStub,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(IS_TRUSTED_EVENT_BR_KEY) === 1,
+                ),
+                counterOptions,
+            );
         });
 
         describe('calls getLoggerFn with proper message', () => {
@@ -346,7 +407,7 @@ describe('clicks.ts', () => {
                     fileExtensions: [],
                     trackLinksEnabled: () => true,
                 },
-                {} as MouseEvent,
+                { isTrusted: true } as MouseEvent,
             );
 
             const spyCall = senderStub.getCall(0);
@@ -357,6 +418,14 @@ describe('clicks.ts', () => {
                 match(
                     ({ brInfo }: SenderInfo) =>
                         brInfo!.getVal(IS_EXTERNAL_LINK_BR_KEY) === 1,
+                ),
+                counterOptions,
+            );
+            assert.calledWith(
+                spyCall,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(IS_TRUSTED_EVENT_BR_KEY) === 1,
                 ),
                 counterOptions,
             );
@@ -431,7 +500,7 @@ describe('clicks.ts', () => {
                     fileExtensions: [],
                     trackLinksEnabled: () => true,
                 },
-                {} as MouseEvent,
+                { isTrusted: true } as MouseEvent,
             );
 
             const spyCall = senderStub.lastCall;
@@ -448,6 +517,14 @@ describe('clicks.ts', () => {
                     ({ brInfo }: SenderInfo) =>
                         !brInfo!.getVal(IS_EXTERNAL_LINK_BR_KEY) &&
                         brInfo!.getVal(IS_DOWNLOAD_BR_KEY) === 1,
+                ),
+                counterOptions,
+            );
+            assert.calledWith(
+                spyCall,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(IS_TRUSTED_EVENT_BR_KEY) === 1,
                 ),
                 counterOptions,
             );
@@ -472,7 +549,7 @@ describe('clicks.ts', () => {
                     fileExtensions: [],
                     trackLinksEnabled: () => true,
                 },
-                {} as MouseEvent,
+                { isTrusted: true } as MouseEvent,
             );
 
             const spyCall = senderStub.lastCall;
@@ -489,6 +566,14 @@ describe('clicks.ts', () => {
                     ({ brInfo }: SenderInfo) =>
                         brInfo!.getVal(IS_EXTERNAL_LINK_BR_KEY) === 1 &&
                         brInfo!.getVal(IS_DOWNLOAD_BR_KEY) === 1,
+                ),
+                counterOptions,
+            );
+            assert.calledWith(
+                spyCall,
+                match(
+                    ({ brInfo }: SenderInfo) =>
+                        brInfo!.getVal(IS_TRUSTED_EVENT_BR_KEY) === 1,
                 ),
                 counterOptions,
             );

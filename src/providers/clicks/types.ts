@@ -59,6 +59,11 @@ export type SendOptions = {
     noIndex?: boolean;
     /** Options defined by user */
     userOptions?: UserOptions;
+    /** The flag contains the value of the `isTrusted` event type property from the native event type.
+     *
+     * [MDN Docs](https://developer.mozilla.org/ru/docs/Web/API/Event/isTrusted)
+     */
+    isTrustedEvent?: boolean;
 } & Pick<UserOptions, 'title'>;
 
 /**

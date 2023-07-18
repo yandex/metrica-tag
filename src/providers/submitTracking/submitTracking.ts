@@ -1,9 +1,9 @@
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { cEvent } from 'src/utils/events';
 import {
-    bindArg,
     bindArgs,
     call,
+    ctxBindArgs,
     curry2SwapArgs,
     memo,
     noop,
@@ -11,7 +11,7 @@ import {
     secondArg,
 } from 'src/utils/function';
 import { cIndexOf } from 'src/utils/array';
-import { ctxPath, getPath } from 'src/utils/object';
+import { ctxPath, getPath, isNil } from 'src/utils/object';
 import { setDefer } from 'src/utils/defer';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { useGoal } from 'src/providers/goal/goal';
@@ -21,7 +21,9 @@ import { closestForm, getFormData } from 'src/utils/dom/form';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { closest } from 'src/utils/dom';
 import { ternary } from 'src/utils/condition';
+import { toZeroOrOne } from 'src/utils/boolean';
 import { METHOD_NAME_GOAL } from '../goal/const';
+import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
 
 const CLICK_DELAY = 300;
 
@@ -51,12 +53,13 @@ export const log = (
         ),
     );
 
-export const submit = (
+export const handleSubmit = (
     force: boolean,
     ctx: Window,
     counterOptions: CounterOptions,
     awaitSubmitForms: HTMLFormElement[],
     form: HTMLFormElement,
+    isEventTrusted?: boolean | null,
 ) => {
     const formIndex = cIndexOf(ctx)(form, awaitSubmitForms);
     const hasForm = formIndex !== -1;
@@ -79,7 +82,21 @@ export const submit = (
             log,
         );
 
-        useGoal(ctx, counterOptions, 'form', logGoals)[METHOD_NAME_GOAL](query);
+        let rawParams: Record<string, unknown> | undefined;
+        if (isNil(isEventTrusted)) {
+            rawParams = undefined;
+        } else {
+            rawParams = {
+                [INTERNAL_PARAMS_KEY]: {
+                    [IS_TRUSTED_EVENT_KEY]: toZeroOrOne(isEventTrusted),
+                },
+            };
+        }
+
+        useGoal(ctx, counterOptions, 'form', logGoals)[METHOD_NAME_GOAL](
+            query,
+            rawParams,
+        );
     }
 };
 
@@ -90,6 +107,7 @@ export const handleClick = (
     event: MouseEvent,
 ) => {
     const target = getPath(event, 'target');
+    const isTrusted = getPath(event, 'isTrusted');
     const button = closest('button,input', ctx, target) as
         | HTMLButtonElement
         | HTMLInputElement
@@ -103,8 +121,15 @@ export const handleClick = (
             setDefer(
                 ctx,
                 bindArgs(
-                    [false, ctx, counterOptions, awaitSubmitForms, form],
-                    submit,
+                    [
+                        false,
+                        ctx,
+                        counterOptions,
+                        awaitSubmitForms,
+                        form,
+                        isTrusted,
+                    ],
+                    handleSubmit,
                 ),
                 CLICK_DELAY,
             );
@@ -112,7 +137,10 @@ export const handleClick = (
     }
 };
 
-export const handleSubmit = bindArg(true, submit);
+const getTargetAndIsTrustedFlag = (event: Event) => [
+    getPath(event, 'target'),
+    getPath(event, 'isTrusted'),
+];
 
 /**
  * Tracks form submissions
@@ -141,11 +169,9 @@ export const useSubmitTracking = ctxErrorLogger(
                 ctx,
                 's.f.e',
                 pipe(
-                    ctxPath('target'),
-                    bindArgs(
-                        [ctx, counterOptions, awaitSubmitForms],
-                        handleSubmit,
-                    ),
+                    getTargetAndIsTrustedFlag,
+                    curry2SwapArgs(bindArgs)(handleSubmit),
+                    ctxBindArgs([true, ctx, counterOptions, awaitSubmitForms]),
                 ),
             ),
         );

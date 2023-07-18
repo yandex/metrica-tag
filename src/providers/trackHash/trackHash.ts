@@ -5,10 +5,11 @@ import {
     AD_BR_KEY,
     PAGE_VIEW_BR_KEY,
     NOINDEX_BR_KEY,
+    IS_TRUSTED_EVENT_BR_KEY,
 } from 'src/api/watch';
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { has } from 'src/utils/object';
+import { has, isNil } from 'src/utils/object';
 import { getLocation } from 'src/utils/location';
 import { cEvent } from 'src/utils/events';
 import { browserInfo } from 'src/utils/browserInfo';
@@ -23,6 +24,7 @@ import { LAST_REFERRER_KEY } from 'src/storage/global/consts';
 import { setDeferInterval, clearDeferInterval } from 'src/utils/defer';
 import { counterStateSetter } from 'src/providers/getCounters/getCounters';
 import { COUNTER_STATE_TRACK_HASH } from 'src/providers/getCounters/const';
+import { toZeroOrOne } from 'src/utils/boolean';
 import { METHOD_TRACK_HASH, TRACK_HASH_PROVIDER } from './const';
 
 export const HASH_CHECKS_INTERVAL = 200;
@@ -34,7 +36,10 @@ function getHashValue(ctx: Window) {
     return hashValue ? hashValue.split('?')[0] : '';
 }
 
-function onOldBrowserHashChange(ctx: Window, handler: Function) {
+function onOldBrowserHashChange(
+    ctx: Window,
+    handler: (event?: HashChangeEvent) => void,
+) {
     let lastHash = getHashValue(ctx);
 
     function watchHash() {
@@ -60,6 +65,7 @@ function onHashChange(
     ctx: Window,
     counterOptions: CounterOptions,
     sender: GetSenderType<typeof TRACK_HASH_PROVIDER>,
+    event?: HashChangeEvent,
 ) {
     const { counterType, ut, forceUrl } = counterOptions;
     const globalConfig = getGlobalStorage(ctx);
@@ -67,6 +73,10 @@ function onHashChange(
         [TRACK_HASH_BR_KEY]: 1,
         [PAGE_VIEW_BR_KEY]: 1,
     });
+
+    if (event && !isNil(event.isTrusted)) {
+        brInfo.setVal(IS_TRUSTED_EVENT_BR_KEY, toZeroOrOne(event.isTrusted));
+    }
 
     if (yaDirectExists(ctx, counterType)) {
         brInfo.setVal(AD_BR_KEY, '1');
@@ -94,6 +104,7 @@ function onHashChange(
 
 /**
  * Tracks URL hash change
+ * - NOTE: To activate use `counterOptions.trackHash` option
  * @param ctx - Current window
  * @param counterOptions - Counter options on initialization
  */

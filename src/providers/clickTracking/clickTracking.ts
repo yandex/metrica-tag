@@ -1,7 +1,7 @@
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { cEvent } from 'src/utils/events';
 import { bindArgs, pipe } from 'src/utils/function';
-import { ctxPath, getPath } from 'src/utils/object';
+import { getPath, isNil } from 'src/utils/object';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { destructingDecorator } from 'src/utils/methodDecorators/destructing';
 import { CounterSettings, getCounterSettings } from 'src/utils/counterSettings';
@@ -9,15 +9,18 @@ import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { useGoal } from 'src/providers/goal/goal';
 import { stringify } from 'src/utils/querystring';
 import { closestButton, getButtonData } from 'src/utils/dom/button';
+import { toZeroOrOne } from 'src/utils/boolean';
 import { METHOD_NAME_GOAL } from '../goal/const';
+import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
 
 export const GOAL_PREFIX = 'btn';
 
 export const handleClick = (
     ctx: Window,
     counterOptions: CounterOptions,
-    target?: HTMLElement,
+    event: MouseEvent,
 ) => {
+    const target: HTMLElement | null = getPath(event, 'target');
     if (!target) {
         return;
     }
@@ -37,8 +40,22 @@ export const handleClick = (
         `Button goal. Counter ${counterOptions.id}. Button: ${query}.`,
     );
 
+    const isTrusted = getPath(event, 'isTrusted');
+
+    let rawParams;
+    if (isNil(event.isTrusted)) {
+        rawParams = undefined;
+    } else {
+        rawParams = {
+            [INTERNAL_PARAMS_KEY]: {
+                [IS_TRUSTED_EVENT_KEY]: toZeroOrOne(isTrusted),
+            },
+        };
+    }
+
     useGoal(ctx, counterOptions, GOAL_PREFIX, logGoals)[METHOD_NAME_GOAL](
         query,
+        rawParams,
     );
 };
 
@@ -64,7 +81,6 @@ export const useClickTracking = ctxErrorLogger(
                         ctx,
                         'c.t.c',
                         pipe(
-                            ctxPath('target'),
                             bindArgs(
                                 [ctx, counterOptions],
                                 destructingDecorator(
@@ -73,7 +89,7 @@ export const useClickTracking = ctxErrorLogger(
                                     '',
                                     handleClick,
                                 ),
-                            ) as (target: HTMLElement) => void,
+                            ),
                         ),
                     ),
                 );

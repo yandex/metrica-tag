@@ -16,6 +16,10 @@ import { CounterSettings } from 'src/utils/counterSettings';
 import chai from 'chai';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import { METHOD_NAME_GOAL } from 'src/providers/goal/const';
+import {
+    INTERNAL_PARAMS_KEY,
+    IS_TRUSTED_EVENT_KEY,
+} from 'src/providers/params/const';
 
 describe('clickTracking', () => {
     const { window } = new JSDOMWrapper();
@@ -26,7 +30,10 @@ describe('clickTracking', () => {
     let cEventSpy: sinon.SinonSpy;
 
     let sendGoalSpy: sinon.SinonSpy;
-    let useGoalStub: sinon.SinonStub;
+    let useGoalStub: sinon.SinonStub<
+        Parameters<typeof goalUtils.useGoal>,
+        ReturnType<typeof goalUtils.useGoal>
+    >;
 
     beforeEach(() => {
         cEventSpy = sandbox.spy();
@@ -72,11 +79,15 @@ describe('clickTracking', () => {
     it('click button', () => {
         const target = document.createElement('BUTTON');
         const data = { [ID]: 'id' };
+        const event = {
+            target,
+            isTrusted: false,
+        } as unknown as MouseEvent;
 
         sandbox.stub(buttonUtils, 'closestButton').returns(target);
         sandbox.stub(buttonUtils, 'getButtonData').returns(data as any);
 
-        handleClick(window, counterOptions, target);
+        handleClick(window, counterOptions, event);
 
         sinon.assert.calledWith(
             useGoalStub,
@@ -84,15 +95,63 @@ describe('clickTracking', () => {
             counterOptions,
             GOAL_PREFIX,
         );
-        sinon.assert.calledWith(sendGoalSpy, `?${stringify(data)}`);
+
+        const expectedParams = {
+            [INTERNAL_PARAMS_KEY]: {
+                [IS_TRUSTED_EVENT_KEY]: 0,
+            },
+        };
+
+        sinon.assert.calledWith(
+            sendGoalSpy,
+            `?${stringify(data)}`,
+            expectedParams,
+        );
+    });
+
+    it('sets isTrusted flag', () => {
+        const target = document.createElement('BUTTON');
+        const data = { [ID]: 'id' };
+        const event = {
+            target,
+            isTrusted: true,
+        } as unknown as MouseEvent;
+
+        sandbox.stub(buttonUtils, 'closestButton').returns(target);
+        sandbox.stub(buttonUtils, 'getButtonData').returns(data as any);
+
+        handleClick(window, counterOptions, event);
+
+        sinon.assert.calledWith(
+            useGoalStub,
+            window,
+            counterOptions,
+            GOAL_PREFIX,
+        );
+
+        const expectedParams = {
+            [INTERNAL_PARAMS_KEY]: {
+                [IS_TRUSTED_EVENT_KEY]: 1,
+            },
+        };
+
+        sinon.assert.calledWith(
+            sendGoalSpy,
+            `?${stringify(data)}`,
+            expectedParams,
+        );
     });
 
     it('click invalid button', () => {
         const target = document.createElement('BUTTON');
+        const event = {
+            target,
+            isTrusted: false,
+        } as unknown as MouseEvent;
 
         sandbox.stub(buttonUtils, 'closestButton').returns(null);
 
-        handleClick(window, counterOptions, target);
+        handleClick(window, counterOptions, event);
 
         sinon.assert.notCalled(useGoalStub);
     });

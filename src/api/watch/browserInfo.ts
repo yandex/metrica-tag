@@ -242,3 +242,12 @@ export const IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY = 'sti';
  * Value Type: number
  */
 export const PARENT_HID_BR_KEY = 'phid';
+
+/**
+ * The flag contains the value of the `isTrusted` property from the native event type.
+ *
+ * [MDN Docs](https://developer.mozilla.org/ru/docs/Web/API/Event/isTrusted)
+ *
+ * Value Type: number (true = 1, false = 0)
+ */
+export const IS_TRUSTED_EVENT_BR_KEY = 'ite';
