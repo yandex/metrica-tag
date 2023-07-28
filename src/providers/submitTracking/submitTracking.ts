@@ -3,7 +3,6 @@ import { cEvent } from 'src/utils/events';
 import {
     bindArgs,
     call,
-    ctxBindArgs,
     curry2SwapArgs,
     memo,
     noop,
@@ -165,15 +164,17 @@ export const useSubmitTracking = ctxErrorLogger(
         cEvent(ctx).on(
             ctx,
             ['submit'],
-            errorLogger(
-                ctx,
-                's.f.e',
-                pipe(
-                    getTargetAndIsTrustedFlag,
-                    curry2SwapArgs(bindArgs)(handleSubmit),
-                    ctxBindArgs([true, ctx, counterOptions, awaitSubmitForms]),
-                ),
-            ),
+            errorLogger(ctx, 's.f.e', (event) => {
+                const [target, isTrusted] = getTargetAndIsTrustedFlag(event);
+                handleSubmit(
+                    true,
+                    ctx,
+                    counterOptions,
+                    awaitSubmitForms,
+                    target,
+                    isTrusted,
+                );
+            }),
         );
 
         log(
