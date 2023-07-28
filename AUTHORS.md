@@ -8,3 +8,4 @@ Vasilyev Roman <sabio@yandex-team.com>
 Novikov Evgenii <enovikov11@yandex-team.com>  
 Kanatnikov Dmitrii <rifler@yandex-team.com>  
 Semenova Ekaterina <semenova2kate@yandex-team.com>  
+Stepan Galagan <cvgalagan@yandex-team.com>
