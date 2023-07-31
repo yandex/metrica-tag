@@ -40,15 +40,15 @@ export const handleClick = (
         `Button goal. Counter ${counterOptions.id}. Button: ${query}.`,
     );
 
-    const isTrusted = getPath(event, 'isTrusted');
+    const isTrustedEvent = getPath(event, 'isTrusted');
 
     let rawParams;
-    if (isNil(event.isTrusted)) {
+    if (isNil(isTrustedEvent)) {
         rawParams = undefined;
     } else {
         rawParams = {
             [INTERNAL_PARAMS_KEY]: {
-                [IS_TRUSTED_EVENT_KEY]: toZeroOrOne(isTrusted),
+                [IS_TRUSTED_EVENT_KEY]: toZeroOrOne(isTrustedEvent),
             },
         };
     }

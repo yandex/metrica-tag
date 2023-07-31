@@ -9,7 +9,7 @@ import { hasClass, getTargetLink } from 'src/utils/dom';
 import { getGlobalStorage } from 'src/storage/global';
 import { escapeForRegExp, isString } from 'src/utils/string';
 import { trimText } from 'src/utils/string/remove';
-import { ctxPath } from 'src/utils/object';
+import { ctxPath, getPath } from 'src/utils/object';
 import {
     noop,
     bindArg,
@@ -203,7 +203,7 @@ const handleClickEventRaw = (
     const targetHref = target.href;
     let title = textFromLink(target);
     title = targetHref === title ? '' : title;
-    const isTrustedEvent = event.isTrusted;
+    const isTrustedEvent = getPath(event, 'isTrusted');
 
     if (hasClass('ym-external-link', target)) {
         sendClickLink(ctx, counterOptions, {

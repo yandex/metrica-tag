@@ -106,7 +106,7 @@ export const handleClick = (
     event: MouseEvent,
 ) => {
     const target = getPath(event, 'target');
-    const isTrusted = getPath(event, 'isTrusted');
+    const isTrustedEvent = getPath(event, 'isTrusted');
     const button = closest('button,input', ctx, target) as
         | HTMLButtonElement
         | HTMLInputElement
@@ -126,7 +126,7 @@ export const handleClick = (
                         counterOptions,
                         awaitSubmitForms,
                         form,
-                        isTrusted,
+                        isTrustedEvent,
                     ],
                     handleSubmit,
                 ),
@@ -135,11 +135,6 @@ export const handleClick = (
         }
     }
 };
-
-const getTargetAndIsTrustedFlag = (event: Event) => [
-    getPath(event, 'target'),
-    getPath(event, 'isTrusted'),
-];
 
 /**
  * Tracks form submissions
@@ -165,14 +160,15 @@ export const useSubmitTracking = ctxErrorLogger(
             ctx,
             ['submit'],
             errorLogger(ctx, 's.f.e', (event) => {
-                const [target, isTrusted] = getTargetAndIsTrustedFlag(event);
+                const target = getPath(event, 'target');
+                const isTrustedEvent = getPath(event, 'isTrusted');
                 handleSubmit(
                     true,
                     ctx,
                     counterOptions,
                     awaitSubmitForms,
                     target,
-                    isTrusted,
+                    isTrustedEvent,
                 );
             }),
         );

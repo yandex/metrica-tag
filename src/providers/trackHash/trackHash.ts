@@ -9,7 +9,7 @@ import {
 } from 'src/api/watch';
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { has, isNil } from 'src/utils/object';
+import { getPath, has, isNil } from 'src/utils/object';
 import { getLocation } from 'src/utils/location';
 import { cEvent } from 'src/utils/events';
 import { browserInfo } from 'src/utils/browserInfo';
@@ -73,9 +73,10 @@ function onHashChange(
         [TRACK_HASH_BR_KEY]: 1,
         [PAGE_VIEW_BR_KEY]: 1,
     });
+    const isTrustedEvent = getPath(event, 'isTrusted');
 
-    if (event && !isNil(event.isTrusted)) {
-        brInfo.setVal(IS_TRUSTED_EVENT_BR_KEY, toZeroOrOne(event.isTrusted));
+    if (event && !isNil(isTrustedEvent)) {
+        brInfo.setVal(IS_TRUSTED_EVENT_BR_KEY, toZeroOrOne(isTrustedEvent));
     }
 
     if (yaDirectExists(ctx, counterType)) {
