@@ -71,7 +71,6 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
     counterType?,
     counterDefer?,
 ) {
-    // eslint-disable-next-line consistent-return
     return errorLogger(window, 'c.i', () => {
         const ctx = window;
         // eslint-disable-next-line no-restricted-globals

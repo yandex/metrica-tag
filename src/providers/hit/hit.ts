@@ -8,7 +8,7 @@ import type { CounterOptions } from 'src/utils/counterOptions';
 import { getSender } from 'src/sender';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { HIT_PROVIDER } from 'src/providers';
-import { errorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { setSettings } from 'src/utils/counterSettings';
 import type { TransportResponse } from 'src/transport/types';
 import { getLocation } from 'src/utils/location';
@@ -28,7 +28,7 @@ import { runAsync } from 'src/utils/async';
  * @param ctx - Current window
  * @param counterOpt - Counter options during initialization
  */
-const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
+export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
     const sender = getSender(ctx, HIT_PROVIDER, counterOpt);
     const url = counterOpt.forceUrl || `${getLocation(ctx).href}`;
     const referrer = counterOpt.forceReferrer || ctx.document.referrer;
@@ -82,6 +82,4 @@ const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
         .catch(errorLogger(ctx, 'h.g.s'));
 };
 
-const useHitProvider = errorLogger(window, 'h.p', useRawHitProvider);
-
-export { useRawHitProvider, useHitProvider };
+export const useHitProvider = ctxErrorLogger('h.p', useRawHitProvider);
