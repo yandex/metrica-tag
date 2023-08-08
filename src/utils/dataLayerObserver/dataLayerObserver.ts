@@ -1,9 +1,9 @@
 import { getGlobalStorage } from 'src/storage/global';
 import { getPath, isFunction } from 'src/utils/object';
 import { cForEach } from 'src/utils/array';
-import { firstArg, noop, bindArg } from 'src/utils/function';
+import { firstArg, noop, bindArg, curry2 } from 'src/utils/function';
 import { argsToArray } from 'src/utils/function/args';
-import { emitter, Emitter, observer, Observer } from '../events';
+import { emitter, Emitter, Listener, observer, Observer } from '../events';
 import { MessageData } from '../iframeConnector/types';
 
 export const INNER_DATA_LAYER_KEY = 'dataLayer';
@@ -66,6 +66,13 @@ export const dataLayerObserver = <T, U>(
 
     return observerObject;
 };
+
+export const registerObserverCallback = curry2(
+    <T, U>(callback: Listener<T, U>, o: DataLayerObserverObject<T, U>) => {
+        o.observer.on(callback);
+    },
+);
+
 const toInner = (newEmitter: Emitter<MessageData, void>, item: any) => {
     const data = getPath(item, `${INNER_DATA_LAYER_NAMESPACE}`);
     if (!data) {
@@ -90,9 +97,7 @@ export const innerDataLayerObserver = (
     dataLayerObserver<MessageData, void>(
         ctx,
         array,
-        (observerEmitter: DataLayerObserverObject<MessageData, void>) => {
-            observerEmitter.observer.on(handler);
-        },
+        registerObserverCallback(handler),
     );
     return eventEmitter;
 };

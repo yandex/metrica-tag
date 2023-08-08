@@ -4,7 +4,10 @@ import {
     DebugConsole,
     debugEnabled,
 } from 'src/providers/debugConsole/debugConsole';
-import { dataLayerObserver } from 'src/utils/dataLayerObserver';
+import {
+    dataLayerObserver,
+    registerObserverCallback,
+} from 'src/utils/dataLayerObserver';
 import { nonNativeFunctionsList } from './report';
 
 // eslint-disable-next-line no-useless-escape
@@ -32,13 +35,15 @@ const logNonNativeFunction = memo(
  */
 export const useReportNonNativeFunctionProviderRaw = (ctx: Window) => {
     if (debugEnabled(ctx).isEnabled) {
-        dataLayerObserver(ctx, nonNativeFunctionsList, ({ observer }) => {
-            observer.on(([functionName, fn]: [string, any]) => {
+        dataLayerObserver(
+            ctx,
+            nonNativeFunctionsList,
+            registerObserverCallback(([functionName, fn]: [string, any]) => {
                 logNonNativeFunction(ctx, fn, functionName);
                 // защита от утечек памяти
                 nonNativeFunctionsList.splice(100);
-            });
-        });
+            }),
+        );
     }
 };
 
