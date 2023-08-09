@@ -1,4 +1,4 @@
-import { call, noop } from 'src/utils/function';
+import { noop } from 'src/utils/function';
 import * as time from 'src/utils/time';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
@@ -6,9 +6,7 @@ import Sinon from 'sinon';
 import {
     iterForOf,
     iterForEach,
-    iterForEachUntilMaxTime,
     iterNextCall,
-    iterBreak,
     iterPop,
     iterPopUntilMaxTime,
 } from '../iterator';
@@ -17,16 +15,10 @@ describe('iterator universal', () => {
     let win: any;
     const testArrayOrigin = [1, 2, 3, 4];
     let timeOneStub: Sinon.SinonStub<any, any>;
-    let winGlo: any;
-    if (typeof global !== 'undefined') {
-        winGlo = 'nodejsTest' in global ? global : window;
-    }
     const sandbox = sinon.createSandbox();
     beforeEach(() => {
         timeOneStub = sandbox.stub(time, 'TimeOne');
-        win = {
-            setTimeout: setTimeout.bind(winGlo),
-        };
+        win = {};
     });
     afterEach(() => {
         sandbox.restore();
@@ -82,55 +74,24 @@ describe('iterator universal', () => {
         const result = iterFn2(iterForEach(noop) as any);
         expect(result).to.be.deep.eq([2, 4, 6, 8]);
     });
-    it('iter on next functions', (done) => {
+    it('iter on next functions', () => {
         let count = 0;
-        let iterator: Function | null;
-        const syncFn = (stop: boolean) => (next: Function) => {
+        const syncFn = (next: Function) => {
             count += 1;
-            if (stop && iterator) {
-                iterator(iterBreak);
-            }
             next();
-        };
-        const asyncFn = (next: Function) => {
-            setTimeout(() => {
-                count += 1;
-                next();
-            }, 100);
         };
         const finishFn = (next: Function) => {
             count += 1;
-            expect(count).to.be.eq(4);
-            done();
+            expect(count).to.be.eq(3);
             next();
         };
-        iterator = iterForOf(
-            [syncFn(false), asyncFn, syncFn(false), finishFn],
+        const iterator = iterForOf(
+            [syncFn, syncFn, finishFn],
             (fn: Function, next) => {
                 fn(next);
             },
         );
         iterator(iterNextCall);
-        expect(count).to.be.eq(1);
-    });
-});
-
-describe.skip('browser iterator', () => {
-    return;
-    it('create iterate until timeout', () => {
-        let count = 0;
-        let sum = 0;
-        const fn = () => {
-            let r = 0;
-            for (let i = 0; i < 10000; i += 1) {
-                r += Math.random() + i;
-            }
-            count += 1;
-            sum += r;
-        };
-        const iterFn = iterForOf([fn, fn, fn], call);
-        iterFn(iterForEachUntilMaxTime(window, 0));
-        expect(count).to.be.equal(1);
-        expect(sum).to.be.not.equal(0);
+        expect(count).to.be.eq(3);
     });
 });

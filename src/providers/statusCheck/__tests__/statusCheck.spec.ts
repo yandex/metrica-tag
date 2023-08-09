@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as remoteControlUtils from 'src/providers/remoteControl/remoteControl';
-
+import * as defer from 'src/utils/defer';
 import { parseDecimalInt } from 'src/utils/number';
 import {
     CHECK_URL_PARAM,
@@ -66,9 +66,9 @@ describe('CHECK_STATUS_FEATURE', () => {
 
     describe('checkStatusRaw', () => {
         const sandbox = sinon.createSandbox();
+        let setDefer: sinon.SinonStub;
         let setupUtilsAndLoadScriptStub: sinon.SinonStub;
         let getResourceUrlStub: sinon.SinonStub;
-        let clock: sinon.SinonFakeTimers;
         const src = 'https://example.com/script.js';
         const counterOptions: CounterOptions = {
             id: numericCounterId,
@@ -83,32 +83,29 @@ describe('CHECK_STATUS_FEATURE', () => {
             getResourceUrlStub = sandbox
                 .stub(remoteControlUtils, 'getResourceUrl')
                 .returns(src);
-
-            clock = sinon.useFakeTimers();
+            setDefer = sandbox.stub(defer, 'setDefer');
         });
 
         afterEach(() => {
             sandbox.restore();
-            clock.restore();
         });
 
         it(`does not trigger setupAndLoadScript when the check is disabled in search parameters`, () => {
             const ctx: any = windowWithSearchParams(
                 locationSearchWithoutCheckParameter,
             );
-            ctx.setTimeout = setTimeout;
             checkStatusRaw(ctx, counterOptions);
-            clock.runAll();
-            chai.expect(setupUtilsAndLoadScriptStub.callCount).to.equal(0);
+            sinon.assert.notCalled(setDefer);
         });
 
         it(`triggers setupAndLoadScript with counter ID from search parameters`, () => {
             const ctx: any = windowWithSearchParams(
                 locationSearchWithCheckParameter,
             );
-            ctx.setTimeout = setTimeout;
             checkStatusRaw(ctx, counterOptions);
-            clock.runAll();
+            const [, callback, time] = setDefer.getCall(0).args;
+            chai.expect(time).to.equal(0);
+            callback();
             sinon.assert.calledOnceWithExactly(getResourceUrlStub, {
                 ['lang']: 'ru',
                 ['fileId']: 'status',

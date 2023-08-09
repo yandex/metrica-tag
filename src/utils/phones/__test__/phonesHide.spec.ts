@@ -3,17 +3,21 @@ import * as sinon from 'sinon';
 import { hidePhones, HOVER_TIMEOUT } from 'src/utils/phones';
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as counter from 'src/utils/counter';
+import * as defer from 'src/utils/defer';
 import * as phonesDom from 'src/utils/phones/phonesDom';
 import * as eventUtils from 'src/utils/events';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import * as phonesHide from '../phonesHide';
 
 describe('phoneHide / phoneHide', () => {
-    const { window } = new JSDOMWrapper();
+    const { window } = new JSDOMWrapper(undefined, { url: 'http://localhost' });
     const { document } = window;
     const sandbox = sinon.createSandbox();
     let replacePhonesDom: sinon.SinonSpy;
     let extLink: sinon.SinonSpy;
+    let setDefer: sinon.SinonStub;
+    let clearDefer: sinon.SinonStub;
+    const timeoutId = 123;
 
     const counterOptions = {} as CounterOptions;
 
@@ -22,6 +26,8 @@ describe('phoneHide / phoneHide', () => {
     let link: HTMLAnchorElement;
 
     beforeEach(() => {
+        setDefer = sandbox.stub(defer, 'setDefer').returns(timeoutId);
+        clearDefer = sandbox.stub(defer, 'clearDefer');
         replacePhonesDom = sandbox.spy();
 
         sandbox.stub(phonesDom, 'createPhoneDomReplacer').returns({
@@ -48,7 +54,7 @@ describe('phoneHide / phoneHide', () => {
         sandbox.restore();
     });
 
-    it('transformPhone / hover', (done) => {
+    it('transformPhone / hover', () => {
         const { transformPhone } = phonesHide;
         let hoverCb: ({ target }: { target: HTMLElement }) => void = () => {};
 
@@ -76,18 +82,18 @@ describe('phoneHide / phoneHide', () => {
         chai.expect(wrapper.nodeName).to.eq('SMALL');
 
         hoverCb({ target: wrapper });
+        const [, showCb, timeout] = setDefer.getCall(0).args;
+        chai.expect(timeout).to.equal(HOVER_TIMEOUT);
+        showCb();
 
-        setTimeout(() => {
-            chai.expect(node.childNodes[0].textContent).to.include(
-                '+8 (777) 666-55-11',
-            );
+        chai.expect(node.childNodes[0].textContent).to.include(
+            '+8 (777) 666-55-11',
+        );
 
-            sinon.assert.calledWith(extLink, 'tel:87776665511', {});
-            done();
-        }, HOVER_TIMEOUT * 2);
+        sinon.assert.calledWith(extLink, 'tel:87776665511', {});
     });
 
-    it('transformPhone / mouseleave', (done) => {
+    it('transformPhone / mouseleave', () => {
         const { transformPhone } = phonesHide;
         let hoverCb: ({ target }: { target: HTMLElement }) => void = () => {};
         let leaveCb: ({ target }: { target: HTMLElement }) => void = () => {};
@@ -118,17 +124,16 @@ describe('phoneHide / phoneHide', () => {
         chai.expect(wrapper.nodeName).to.eq('SMALL');
 
         hoverCb({ target: wrapper });
+        leaveCb({ target: wrapper });
 
-        setTimeout(() => {
-            leaveCb({ target: wrapper });
-            setTimeout(() => {
-                sinon.assert.notCalled(extLink);
-                done();
-            }, HOVER_TIMEOUT * 2);
-        }, HOVER_TIMEOUT / 2);
+        leaveCb({ target: wrapper });
+
+        const [, , timeout] = setDefer.getCall(0).args;
+        chai.expect(timeout).to.equal(HOVER_TIMEOUT);
+        sinon.assert.calledWith(clearDefer, window, timeoutId);
     });
 
-    it('transformPhone / mouseleave child', (done) => {
+    it('transformPhone / mouseleave child', () => {
         const { transformPhone } = phonesHide;
         let hoverCb: ({ target }: { target: HTMLElement }) => void = () => {};
         let leaveCb: ({ target }: { target: HTMLElement }) => void = () => {};
@@ -164,13 +169,13 @@ describe('phoneHide / phoneHide', () => {
         hoverCb({ target: wrapper });
         hoverCb({ target: someChild });
 
-        setTimeout(() => {
-            leaveCb({ target: someChild });
-            setTimeout(() => {
-                sinon.assert.called(extLink);
-                done();
-            }, HOVER_TIMEOUT * 2);
-        }, HOVER_TIMEOUT / 2);
+        leaveCb({ target: someChild });
+        sinon.assert.notCalled(clearDefer);
+
+        const [, showCb, timeout] = setDefer.getCall(0).args;
+        chai.expect(timeout).to.equal(HOVER_TIMEOUT);
+        showCb();
+        sinon.assert.called(extLink);
     });
 
     it('hidePhones', () => {

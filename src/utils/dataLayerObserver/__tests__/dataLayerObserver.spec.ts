@@ -1,4 +1,5 @@
 import * as chai from 'chai';
+import * as sinon from 'sinon';
 import { dataLayerObserver } from '../dataLayerObserver';
 
 const win = () => {
@@ -17,7 +18,7 @@ describe('dataLayerObserver', () => {
         });
         chai.expect(counter).to.be.equal(0);
     });
-    it('rewrite push function twice', (done) => {
+    it('rewrite push function twice', () => {
         const layer: number[] = [];
         const winInfo = win();
         const testNo = 1;
@@ -34,29 +35,23 @@ describe('dataLayerObserver', () => {
                 chai.expect(no).to.be.equal(testNo);
             });
         });
-        setTimeout(() => {
-            chai.expect(counter).to.be.equal(2);
-            done();
-        }, 10);
         layer.push(testNo);
+        chai.expect(counter).to.be.equal(2);
     });
-    it('rewrite push function', (done) => {
+    it('rewrite push function', () => {
         const winInfo = win();
         const testElem = 'testElem';
         const testElem2 = 'testElem2';
         const testArray: any[] = [testElem];
-        let callCounter = 0;
+
+        const onDataStub = sinon.stub();
         dataLayerObserver(winInfo, testArray, ({ observer }) => {
-            observer.on((data) => {
-                callCounter += 1;
-                if (callCounter === 1) {
-                    chai.expect(data).to.be.equal(testElem);
-                } else {
-                    chai.expect(data).to.be.equal(testElem2);
-                    done();
-                }
-            });
+            observer.on(onDataStub);
         });
         testArray.push(testElem2);
+
+        sinon.assert.calledTwice(onDataStub);
+        sinon.assert.calledWith(onDataStub, testElem);
+        sinon.assert.calledWith(onDataStub, testElem2);
     });
 });
