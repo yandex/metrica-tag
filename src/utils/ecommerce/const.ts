@@ -20,6 +20,11 @@ export const UA_EVENT_REMOVE = 'remove';
 export const UA_EVENT_ADD = 'add';
 export const UA_EVENT_DETAIL = 'detail';
 export const UA_EVENT_DELETE = 'delete';
+export const UA_EVENT_IMPRESSIONS = 'impressions';
+export const UA_EVENT_CLICK = 'click';
+export const UA_EVENT_PROMO_VIEW = 'promoView';
+export const UA_EVENT_PROMO_CLICK = 'promoClick';
+export const ECOMMERCE_PROMOTIONS = 'promotions';
 
 export const GTAG_COMMON_REPLACE_KEYS: Record<string, string> = {
     ['transaction_id']: 'id',
@@ -31,7 +36,7 @@ export const GTAG_COMMON_REPLACE_KEYS: Record<string, string> = {
     ['item_list_name']: 'list',
 };
 
-export const GTAG_PRODUCTS_REPLACE_KEYS = {
+export const GTAG_PRODUCTS_REPLACE_KEYS: Record<string, string> = {
     ['item_id']: 'id',
     ['item_name']: 'name',
     ['promotion_name']: 'coupon',
@@ -39,6 +44,13 @@ export const GTAG_PRODUCTS_REPLACE_KEYS = {
 
 export const GTAG_EVENT_REPLACE_KEYS: Record<string, string> = {
     ['promotion_name']: 'name',
+};
+
+export const GTAG_PROMOTIONS_REPLACE_KEYS: Record<string, string> = {
+    ['promotion_name']: 'name',
+    ['promotion_id']: 'id',
+    ['item_id']: 'product_id',
+    ['item_name']: 'product_name',
 };
 
 /**
@@ -52,6 +64,10 @@ export const ECOMMERCE_ALLOWED_EVENTS = [
     UA_EVENT_PURCHASE,
     UA_EVENT_CHECKOUT,
     UA_EVENT_DETAIL,
+    UA_EVENT_IMPRESSIONS,
+    UA_EVENT_CLICK,
+    UA_EVENT_PROMO_VIEW,
+    UA_EVENT_PROMO_CLICK,
 ];
 
 export const GTAG_EVENT_VIEW_ITEM = 'view_item';
@@ -97,5 +113,24 @@ export const GTAG_TO_UA_EVENT_MAP: Record<string, GtagToUaMappingObject> = {
         event: UA_EVENT_PURCHASE,
         mappings: GTAG_PRODUCTS_REPLACE_KEYS,
         uaItemsField: ECOMMERCE_PRODUCTS,
+    },
+    [GTAG_EVENT_VIEW_ITEM_LIST]: {
+        event: UA_EVENT_IMPRESSIONS,
+        mappings: GTAG_PRODUCTS_REPLACE_KEYS,
+    },
+    [GTAG_EVENT_SELECT_ITEM]: {
+        event: UA_EVENT_CLICK,
+        uaItemsField: ECOMMERCE_PRODUCTS,
+        mappings: GTAG_PRODUCTS_REPLACE_KEYS,
+    },
+    [GTAG_EVENT_VIEW_PROMOTION]: {
+        event: UA_EVENT_PROMO_VIEW,
+        uaItemsField: ECOMMERCE_PROMOTIONS,
+        mappings: GTAG_PROMOTIONS_REPLACE_KEYS,
+    },
+    [GTAG_EVENT_SELECT_PROMOTION]: {
+        event: UA_EVENT_PROMO_CLICK,
+        uaItemsField: ECOMMERCE_PROMOTIONS,
+        mappings: GTAG_PROMOTIONS_REPLACE_KEYS,
     },
 };
