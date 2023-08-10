@@ -33,10 +33,10 @@ import {
 
 export const isEncoderSupported = memo<(ctx: Window) => boolean>((ctx) => {
     return (
-        getPath(ctx, 'crypto.subtle.digest') &&
-        getPath(ctx, 'TextEncoder') &&
-        getPath(ctx, 'FileReader') &&
-        getPath(ctx, 'Blob')
+        !!getPath(ctx, 'crypto.subtle.digest') &&
+        !!getPath(ctx, 'TextEncoder') &&
+        !!getPath(ctx, 'FileReader') &&
+        !!getPath(ctx, 'Blob')
     );
 });
 
@@ -50,11 +50,8 @@ export const hashVal = (ctx: Window, val: string) => {
             });
             const fileReader = new ctx.FileReader();
             fileReader.onload = (fileReaderEvent) => {
-                const result: string = getPath(
-                    fileReaderEvent,
-                    'target.result',
-                );
-                const commaIndex = (result || '').indexOf(',');
+                const result = getPath(fileReaderEvent, 'target.result') || '';
+                const commaIndex = result.indexOf(',');
                 if (commaIndex !== -1) {
                     resolve(result.substring(commaIndex + 1));
                 } else {

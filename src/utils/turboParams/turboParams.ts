@@ -14,8 +14,10 @@ const TURBO_PARAMS_PATH = `${INTERNAL_PARAMS_KEY}.turbo_page`;
 
 export const setTurboInfo = (options: CounterOptions, params: Params) => {
     const counterId = getCounterKey(options);
-    const tp = getPath(params, TURBO_PARAMS_PATH);
-    const tpId = getPath(params, `${TURBO_PARAMS_PATH}_id`);
+    const tp = getPath(params, TURBO_PARAMS_PATH) as number | undefined;
+    const tpId = getPath(params, `${TURBO_PARAMS_PATH}_id`) as
+        | number
+        | undefined;
 
     if (!turboInfo[counterId]) {
         turboInfo[counterId] = {};

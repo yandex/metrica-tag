@@ -1,46 +1,58 @@
-import type { IsKeyOfObj } from 'src/utils/types';
 import { cReduce } from 'src/utils/array/reduce';
 import { isNil } from './assertions';
 import { curry2SwapArgs } from '../function/curry';
 
+// TODO Add enumerable entities support (for instance arrayLikeObject[1])
+type GetPath<Value, Path extends string> =
+    Path extends `${infer Head}.${infer Tail}`
+        ? Head extends keyof Value
+            ? GetPath<Exclude<Value[Head], undefined>, Tail>
+            : null
+        : Path extends keyof Value
+        ? Exclude<Value[Path], undefined>
+        : null;
+
 /**
  * ВНИМАНИЕ! Использовать только для нативных функций/объектов или внешних данных
  * ВНИМАНИЕ! Обфускация может сделать путь невалидным
- * @param ctx
+ * @param value
  * @param path
  */
-export const getPath = (ctx: any, path: string) => {
-    if (!ctx) {
+export function getPath<Value, Path extends string>(
+    value: Value,
+    path: Path,
+): GetPath<Value, Path> | null {
+    if (!value) {
         return null;
     }
-    return cReduce(
-        (out, step: string) => {
+    return cReduce<string, GetPath<Value, Path>>(
+        (out, step) => {
             if (isNil(out)) {
                 return out;
             }
 
             try {
-                return out[step];
+                return (out as any)[step];
             } catch (e) {
                 // empty
             }
 
             return null;
         },
-        ctx,
+        value as any,
         path.split('.'),
     );
-};
+}
 
 type CtxPath = {
-    <C, P extends string>(path: P, ctx: C): IsKeyOfObj<P, C, any>;
-    <P extends string>(path: P): <C>(ctx: C) => IsKeyOfObj<P, C, any>;
+    <C, P extends string>(path: P, ctx: C): GetPath<C, P>;
+    <P extends string>(path: P): <C>(ctx: C) => GetPath<C, P>;
 };
 
 /**
  * @type function(...?): ?
  */
-export const ctxPath: CtxPath = curry2SwapArgs(getPath);
+export const ctxPath: CtxPath = curry2SwapArgs(getPath) as CtxPath;
 export const len = ctxPath('length');
 
 /**

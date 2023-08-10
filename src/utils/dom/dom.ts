@@ -36,12 +36,12 @@ export const isDocumentFragment = (node?: Node | null) => {
     return nodeType === 11;
 };
 
-export const getDocumentElement: (ctx: Window) => HTMLHtmlElement = memo(
+export const getDocumentElement: (ctx: Window) => HTMLElement = memo(
     ctxPath('document.documentElement'),
 );
 
 export const getDocumentEncoding = memo((ctx: Window) => {
-    const doc = getPath(ctx, 'document') || {};
+    const doc = getPath(ctx, 'document')! || {};
     return `${doc.characterSet || doc.charset || ''}`.toLowerCase();
 });
 
@@ -116,8 +116,9 @@ export const getMatchesFunction = memo((ctx: Window) => {
         return null;
     }
     const matchFunctionName = cFind(
-        (fnName: string) => {
-            return isNativeFunction(fnName, elementPrototype[fnName]);
+        (fnName) => {
+            const fn = elementPrototype[fnName];
+            return !!fn && isNativeFunction(fnName, fn);
         },
         [
             'matches',
@@ -125,7 +126,7 @@ export const getMatchesFunction = memo((ctx: Window) => {
             'mozMatchesSelector',
             'msMatchesSelector',
             'oMatchesSelector',
-        ],
+        ] as const,
     );
 
     if (matchFunctionName) {
@@ -138,7 +139,7 @@ export const getMatchesFunction = memo((ctx: Window) => {
 });
 
 export const getBody = (ctx: Window): HTMLBodyElement | null => {
-    const doc: Document = getPath(ctx, 'document');
+    const doc: Document = getPath(ctx, 'document')!;
     try {
         const bodies = doc.getElementsByTagName('body');
         return bodies[0];
@@ -148,7 +149,7 @@ export const getBody = (ctx: Window): HTMLBodyElement | null => {
 };
 
 export const getRootElement = (ctx: Window) => {
-    const doc: Document = getPath(ctx, 'document') || {};
+    const doc: Document = getPath(ctx, 'document')! || {};
     const docElement: HTMLElement | undefined = doc.documentElement;
 
     // В некоторых случаях document.body == null
@@ -164,7 +165,7 @@ export const getVisualViewportSize = (
 ): [number, number, number] | null => {
     const width = getPath(ctx, 'visualViewport.width');
     const height = getPath(ctx, 'visualViewport.height');
-    const scale = getPath(ctx, 'visualViewport.scale') as number;
+    const scale = getPath(ctx, 'visualViewport.scale')!;
 
     if (!isNil(width) && !isNil(height)) {
         return [Math.floor(width), Math.floor(height), scale];
@@ -190,7 +191,7 @@ export const getViewportSize = (ctx: Window): [number, number] => {
 
 export const getDocumentScroll = (ctx: Window) => {
     const body = getBody(ctx);
-    const doc = getPath(ctx, 'document');
+    const doc = getPath(ctx, 'document')!;
     return {
         x:
             ctx.pageXOffset ||

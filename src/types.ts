@@ -89,6 +89,8 @@ declare global {
         HTMLInputElement: typeof HTMLInputElement;
         MouseEvent: typeof MouseEvent;
         WebSocket: typeof WebSocket;
+        Notification?: typeof Notification;
+        AbortController?: typeof AbortController;
         chrome: {
             runtime: {
                 getURL: (url: string) => string;
@@ -112,6 +114,9 @@ declare global {
     interface Element {
         getElementsByClassName(classNames: string): HTMLCollectionOf<Element>;
         nonce?: string;
+        mozMatchesSelector?: (selectors: string) => boolean;
+        msMatchesSelector?: (selectors: string) => boolean;
+        oMatchesSelector?: (selectors: string) => boolean;
     }
 
     interface Brand {

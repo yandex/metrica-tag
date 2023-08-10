@@ -85,7 +85,7 @@ const request = (
 
 const useFetch: CheckTransport = (ctx: Window) => {
     if (ctx.fetch) {
-        const Abort: typeof AbortController = getPath(ctx, 'AbortController');
+        const Abort = getPath(ctx, 'AbortController');
         const requestFn = bindArgs(
             [ctx, Abort ? new Abort() : undefined],
             request,

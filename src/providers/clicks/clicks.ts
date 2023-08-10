@@ -203,7 +203,7 @@ const handleClickEventRaw = (
     const targetHref = target.href;
     let title = textFromLink(target);
     title = targetHref === title ? '' : title;
-    const isTrustedEvent = getPath(event, 'isTrusted');
+    const isTrustedEvent = getPath(event, 'isTrusted')!;
 
     if (hasClass('ym-external-link', target)) {
         sendClickLink(ctx, counterOptions, {
@@ -316,7 +316,7 @@ const useClicksProviderRaw = (
                 call as CallWithoutArguments,
                 ctxPath(COUNTER_STATE_TRACK_LINKS),
             ),
-        ),
+        ) as unknown as () => boolean,
     };
 
     const handleClickEvent = errorLogger(

@@ -170,10 +170,10 @@ export const selectLink = (ctx: Window, phoneChangeMap: PhoneChangeMap) => {
                         replaceHTMLNode: link,
                         replaceFrom: purePhone,
                         replaceTo: reformatPhone(
-                            foundPhone,
+                            foundPhone!,
                             phoneChangeMap[purePhone].replaceTo,
                         ),
-                        textOrig: originalHref,
+                        textOrig: originalHref!,
                     });
 
                     const telFromHref = removeNonDigits(href.slice(4));

@@ -32,7 +32,7 @@ const getTime = (ctx: Window): number | undefined => {
         const time: { firstPaintTime: number } = chromeLoadTimes.call(
             ctx['chrome'],
         );
-        const fp: number = getPath(time, 'firstPaintTime');
+        const fp = getPath(time, 'firstPaintTime')!;
         if (ns && fp) {
             return fp * 1000 - ns;
         }

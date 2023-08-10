@@ -5,6 +5,6 @@ export const isQuerySelectorSupported = (ctx: Window) =>
     !!(
         isNativeFunction(
             'querySelectorAll',
-            getPath(ctx, 'Element.prototype.querySelectorAll'),
+            getPath(ctx, 'Element.prototype.querySelectorAll')!,
         ) && ctx.document.querySelectorAll
     );

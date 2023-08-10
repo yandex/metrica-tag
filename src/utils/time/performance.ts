@@ -9,11 +9,11 @@ export const getPerformance = (ctx: Window): Performance | null => {
 };
 
 export const performanceInfo = (ctx: Window): PerformanceInfo => {
-    const performance = getPerformance(ctx);
-    const ns = getPath(performance, `timing.navigationStart`);
-    let now = getPath(performance, `now`);
+    const performance = getPerformance(ctx)!;
+    const ns = getPath(performance, `timing.navigationStart`)!;
+    let now = getPath(performance, `now`)!;
     if (now) {
-        now = bind(now, performance);
+        now = bind(now, performance!);
     }
     return [ns, now];
 };

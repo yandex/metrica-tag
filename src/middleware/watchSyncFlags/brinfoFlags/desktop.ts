@@ -12,6 +12,12 @@ export type BatteryManager = {
     charging: boolean;
 };
 
+declare global {
+    interface Navigator {
+        getBattery?: () => Promise<BatteryManager>;
+    }
+}
+
 export const getDesktopFlag = (ctx: Window) => {
     const globalConfig = getGlobalStorage(ctx);
     const batteryInfo: {
@@ -19,10 +25,7 @@ export const getDesktopFlag = (ctx: Window) => {
         p?: Promise<BatteryManager> | null;
     } = globalConfig.getVal(BATTERY_INFO, {});
     if (isUndefined(globalConfig.getVal(BATTERY_INFO))) {
-        const getBattery: () => Promise<BatteryManager> | null = getPath(
-            ctx,
-            'navigator.getBattery',
-        );
+        const getBattery = getPath(ctx, 'navigator.getBattery');
 
         // getBattery() not available in privacy proxy mode
         try {
@@ -37,7 +40,7 @@ export const getDesktopFlag = (ctx: Window) => {
                     `${BRINFO_LOGGER_PREFIX}:${IS_DESKTOP_BR_KEY}.p`,
                     (battery: BatteryManager) => {
                         batteryInfo.v =
-                            getPath(battery, 'charging') &&
+                            getPath(battery, 'charging')! &&
                             getPath(battery, 'chargingTime') === 0;
                     },
                 ),

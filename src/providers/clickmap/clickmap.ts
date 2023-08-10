@@ -149,7 +149,7 @@ export const useClickMapProviderBase = (
     const clickMapParamsGetter = bindArg(
         bindArg(counterKey, counterStateGetter(ctx)),
         pipe(call as CallWithoutArguments, ctxPath(COUNTER_STATE_CLICKMAP)),
-    );
+    ) as () => TClickMapParams | null;
 
     let quota: number | null | undefined;
     let lastClick: ClickInfo = null;
@@ -158,7 +158,7 @@ export const useClickMapProviderBase = (
         ctx,
         'clm.p.c',
         (event: MouseEvent) => {
-            const rawClickMapParams: TClickMapParams = clickMapParamsGetter();
+            const rawClickMapParams = clickMapParamsGetter();
             if (!rawClickMapParams) {
                 return;
             }
@@ -263,7 +263,7 @@ export const useClickMapProviderBase = (
     );
 
     return cEvent(ctx).on(
-        getPath(ctx, 'document'),
+        getPath(ctx, 'document')!,
         ['click'],
         handleMouseClickEvent,
     );

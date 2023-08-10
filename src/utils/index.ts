@@ -13,9 +13,12 @@ let PolyPromise: PromiseConstructor = window.Promise;
 
 if (flags[POLYFILLS_FEATURE]) {
     const construct = toNativeOrFalse(PolyPromise as any, 'Promise');
-    const resolve = toNativeOrFalse(getPath(PolyPromise, 'resolve'), 'resolve');
-    const reject = toNativeOrFalse(getPath(PolyPromise, 'reject'), 'reject');
-    const all = toNativeOrFalse(getPath(PolyPromise, 'all'), 'all');
+    const resolve = toNativeOrFalse(
+        getPath(PolyPromise, 'resolve')!,
+        'resolve',
+    );
+    const reject = toNativeOrFalse(getPath(PolyPromise, 'reject')!, 'reject');
+    const all = toNativeOrFalse(getPath(PolyPromise, 'all')!, 'all');
     if (includes(false, [construct, resolve, reject, all])) {
         PolyPromise = polyPromise.default;
     } else {

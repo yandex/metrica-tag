@@ -70,7 +70,8 @@ export const isAndroid = memo((ctx: Window) => {
 
     return Boolean(
         userAgent.indexOf('android') !== -1 &&
-            userAgent.indexOf(userAgent, 'mobile') !== -1 &&
+            // TODO fix wrong `indexOf` utility usage
+            (userAgent as any).indexOf(userAgent, 'mobile') !== -1 &&
             /^android|linux armv/i.test(platform),
     );
 });
@@ -103,7 +104,7 @@ export const isIE = memo(pipe(ctxPath('document.addEventListener'), notFn));
 export const getNavigatorLanguage = memo((ctx: Window) => {
     const nav = getPath(ctx, 'navigator') || {};
     return cReduce(
-        (accum: string, field: string) => {
+        (accum: string | null, field: string) => {
             return accum || getPath(nav, field);
         },
         '',
@@ -170,7 +171,7 @@ export const isSelenium = memo((ctx: Window) => {
         '__selenium_unwrapped',
         '__fxdriver_unwrapped',
     ];
-    const external = getPath(ctx, 'external');
+    const external = getPath(ctx, 'external')!;
     const externalStr = getPath(external, 'toString')
         ? `${external.toString()}` // toString может вернуть undefined
         : '';
@@ -205,14 +206,17 @@ export const isHeadLess = memo(
 );
 
 export const isFacebookInstantArticles = memo((ctx: Window) =>
-    cEvery(bindArg(ctx, getPath), [
+    cEvery(bindArg(ctx, getPath) as unknown as (path: string) => boolean, [
         'ia_document.shareURL',
         'ia_document.referrer',
     ]),
 );
 
 export const isNotificationAllowed = (ctx: Window) => {
-    const permission = getPath(ctx, 'Notification.permission');
+    const permission = getPath(
+        ctx,
+        'Notification.permission',
+    ) as NotificationPermission | null;
     switch (permission) {
         case 'denied':
             return false;

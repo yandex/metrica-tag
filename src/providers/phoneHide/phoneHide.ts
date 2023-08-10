@@ -44,9 +44,9 @@ export const usePhoneHideProvider = ctxErrorLogger(
                     getLocation(ctx).search,
                     `${FORCE_HIDE_PHONES_KEY}=1`,
                 ) || ls.getVal(FORCE_HIDE_PHONES_KEY, 0);
-            let phoneHideSettings: string[] | undefined = getPath(
+            let phoneHideSettings = getPath(
                 settings,
-                `${COUNTER_SETTINGS_SETTINGS_KEY}.${COUNTER_SETTINGS_HIDE_PHONES_KEY}`,
+                `${COUNTER_SETTINGS_SETTINGS_KEY}.${COUNTER_SETTINGS_HIDE_PHONES_KEY}` as const,
             );
             if (isForcedPhoneHide && !phoneHideSettings) {
                 phoneHideSettings = ['*'];

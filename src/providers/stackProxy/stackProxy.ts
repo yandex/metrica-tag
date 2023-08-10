@@ -178,13 +178,17 @@ export const checkStack = (ctx: Window, counterOptions: CounterOptions) => {
     cForEach(onStack, stackList);
 };
 
+type StackFn = {
+    [STACK_DATA_LAYER_NAME]: StackCall[];
+};
+
 /**
  * Handles ym(counterId, 'functionName', ...params) events added to the queue before the tag was loaded and run.
  * At this time no counter is initialized and thus we primarily aim for init events
  * @param ctx - Current window
  */
 export const stackProxy = (ctx: Window) => {
-    const fn = getPath(ctx, STACK_FN_NAME);
+    const fn = getPath(ctx, STACK_FN_NAME) as StackFn | null;
     if (!fn) {
         return;
     }

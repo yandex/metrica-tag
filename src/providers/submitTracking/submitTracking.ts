@@ -14,7 +14,7 @@ import { ctxPath, getPath, isNil } from 'src/utils/object';
 import { setDefer } from 'src/utils/defer';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { useGoal } from 'src/providers/goal/goal';
-import { getCounterSettings } from 'src/utils/counterSettings';
+import { CounterSettings, getCounterSettings } from 'src/utils/counterSettings';
 import { stringify } from 'src/utils/querystring';
 import { closestForm, getFormData } from 'src/utils/dom/form';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
@@ -32,7 +32,11 @@ const shouldLogCheck: (
 ) => Promise<boolean> = memo(
     pipe(
         secondArg,
-        curry2SwapArgs(getCounterSettings)(ctxPath('settings.form_goals')),
+        curry2SwapArgs(getCounterSettings)(
+            ctxPath('settings.form_goals') as (
+                counterOptions: CounterSettings,
+            ) => boolean,
+        ),
     ),
     secondArg,
 );
@@ -105,7 +109,10 @@ export const handleClick = (
     awaitSubmitForms: HTMLFormElement[],
     event: MouseEvent,
 ) => {
-    const target = getPath(event, 'target');
+    const target = getPath(event, 'target') as HTMLElement | null;
+    if (!target) {
+        return;
+    }
     const isTrustedEvent = getPath(event, 'isTrusted');
     const button = closest('button,input', ctx, target) as
         | HTMLButtonElement

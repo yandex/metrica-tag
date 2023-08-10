@@ -7,7 +7,7 @@ export const getNodeText = (ctx: Window, elem: Element | null) => {
     }
 
     const res: string[] = [];
-    const doc = getPath(ctx, 'document');
+    const doc = getPath(ctx, 'document')!;
     walkTree(ctx, elem, (node: Node) => {
         let textInfo: string | null | undefined;
 

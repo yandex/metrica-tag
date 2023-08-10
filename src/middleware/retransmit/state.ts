@@ -4,6 +4,7 @@ import { CounterTypeInterface } from 'src/utils/counterOptions';
 import { globalMemoWin } from 'src/utils/function';
 import { entries } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time';
+import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 
 export const LS_PROTOCOL = 'protocol';
 export const LS_HOST = 'host';
@@ -40,6 +41,7 @@ export type RetransmitInfo = {
     retransmitIndex?: number; // ls - index
     /** Lock the request for sending by only a single counter. */
     [LOCKED]?: number;
+    [RETRANSMIT_BRINFO_KEY]?: number;
 };
 
 type RetransmitStorage = Record<string, RetransmitInfo>;

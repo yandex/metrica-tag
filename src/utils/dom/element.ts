@@ -26,7 +26,7 @@ import {
 
 export const getElementXY = (ctx: Window, el: HTMLElement | null) => {
     let element = el;
-    const doc = getPath(ctx, 'document');
+    const doc = getPath(ctx, 'document')!;
     const nodeName = getNodeName(element);
     if (
         !element ||
@@ -64,7 +64,7 @@ export const getElementXY = (ctx: Window, el: HTMLElement | null) => {
 };
 
 export const getElementSize = (ctx: Window, element: HTMLElement) => {
-    const doc = getPath(ctx, 'document');
+    const doc = getPath(ctx, 'document')!;
     if (element === getBody(ctx) || element === doc.documentElement) {
         return getDocumentSize(ctx);
     }
@@ -90,15 +90,16 @@ export const getElementRegion = (ctx: Window, el: HTMLElement) => {
 };
 
 export const getElementParent = (ctx: Window, element: Node) => {
-    const doc = getPath(ctx, 'document');
+    const doc = getPath(ctx, 'document')!;
     if (!element || element === doc.documentElement) return null;
 
     if (element === getBody(ctx)) return doc.documentElement;
 
-    let parent = null;
+    let parent: HTMLElement | null = null;
     // Blocked a frame with origin "http://alipromo.com" from accessing a cross-origin frame.
     try {
-        parent = element.parentNode;
+        // probably can change to parentElement
+        parent = element.parentNode as HTMLElement;
     } catch (e) {
         // empty
     }

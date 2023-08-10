@@ -4,7 +4,8 @@ import { head } from '../array';
 
 export type ObfuscatedKey = { [key: string]: 1 };
 
-export const deobfuscate: <K extends string>(obj: Record<K, any>) => K = pipe(
-    cKeys,
-    head,
-);
+type Deobfuscate = {
+    <K extends string>(obj: Record<K, any>): K;
+};
+
+export const deobfuscate: Deobfuscate = pipe(cKeys, head) as Deobfuscate;

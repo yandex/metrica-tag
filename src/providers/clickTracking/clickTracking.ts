@@ -20,7 +20,7 @@ export const handleClick = (
     counterOptions: CounterOptions,
     event: MouseEvent,
 ) => {
-    const target: HTMLElement | null = getPath(event, 'target');
+    const target = getPath(event, 'target') as HTMLElement | null;
     if (!target) {
         return;
     }
