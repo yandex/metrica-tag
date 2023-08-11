@@ -21,3 +21,7 @@ export const isArray = ((obj: any) => {
     }
     return isArrayFn(obj);
 }) as isArrayType;
+
+export const isIterable = <T>(arg: any): arg is Iterable<T> => {
+    return typeof arg[Symbol.iterator] === 'function';
+};
