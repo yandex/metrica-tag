@@ -3,6 +3,7 @@ import * as sinon from 'sinon';
 import * as sender from 'src/sender';
 import * as globalConfig from 'src/storage/global';
 import * as events from 'src/utils/events';
+import type { EventSetter } from 'src/utils/events/types';
 import * as defer from 'src/utils/defer';
 import * as direct from 'src/utils/direct';
 import * as errorLoggerUtils from 'src/utils/errorLogger';
@@ -114,13 +115,13 @@ describe('track hash provider', () => {
         const unsubscribeCallback = sandbox.stub();
         const eventsHandlerOn = sandbox
             .stub<
-                Parameters<events.EventSetter['on']>,
-                ReturnType<events.EventSetter['on']>
+                Parameters<EventSetter['on']>,
+                ReturnType<EventSetter['on']>
             >()
             .returns(unsubscribeCallback);
         const eventsHandler = {
             on: eventsHandlerOn,
-        } as unknown as events.EventSetter;
+        } as unknown as EventSetter;
         const eventsStub = sandbox
             .stub(events, 'cEvent')
             .returns(eventsHandler);
@@ -147,7 +148,7 @@ describe('track hash provider', () => {
         chai.expect(eventName).to.deep.equal(['hashchange']);
         sinon.assert.notCalled(senderStub);
 
-        callback({ isTrusted: true } as HashChangeEvent);
+        callback.call({} as Window, { isTrusted: true } as HashChangeEvent);
 
         trackHash(false);
         const [senderOptions, counterOptionsCalled] =

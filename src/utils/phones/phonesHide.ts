@@ -61,7 +61,7 @@ const setEnterHandler = (
         unsubscribeLeave();
     };
 
-    const enterCb = (e: Event) => {
+    const enterCb = (e: MouseEvent) => {
         if (e.target === phoneWrapper) {
             const deferId = setDefer(ctx, show, HOVER_TIMEOUT, 'ph.h.e');
 
@@ -69,7 +69,7 @@ const setEnterHandler = (
             unsubscribeLeave = eventHandler.on(
                 phoneWrapper,
                 ['mouseleave'],
-                (event: Event) => {
+                (event: MouseEvent) => {
                     if (event.target === phoneWrapper) {
                         clearDefer(ctx, deferId);
                     }

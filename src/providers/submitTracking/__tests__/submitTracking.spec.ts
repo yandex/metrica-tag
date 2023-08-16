@@ -14,6 +14,7 @@ import * as deferUtils from 'src/utils/defer';
 import * as functionUtils from 'src/utils/function';
 import * as errorLoggerUtils from 'src/utils/errorLogger';
 import * as eventUtils from 'src/utils/events';
+import type { EventSetter } from 'src/utils/events/types';
 import * as counterSettingUtils from 'src/utils/counterSettings';
 import * as counterOptionsUtils from 'src/utils/counterOptions';
 import { ID, NAME, PATH } from 'src/utils/dom';
@@ -85,7 +86,7 @@ describe('submitTracking', () => {
         cEventSpy = sandbox.spy();
         sandbox.stub(eventUtils, 'cEvent').returns({
             on: cEventSpy,
-        } as unknown as eventUtils.EventSetter);
+        } as unknown as EventSetter);
 
         logFnSpy = sandbox.spy();
         sandbox.stub(debugConsole, 'getLoggerFn').returns(logFnSpy);

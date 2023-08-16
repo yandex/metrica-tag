@@ -181,7 +181,7 @@ export const siteStatisticsLayout = (ctx: Window, counterId: number) => {
     layoutContainer.appendChild(frame);
     layoutContainer.appendChild(close);
 
-    const events = ['click', 'touchstart'];
+    const EVENTS = ['click', 'touchstart'] as const;
 
     const handler = () => {
         if (opener.hidden) {
@@ -209,8 +209,8 @@ export const siteStatisticsLayout = (ctx: Window, counterId: number) => {
     const { body } = ctx.document;
 
     const unsubscribers = [
-        windowEventWrapper.on(opener, events, handler),
-        windowEventWrapper.on(close, events, handler),
+        windowEventWrapper.on(opener, EVENTS, handler),
+        windowEventWrapper.on(close, EVENTS, handler),
         windowEventWrapper.on(
             iframeCheck,
             ['load'],

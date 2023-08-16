@@ -166,8 +166,8 @@ export const useSubmitTracking = ctxErrorLogger(
         cEvent(ctx).on(
             ctx,
             ['submit'],
-            errorLogger(ctx, 's.f.e', (event) => {
-                const target = getPath(event, 'target');
+            errorLogger(ctx, 's.f.e', (event: Event) => {
+                const target = getPath(event, 'target') as HTMLFormElement;
                 const isTrustedEvent = getPath(event, 'isTrusted');
                 handleSubmit(
                     true,

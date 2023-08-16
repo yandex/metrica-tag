@@ -1,9 +1,9 @@
-import { cForEach } from 'src/utils/array';
 import { isIE } from 'src/utils/browser';
 import { clearDefer, setDefer } from 'src/utils/defer';
 import { cEvent } from 'src/utils/events';
 import { AnyFunc } from 'src/utils//function/types';
 import { getMs, TimeOne } from 'src/utils/time';
+import { bindArgs } from '../function';
 
 // Это скорректированный таймаут который перезапускает таймер если всякие блюры были
 // Потому что таймауты работают фигово, если окно рефокусится и блюрится
@@ -20,7 +20,7 @@ export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
     // В разных версиях IE есть сложности с точным определением состояний с focus и blur окна
     if (isIE(ctx)) {
         id = setDefer(ctx, callback, time, 'u.t.d');
-        return destroyTimer;
+        return bindArgs([ctx, id], clearDefer);
     }
 
     const timer = TimeOne(ctx);
@@ -95,20 +95,11 @@ export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
         onCommon();
     }
 
-    const events: [Window | Document, string[], Function][] = [
-        [ctx, ['blur'], onBlur],
-        [ctx, ['focus'], onFocus],
-        [ctx.document, ['click', 'mousemove', 'keydown', 'scroll'], onAction],
-    ];
-
     function setEvents(add: boolean) {
-        cForEach(([context, eventName, cb]) => {
-            if (add) {
-                eventsEmitter.on(context, eventName, cb);
-            } else {
-                eventsEmitter.un(context, eventName, cb);
-            }
-        }, events);
+        const fn = add ? eventsEmitter.on : eventsEmitter.un;
+        fn(ctx, ['blur'], onBlur);
+        fn(ctx, ['focus'], onFocus);
+        fn(ctx.document, ['click', 'mousemove', 'keydown', 'scroll'], onAction);
     }
 
     setEvents(true);

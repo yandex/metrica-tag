@@ -6,10 +6,22 @@ const removeFunction = 'removeEventListener';
 const attachFunction = 'attachEvent';
 const detachFunction = 'detachEvent';
 
-export const setEvent = (
-    el: EventElement,
-    name: string,
-    handler: Function,
+export const setEvent = <
+    E extends EventElement,
+    M extends E extends Window
+        ? WindowEventMap
+        : E extends Document
+        ? DocumentEventMap
+        : E extends HTMLElement
+        ? HTMLElementEventMap
+        : E extends VisualViewport
+        ? VisualViewportEventMap
+        : never,
+    T extends keyof M,
+>(
+    el: E,
+    name: T,
+    handler: (this: E, ev: M[T]) => any,
     opt: EventOptions,
     detach?: boolean,
 ): void => {

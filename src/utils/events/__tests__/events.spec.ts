@@ -5,21 +5,26 @@ import { checkSupportsPassive, opts } from '..';
 import { cEvent } from '../events';
 
 describe('EventHelper', () => {
-    let isNativeMock: any;
+    let isNativeMock: sinon.SinonStub<
+        Parameters<typeof functionUtils.isNativeFunction>,
+        ReturnType<typeof functionUtils.isNativeFunction>
+    >;
     beforeEach(() => {
         isNativeMock = sinon
             .stub(functionUtils, 'isNativeFunction')
-            .callsFake((_, f: Function) => Boolean(f));
+            .callsFake((_, f) => Boolean(f));
     });
     afterEach(() => {
         isNativeMock.restore();
     });
     it('Checks passive opt', () => {
-        const mock: any = {
-            addEventListener: (event: string, cb: Function, opt: any) => {
-                return opt.passive;
-            },
-        };
+        const mock = {
+            addEventListener: (
+                type: string,
+                listener: EventListenerOrEventListenerObject,
+                opt?: AddEventListenerOptions,
+            ): unknown => opt?.passive,
+        } as Window;
 
         chai.expect(checkSupportsPassive(mock)).to.be.ok;
     });
@@ -37,57 +42,53 @@ describe('EventHelper', () => {
         }
     });
     it('Uses correct methods for target with addEventListener', () => {
-        const addableTarget: any = {
-            addEventListener: sinon.spy(),
-            removeEventListener: sinon.spy(),
-        };
+        const addEventListenerSpy = sinon.spy();
+        const removeEventListenerSpy = sinon.spy();
+        const addableTarget = {
+            addEventListener: addEventListenerSpy,
+            removeEventListener: removeEventListenerSpy,
+        } as unknown as Window;
         const cb = () => {};
         const options = { passive: false, capture: true };
         const handler = cEvent({
             addEventListener: (event: string, callback: Function, opt: any) => {
                 return opt.passive;
             },
-        } as any);
-        const offCb = handler.on(addableTarget, ['event'], cb, options);
-
-        chai.expect(addableTarget.addEventListener.called).to.be.ok;
-        chai.expect(
-            addableTarget.addEventListener.calledWith('event', cb, options),
-        ).to.be.ok;
+        } as unknown as Window);
+        const offCb = handler.on(addableTarget, ['change'], cb, options);
+        sinon.assert.calledWith(addEventListenerSpy, 'change', cb, options);
 
         offCb();
 
-        chai.expect(addableTarget.removeEventListener.called).to.be.ok;
-        chai.expect(
-            addableTarget.removeEventListener.calledWith('event', cb, options),
-        ).to.be.ok;
+        sinon.assert.calledWith(removeEventListenerSpy, 'change', cb, options);
     });
     it('Uses correct methods for target without addEventListener', () => {
-        const attachableTarget: any = {
-            attachEvent: sinon.spy(),
-            detachEvent: sinon.spy(),
-        };
+        const attachEventSpy = sinon.spy();
+        const detachEventSpy = sinon.spy();
+        const attachableTarget = {
+            attachEvent: attachEventSpy,
+            detachEvent: detachEventSpy,
+        } as unknown as Window;
         const cb = () => {};
         const options = { passive: true, capture: true };
         const handler = cEvent({
             addEventListener: () => {},
-        } as any);
-        const offCb = handler.on(attachableTarget, ['event'], cb, options);
+        } as unknown as Window);
+        const offCb = handler.on(attachableTarget, ['change'], cb, options);
 
-        chai.expect(attachableTarget.attachEvent.called).to.be.ok;
-        chai.expect(attachableTarget.attachEvent.calledWith('onevent', cb)).to
-            .be.ok;
+        sinon.assert.calledWith(attachEventSpy, 'onchange', cb);
 
         offCb();
 
-        chai.expect(attachableTarget.detachEvent.called).to.be.ok;
-        chai.expect(attachableTarget.detachEvent.calledWith('onevent', cb)).to
-            .be.ok;
+        sinon.assert.calledWith(detachEventSpy, 'onchange', cb);
     });
     it("Doesn't crush on invalid target", () => {
-        const invalidTarget: any = {};
-        const handler = cEvent(window);
-        const offCb = handler.on(invalidTarget, ['event'], () => {}, {});
-        offCb();
+        chai.expect(() => {
+            const invalidTarget = {} as Window;
+            const validTarget = {} as Window;
+            const handler = cEvent(validTarget);
+            const offCb = handler.on(invalidTarget, ['change'], () => {}, {});
+            offCb();
+        }).to.not.throw();
     });
 });

@@ -1,10 +1,16 @@
 import { PRERENDER_MW_BR_KEY } from 'src/api/watch';
-import { cEvent, EventSetter } from 'src/utils/events';
+import { cEvent } from 'src/utils/events';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { isPrerender } from 'src/utils/browser';
 import { MiddlewareGetter } from '../types';
 
-const EVENTS = ['webkitvisibilitychange', 'visibilitychange'];
+declare global {
+    interface DocumentEventMap {
+        webkitvisibilitychange: Event;
+    }
+}
+
+const EVENTS = ['webkitvisibilitychange', 'visibilitychange'] as const;
 
 /**
  * If page is prerendered delays hit sending until it is visible
@@ -15,8 +21,8 @@ const prerender: MiddlewareGetter = (ctx: Window) => ({
         const { document: doc } = ctx;
         const { brInfo } = senderParams;
         if (brInfo && isPrerender(ctx)) {
-            const event: EventSetter = cEvent(ctx);
-            const onVisibilityChange = (e: unknown) => {
+            const event = cEvent(ctx);
+            const onVisibilityChange = (e: Event) => {
                 if (!isPrerender(ctx)) {
                     event.un(doc, EVENTS, onVisibilityChange);
                     next();

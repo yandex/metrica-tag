@@ -99,7 +99,9 @@ export const netType = memo((ctx: Window): string | null => {
     return index === -1 ? connectionType : `${index}`;
 });
 
-export const isIE = memo(pipe(ctxPath('document.addEventListener'), notFn));
+export const isIE: (ctx: Window) => boolean = memo(
+    pipe(ctxPath('document.addEventListener'), notFn),
+);
 
 export const getNavigatorLanguage = memo((ctx: Window) => {
     const nav = getPath(ctx, 'navigator') || {};

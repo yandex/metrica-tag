@@ -130,9 +130,9 @@ describe('browser Utils', () => {
     it('should detect new browsers', () => {
         const isIE = isIEFn({
             document: {
-                addEventListener: true,
+                addEventListener: () => {},
             },
-        });
+        } as unknown as Window);
         chai.expect(isIE).to.be.not.ok;
     });
     it('gets custom net type', () => {
