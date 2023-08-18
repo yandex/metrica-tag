@@ -37,7 +37,7 @@ import { counterLocalStorage } from 'src/storage/localStorage';
 import { cEvent } from 'src/utils/events';
 import { browserInfo } from 'src/utils/browserInfo';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { errorLogger, ctxErrorLogger } from 'src/utils/errorLogger';
+import { errorLogger } from 'src/utils/errorLogger';
 import { getConsole } from 'src/utils/console';
 import { getHid } from 'src/middleware/watchSyncFlags/brinfoFlags/hid';
 import {
@@ -173,7 +173,7 @@ export const sendClickLink = (
     );
 };
 
-const handleClickEventRaw = (
+export const handleClickEventRaw = (
     options: ClickHandlerOptions,
     event: MouseEvent,
 ) => {
@@ -287,7 +287,13 @@ export const addFileExtensionFn = curry2(
     },
 );
 
-const useClicksProviderRaw = (
+/**
+ * Track clicks, link navigations and file downloads
+ * - NOTE: To activate use `counterOptions.trackLinks` option
+ * @param ctx - Current window
+ * @param counterOptions - Counter options on initialization
+ */
+export const useClicksProvider = (
     ctx: Window,
     counterOptions: CounterOptions,
 ): ClickProviderParams => {
@@ -376,13 +382,3 @@ const useClicksProviderRaw = (
         [UNSUBSCRIBE_PROPERTY]: destroy,
     };
 };
-
-/**
- * Track clicks, link navigations and file downloads
- * - NOTE: To activate use `counterOptions.trackLinks` option
- * @param ctx - Current window
- * @param counterOptions - Counter options on initialization
- */
-const useClicksProvider = ctxErrorLogger('cl.p', useClicksProviderRaw);
-
-export { useClicksProviderRaw, useClicksProvider, handleClickEventRaw };

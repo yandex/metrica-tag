@@ -25,7 +25,7 @@ import {
     sendClickLink,
     handleClickEventRaw,
     setShouldTrack,
-    useClicksProviderRaw,
+    useClicksProvider,
     addFileExtensionFn,
 } from '../clicks';
 import { LINK_CLICK_HIT_PROVIDER } from '../const';
@@ -686,11 +686,11 @@ describe('clicks.ts', () => {
         });
 
         it('provider changes counter state based on counterOptions', () => {
-            useClicksProviderRaw(ctxStub, {
+            useClicksProvider(ctxStub, {
                 trackLinks: {},
             } as CounterOptions);
 
-            const { trackLinks } = useClicksProviderRaw(ctxStub, {
+            const { trackLinks } = useClicksProvider(ctxStub, {
                 trackLinks: false,
             } as CounterOptions);
 

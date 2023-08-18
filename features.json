@@ -12,7 +12,7 @@
   {
     "code": "DEBUG_EVENTS_FEATURE",
     "path": "debugEvents",
-    "desc": "Creates dataLayer bus for debugging purpouses"
+    "desc": "Creates dataLayer bus for debugging purposes"
   },
   {
     "code": "LOCAL_FEATURE",

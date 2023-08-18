@@ -5,6 +5,7 @@ import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
 import { fullList, nameMap } from 'src/transport';
+import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { useClicksProvider } from './clicks';
 import { LINK_CLICK_HIT_PROVIDER } from './const';
 
@@ -21,7 +22,7 @@ declare module 'src/sender/types' {
 
 export const initProvider = () => {
     if (flags[EXTERNAL_LINK_FEATURE]) {
-        providersSync.push(useClicksProvider);
+        providersSync.push(ctxErrorLogger('cl.p', useClicksProvider));
         providerMiddlewareList[LINK_CLICK_HIT_PROVIDER] = commonMiddlewares;
         providerMap[LINK_CLICK_HIT_PROVIDER] = useSenderWatch;
         nameMap[LINK_CLICK_HIT_PROVIDER] = fullList;
