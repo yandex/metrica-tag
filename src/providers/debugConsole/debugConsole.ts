@@ -1,6 +1,6 @@
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { getConsole } from 'src/utils/console';
-import { cForEach, clearArray, cSome } from 'src/utils/array';
+import { cForEach, clearArray } from 'src/utils/array';
 import {
     noop,
     memo,
@@ -9,12 +9,10 @@ import {
     bindArgs,
     secondArg,
 } from 'src/utils/function';
-import { getLocation } from 'src/utils/location';
 import {
     DEBUG_CONSOLE_FEATURE,
     DEBUG_EVENTS_FEATURE,
 } from 'generated/features';
-import { globalCookieStorage } from 'src/storage/cookie';
 import { argsToArray } from 'src/utils/function/args';
 import { wrapLogFunction } from 'src/providers/debugEvents/wrapLoggerFunction';
 import { flags } from '@inject';
@@ -22,7 +20,7 @@ import { flags } from '@inject';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { isCounterSilent } from 'src/utils/isCounterSilent';
 import { getGlobalStorage } from 'src/storage/global';
-import { DEBUG_CTX_FLAG, DEBUG_STORAGE_FLAG, DEBUG_URL_PARAM } from './const';
+import { debugEnabled } from './debugEnabled';
 
 type ConsoleMethods = 'log' | 'warn' | 'error';
 type LogQueue = [method: ConsoleMethods, args: any[]][];
@@ -43,22 +41,6 @@ const createEmptyConsole = (ctx: Window, counterId: string) =>
               error: noop,
           };
 
-export const isDebugUrlWithValue = (ctx: Window, value: string) =>
-    getLocation(ctx).href.indexOf(`${DEBUG_URL_PARAM}=${value}`) > -1;
-
-export const debugEnabled = (ctx: Window) => {
-    const cookie = globalCookieStorage(ctx);
-    const hasCookieFlag = cookie.getVal(DEBUG_STORAGE_FLAG) === '1';
-    const hasUrlFlag =
-        isDebugUrlWithValue(ctx, '1') || isDebugUrlWithValue(ctx, '2');
-    const hasCtxFlag = ctx[DEBUG_CTX_FLAG];
-    return {
-        hasCookieFlag,
-        isDebug: hasCtxFlag || hasUrlFlag,
-        isEnabled: cSome(Boolean, [hasCookieFlag, hasCtxFlag, hasUrlFlag]),
-    };
-};
-
 /**
  * Provider for global queue of actions and function to add them
  * @param ctx - Current window
@@ -67,7 +49,6 @@ export const debugEnabled = (ctx: Window) => {
 const createDebugConsole = ctxErrorLogger(
     'dc.init',
     (ctx, counterKey: string) => {
-        const location = getLocation(ctx);
         const realConsole = getConsole(ctx, counterKey);
         getGlobalStorage(ctx).setSafe<LogQueue>(
             `${LOG_QUEUE_PREFIX}:${counterKey}`,
@@ -88,12 +69,7 @@ const createDebugConsole = ctxErrorLogger(
             logQueue.push([method, args]);
         };
 
-        const cookie = globalCookieStorage(ctx);
-        const { isDebug, hasCookieFlag } = debugEnabled(ctx);
-        if (isDebug && !hasCookieFlag) {
-            cookie.setVal(DEBUG_STORAGE_FLAG, '1', undefined, location.host);
-        }
-        const canLog = isDebug || hasCookieFlag;
+        const canLog = debugEnabled(ctx);
 
         return canLog
             ? {
@@ -110,14 +86,18 @@ export const DebugConsole = memo(
     secondArg,
 );
 
-export const consoleLog = (flags[DEBUG_CONSOLE_FEATURE]
+export const consoleLog: (
+    ctx: Window,
+    counterKey: string,
+    ...s: any[]
+) => void = flags[DEBUG_CONSOLE_FEATURE]
     ? function consoleLogFn() {
           // eslint-disable-next-line prefer-rest-params
           const [ctx, counterKey, ...arg] = argsToArray(arguments);
           const consoleObj = DebugConsole(ctx, counterKey);
           consoleObj.log.apply(consoleLog, arg);
       }
-    : noop) as any as (ctx: Window, counterKey: string, ...s: any[]) => void;
+    : noop;
 
 /**
  * Function for getting an event logger of a certain format
@@ -155,8 +135,9 @@ const emptyLogQueue = (ctx: Window, queueId: string) => {
         `${LOG_QUEUE_PREFIX}:${queueId}`,
     );
     if (logQueue) {
+        const console = DebugConsole(ctx, queueId);
         cForEach(([method, args]) => {
-            call(DebugConsole(ctx, queueId)[method], ...args);
+            console[method](...args);
         }, logQueue);
         clearArray(logQueue);
     }

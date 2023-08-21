@@ -7,6 +7,7 @@ import { constructArray, globalMemoWin } from 'src/utils/function';
 import { isCounterIdSilent } from 'src/utils/isCounterSilent';
 import { parseIntSafe } from 'src/utils/number';
 import { getOriginalOptions } from 'src/providers/counterOptions';
+import { debugEnabled } from 'src/providers/debugConsole/debugEnabled';
 import { DebuggerEvent } from './types';
 
 const MAX_EVENT_NUMBER = 1000;
@@ -23,6 +24,10 @@ export const getEvents = globalMemoWin<DebuggerEvent[]>(
  * @param event - Event parameters
  */
 export const dispatchDebuggerEvent = (ctx: Window, event: DebuggerEvent) => {
+    if (!debugEnabled(ctx)) {
+        return;
+    }
+
     const { counterKey } = event;
     if (counterKey) {
         const [counterId, counterType] = counterKey.split(':');

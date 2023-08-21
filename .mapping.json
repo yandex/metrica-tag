@@ -148,6 +148,7 @@
   "src/providers/debugConsole/__tests__/debugConsole.spec.ts":"metrika/frontend/watch/src/providers/debugConsole/__tests__/debugConsole.spec.ts",
   "src/providers/debugConsole/const.ts":"metrika/frontend/watch/src/providers/debugConsole/const.ts",
   "src/providers/debugConsole/debugConsole.ts":"metrika/frontend/watch/src/providers/debugConsole/debugConsole.ts",
+  "src/providers/debugConsole/debugEnabled.ts":"metrika/frontend/watch/src/providers/debugConsole/debugEnabled.ts",
   "src/providers/debugConsole/index.ts":"metrika/frontend/watch/src/providers/debugConsole/index.ts",
   "src/providers/debugEvents/debugRequest.ts":"metrika/frontend/watch/src/providers/debugEvents/debugRequest.ts",
   "src/providers/debugEvents/index.ts":"metrika/frontend/watch/src/providers/debugEvents/index.ts",

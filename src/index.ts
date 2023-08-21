@@ -162,7 +162,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
                 createError(`Invalid Metrika id: ${counterOptions.id}`, true),
             );
         }
-        const counters = globalConfig.getVal<Record<string, any>>(
+        const counters = globalConfig.getVal<Record<string, CounterObject>>(
             COUNTERS_GLOBAL_KEY,
             {},
         );

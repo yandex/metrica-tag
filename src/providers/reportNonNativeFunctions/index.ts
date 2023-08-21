@@ -1,9 +1,7 @@
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { memo, secondArg } from 'src/utils/function';
-import {
-    DebugConsole,
-    debugEnabled,
-} from 'src/providers/debugConsole/debugConsole';
+import { DebugConsole } from 'src/providers/debugConsole/debugConsole';
+import { debugEnabled } from 'src/providers/debugConsole/debugEnabled';
 import {
     dataLayerObserver,
     registerObserverCallback,
@@ -34,7 +32,7 @@ const logNonNativeFunction = memo(
  * @param ctx - Current window
  */
 export const useReportNonNativeFunctionProviderRaw = (ctx: Window) => {
-    if (debugEnabled(ctx).isEnabled) {
+    if (debugEnabled(ctx)) {
         dataLayerObserver(
             ctx,
             nonNativeFunctionsList,

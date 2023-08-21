@@ -5,7 +5,14 @@ import {
     windowProviderInitializers,
 } from 'src/providersEntrypoint';
 import { useReportNonNativeFunctionProvider } from '../reportNonNativeFunctions';
+import { DEBUG_CTX_FLAG } from './const';
 import { useDebugConsoleProvider } from './debugConsole';
+
+declare global {
+    interface Window {
+        [DEBUG_CTX_FLAG]: boolean;
+    }
+}
 
 export const initProvider = () => {
     prioritizedProviders.push(useDebugConsoleProvider);
