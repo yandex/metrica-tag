@@ -1,5 +1,5 @@
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
+import { DEBUG_EVENTS_FEATURE, DEBUG_FEATURE } from 'generated/features';
 import { RSYA_COUNTER_TYPE } from 'src/providers/counterOptions/const';
 import { providersSync } from 'src/providersEntrypoint';
 import { getCounterKey } from 'src/utils/counterOptions';
@@ -24,7 +24,7 @@ export const getEvents = globalMemoWin<DebuggerEvent[]>(
  * @param event - Event parameters
  */
 export const dispatchDebuggerEvent = (ctx: Window, event: DebuggerEvent) => {
-    if (!debugEnabled(ctx)) {
+    if (!flags[DEBUG_FEATURE] && !debugEnabled(ctx)) {
         return;
     }
 
