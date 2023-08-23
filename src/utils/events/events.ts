@@ -96,7 +96,7 @@ export const cEvent = memo((ctx: Window) => {
                 setEvent(elem, name, fn, opt, true);
             }, names);
         },
-    } as EventSetter);
+    });
 });
 
 export const hasPageTransitionEvents = (ctx: Window) => 'onpagehide' in ctx;

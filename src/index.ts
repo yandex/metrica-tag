@@ -114,6 +114,11 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             );
         };
 
+        /**
+         * Adds the provider's unsubscribe function to the `unsubscribeMethods` list
+         * or adds provider methods to the counter instance
+         * @param providerResult - an unsubscribe function or a mapping of the provider functions
+         */
         const handleProviderResult = (providerResult: ProviderResult) => {
             if (providerResult) {
                 if (isFunction(providerResult)) {

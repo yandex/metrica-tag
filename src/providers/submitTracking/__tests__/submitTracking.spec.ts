@@ -11,10 +11,8 @@ import * as asyncMap from 'src/utils/asyncMap';
 import * as domUtils from 'src/utils/dom';
 import * as goalProvider from 'src/providers/goal/goal';
 import * as deferUtils from 'src/utils/defer';
-import * as functionUtils from 'src/utils/function';
 import * as errorLoggerUtils from 'src/utils/errorLogger';
 import * as eventUtils from 'src/utils/events';
-import type { EventSetter } from 'src/utils/events/types';
 import * as counterSettingUtils from 'src/utils/counterSettings';
 import * as counterOptionsUtils from 'src/utils/counterOptions';
 import { ID, NAME, PATH } from 'src/utils/dom';
@@ -47,7 +45,8 @@ describe('submitTracking', () => {
         Parameters<typeof deferUtils.setDefer>,
         ReturnType<typeof deferUtils.setDefer>
     >;
-    let cEventSpy: sinon.SinonSpy;
+    let onEventSpy: sinon.SinonSpy;
+    let unEventSpy: sinon.SinonSpy;
     let counterSettingsStorageStub: sinon.SinonStub<
         Parameters<typeof counterSettingUtils.getCounterSettings>,
         ReturnType<typeof counterSettingUtils.getCounterSettings>
@@ -78,15 +77,16 @@ describe('submitTracking', () => {
                 return { [METHOD_NAME_GOAL]: sendGoalSpy };
             });
         setDeferStub = sandbox.stub(deferUtils, 'setDefer');
-        sandbox.stub(functionUtils, 'bindArgs').callsFake((args, fn) => fn);
         sandbox
             .stub(errorLoggerUtils, 'errorLogger')
             .callsFake((a, b, c) => c!);
         sandbox.stub(errorLoggerUtils, 'ctxErrorLogger').callsFake((a, b) => b);
-        cEventSpy = sandbox.spy();
+        onEventSpy = sandbox.spy(() => unEventSpy);
+        unEventSpy = sandbox.spy(() => {});
         sandbox.stub(eventUtils, 'cEvent').returns({
-            on: cEventSpy,
-        } as unknown as EventSetter);
+            on: onEventSpy,
+            un: unEventSpy,
+        });
 
         logFnSpy = sandbox.spy();
         sandbox.stub(debugConsole, 'getLoggerFn').returns(logFnSpy);
@@ -174,15 +174,25 @@ describe('submitTracking', () => {
     });
 
     it('useSubmitTracking', () => {
-        useSubmitTracking(win, {} as CounterOptions);
-        let [target, events, handler] = cEventSpy.getCall(0).args;
-        chai.expect(target).to.equal(win);
-        chai.expect(events).to.deep.equal(['click']);
-        chai.expect(handler).to.equal(handleClick);
+        const unsubscribeAllEvents = useSubmitTracking(
+            win,
+            {} as CounterOptions,
+        );
+        sinon.assert.calledWith(
+            onEventSpy.firstCall,
+            win,
+            ['click'],
+            sinon.match.func,
+        );
+        sinon.assert.calledWith(
+            onEventSpy.secondCall,
+            win,
+            ['submit'],
+            sinon.match.func,
+        );
 
-        [target, events, handler] = cEventSpy.getCall(1).args;
-        chai.expect(target).to.equal(win);
-        chai.expect(events).to.deep.equal(['submit']);
+        unsubscribeAllEvents();
+        sinon.assert.calledTwice(unEventSpy);
     });
 
     it('log', () => {

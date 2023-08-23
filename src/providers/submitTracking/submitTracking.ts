@@ -3,13 +3,14 @@ import { cEvent } from 'src/utils/events';
 import {
     bindArgs,
     call,
+    callFirstArgument,
     curry2SwapArgs,
     memo,
     noop,
     pipe,
     secondArg,
 } from 'src/utils/function';
-import { cIndexOf } from 'src/utils/array';
+import { cForEach, cIndexOf } from 'src/utils/array';
 import { ctxPath, getPath, isNil } from 'src/utils/object';
 import { setDefer } from 'src/utils/defer';
 import { CounterOptions } from 'src/utils/counterOptions';
@@ -151,33 +152,42 @@ export const handleClick = (
 export const useSubmitTracking = ctxErrorLogger(
     's.f.i',
     (ctx: Window, counterOptions: CounterOptions) => {
+        const unsubscribeMethodsList: (() => void)[] = [];
         const awaitSubmitForms: HTMLFormElement[] = [];
+        const eventHandler = cEvent(ctx);
 
-        cEvent(ctx).on(
-            ctx,
-            ['click'],
-            errorLogger(
+        unsubscribeMethodsList.push(
+            eventHandler.on(
                 ctx,
-                's.f.c',
-                bindArgs([ctx, counterOptions, awaitSubmitForms], handleClick),
+                ['click'],
+                errorLogger(
+                    ctx,
+                    's.f.c',
+                    bindArgs(
+                        [ctx, counterOptions, awaitSubmitForms],
+                        handleClick,
+                    ),
+                ),
             ),
         );
 
-        cEvent(ctx).on(
-            ctx,
-            ['submit'],
-            errorLogger(ctx, 's.f.e', (event: Event) => {
-                const target = getPath(event, 'target') as HTMLFormElement;
-                const isTrustedEvent = getPath(event, 'isTrusted');
-                handleSubmit(
-                    true,
-                    ctx,
-                    counterOptions,
-                    awaitSubmitForms,
-                    target,
-                    isTrustedEvent,
-                );
-            }),
+        unsubscribeMethodsList.push(
+            eventHandler.on(
+                ctx,
+                ['submit'],
+                errorLogger(ctx, 's.f.e', (event: Event) => {
+                    const target = getPath(event, 'target') as HTMLFormElement;
+                    const isTrustedEvent = getPath(event, 'isTrusted');
+                    handleSubmit(
+                        true,
+                        ctx,
+                        counterOptions,
+                        awaitSubmitForms,
+                        target,
+                        isTrustedEvent,
+                    );
+                }),
+            ),
         );
 
         log(
@@ -185,5 +195,7 @@ export const useSubmitTracking = ctxErrorLogger(
             counterOptions,
             `Form goal. Counter ${counterOptions.id}. Init.`,
         );
+
+        return bindArgs([callFirstArgument, unsubscribeMethodsList], cForEach);
     },
 );
