@@ -70,8 +70,7 @@ export const isAndroid = memo((ctx: Window) => {
 
     return Boolean(
         userAgent.indexOf('android') !== -1 &&
-            // TODO fix wrong `indexOf` utility usage
-            (userAgent as any).indexOf(userAgent, 'mobile') !== -1 &&
+            userAgent.indexOf('mobile') !== -1 &&
             /^android|linux armv/i.test(platform),
     );
 });
