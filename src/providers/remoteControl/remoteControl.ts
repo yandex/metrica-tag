@@ -118,7 +118,7 @@ const buildRemoteIframe = (ctx: ExtendedWindow, src: string) => {
 export const isAllowedOrigin = (origin: string) =>
     cSome(pipe(bindThisForMethodTest, cont(origin)), [
         /^http:\/\/([\w\-.]+\.)?webvisor\.com\/?$/,
-        /^https:\/\/([\w\-.]+\.)?metri[kc]a\.yandex\.(ru|ua|by|kz|com|com\.tr)\/?$/,
+        /^https:\/\/([\w\-.]+\.)?metri[kc]a\.yandex\.(ru|by|kz|com|com\.tr)\/?$/,
     ]);
 
 /**
