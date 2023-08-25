@@ -1,11 +1,11 @@
-import { isNativeFunction } from 'src/utils/function/isNativeFunction';
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { toNativeOrFalse } from 'src/utils/function/isNativeFunction';
+import { FindCallback, Find } from './types';
 
-const isNativeFind = isNativeFunction('find', Array.prototype.find);
+const nativeFind = toNativeOrFalse(Array.prototype.find, 'find');
 
-export const findPoly = <T>(
-    fn: (value: T, index?: number, obj?: T[]) => boolean,
-    array: T[] | readonly T[],
-): T | undefined => {
+export const findPoly: Find = (fn, array) => {
     for (let i = 0; i < array.length; i += 1) {
         if (fn.call(array, array[i], i)) {
             return array[i];
@@ -14,9 +14,12 @@ export const findPoly = <T>(
     return undefined;
 };
 
-export const cFind = isNativeFind
-    ? <T>(
-          fn: (value: T, index?: number, obj?: T[]) => boolean,
-          array: T[] | readonly T[],
-      ): T | undefined => Array.prototype.find.call(array, fn)
+const callNativeOrPoly: Find = nativeFind
+    ? <T>(fn: FindCallback<T>, array: ArrayLike<T>) =>
+          nativeFind.call(array, fn)
     : findPoly;
+
+export const cFind: Find = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPoly
+    : <T>(fn: FindCallback<T>, array: ArrayLike<T>) =>
+          Array.prototype.find.call(array, fn);

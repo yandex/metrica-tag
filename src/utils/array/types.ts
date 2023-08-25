@@ -1,40 +1,71 @@
-export interface Filter {
-    <T, R = T>(
-        fn: (item: T, i?: number) => boolean,
-        array: T[] | readonly T[],
-    ): R[];
-}
+export type nullable = '' | 0 | undefined | null | false;
 
-export type FindFn<T> = (
-    fn: (
-        value: T,
-        index?: number | undefined,
-        obj?: T[] | undefined,
-    ) => boolean,
-    array: T[] | readonly T[],
-) => T | undefined;
-
-export type nullable = '' | 0 | undefined | null;
+export type MapCallback<T, U> = (
+    element: T,
+    index: number,
+    array?: ArrayLike<T>,
+) => U;
 
 export interface ArrayMap {
-    <T, F>(fn: (el: T, i: number) => F, array: readonly T[]): F[];
-    <T>(fn: (el: T, i: number) => T, array: readonly T[]): T[];
+    <T, F>(fn: MapCallback<T, F>, array: ArrayLike<T>): F[];
+    <T>(fn: MapCallback<T, T>, array: ArrayLike<T>): T[];
 }
-export interface Every {
-    <T>(fn: (item: T, i?: number) => boolean, array: T[]): boolean;
-}
-export interface Some {
-    <T>(fn: (item: T, i?: number) => boolean, array: T[]): boolean;
-}
+
+export type ForEachCallback<T> = (
+    element: T,
+    index: number,
+    array?: ArrayLike<T>,
+) => void;
+export type ForEach = <T>(fn: ForEachCallback<T>, array: ArrayLike<T>) => void;
+
+export type ReduceCallback<T, U> = (
+    previousValue: U,
+    currentValue: T,
+    index: number,
+    array?: ArrayLike<T>,
+) => U;
 export interface Reduce {
-    <F>(fn: (prev: F, next: F, i: number) => F, first: F, array: F[]): F;
-    <F, U>(fn: (prev: U, next: F, i: number) => U, first: U, array: F[]): U;
-    <F, U>(
-        fn: (prev: U, next: F, i: number) => U,
-        first: U,
-        array: readonly F[],
-    ): U;
+    <F>(fn: ReduceCallback<F, F>, first: F, array: ArrayLike<F>): F;
+    <F, U>(fn: ReduceCallback<F, U>, first: U, array: ArrayLike<F>): U;
 }
+
+export type FlatMapCallback<T, U> = (
+    element: T,
+    index: number,
+    array?: ArrayLike<T>,
+) => U | U[];
 export interface FlatMap {
-    <T, F>(fn: (el: T, i: number) => F[] | F, array: T[]): F[];
+    <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>): U[];
 }
+
+export type IndexOf = <T>(searchElement: T, array: ArrayLike<T>) => number;
+export type Join = <T>(separator: string, array: ArrayLike<T>) => string;
+
+export type FindCallback<T> = (
+    value: T,
+    index: number,
+    array?: ArrayLike<T>,
+) => boolean;
+export type Find = <T>(
+    fn: FindCallback<T>,
+    array: ArrayLike<T>,
+) => T | undefined;
+
+export type FilterCallback<T> = FindCallback<T>;
+export type Filter = <T>(fn: FilterCallback<T>, array: ArrayLike<T>) => T[];
+
+export type SomeCallback<T> = (
+    value: T,
+    index: number,
+    array?: ArrayLike<T>,
+) => unknown;
+export type Some = <T>(fn: SomeCallback<T>, array: ArrayLike<T>) => boolean;
+
+export type EveryCallback<T> = SomeCallback<T>;
+export type Every = <T>(fn: EveryCallback<T>, array: ArrayLike<T>) => boolean;
+
+export type Includes = <T>(
+    searchElement: T,
+    array: ArrayLike<T>,
+    fromIndex?: number,
+) => boolean;

@@ -1,8 +1,12 @@
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { F } from 'ts-toolbelt';
 import { mapPoly, reducePoly } from '../array';
-import { bindArg, pipe } from '../function';
+import { bindArg, pipe, toNativeOrFalse } from '../function';
 import { isUndefined } from './assertions';
 import { has } from './has';
 import { ctxPath } from './path';
+import { Entries, Keys } from './types';
 
 export const { toString: cachedToString } = Object.prototype;
 
@@ -17,14 +21,7 @@ export const splice = (object: any, field: string) => {
     return val;
 };
 
-interface Entries {
-    <T, K extends string = string>(o?: { [s in K]: T } | ArrayLike<T>): [
-        K,
-        T,
-    ][];
-    <T>(o?: { [s: string]: T } | ArrayLike<T>): [string, T][];
-    (o?: {}): [string, any][];
-}
+const nativeKeys = toNativeOrFalse(Object.keys, 'keys');
 
 export const keysPoly = (obj: Record<string, any>) => {
     const out = [];
@@ -39,12 +36,14 @@ export const keysPoly = (obj: Record<string, any>) => {
     return out;
 };
 
-export const entriesPoly = (obj?: Record<string, any>) => {
+const nativeEntries = toNativeOrFalse(Object.entries, 'entries');
+
+export const entriesPoly: Entries = <T>(obj?: Record<string, T>) => {
     if (isUndefined(obj)) {
         return [];
     }
     return reducePoly(
-        (rawResult: [string, any][], key: string) => {
+        (rawResult: [string, T][], key: string) => {
             const result = rawResult;
             result.push([key, obj[key]]);
             return result;
@@ -53,23 +52,42 @@ export const entriesPoly = (obj?: Record<string, any>) => {
         keysPoly(obj),
     );
 };
+const callEntries =
+    <T>(entriesFunc: F.Function<[Record<string, T>], [string, T][]>) =>
+    (obj?: Record<string, T>) => {
+        if (!obj) {
+            return [];
+        }
+        return entriesFunc(obj);
+    };
 
-export const entries: Entries = Object.entries
-    ? (obj?: Record<string, any>) => {
-          if (!obj) {
-              return [];
-          }
-          return Object.entries(obj);
-      }
+const callNativeOrPolyEntries = nativeEntries
+    ? callEntries(nativeEntries)
     : entriesPoly;
 
-export const cKeys: typeof Object.keys = Object.keys ? Object.keys : keysPoly;
+export const entries: Entries = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPolyEntries
+    : callEntries(Object.entries);
+
+const callNativeOrPolyKeys = nativeKeys
+    ? (obj: Record<string, unknown>) => nativeKeys(obj)
+    : keysPoly;
+
+export const cKeys: Keys = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPolyKeys
+    : (obj: Record<string, unknown>) => Object.keys(obj);
+
+const nativeValues = toNativeOrFalse(Object.values, 'values');
 
 export const valuesPoly: typeof Object.values = pipe(
     entriesPoly,
     bindArg(ctxPath('1'), mapPoly),
 );
 
-export const cValues: typeof Object.values = Object.values
-    ? Object.values
+const callNativeOrPolyValues = nativeValues
+    ? <T>(obj: Record<string, T>) => nativeValues(obj)
     : valuesPoly;
+
+export const cValues: typeof Object.values = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPolyValues
+    : <T>(obj: Record<string, T>) => Object.values(obj);

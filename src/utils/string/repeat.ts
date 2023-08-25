@@ -1,20 +1,28 @@
-import { toNativeOrFalse } from 'src/utils/function/isNativeFunction/toNativeOrFalse';
-import { bindArg } from '../function';
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { bindArg, toNativeOrFalse } from '../function';
+import { Repeat } from './types';
 
 const nativeRepeat = toNativeOrFalse(String.prototype.repeat, 'repeat');
 
-export const repeatPoly = (text: string, times: number) => {
+export const repeatPoly: Repeat = (inputString, count) => {
     let result = '';
-    for (let i = 0; i < times; i += 1) {
-        result += text;
+    for (let i = 0; i < count; i += 1) {
+        result += inputString;
     }
 
     return result;
 };
 
-export const repeat = nativeRepeat
-    ? (text: string, times: number) => nativeRepeat.call(text, times)
+const callNativeOrPoly = nativeRepeat
+    ? (inputString: string, count: number) =>
+          nativeRepeat.call(inputString, count)
     : repeatPoly;
+
+export const repeat: Repeat = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPoly
+    : (inputString: string, count: number) =>
+          String.prototype.repeat.call(inputString, count);
 
 const pad = (
     start: boolean,

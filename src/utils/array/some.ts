@@ -1,7 +1,11 @@
-import { isNativeFunction } from 'src/utils/function/isNativeFunction';
-import { ternary } from 'src/utils/condition';
+import { toNativeOrFalse } from 'src/utils/function/isNativeFunction';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { flags } from '@inject';
+import { Some, SomeCallback } from './types';
 
-export const somePoly = <T>(fn: any, array: T[]): boolean => {
+const nativeSome = toNativeOrFalse(Array.prototype.some, 'some');
+
+export const somePoly: Some = (fn, array) => {
     for (let i = 0; i < array.length; i += 1) {
         // fn не выполняется для отсутствующих или удаленных значений массива (по спецификации)
         if (i in array && fn.call(array, array[i], i)) {
@@ -11,10 +15,12 @@ export const somePoly = <T>(fn: any, array: T[]): boolean => {
     return false;
 };
 
-export const cSome = ternary(
-    <E>(fn: any, array: E[]): boolean => {
-        return Array.prototype.some.call(array, fn);
-    },
-    somePoly,
-    isNativeFunction('some', Array.prototype.some),
-);
+const callNativeOrPoly: Some = nativeSome
+    ? <T>(fn: SomeCallback<T>, array: ArrayLike<T>) =>
+          nativeSome.call(array, fn)
+    : somePoly;
+
+export const cSome: Some = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPoly
+    : <T>(fn: SomeCallback<T>, array: ArrayLike<T>) =>
+          Array.prototype.some.call(array, fn);

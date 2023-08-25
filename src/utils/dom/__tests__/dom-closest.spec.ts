@@ -17,8 +17,8 @@ describe('don / utils - closest', () => {
             .callsFake(nativeFake);
         sandbox
             .stub(arrayUtils, 'cIndexOf')
-            .returns((needle: any, haystack: any[]) =>
-                haystack.indexOf(needle),
+            .returns((needle: any, haystack: ArrayLike<any>) =>
+                Array.prototype.indexOf.call(haystack, needle),
             );
     });
 

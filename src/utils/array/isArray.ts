@@ -1,26 +1,23 @@
 import { protoToString } from 'src/utils/string';
-import { equal } from '../function/curry';
-import { pipe } from '../function/pipe';
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 
-type isArrayType = <T>(arg: any) => arg is T[];
-/* eslint-disable-next-line import/no-mutable-exports */
-export let isArrayFn: isArrayType;
-export const isArrayPolyfill: (smth: any) => boolean = pipe(
-    protoToString,
-    equal('[object Array]'),
-);
+type isArrayType = <T>(arg: unknown) => arg is T[];
 
-export const isArray = ((obj: any) => {
-    if (isArrayFn) {
-        return isArrayFn(obj);
-    }
-    isArrayFn = toNativeOrFalse(Array.isArray, 'isArray') as any;
-    if (!isArrayFn) {
-        isArrayFn = isArrayPolyfill as isArrayType;
-    }
-    return isArrayFn(obj);
-}) as isArrayType;
+export function isArrayPolyfill<T>(obj: unknown): obj is T[] {
+    return protoToString(obj) === '[object Array]';
+}
+
+const nativeIsArray = toNativeOrFalse(Array.isArray, 'isArray');
+
+const callNativeOrPoly: isArrayType = nativeIsArray
+    ? <T>(obj: unknown): obj is T[] => nativeIsArray(obj)
+    : isArrayPolyfill;
+
+export const isArray: isArrayType = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPoly
+    : <T>(obj: unknown): obj is T[] => Array.isArray(obj);
 
 export const isIterable = <T>(arg: any): arg is Iterable<T> => {
     return typeof arg[Symbol.iterator] === 'function';

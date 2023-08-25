@@ -1,19 +1,29 @@
-import { curry2SwapArgs, equal } from '../function';
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { curry2SwapArgs, equal, toNativeOrFalse } from '../function';
 import { filterPoly } from './filter';
+import { Includes } from './types';
 
-export const includesPoly = <E>(e: E, array: E[] | readonly E[]): boolean => {
+const nativeIncludes = toNativeOrFalse(Array.prototype.includes, 'includes');
+
+// TODO add `fromIndex` support
+export const includesPoly: Includes = (e, array) => {
     return filterPoly(equal(e), array).length >= 1;
 };
 
-export const includes = Array.prototype.includes
-    ? <E>(el: E, array: E[] | readonly E[]): boolean => {
-          return Array.prototype.includes.call(array, el);
-      }
+const callNativeOrPoly = nativeIncludes
+    ? <T>(searchElement: T, array: ArrayLike<T>, fromIndex?: number) =>
+          nativeIncludes.call(array, searchElement, fromIndex)
     : includesPoly;
+
+export const includes: Includes = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPoly
+    : <T>(searchElement: T, array: ArrayLike<T>, fromIndex?: number) =>
+          Array.prototype.includes.call(array, searchElement, fromIndex);
 
 /**
  * первый аргумент где второй что
  * @type function(...?): ?
  */
-export const ctxIncludes: <T>(arr: T[] | readonly T[]) => (el: T) => boolean =
+export const ctxIncludes: <T>(arr: ArrayLike<T>) => (el: T) => boolean =
     curry2SwapArgs(includes);

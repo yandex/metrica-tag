@@ -1,9 +1,10 @@
 import { isFunction } from 'src/utils/object/assertions';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { flags } from '@inject';
+import { F } from 'ts-toolbelt';
 import type { Bind, AnyFunc, ParamsFirst, FuncRest } from '../types';
 import { argsToArray } from '../args';
 import { toNativeOrFalse } from '../isNativeFunction/toNativeOrFalse';
-
-const native = toNativeOrFalse(Function.prototype.bind, 'bind');
 
 export const callPoly = (
     rawFnName: string | Function,
@@ -33,7 +34,9 @@ export const callPoly = (
     return result;
 };
 
-export const bindPoly = function b() {
+const nativeBind = toNativeOrFalse(Function.prototype.bind, 'bind');
+
+export const bindPoly: Bind = function b() {
     // eslint-disable-next-line prefer-rest-params
     const bindArgs = argsToArray(arguments);
     const [fn, ctx, ...topArgs] = bindArgs;
@@ -58,23 +61,28 @@ export const bindPoly = function b() {
     };
 };
 
-export const bind: Bind = native
-    ? function bindFunction() {
-          // eslint-disable-next-line prefer-rest-params
-          const bindArgs = argsToArray(arguments);
-          const [fn, ctx, ...args] = bindArgs;
-          return native.apply(fn, [ctx, ...args]);
-      }
-    : bindPoly;
+const callBind = function bindDecorator(bindFunc: F.Function): Bind {
+    return function bindFunction() {
+        // eslint-disable-next-line prefer-rest-params
+        const bindArgs = argsToArray(arguments);
+        const [fn, ctx, ...args] = bindArgs;
+        return bindFunc.apply(fn, [ctx, ...args]);
+    };
+};
+const callNativeOrPoly = nativeBind ? callBind(nativeBind) : bindPoly;
+
+export const bind: Bind = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPoly
+    : callBind(Function.prototype.bind);
 
 export const bindArgs = (args: any[], fn: AnyFunc) => {
     return bind(fn, null, ...args);
 };
 
-export const bindArg = <F extends AnyFunc, P extends ParamsFirst<F>>(
+export const bindArg = <Func extends AnyFunc, P extends ParamsFirst<Func>>(
     arg: P,
-    fn: F,
-): FuncRest<F> => {
+    fn: Func,
+): FuncRest<Func> => {
     return bind(fn, null, arg) as any;
 };
 

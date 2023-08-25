@@ -16,12 +16,12 @@ import {
     SENDER_TIME_BR_KEY,
     TRACK_HASH_BR_KEY,
 } from 'src/api/watch';
-import type { FindFn } from 'src/utils/array/types';
 import { cFind, cReduce, includes } from 'src/utils/array';
 import { BrowserInfo, browserInfo } from 'src/utils/browserInfo';
 import { bindArg, equal, pipe } from 'src/utils/function';
 import { entries, getPath, isNil, mix } from 'src/utils/object';
 import { TimeOne, getSec } from 'src/utils/time';
+import type { FindCallback } from 'src/utils/array/types';
 import type { SenderInfo, UrlParams } from '../../SenderInfo';
 
 const HIT_TYPE_EVENT = 'event';
@@ -68,7 +68,11 @@ const processEvents = (
     const result: Record<string, string> = {};
     const findEventKey = bindArg(
         pipe(bindArg(brInfoFlags, getPath), equal(1)),
-        cFind as FindFn<string>,
+        // TODO change to cFind<string> when typescript is updated
+        cFind as (
+            fn: FindCallback<string>,
+            array: ArrayLike<string>,
+        ) => string | undefined,
     );
 
     if (!brInfoFlags[ARTIFICIAL_BR_KEY]) {

@@ -20,14 +20,11 @@ import {
     flatMapPoly,
 } from '..';
 import { reversePoly } from '../reverse';
-// @ts-ignore
-import { isArrayFn, isArrayPolyfill } from '../isArray';
+import { isArrayPolyfill } from '../isArray';
 
 describe('Array utils', () => {
     const sandbox = sinon.createSandbox();
     beforeEach(() => {
-        // @ts-expect-error
-        isArrayFn = undefined as any;
         sandbox
             .stub(native, 'toNativeOrFalse')
             .callsFake(((a: any) => a) as any);

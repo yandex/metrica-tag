@@ -1,8 +1,11 @@
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
+import { StringIndexOf } from './types';
 
 export const DOT_REGEX_GLOBAL = /\./g;
 
-export const protoToString = (str: string) => {
+export const protoToString = <T>(str: T) => {
     return Object.prototype.toString.call(str);
 };
 
@@ -10,20 +13,23 @@ export const isString = (obj: unknown): obj is string => {
     return typeof obj === 'string';
 };
 
-const nativeIndexOf = toNativeOrFalse(String.prototype.indexOf, 'indexOf');
+const nativeStringIndexOf = toNativeOrFalse(
+    String.prototype.indexOf,
+    'indexOf',
+);
 
-export const stringIndexOfPoly = (str: string, substring: string) => {
+export const stringIndexOfPoly: StringIndexOf = (inputString, searchString) => {
     let j = 0;
-    const lastPoint = str.length - substring.length;
-    for (let i = 0; i < str.length; i += 1) {
-        if (str[i] === substring[j]) {
+    const lastPoint = inputString.length - searchString.length;
+    for (let i = 0; i < inputString.length; i += 1) {
+        if (inputString[i] === searchString[j]) {
             j += 1;
         } else {
             j = 0;
         }
 
-        if (j === substring.length) {
-            return i - substring.length + 1;
+        if (j === searchString.length) {
+            return i - searchString.length + 1;
         }
 
         if (!j && i > lastPoint) {
@@ -34,10 +40,15 @@ export const stringIndexOfPoly = (str: string, substring: string) => {
     return -1;
 };
 
-export const stringIndexOf = (string: string, substring: string) => {
-    return nativeIndexOf
-        ? nativeIndexOf.call(string, substring)
-        : stringIndexOfPoly(string, substring);
+const callNativeOrPoly = nativeStringIndexOf
+    ? (inputString: string, searchString: string) =>
+          nativeStringIndexOf.call(inputString, searchString)
+    : stringIndexOfPoly;
+
+export const stringIndexOf: StringIndexOf = (inputString, searchString) => {
+    return flags[POLYFILLS_FEATURE]
+        ? callNativeOrPoly(inputString, searchString)
+        : String.prototype.indexOf.call(inputString, searchString);
 };
 
 export const stringIncludes = (string: string, substring: string) => {

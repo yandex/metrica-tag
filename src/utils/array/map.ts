@@ -1,9 +1,18 @@
-import { toNativeOrFalse } from 'src/utils/function/isNativeFunction/toNativeOrFalse';
 import { isFF } from 'src/utils/browser/firefox';
-import { ArrayMap, FlatMap } from './types';
+import { flags } from '@inject';
+import { POLYFILLS_FEATURE } from 'generated/features';
+import { F } from 'ts-toolbelt';
+import {
+    ArrayMap,
+    FlatMap,
+    FlatMapCallback,
+    ForEach,
+    MapCallback,
+} from './types';
 import { curry2, curry2SwapArgs } from '../function/curry';
 import { reducePoly } from './reduce';
 import { isArray } from './isArray';
+import { toNativeOrFalse } from '../function/isNativeFunction';
 
 const isLengthCorrect = (ctx: Window, method: Function) => {
     if (!isFF(ctx)) {
@@ -27,7 +36,10 @@ const isLengthCorrect = (ctx: Window, method: Function) => {
 
 const nativeMap = toNativeOrFalse(Array.prototype.map, 'map');
 
-export const mapPoly: ArrayMap = (fn: Function, array: readonly any[]) => {
+export const mapPoly: ArrayMap = <T, U>(
+    fn: MapCallback<T, U>,
+    array: ArrayLike<T>,
+) => {
     return reducePoly(
         (rawResult, item, i) => {
             const result = rawResult;
@@ -38,21 +50,28 @@ export const mapPoly: ArrayMap = (fn: Function, array: readonly any[]) => {
         array as any[],
     );
 };
-
-export const baseMap: ArrayMap =
+const callNativeOrPolyMap =
     nativeMap && isLengthCorrect(window, Array.prototype.map)
-        ? (fn: (e: any, i: number) => any, array: readonly any[]) => {
-              // FIXME METR-40760
-              return array && array.length > 0 ? nativeMap.call(array, fn) : [];
-          }
+        ? <T, U>(fn: MapCallback<T, U>, array: ArrayLike<T>) =>
+              array && array.length > 0 ? nativeMap.call(array, fn) : []
         : mapPoly;
+
+export const baseMap: ArrayMap = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPolyMap
+    : <T, U>(fn: MapCallback<T, U>, array: ArrayLike<T>) =>
+          array && array.length > 0 ? Array.prototype.map.call(array, fn) : [];
 export const cMap = baseMap;
 
-export const cForEach = baseMap; // cForEach - тоже самое что cMap, но она может иметь сайд эффекты, cMap - чистая ф-ция
+export const cForEach: ForEach = baseMap; // cForEach - тоже самое что cMap, но она может иметь сайд эффекты, cMap - чистая ф-ция
 
-export const flatMapPoly: FlatMap = (fn: Function, array: any[]) => {
-    return reducePoly(
-        (result, item, i: number) => {
+const nativeFlatMap = toNativeOrFalse(Array.prototype.flatMap, 'flatMap');
+
+export const flatMapPoly: FlatMap = <T, U>(
+    fn: FlatMapCallback<T, U>,
+    array: ArrayLike<T>,
+) => {
+    return reducePoly<T, U[]>(
+        (result, item, i) => {
             const fnResult = fn(item, i);
             return result.concat(isArray(fnResult) ? fnResult : [fnResult]);
         },
@@ -60,12 +79,23 @@ export const flatMapPoly: FlatMap = (fn: Function, array: any[]) => {
         array,
     );
 };
-
-export const flatMap: FlatMap = Array.prototype.flatMap
-    ? (fn: (e: any, i: number) => any, array: any[]) => {
-          return Array.prototype.flatMap.call(array, fn) as any[];
-      }
+const callNativeOrPolyFlatMap: FlatMap = nativeFlatMap
+    ? <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>) =>
+          (nativeFlatMap as F.Function<[FlatMapCallback<T, U>], U[]>).call(
+              array,
+              fn,
+          )
     : flatMapPoly;
+
+export const flatMap: FlatMap = flags[POLYFILLS_FEATURE]
+    ? callNativeOrPolyFlatMap
+    : <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>) =>
+          (
+              Array.prototype.flatMap as F.Function<
+                  [FlatMapCallback<T, U>],
+                  U[]
+              >
+          ).call(array, fn);
 
 /**
  * @type function(...?): ?
