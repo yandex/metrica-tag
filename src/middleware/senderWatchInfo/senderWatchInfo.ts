@@ -40,11 +40,10 @@ export const senderWatchInfo: MiddlewareGetter = (ctx, counterOptions) => ({
                 resource: `${WATCH_RESOURCE}/${counterOptions.id}`,
             },
             transportInfo: mix(transportInfo, {
-                wmode: Boolean(
-                    brInfo.getVal(PAGE_VIEW_BR_KEY) &&
-                        !brInfo.getVal(ARTIFICIAL_BR_KEY) &&
-                        !brInfo.getVal(TRACK_HASH_BR_KEY),
-                ),
+                wmode:
+                    !!brInfo.getVal(PAGE_VIEW_BR_KEY) &&
+                    !brInfo.getVal(ARTIFICIAL_BR_KEY) &&
+                    !brInfo.getVal(TRACK_HASH_BR_KEY),
             }),
             urlParams: mix(cSenderInfo.urlParams || {}, watchUrlParams),
         };

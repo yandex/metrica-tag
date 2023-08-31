@@ -149,7 +149,7 @@ export const useTrackHash = ctxErrorLogger(
             } else {
                 unsetTrackHash();
             }
-            enabled = Boolean(enable);
+            enabled = !!enable;
             setCounterState({
                 [COUNTER_STATE_TRACK_HASH]: enabled,
             });

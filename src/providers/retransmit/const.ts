@@ -3,7 +3,7 @@ import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import { COLLECT_RESOURCE } from 'src/middleware/senderCollectInfo';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
-import { startsWith } from 'src/utils/string/startsWith';
+import { startsWithString } from 'src/utils/string/startsWith';
 import { equal } from 'src/utils/function';
 
 export const RETRANSMIT_PROVIDER = 'r';
@@ -17,4 +17,4 @@ export const RETRANSMIT_PROVIDER = 'r';
  */
 export const RETRANSMITTABLE_RESOURCE_CALLBACKS = flags[SENDER_COLLECT_FEATURE]
     ? [equal(COLLECT_RESOURCE)]
-    : [startsWith(WATCH_RESOURCE), startsWith(CLICKMAP_RESOURCE)];
+    : [startsWithString(WATCH_RESOURCE), startsWithString(CLICKMAP_RESOURCE)];

@@ -29,7 +29,7 @@ export type TransformPhoneFn = (
     ctx: Window,
     counterOpt: CounterOptions | null,
     item: ReplaceElement,
-) => Boolean;
+) => boolean;
 
 export type ReplacerOptions = {
     transformer: TransformPhoneFn;

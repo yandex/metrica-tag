@@ -3,7 +3,7 @@ import { CounterOptions } from 'src/utils/counterOptions';
 import { METHOD_NAME_CLICK_MAP } from 'src/providers/clickmapMethod/const';
 import { bindArg, bindArgs, cont, firstArg, pipe } from 'src/utils/function';
 import { METHOD_NAME_TRACK_LINKS } from 'src/providers/clicks/const';
-import { cFilter, cMap } from 'src/utils/array';
+import { cMap, filterFalsy } from 'src/utils/array';
 import {
     EnableAllHandler,
     METHOD_NAME_ENABLE_ALL,
@@ -29,8 +29,7 @@ export const useEnableAllProvider = ctxErrorLogger(
         const enableAll = bindArgs(
             [
                 pipe(firstArg, cont(true)),
-                cFilter(
-                    Boolean,
+                filterFalsy(
                     cMap(bindArg(counter, getPath), [
                         METHOD_NAME_CLICK_MAP,
                         METHOD_NAME_TRACK_LINKS,

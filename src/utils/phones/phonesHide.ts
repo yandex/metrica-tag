@@ -6,7 +6,7 @@ import {
     ReplaceElementLink,
 } from 'src/utils/phones/const';
 import { getElemCreateFunction } from 'src/utils/dom';
-import { cFilter, cForEach, cMap, cReduce, toArray } from 'src/utils/array';
+import { cForEach, cMap, cReduce, filterFalsy, toArray } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
 import { METHOD_NAME_EXTERNAL_LINK_CLICK } from 'src/providers/clicks/const';
 import {
@@ -65,7 +65,7 @@ const setEnterHandler = (
         if (e.target === phoneWrapper) {
             const deferId = setDefer(ctx, show, HOVER_TIMEOUT, 'ph.h.e');
 
-            (unsubscribeLeave || noop)();
+            unsubscribeLeave();
             unsubscribeLeave = eventHandler.on(
                 phoneWrapper,
                 ['mouseleave'],
@@ -153,8 +153,7 @@ export const hidePhones = (
         },
     });
 
-    const cleanPhones = cFilter(
-        Boolean,
+    const cleanPhones = filterFalsy(
         cMap(
             (phone) => (phone === ANY_PHONE ? phone : removeNonDigits(phone)),
             phones,

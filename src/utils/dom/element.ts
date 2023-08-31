@@ -95,15 +95,9 @@ export const getElementParent = (ctx: Window, element: Node) => {
 
     if (element === getBody(ctx)) return doc.documentElement;
 
-    let parent: HTMLElement | null = null;
     // Blocked a frame with origin "http://alipromo.com" from accessing a cross-origin frame.
-    try {
-        // probably can change to parentElement
-        parent = element.parentNode as HTMLElement;
-    } catch (e) {
-        // empty
-    }
-
+    // probably can change to parentElement
+    const parent = getPath(element, 'parentNode') as HTMLElement;
     return parent;
 };
 

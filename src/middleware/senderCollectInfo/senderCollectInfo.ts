@@ -37,11 +37,10 @@ export const senderCollectInfo: MiddlewareGetter = (ctx, counterOptions) => ({
                 resource: COLLECT_RESOURCE,
             },
             transportInfo: mix(transportInfo, {
-                wmode: Boolean(
-                    brInfo.getVal(PAGE_VIEW_BR_KEY) &&
-                        !brInfo.getVal(ARTIFICIAL_BR_KEY) &&
-                        !brInfo.getVal(TRACK_HASH_BR_KEY),
-                ),
+                wmode:
+                    !!brInfo.getVal(PAGE_VIEW_BR_KEY) &&
+                    !brInfo.getVal(ARTIFICIAL_BR_KEY) &&
+                    !brInfo.getVal(TRACK_HASH_BR_KEY),
             } as TransportOptions),
             urlParams: mix(cSenderInfo.urlParams || {}, collectUrlParams),
         };

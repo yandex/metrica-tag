@@ -49,8 +49,4 @@ export const cIndexOf = (ctx: Window) => {
 
 export const cIndexOfWin = cIndexOf(window);
 
-/**
- * @type function(...?): ?
- */
-export const ctxIndexOf: <T>(arr: T[]) => (el: T) => number =
-    curry2SwapArgs(cIndexOfWin);
+export const ctxIndexOf = curry2SwapArgs(cIndexOfWin);

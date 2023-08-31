@@ -122,7 +122,7 @@ export const sendClickLink = (
         brInfo,
         middlewareInfo: {
             title: userOptions['title'] || options.title,
-            noIndex: Boolean(options.noIndex),
+            noIndex: !!options.noIndex,
             params: userOptions['params'],
         },
         urlParams: {

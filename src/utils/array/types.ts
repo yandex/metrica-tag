@@ -45,7 +45,7 @@ export type FindCallback<T> = (
     value: T,
     index: number,
     array?: ArrayLike<T>,
-) => boolean;
+) => unknown;
 export type Find = <T>(
     fn: FindCallback<T>,
     array: ArrayLike<T>,

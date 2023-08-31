@@ -244,14 +244,13 @@ export const createPhoneDomReplacer = (
                                 resolve({
                                     phones: cFilter(
                                         isArray,
-                                        cFilter(
-                                            Boolean,
+                                        filterFalsy(
                                             cMap(
                                                 replaceElContent,
                                                 links.concat(texts),
                                             ),
                                         ),
-                                    ) as PhoneTuple[],
+                                    ),
                                     perf: timer(getMs) - startTime,
                                 });
                             },

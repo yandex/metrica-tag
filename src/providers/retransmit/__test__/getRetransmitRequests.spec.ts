@@ -9,7 +9,7 @@ import * as globalStorage from 'src/storage/global';
 import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
 import * as state from 'src/middleware/retransmit/state';
-import { startsWith } from 'src/utils/string/startsWith';
+import { startsWithString } from 'src/utils/string/startsWith';
 import * as constants from '../const';
 import { getRetransmitRequestsRaw } from '../getRetransmitRequests';
 
@@ -39,7 +39,10 @@ describe('getRetransmitRequests', () => {
     beforeEach(() => {
         sandbox
             .stub(constants, 'RETRANSMITTABLE_RESOURCE_CALLBACKS')
-            .value([startsWith(WATCH_RESOURCE), startsWith(CLICKMAP_RESOURCE)]);
+            .value([
+                startsWithString(WATCH_RESOURCE),
+                startsWithString(CLICKMAP_RESOURCE),
+            ]);
         timeStub = sandbox.stub(time, 'TimeOne');
         sandbox.stub(state, 'getRetransmitLsState').value(() => lsState);
         timeStub.returns(<R>() => now as unknown as R);

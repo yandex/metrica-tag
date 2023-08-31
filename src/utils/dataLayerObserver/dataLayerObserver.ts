@@ -80,12 +80,7 @@ const toInner = (newEmitter: Emitter<MessageData, void>, item: any) => {
     }
     newEmitter.trigger(getPath(data, INNER_DATA_LAYER_TYPE_KEY), data);
 };
-/**
- *
- * @param {Object} ctx
- * @param {Array<?>} array
- * @param {function(...?): ?} [initCallback]
- */
+
 export const innerDataLayerObserver = (
     ctx: Window,
     array: any[],

@@ -7,15 +7,8 @@ import {
     isNativeFunction,
     bindThisForMethodTest,
 } from 'src/utils/function';
-import { isString } from 'src/utils/string';
-import {
-    cEvery,
-    cMap,
-    cReduce,
-    cSome,
-    includes,
-    indexOfWin,
-} from 'src/utils/array';
+import { isString, stringIncludes } from 'src/utils/string';
+import { cMap, cReduce, cSome, includes, indexOfWin } from 'src/utils/array';
 import { ctxPath, getPath, isUndefined } from 'src/utils/object';
 import { isFF, isFFVersionRegExp } from 'src/utils/browser/firefox';
 import { MIN_EDGE_VERSION, MIN_FIREFOX_VERSION } from 'src/utils/browser/const';
@@ -68,10 +61,10 @@ export const isAndroid = memo((ctx: Window) => {
     const userAgent = (getAgent(ctx) || '').toLowerCase();
     const platform = getPlatform(ctx);
 
-    return Boolean(
-        userAgent.indexOf('android') !== -1 &&
-            userAgent.indexOf('mobile') !== -1 &&
-            /^android|linux armv/i.test(platform),
+    return (
+        stringIncludes(userAgent, 'android') &&
+        stringIncludes(userAgent, 'mobile') &&
+        /^android|linux armv/i.test(platform)
     );
 });
 
@@ -128,24 +121,13 @@ export const getLanguage = memo((ctx: Window) => {
 });
 
 export const isIframe = memo((ctx: Window) => {
-    let out = false;
-    try {
-        out = ctx.top !== ctx;
-    } catch (e) {
-        // empty
-    }
-    return out;
+    const top = getPath(ctx, 'top') || ctx;
+    return top !== ctx;
 });
 
-export const isTopWindowAccessible = memo((ctx: Window): boolean => {
-    let out = false;
-    try {
-        out = (ctx.top as any).contentWindow;
-    } catch (e) {
-        // empty
-    }
-    return out;
-});
+export const isTopWindowAccessible: (ctx: Window) => Window | null = memo(
+    ctxPath('top.contentWindow'),
+);
 
 export const getJavaEnabled = memo((ctx: Window): boolean => {
     let out = false;
@@ -206,26 +188,23 @@ export const isHeadLess = memo(
         ),
 );
 
-export const isFacebookInstantArticles = memo((ctx: Window) =>
-    cEvery(bindArg(ctx, getPath) as unknown as (path: string) => boolean, [
-        'ia_document.shareURL',
-        'ia_document.referrer',
-    ]),
+export const isFacebookInstantArticles = memo(
+    (ctx: Window) =>
+        !!(
+            getPath(ctx, 'ia_document.shareURL') &&
+            getPath(ctx, 'ia_document.referrer')
+        ),
 );
 
 export const isNotificationAllowed = (ctx: Window) => {
-    const permission = getPath(
-        ctx,
-        'Notification.permission',
-    ) as NotificationPermission | null;
-    switch (permission) {
-        case 'denied':
-            return false;
-        case 'granted':
-            return true;
-        default:
-            return null;
+    const permission = getPath(ctx, 'Notification.permission');
+    if (permission === 'denied') {
+        return false;
     }
+    if (permission === 'granted') {
+        return true;
+    }
+    return null;
 };
 
 export const isPrerender = (ctx: Window) =>

@@ -21,7 +21,6 @@ import {
     bindThisForMethodTest,
     bindArgs,
     firstArg,
-    cont,
     ctxBindArgs,
     call,
 } from 'src/utils/function';
@@ -31,8 +30,7 @@ import { flags } from '@inject';
 import {
     arrayJoin,
     cForEach,
-    cSome,
-    ctxMap,
+    cMap,
     filterFalsy,
     includes,
 } from 'src/utils/array';
@@ -115,11 +113,11 @@ const buildRemoteIframe = (ctx: ExtendedWindow, src: string) => {
     }
 };
 
+const webvisorRegex = /^http:\/\/([\w\-.]+\.)?webvisor\.com\/?$/;
+const metrikaRegex =
+    /^https:\/\/([\w\-.]+\.)?metri[kc]a\.yandex\.(ru|by|kz|com|com\.tr)\/?$/;
 export const isAllowedOrigin = (origin: string) =>
-    cSome(pipe(bindThisForMethodTest, cont(origin)), [
-        /^http:\/\/([\w\-.]+\.)?webvisor\.com\/?$/,
-        /^https:\/\/([\w\-.]+\.)?metri[kc]a\.yandex\.(ru|by|kz|com|com\.tr)\/?$/,
-    ]);
+    webvisorRegex.test(origin) || metrikaRegex.test(origin);
 
 /**
  * (\.)(?!\.) - точка, но не две точки подряд
@@ -177,10 +175,9 @@ export const getResourceUrl = (message: InlineMessageProps): string => {
     } = message;
     const validVersion = arrayJoin(
         SPLITTER,
-        pipe(
-            ctxMap(pipe(firstArg, parseDecimalInt)),
-            filterFalsy,
-        )(appVersion.split(SPLITTER)),
+        filterFalsy(
+            cMap(pipe(firstArg, parseDecimalInt), appVersion.split(SPLITTER)),
+        ),
     );
 
     if (
@@ -284,13 +281,8 @@ export const handleMessage = memo(
 );
 
 export const onMessage = (ctx: ExtendedWindow, event: MessageEvent) => {
-    let origin: string | undefined;
-
-    try {
-        ({ origin } = event);
-    } catch {
-        // Не всегда есть доступ к origin
-    }
+    // Не всегда есть доступ к origin
+    const origin = getPath(event, 'origin');
 
     if (!origin) {
         return;

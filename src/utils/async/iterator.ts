@@ -141,11 +141,11 @@ export const iterNextCall = <T, R>(iterParams: IterParams<T, R>) => {
 
 export const iterForOf = <Item, Result>(
     itemList: Item[],
-    handler: (a: Item, nextFn?: Function | any) => Result = firstArg as any,
+    handler?: (a: Item, nextFn?: Function | any) => Result,
 ) => {
     const iterParams = {
         itemList,
-        iterHandler: handler,
+        iterHandler: handler || firstArg,
         stopIter: false,
         iterCursor: 0,
     };

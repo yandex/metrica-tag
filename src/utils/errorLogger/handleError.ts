@@ -1,12 +1,5 @@
 import { cSome } from 'src/utils/array';
-import {
-    bindThisForMethod,
-    notFn,
-    equal,
-    pipe,
-    getNativeFunction,
-    bindArg,
-} from 'src/utils/function';
+import { getNativeFunction, bindArg } from 'src/utils/function';
 import {
     DEBUG_FEATURE,
     LOCAL_FEATURE,
@@ -25,6 +18,7 @@ import { throwFunction } from './throwFunction';
 import { isHTTPError, LoggerError } from './createError';
 import { getPath } from '../object';
 import { runOnErrorCallbacks } from './onError';
+import { stringIncludes } from '../string';
 
 export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
     // Undefined as error
@@ -77,14 +71,7 @@ export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
 
     const ignoreCondition =
         isKnownError(message) ||
-        cSome(
-            pipe(
-                bindThisForMethod('indexOf', message),
-                equal(-1) as any,
-                notFn,
-            ),
-            IGNORED_ERRORS,
-        ) ||
+        cSome(bindArg(message, stringIncludes), IGNORED_ERRORS) ||
         (isHTTPError(message) && ctx.Math.random() >= 0.1);
     if (ignoreCondition) {
         return undefined;

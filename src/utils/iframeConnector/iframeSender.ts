@@ -43,11 +43,11 @@ export const sendToMany = (
     const promise = new PolyPromise<MessageData>((resolve, reject) => {
         const counterList = cKeys(dict);
         const resolveAll = pipe(
-            newItem.resolve ? newItem.resolve : firstArg,
+            newItem.resolve || firstArg,
             asSideEffect(resolve),
         );
         const rejectAll = pipe(
-            newItem.reject ? newItem.reject : firstArg,
+            newItem.reject || firstArg,
             asSideEffect(reject),
         );
         newItem.resolve = resolveAll;

@@ -11,8 +11,9 @@ import {
 import { entries, isObject, isUndefined } from 'src/utils/object';
 import { cForEach, cReduce, isArray } from 'src/utils/array';
 import { flags } from '@inject';
-import { parseDecimalInt } from 'src/utils/number';
+import { toBoolean } from 'src/utils/boolean';
 import type { CounterOption, CounterOptions } from 'src/utils/counterOptions';
+import { parseDecimalInt } from 'src/utils/number';
 import { DEFAULT_ID, DEFAULT_COUNTER_TYPE } from './const';
 import type { OptionInitializerMap, OptionsKeysMaps } from './types';
 
@@ -46,13 +47,13 @@ export const normalizeOptionsMap: Record<string, (value: any) => unknown> = {
     id: normalizeId,
     counterType: (value) =>
         `${value || value === 0 ? value : DEFAULT_COUNTER_TYPE}`,
-    noCookie: Boolean,
-    ut: Boolean,
+    noCookie: toBoolean,
+    ut: toBoolean,
 };
 
 if (flags[ARTIFICIAL_HIT_FEATURE]) {
     obfuscatedKeysMap.counterDefer = 'defer';
-    normalizeOptionsMap.counterDefer = Boolean;
+    normalizeOptionsMap.counterDefer = toBoolean;
 }
 
 if (flags[PARAMS_FEATURE]) {
@@ -67,18 +68,17 @@ if (flags[USER_PARAMS_FEATURE]) {
 
 if (flags[TRIGGER_EVENT_FEATURE]) {
     obfuscatedKeysMap.triggerEvent = 'triggerEvent';
-    normalizeOptionsMap.triggerEvent = Boolean;
+    normalizeOptionsMap.triggerEvent = toBoolean;
 }
 
 if (flags[SEND_TITLE_FEATURE]) {
     obfuscatedKeysMap.sendTitle = 'sendTitle';
-    normalizeOptionsMap.sendTitle = (value) =>
-        Boolean(value) || isUndefined(value);
+    normalizeOptionsMap.sendTitle = (value) => !!value || isUndefined(value);
 }
 
 if (flags[TRACK_HASH_FEATURE]) {
     obfuscatedKeysMap.trackHash = 'trackHash';
-    normalizeOptionsMap.trackHash = Boolean;
+    normalizeOptionsMap.trackHash = toBoolean;
 }
 
 if (flags[EXTERNAL_LINK_FEATURE]) {

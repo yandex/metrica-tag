@@ -130,10 +130,6 @@ export const BRINFO_FLAG_GETTERS: FlagGettersHash = {
     [DEVICE_PIXEL_RATIO_BR_KEY]: ctxPath('devicePixelRatio'),
     [IS_IFRAME_BR_KEY]: pipe(isIframe, toOneOrNull),
     [IS_JAVA_ENABLED_BR_KEY]: pipe(getJavaEnabled, toOneOrNull),
-    [IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY]: (ctx: Window) => {
-        if (isIframe(ctx)) {
-            return isTopWindowAccessible(ctx) ? '1' : null;
-        }
-        return null;
-    },
+    [IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY]: (ctx: Window) =>
+        isIframe(ctx) && isTopWindowAccessible(ctx) ? '1' : null,
 };
