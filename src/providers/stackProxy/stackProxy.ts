@@ -1,8 +1,5 @@
 import { ctxPath, getPath, mix } from 'src/utils/object';
-import {
-    dataLayerObserver,
-    registerObserverCallback,
-} from 'src/utils/dataLayerObserver';
+import { dataLayerObserver } from 'src/utils/dataLayerObserver';
 import {
     CounterOptions,
     getCounterKey,
@@ -18,11 +15,9 @@ import {
     bindThisForMethod,
     pipe,
     curry2,
-    bindArgs,
 } from 'src/utils/function';
 import { cForEach, cReduce, toArray } from 'src/utils/array';
 import { parseDecimalInt } from 'src/utils/number';
-import { runAsync } from 'src/utils/async';
 import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
 import { consoleLog } from '../debugConsole/debugConsole';
 
@@ -156,10 +151,6 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
     }
 });
 
-/**
- * After a counter initialization handles ym(counterId, 'functionName', ...params) events.
- * At this point a counter instance is created and we check for events that depend on it.
- */
 export const checkStack = (ctx: Window, counterOptions: CounterOptions) => {
     const state = getProxyState(ctx);
     const counterKey = getCounterKey(counterOptions);
@@ -183,8 +174,7 @@ type StackFn = {
 };
 
 /**
- * Handles ym(counterId, 'functionName', ...params) events added to the queue before the tag was loaded and run.
- * At this time no counter is initialized and thus we primarily aim for init events
+ * Handles ym(counterId, 'functionName', ...params) calls and proxies them to counter instance
  * @param ctx - Current window
  */
 export const stackProxy = (ctx: Window) => {
@@ -198,11 +188,12 @@ export const stackProxy = (ctx: Window) => {
         dataLayer = fn[STACK_DATA_LAYER_NAME] as StackCall[];
     }
     const onStack = handleCall(ctx);
-    runAsync(
+    dataLayerObserver(
         ctx,
-        bindArgs(
-            [ctx, dataLayer, registerObserverCallback(onStack), true],
-            dataLayerObserver,
-        ),
+        dataLayer,
+        ({ observer }) => {
+            observer.on(onStack);
+        },
+        true,
     );
 };
