@@ -66,7 +66,7 @@ const callBind = function bindDecorator(bindFunc: F.Function): Bind {
         // eslint-disable-next-line prefer-rest-params
         const bindArgs = argsToArray(arguments);
         const [fn, ctx, ...args] = bindArgs;
-        return bindFunc.apply(fn, [ctx, ...args]);
+        return bindFunc.apply(fn, [ctx].concat(args));
     };
 };
 const callNativeOrPoly = nativeBind ? callBind(nativeBind) : bindPoly;

@@ -8,6 +8,7 @@ import {
     ctxReduce,
     arrayJoin,
     filterFalsy,
+    arrayMerge,
 } from 'src/utils/array';
 import { waitForBodyTask } from 'src/utils/dom/waitForBody';
 import { memo, bindArg } from 'src/utils/function';
@@ -183,7 +184,10 @@ export const selectLink = (ctx: Window, phoneChangeMap: PhoneChangeMap) => {
                             : [telFromHref, ''],
                     ]);
 
-                    accum.push(...selectText(ctx, textsPhoneChangeMap, link));
+                    arrayMerge(
+                        accum,
+                        selectText(ctx, textsPhoneChangeMap, link),
+                    );
                 }
             }
 

@@ -1,4 +1,10 @@
-import { toArray, flatMap, cFilter, cIndexOf } from 'src/utils/array';
+import {
+    toArray,
+    flatMap,
+    cFilter,
+    cIndexOf,
+    arrayMerge,
+} from 'src/utils/array';
 import { bindArg } from 'src/utils/function';
 import { isQuerySelectorSupported } from './queySelect';
 
@@ -41,7 +47,7 @@ export const querySelectorByTagNamePolyfill = (
     tags: string[],
     target: Element | Document,
 ): Element[] => {
-    const copiedTags = [...tags];
+    const copiedTags = arrayMerge([], tags);
     const tag = copiedTags.shift();
     if (!tag) {
         return [];

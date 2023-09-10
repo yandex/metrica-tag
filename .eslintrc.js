@@ -97,6 +97,8 @@ module.exports = {
                     { extensions: ['.tsx'] },
                 ],
                 'react/react-in-jsx-scope': 'off',
+                'prefer-rest-params': 'off',
+                'prefer-spread': 'off',
             },
         },
         {

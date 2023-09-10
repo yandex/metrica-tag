@@ -16,7 +16,7 @@ import {
     pipe,
     curry2,
 } from 'src/utils/function';
-import { cForEach, cReduce, toArray } from 'src/utils/array';
+import { arrayMerge, cForEach, cReduce, toArray } from 'src/utils/array';
 import { parseDecimalInt } from 'src/utils/number';
 import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
 import { consoleLog } from '../debugConsole/debugConsole';
@@ -147,7 +147,7 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
             stackList = [];
             counterInfo.stackList = stackList;
         }
-        stackList.push([counterKey, method, ...args]);
+        stackList.push(arrayMerge([counterKey, method], args));
     }
 });
 

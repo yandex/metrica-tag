@@ -21,9 +21,7 @@ export const initProvider = () => {
             ),
         }));
 
-        YM_LOG_WHITELIST_KEYS.push(
-            FIRST_PARTY_PARAMS_KEY,
-            FIRST_PARTY_HASHED_PARAMS_KEY,
-        );
+        YM_LOG_WHITELIST_KEYS.push(FIRST_PARTY_PARAMS_KEY);
+        YM_LOG_WHITELIST_KEYS.push(FIRST_PARTY_HASHED_PARAMS_KEY);
     }
 };

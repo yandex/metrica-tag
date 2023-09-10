@@ -115,11 +115,11 @@ export const getLoggerFn = (
     flags[DEBUG_CONSOLE_FEATURE] && !isCounterSilent(counterOptions)
         ? bindArg(
               bindArgs(
-                  [
-                      ctx,
-                      getCounterKey(counterOptions),
-                      ...(params ? [`${message}. Params:`, params] : [message]),
-                  ],
+                  [ctx, getCounterKey(counterOptions)].concat(
+                      (params
+                          ? [`${message}. Params:`, params]
+                          : [message]) as any[],
+                  ),
                   consoleLog,
               ),
               call,

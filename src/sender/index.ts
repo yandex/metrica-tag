@@ -59,7 +59,7 @@ export const getSender: GetSender = ctxErrorLogger(
             const senderOpt = mix(rawSenderOpt, {
                 transportInfo: mix(transportInfo, { debugStack: [provider] }),
             } as InternalSenderInfo);
-            return senderFn(senderOpt, ...rest);
+            return senderFn.apply(null, [senderOpt].concat(rest) as any);
         } as GetSenderType<typeof provider>;
     },
     /*

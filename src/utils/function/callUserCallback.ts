@@ -3,7 +3,7 @@ import { setDeferBase } from 'src/utils/defer/base';
 import { AnyFunc, CallUserCallback } from './types';
 import { argsToArray } from './args';
 import { isFunction, isNil } from '../object/assertions';
-import { bindArg, bind } from './bind/bind';
+import { bindArg } from './bind/bind';
 import { throwFunction } from '../errorLogger/throwFunction';
 
 /**
@@ -20,9 +20,9 @@ export const callUserCallback: CallUserCallback = function z(
             // eslint-disable-next-line prefer-rest-params
             const [, , , ...args] = argsToArray(arguments);
             if (!isNil(userContext)) {
-                bind(callback, userContext, ...args)();
+                callback.apply(userContext, args);
             } else {
-                callback(...args);
+                callback.apply(null, args);
             }
         }
     } catch (error) {

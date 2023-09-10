@@ -1,7 +1,6 @@
 import { getVersion } from 'src/version';
 import { getGlobalStorage } from 'src/storage/global';
 import { getPath } from 'src/utils/object/path';
-import { argsToArray } from './args';
 import { memo } from './memo';
 
 const MEMO_FN_KEY = `m${getVersion()}`;
@@ -37,7 +36,7 @@ export const globalMemoWin = <R, T extends Variadic = Variadic>(
 ): ctxFunction<T, R> => {
     return function globalMemoWrapper() {
         // eslint-disable-next-line prefer-rest-params
-        const [ctx, ...args] = argsToArray(arguments);
+        const ctx = arguments[0];
 
         const storage = getGlobalStorage(ctx);
         const gsKey = global ? GLOBAL_MEMO_FN_KEY : MEMO_FN_KEY;
@@ -50,6 +49,8 @@ export const globalMemoWin = <R, T extends Variadic = Variadic>(
             storage.setVal(gsKey, memoStorage);
         }
 
-        return wrappedFunction(ctx, ...args);
+        // eslint-disable-next-line prefer-rest-params
+        // eslint-disable-next-line prefer-spread
+        return wrappedFunction.apply(null, arguments);
     };
 };
