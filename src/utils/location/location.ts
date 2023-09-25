@@ -34,7 +34,6 @@ export const getLocation = (ctx: Window): Props => {
 
 export const YANDEX_WHITE_LIST_TLD = [
     'ru',
-    'ua',
     'by',
     'kz',
     'az',
@@ -52,7 +51,6 @@ export const YANDEX_WHITE_LIST_TLD = [
     'com.ge',
     'com.am',
     'com.tr',
-    'com.ua',
     'com.ru',
 ];
 
