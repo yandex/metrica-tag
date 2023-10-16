@@ -26,16 +26,14 @@ export const request = (
             [FORCE_URLENCODED_KEY]: 1,
         });
 
-        const fullUrl = `${url}?${stringify(query)}${
-            options.rBody ? `&${options.rBody}` : ''
-        }`;
+        const fullUrl = `${url}?${stringify(query)}`;
 
         if (fullUrl.length > URL_CHAR_LIMIT) {
             // Query is to long to realistically be passed further
             return reject(createKnownError('sb.tlq'));
         }
 
-        const response = senderFn(fullUrl);
+        const response = senderFn(fullUrl, options.rBody);
 
         if (!response) {
             return reject();
