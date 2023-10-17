@@ -53,7 +53,9 @@ type CtxPath = {
  * @type function(...?): ?
  */
 export const ctxPath: CtxPath = curry2SwapArgs(getPath) as CtxPath;
-export const len = ctxPath('length');
+export const len = ctxPath('length') as <T>(
+    obj: T, // eslint-disable-line no-use-before-define
+) => T extends ArrayLike<unknown> ? number : unknown;
 
 /**
  * Получаем из списка [1,2,3] объект {1: {2: 3}}

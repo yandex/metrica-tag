@@ -10,7 +10,6 @@
   "scripts": {
     "build": "npm run features && npm run ts-node -- ./scripts/build/build.ts",
     "build:raw": "npm run build -- --no-uglify",
-    "code-linter": "eslint --cache --ext .js,.ts",
     "features": "ts-node -- ./scripts/genFeatures.ts --files ./features.json -d",
     "fix": "npm run lint -- --fix",
     "fix:code": "npm run lint -- --fix --code",
