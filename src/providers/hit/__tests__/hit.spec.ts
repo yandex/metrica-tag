@@ -41,11 +41,9 @@ describe('hit', () => {
             counterSettingsStorage,
             'getCounterSettings',
         );
-        counterSettingsStorageStub.callsFake((_, _1, fn) => {
-            return new Promise((resolve) => {
-                return resolve(fn());
-            });
-        });
+        counterSettingsStorageStub.callsFake((_, _1, fn) =>
+            Promise.resolve(fn()),
+        );
     });
 
     afterEach(() => {

@@ -5,7 +5,7 @@ const bannedFunctions = require('./eslintBannedFunctions');
  */
 module.exports = {
     root: true,
-    extends: ['airbnb', 'prettier'],
+    extends: ['airbnb-base', 'prettier'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         project: './tsconfig.eslint.json',
@@ -15,14 +15,14 @@ module.exports = {
         BigInt: true,
     },
     settings: {
-        'import/extensions': ['.js', '.ts', '.tsx'],
+        'import/extensions': ['.js', '.ts'],
         'import/parsers': {
-            '@typescript-eslint/parser': ['.ts', '.tsx'],
+            '@typescript-eslint/parser': ['.ts'],
         },
         'import/resolver': {
             typescript: {},
             node: {
-                extensions: ['.js', '.ts', '.tsx'],
+                extensions: ['.js', '.ts'],
             },
         },
     },
@@ -38,9 +38,9 @@ module.exports = {
     ],
     overrides: [
         {
-            files: ['*.ts', '*.tsx'],
+            files: ['*.ts'],
             extends: [
-                'airbnb',
+                'airbnb-base',
                 'plugin:@typescript-eslint/recommended',
                 'prettier',
                 'prettier/@typescript-eslint',
@@ -92,13 +92,11 @@ module.exports = {
                 '@typescript-eslint/explicit-module-boundary-types': 'off',
                 '@typescript-eslint/no-unused-vars': 'off',
                 '@typescript-eslint/ban-types': 'off',
-                'react/jsx-filename-extension': [
-                    'error',
-                    { extensions: ['.tsx'] },
-                ],
-                'react/react-in-jsx-scope': 'off',
                 'prefer-rest-params': 'off',
                 'prefer-spread': 'off',
+                'prefer-object-spread': 'off',
+                'prefer-regex-literals': 'off',
+                'default-param-last': 'off',
             },
         },
         {
@@ -125,6 +123,7 @@ module.exports = {
                         block: ['describe', 'it', 'onlyForBrowserTest'],
                     },
                 ],
+                'max-classes-per-file': 'off',
             },
         },
         {

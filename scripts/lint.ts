@@ -35,11 +35,7 @@ function main() {
     }
 
     if (code || shouldRunAll) {
-        const eslintOptions = [
-            '--cache',
-            '--ext .js,.ts',
-            ...(fix ? ['--fix'] : []),
-        ].join(' ');
+        const eslintOptions = ['--cache', ...(fix ? ['--fix'] : [])].join(' ');
         const pattern = files || '.';
         const eslintCommand = `eslint ${eslintOptions} ${pattern}`;
         processCommand(eslintCommand);
