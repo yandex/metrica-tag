@@ -97,15 +97,13 @@ export const flatMap: FlatMap = flags[POLYFILLS_FEATURE]
               >
           ).call(array, fn);
 
-/**
- * @type function(...?): ?
- */
-export const ctxMap: <T, R>(cb: (e: T, i: number) => R) => (arr: T[]) => R[] =
-    curry2(cMap) as any;
+export const ctxMap = curry2(cMap) as <T, R>(
+    cb: (e: T, i: number) => R,
+) => (arr: T[]) => R[];
 
 export const ctxForEach: <T, R>(
     cb: (e: T, i: number) => R,
-) => (arr: T[]) => void = curry2(cForEach) as any;
+) => (arr: T[]) => void = curry2(cForEach);
 
 export const ctxMapSwap = curry2SwapArgs(cMap) as <T, R>(
     // eslint-disable-next-line no-use-before-define

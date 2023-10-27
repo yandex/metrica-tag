@@ -1,10 +1,7 @@
 import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
-import { F } from 'ts-toolbelt';
+import { AnyFunc } from '../types';
 
-export const toNativeOrFalse = <
-    P extends ReadonlyArray<any> = any,
-    R extends unknown = any,
->(
-    fn: F.Function<P, R>,
+export const toNativeOrFalse = <F extends AnyFunc>(
+    fn: F,
     functionName: string,
 ) => isNativeFunction(functionName, fn) && fn;

@@ -1,5 +1,5 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
+import { POLYFILLS_ES6_FEATURE } from 'generated/features';
 import { argsToArray } from '../function/args';
 import { curry2 } from '../function/curry';
 import { has } from './has';
@@ -28,7 +28,7 @@ export const assignPoly: typeof Object.assign = function assignPoly() {
     return dst;
 };
 
-export const mix = flags[POLYFILLS_FEATURE]
+export const mix = flags[POLYFILLS_ES6_FEATURE]
     ? Object.assign || assignPoly
     : Object.assign;
 

@@ -1,6 +1,5 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
-import { F } from 'ts-toolbelt';
+import { POLYFILLS_ES6_FEATURE, POLYFILLS_FEATURE } from 'generated/features';
 import { mapPoly, reducePoly } from '../array';
 import { bindArg, pipe, toNativeOrFalse } from '../function';
 import { isUndefined } from './assertions';
@@ -53,7 +52,7 @@ export const entriesPoly: Entries = <T>(obj?: Record<string, T>) => {
     );
 };
 const callEntries =
-    <T>(entriesFunc: F.Function<[Record<string, T>], [string, T][]>) =>
+    <T>(entriesFunc: (obj: Record<string, T>) => [string, T][]) =>
     (obj?: Record<string, T>) => {
         if (!obj) {
             return [];
@@ -65,7 +64,7 @@ const callNativeOrPolyEntries = nativeEntries
     ? callEntries(nativeEntries)
     : entriesPoly;
 
-export const entries: Entries = flags[POLYFILLS_FEATURE]
+export const entries: Entries = flags[POLYFILLS_ES6_FEATURE]
     ? callNativeOrPolyEntries
     : callEntries(Object.entries);
 
@@ -88,6 +87,6 @@ const callNativeOrPolyValues = nativeValues
     ? <T>(obj: Record<string, T>) => nativeValues(obj)
     : valuesPoly;
 
-export const cValues: typeof Object.values = flags[POLYFILLS_FEATURE]
+export const cValues: typeof Object.values = flags[POLYFILLS_ES6_FEATURE]
     ? callNativeOrPolyValues
     : <T>(obj: Record<string, T>) => Object.values(obj);

@@ -41,11 +41,5 @@ const pad = (
     return start ? padding + part : part + padding;
 };
 
-type PadFunction = (
-    padString: string,
-    targetLength: number,
-    part: string,
-) => string;
-
-export const padStart: PadFunction = bindArg(true, pad);
-export const padEnd: PadFunction = bindArg(false, pad);
+export const padStart = bindArg(true, pad);
+export const padEnd = bindArg(false, pad);

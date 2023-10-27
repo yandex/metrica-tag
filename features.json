@@ -76,7 +76,11 @@
   },
   {
     "code": "POLYFILLS_FEATURE",
-    "desc": "Enables polyfills for some js native functions and components if they aren't present or non-native (i.g. Promise)"
+    "desc": "Enables polyfills for some js native functions and components if they aren't present or non-native"
+  },
+  {
+    "code": "POLYFILLS_ES6_FEATURE",
+    "desc": "Enables polyfills for ES6+ functions (e.g. Promise)."
   },
   {
     "code": "CLICK_MAP_FEATURE",

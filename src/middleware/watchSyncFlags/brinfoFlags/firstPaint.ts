@@ -21,7 +21,7 @@ const getTime = (ctx: Window): number | undefined => {
         const data = cFilter(
             pipe(firstArg, ctxPath('name'), equal(CONTENTFUL_PAINT)),
             getEntriesByType.call(ctx.performance, 'paint'),
-        ) as { startTime: number }[];
+        );
         if (data.length) {
             return data[0].startTime;
         }
