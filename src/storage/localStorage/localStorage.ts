@@ -1,4 +1,4 @@
-import { parse, stringify } from 'src/utils/json';
+import { JSONValue, parse, stringify } from 'src/utils/json';
 import { memo } from 'src/utils/function';
 import { isNull, isUndefined } from 'src/utils/object';
 
@@ -6,9 +6,9 @@ export const DEFAULT_LS_PREFIX = '_ym';
 
 export interface LocalStorage {
     isBroken: boolean;
-    getVal<T>(name: string): T | null;
-    getVal<T>(name: string, defVal: T): T;
-    setVal<T>(name: string, val: T): LocalStorage;
+    getVal<T extends JSONValue>(name: string): T | null;
+    getVal<T extends JSONValue>(name: string, defVal: T): T;
+    setVal<T extends JSONValue>(name: string, val: T): LocalStorage;
     delVal(name: string): LocalStorage;
 }
 
@@ -61,13 +61,16 @@ export const localStorage = (
     nameSpace: string | number = '',
     prefix: string = DEFAULT_LS_PREFIX,
 ): LocalStorage => {
-    const storageKey = `${prefix}${nameSpace}_`;
+    let storageKey = `${prefix}${nameSpace}`;
+    if (storageKey) {
+        storageKey = `${storageKey}_`;
+    }
     const isBroken = isStorageBroken(ctx);
 
     return {
         isBroken,
         getVal<T>(name: string, defVal?: T) {
-            const out = getItem(ctx, `${storageKey}${name}`) as T | null;
+            const out = getItem(ctx, `${storageKey}${name}`);
             if (isNull(out) && !isUndefined(defVal)) {
                 return defVal;
             }
