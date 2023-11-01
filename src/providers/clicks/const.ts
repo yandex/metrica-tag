@@ -8,7 +8,7 @@ export const METHOD_NAME_ADD_FILE_EXTENSION = 'addFileExtension';
 export const METHOD_NAME_TRACK_LINKS = 'trackLinks';
 export const INTERNAL_LINK_STORAGE_KEY = 'il';
 export const MAX_LEN_INTERNAL_LINK = 100;
-export const BAD_PROTOCOL_RE = /^ *(data|javascript):/i;
+export const BAD_PROTOCOL_RE = /^\s*(data|javascript):/i;
 
 export const REG_DOWNLOAD = new RegExp(
     arrayJoin('', [
