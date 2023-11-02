@@ -4,6 +4,7 @@ import { hidePhones, HOVER_TIMEOUT } from 'src/utils/phones';
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as counter from 'src/utils/counter';
 import * as defer from 'src/utils/defer';
+import type { EventSetter } from 'src/utils/events/types';
 import * as phonesDom from 'src/utils/phones/phonesDom';
 import * as eventUtils from 'src/utils/events';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
@@ -13,10 +14,19 @@ describe('phoneHide / phoneHide', () => {
     const { window } = new JSDOMWrapper(undefined, { url: 'http://localhost' });
     const { document } = window;
     const sandbox = sinon.createSandbox();
-    let replacePhonesDom: sinon.SinonSpy;
+    let replacePhonesDom: sinon.SinonSpy<
+        Parameters<ReturnType<typeof phonesDom.createPhoneDomReplacer>>,
+        ReturnType<ReturnType<typeof phonesDom.createPhoneDomReplacer>>
+    >;
     let extLink: sinon.SinonSpy;
-    let setDefer: sinon.SinonStub;
-    let clearDefer: sinon.SinonStub;
+    let setDefer: sinon.SinonStub<
+        Parameters<typeof defer.setDefer>,
+        ReturnType<typeof defer.setDefer>
+    >;
+    let clearDefer: sinon.SinonStub<
+        Parameters<typeof defer.clearDefer>,
+        ReturnType<typeof defer.clearDefer>
+    >;
     const timeoutId = 123;
 
     const counterOptions = {} as CounterOptions;
@@ -28,16 +38,14 @@ describe('phoneHide / phoneHide', () => {
     beforeEach(() => {
         setDefer = sandbox.stub(defer, 'setDefer').returns(timeoutId);
         clearDefer = sandbox.stub(defer, 'clearDefer');
-        replacePhonesDom = sandbox.spy();
+        replacePhonesDom = sandbox.stub();
 
-        sandbox.stub(phonesDom, 'createPhoneDomReplacer').returns({
-            replacePhonesDom,
-        } as any);
+        sandbox
+            .stub(phonesDom, 'createPhoneDomReplacer')
+            .returns(replacePhonesDom);
 
         extLink = sandbox.spy();
-        sandbox.stub(counter, 'getCounterInstance').returns({
-            extLink,
-        } as any);
+        sandbox.stub(counter, 'getCounterInstance').returns({ extLink });
 
         node = document.createElement('div');
         node.innerHTML = '+8 (777) 666-55-11';
@@ -66,7 +74,7 @@ describe('phoneHide / phoneHide', () => {
 
                 return () => {};
             },
-        } as any);
+        } as EventSetter);
 
         transformPhone(window, counterOptions, {
             replaceFrom: '87776665511',
@@ -74,7 +82,7 @@ describe('phoneHide / phoneHide', () => {
             textOrig: '+8 (777) 666-55-11',
             replaceTo: '',
             replaceElementType: 'text',
-        } as any);
+        });
 
         chai.expect(node.textContent).to.include('+8 (777) 666-55-11');
 
@@ -108,7 +116,7 @@ describe('phoneHide / phoneHide', () => {
 
                 return () => {};
             },
-        } as any);
+        } as EventSetter);
 
         transformPhone(window, counterOptions, {
             replaceFrom: '87776665511',
@@ -116,7 +124,7 @@ describe('phoneHide / phoneHide', () => {
             textOrig: '+8 (777) 666-55-11',
             replaceTo: '',
             replaceElementType: 'text',
-        } as any);
+        });
 
         chai.expect(node.textContent).to.include('+8 (777) 666-55-11');
 
@@ -148,7 +156,7 @@ describe('phoneHide / phoneHide', () => {
 
                 return () => {};
             },
-        } as any);
+        } as EventSetter);
 
         transformPhone(window, counterOptions, {
             replaceFrom: '87776665511',
@@ -156,7 +164,7 @@ describe('phoneHide / phoneHide', () => {
             textOrig: '+8 (777) 666-55-11',
             replaceTo: '',
             replaceElementType: 'text',
-        } as any);
+        });
 
         chai.expect(node.textContent).to.include('+8 (777) 666-55-11');
 

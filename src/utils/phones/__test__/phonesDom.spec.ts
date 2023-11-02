@@ -57,16 +57,20 @@ describe('phones / phonesDom', () => {
 
     it('selectText', () => {
         const { selectText } = phonesDom;
-        const ret = selectText(window, {
-            '87776665511': {
-                replaceTo: '11111',
-                tuple: ['2222', '2222'],
-            },
-            '87776665522': {
-                replaceTo: '22222',
-                tuple: ['2222', '2222'],
-            },
-        } as PhoneChangeMap);
+        const ret = selectText(
+            window,
+            {
+                '87776665511': {
+                    replaceTo: '11111',
+                    tuple: ['2222', '2222'],
+                },
+                '87776665522': {
+                    replaceTo: '22222',
+                    tuple: ['2222', '2222'],
+                },
+            } as PhoneChangeMap,
+            window.document.body,
+        );
         chai.expect(ret.length).to.equal(2);
         const [foundNode1] = ret;
         chai.expect(foundNode1.replaceElementType).to.equal('text');
@@ -120,10 +124,12 @@ describe('phones / phonesDom', () => {
         const transformer = sinon.spy();
         const counterOptions = {} as CounterOptions;
 
-        const replacer = createPhoneDomReplacer(window, counterOptions, {
-            transformer,
-        });
-        await replacer.replacePhonesDom([
+        const replacePhonesDom = createPhoneDomReplacer(
+            window,
+            counterOptions,
+            { transformer },
+        );
+        await replacePhonesDom([
             ['87776665511', '+72223334411'],
             ['87776665522', '+72223334422'],
         ]);

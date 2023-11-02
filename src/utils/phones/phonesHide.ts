@@ -10,7 +10,6 @@ import { cForEach, cMap, cReduce, filterFalsy, toArray } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
 import { METHOD_NAME_EXTERNAL_LINK_CLICK } from 'src/providers/clicks/const';
 import {
-    bind,
     bindArg,
     bindThisForMethod,
     call,
@@ -92,53 +91,52 @@ export const transformPhone = (
     const { replaceElementType, replaceHTMLNode, replaceFrom } = item;
     const { parentNode, textContent } = replaceHTMLNode;
     if (
-        replaceElementType === 'text' &&
-        textContent &&
-        createElement &&
-        parentNode
+        !(
+            replaceElementType === 'text' &&
+            textContent &&
+            createElement &&
+            parentNode
+        )
     ) {
-        const phoneWrapper = createElement(TAG);
-        resetStyles(phoneWrapper);
-
-        const chars = textContent.split('');
-        const nonSpaceCharsLength = removeSpaces(textContent).length;
-
-        cForEach(
-            bindThisForMethod('appendChild', phoneWrapper),
-            cReduce(
-                ({ nodes, visibleCharsCount }, char) => {
-                    const result = createElement(TAG);
-                    result.innerHTML = char;
-                    const isVisible = NON_SPACE_REGEXP.test(char);
-
-                    resetStyles(result);
-                    if (isVisible) {
-                        result.style.opacity = `${
-                            (nonSpaceCharsLength - visibleCharsCount - 1) /
-                            nonSpaceCharsLength
-                        }`;
-                    }
-
-                    nodes.push(result);
-                    return {
-                        nodes,
-                        visibleCharsCount:
-                            visibleCharsCount + (isVisible ? 1 : 0),
-                    };
-                },
-                { nodes: [] as HTMLElement[], visibleCharsCount: 0 },
-                chars,
-            ).nodes,
-        );
-
-        setEnterHandler(ctx, counterOpts, phoneWrapper, replaceFrom);
-
-        parentNode.insertBefore(phoneWrapper, replaceHTMLNode);
-        replaceHTMLNode.textContent = '';
-        return true;
+        return false;
     }
 
-    return false;
+    const phoneWrapper = createElement(TAG);
+    resetStyles(phoneWrapper);
+    const nonSpaceCharsLength = removeSpaces(textContent).length;
+
+    cForEach(
+        bindThisForMethod('appendChild', phoneWrapper),
+        cReduce(
+            ({ nodes, visibleCharsCount }, char) => {
+                const result = createElement(TAG);
+                result.innerHTML = char;
+                const isVisible = NON_SPACE_REGEXP.test(char);
+
+                resetStyles(result);
+                if (isVisible) {
+                    result.style.opacity = `${
+                        (nonSpaceCharsLength - visibleCharsCount - 1) /
+                        nonSpaceCharsLength
+                    }`;
+                }
+
+                nodes.push(result);
+                return {
+                    nodes,
+                    visibleCharsCount: visibleCharsCount + (isVisible ? 1 : 0),
+                };
+            },
+            { nodes: [] as HTMLElement[], visibleCharsCount: 0 },
+            textContent,
+        ).nodes,
+    );
+
+    setEnterHandler(ctx, counterOpts, phoneWrapper, replaceFrom);
+
+    parentNode.insertBefore(phoneWrapper, replaceHTMLNode);
+    replaceHTMLNode.textContent = '';
+    return true;
 };
 
 export const hidePhones = (
@@ -146,7 +144,7 @@ export const hidePhones = (
     counterOpt: CounterOptions | null,
     phones: string[],
 ) => {
-    const domReplacer = createPhoneDomReplacer(ctx, counterOpt, {
+    const replacePhonesDom = createPhoneDomReplacer(ctx, counterOpt, {
         transformer: transformPhone,
         needReplaceTypes: {
             [ReplaceElementLink]: true,
@@ -160,7 +158,7 @@ export const hidePhones = (
         ),
     );
 
-    const formattedPhones = cMap(
+    const formattedPhones = cMap<string, PhoneTuple>(
         pipe(
             firstArg,
             bindThisForMethod('concat', ['']),
@@ -168,15 +166,11 @@ export const hidePhones = (
             call,
         ),
         cleanPhones,
-    ) as PhoneTuple[];
+    );
 
     const rawObserver = observer(ctx);
     const throttledObserver = throttleObserver(ctx, rawObserver, THROTTLE_TIME);
-    const listener = bind(
-        domReplacer.replacePhonesDom,
-        domReplacer,
-        formattedPhones,
-    );
+    const listener = bindArg(formattedPhones, replacePhonesDom);
     throttledObserver.on(listener);
 
     phoneSubscribeLoad(ctx, rawObserver);

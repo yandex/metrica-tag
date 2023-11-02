@@ -9,6 +9,7 @@ import {
     arrayJoin,
     filterFalsy,
     arrayMerge,
+    includes,
 } from 'src/utils/array';
 import { waitForBodyTask } from 'src/utils/dom/waitForBody';
 import { memo, bindArg } from 'src/utils/function';
@@ -99,21 +100,22 @@ const genPhoneMap = () =>
 export const selectText = (
     ctx: Window,
     phoneChangeMap: PhoneChangeMap,
-    rootNode: HTMLElement = ctx.document.body,
+    rootNode: HTMLElement,
 ) => {
     if (!rootNode) {
         return [];
     }
     const nodes: ReplaceElement[] = [];
     const phonesRegExp = buildAllRegExp(phoneChangeMap);
+    const excludeNodes = ['script', 'style'] as const;
     walkTree(
         ctx,
         rootNode,
         (node: Node) => {
+            const nodeName = getPath(node, 'parentNode.nodeName') || '';
             if (
                 node === rootNode ||
-                (getPath(node, 'parentNode.nodeName') || '').toLowerCase() ===
-                    'script'
+                includes(nodeName.toLowerCase(), excludeNodes)
             ) {
                 return;
             }
@@ -135,12 +137,7 @@ export const selectText = (
                 }
             }, phones);
         },
-        (node: Node) => {
-            if (phonesRegExp.test(node.textContent || '')) {
-                return 1;
-            }
-            return 0;
-        },
+        (node: Node) => (phonesRegExp.test(node.textContent || '') ? 1 : 0),
         ctx.NodeFilter.SHOW_TEXT,
     );
     return nodes;
@@ -198,6 +195,8 @@ export const selectLink = (ctx: Window, phoneChangeMap: PhoneChangeMap) => {
     );
 };
 
+type ReplacedPhones = { phones: PhoneTuple[]; perf: number };
+
 export const createPhoneDomReplacer = (
     ctx: Window,
     counterOpt: CounterOptions | null,
@@ -214,54 +213,42 @@ export const createPhoneDomReplacer = (
 
     const replaceElContent = (item: ReplaceElement) => {
         if (transformer(ctx, counterOpt, item)) {
-            return phoneChangeMap[item.replaceFrom]?.tuple;
+            return (
+                phoneChangeMap[item.replaceFrom] &&
+                phoneChangeMap[item.replaceFrom].tuple
+            );
         }
         return null;
     };
 
-    return {
-        replacePhonesDom: (substitutions: PhoneTuple[]) => {
-            return new PolyPromise<{ phones: PhoneTuple[]; perf: number }>(
-                (resolve, reject) => {
-                    if (!substitutions || !substitutions.length) {
-                        reject();
-                    }
-                    phoneChangeMap = genPhoneMap()(substitutions);
-                    waitForBodyTask(ctx)(
-                        taskFork(
-                            bindArg({ phones: [], perf: 0 }, resolve),
-                            () => {
-                                const timer = TimeOne(ctx);
-                                const startTime = timer(getMs);
+    return (substitutions: PhoneTuple[]) =>
+        new PolyPromise<ReplacedPhones>((resolve, reject) => {
+            if (!substitutions || !substitutions.length) {
+                reject();
+            }
+            phoneChangeMap = genPhoneMap()(substitutions);
+            waitForBodyTask(ctx)(
+                taskFork(bindArg({ phones: [], perf: 0 }, resolve), () => {
+                    const timer = TimeOne(ctx);
+                    const startTime = timer(getMs);
 
-                                const links = needReplaceTypes[
-                                    ReplaceElementLink
-                                ]
-                                    ? selectLink(ctx, phoneChangeMap)
-                                    : [];
-                                const texts = needReplaceTypes[
-                                    ReplaceElementText
-                                ]
-                                    ? selectText(ctx, phoneChangeMap)
-                                    : [];
+                    const links = needReplaceTypes[ReplaceElementLink]
+                        ? selectLink(ctx, phoneChangeMap)
+                        : [];
+                    const texts = needReplaceTypes[ReplaceElementText]
+                        ? selectText(ctx, phoneChangeMap, ctx.document.body)
+                        : [];
 
-                                resolve({
-                                    phones: cFilter(
-                                        isArray,
-                                        filterFalsy(
-                                            cMap(
-                                                replaceElContent,
-                                                links.concat(texts),
-                                            ),
-                                        ),
-                                    ),
-                                    perf: timer(getMs) - startTime,
-                                });
-                            },
+                    resolve({
+                        phones: cFilter(
+                            isArray,
+                            filterFalsy(
+                                cMap(replaceElContent, links.concat(texts)),
+                            ),
                         ),
-                    );
-                },
+                        perf: timer(getMs) - startTime,
+                    });
+                }),
             );
-        },
-    };
+        });
 };
