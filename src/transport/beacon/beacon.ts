@@ -26,6 +26,13 @@ export const request = (
             [FORCE_URLENCODED_KEY]: 1,
         });
 
+        /**
+         * NOTE: In order to avoid unexpected behavior request body is not used.
+         * The body size is restricted by design
+         * and the limit implementation is browser dependent.
+         * Query string proves more reliable.
+         * @see https://github.com/w3c/beacon/issues/38
+         */
         const fullUrl = `${url}?${stringify(query)}${
             options.rBody ? `&${options.rBody}` : ''
         }`;
