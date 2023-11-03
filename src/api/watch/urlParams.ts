@@ -50,30 +50,8 @@ export const REQUEST_BODY_KEY = flags[SENDER_COLLECT_FEATURE]
  */
 export const NOINDEX_PARAM = 'ut';
 
-/**
- * The type of hit. Must be one of 'pageview', 'screenview', 'event', 'transaction', 'item', 'social', 'exception', 'timing'
- *
- * Value Type: string
- */
-export const HIT_TYPE_KEY = 't';
+// Hit types
+export const HIT_TYPE_PAGEVIEW = 'pageview';
 
-/**
- * Specifies the event action. Must not be empty for event hits.
- *
- * Value Type: string
- */
-export const EVENT_ACTION_KEY = 'ea';
-
-/**
- * Specifies the event label. Optional.
- *
- * Value Type: string
- */
-export const EVENT_LABEL_KEY = 'el';
-
-/**
- * Specifies the event action. Optional.
- *
- * Value Type: number
- */
-export const EVENT_VALUE_KEY = 'ev';
+// Event actions
+export const EVENT_ACTION_GOAL = 'goal';

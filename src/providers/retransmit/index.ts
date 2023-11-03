@@ -8,14 +8,13 @@ import {
 import { providersAsync } from 'src/providersEntrypoint';
 import { PARAMS_PROVIDER } from 'src/providers/params/const';
 import { providerMap } from 'src/sender';
-import { SENDER_RETRANSMIT } from 'src/sender/const';
 import {
     MiddlewareBasedSender,
     useMiddlewareBasedSender,
 } from 'src/sender/middleware';
 import { nameMap, withoutBeacon } from 'src/transport';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { RETRANSMIT_PROVIDER } from './const';
+import { RETRANSMIT_PROVIDER, SENDER_RETRANSMIT } from './const';
 import { useRetransmitProvider } from './retransmit';
 
 declare module 'src/providers/index' {

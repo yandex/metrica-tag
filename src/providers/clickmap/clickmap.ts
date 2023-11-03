@@ -1,10 +1,21 @@
-import { TELEMETRY_FEATURE } from 'generated/features';
+import { SENDER_COLLECT_FEATURE, TELEMETRY_FEATURE } from 'generated/features';
 import { flags } from '@inject';
+import {
+    CLICKMAP_POINTER_PARAM,
+    CLICKMAP_URL_PARAM,
+    HIT_TYPE_POINTER_CLICK,
+} from 'src/api/clmap';
+import {
+    COUNTER_ID_PARAM,
+    HIT_TYPE_KEY,
+    EVENT_ACTION_KEY,
+    EVENT_LABEL_KEY,
+    HIT_TYPE_EVENT,
+} from 'src/api/common';
 import { counterStateGetter } from 'src/providers/getCounters/getCounters';
 import { COUNTER_STATE_CLICKMAP } from 'src/providers/getCounters/const';
 import { getSender } from 'src/sender';
-import { CLICKMAP_POINTER_PARAM, CLICKMAP_URL_PARAM } from 'src/api/clmap';
-import { SenderInfo } from 'src/sender/SenderInfo';
+import { SenderInfo, UrlParams } from 'src/sender/SenderInfo';
 import { GetSenderType } from 'src/sender/types';
 import { getGlobalStorage } from 'src/storage/global';
 import { arrayJoin, cMap, cSome, includes } from 'src/utils/array';
@@ -119,16 +130,27 @@ const sendClick = (
     sender: GetSenderType<typeof CLICKMAP_PROVIDER>,
     counterOptions: CounterOptions,
 ) => {
-    const brInfo = browserInfo();
+    const resource = flags[SENDER_COLLECT_FEATURE]
+        ? CLICKMAP_RESOURCE
+        : `${CLICKMAP_RESOURCE}/${counterOptions.id}`;
+    const measurementProtocolParams = {
+        [CLICKMAP_URL_PARAM]: url,
+        [HIT_TYPE_KEY]: HIT_TYPE_EVENT,
+        [EVENT_ACTION_KEY]: HIT_TYPE_POINTER_CLICK,
+        [EVENT_LABEL_KEY]: pointerClick,
+        [COUNTER_ID_PARAM]: `${counterOptions.id}`,
+    };
+    const watchApiParams = {
+        [CLICKMAP_URL_PARAM]: url,
+        [CLICKMAP_POINTER_PARAM]: pointerClick,
+    };
+    const urlParams: UrlParams = flags[SENDER_COLLECT_FEATURE]
+        ? measurementProtocolParams
+        : watchApiParams;
     const senderInfo: SenderInfo = {
-        brInfo,
-        urlParams: {
-            [CLICKMAP_URL_PARAM]: url,
-            [CLICKMAP_POINTER_PARAM]: pointerClick,
-        },
-        urlInfo: {
-            resource: `${CLICKMAP_RESOURCE}/${counterOptions.id}`,
-        },
+        brInfo: browserInfo(),
+        urlParams,
+        urlInfo: { resource },
     };
 
     sender(senderInfo, counterOptions).catch(errorLogger(ctx, 'c.s.c'));

@@ -2,9 +2,7 @@ import { isUndefined, isNil } from 'src/utils/object';
 import { bindArg, curry2, firstArg } from 'src/utils/function';
 
 export type FlagData = Record<string, string | number | null>;
-/**
- * @param {Object} [ctx]
- */
+
 const storageFn = (
     serialize: (data: FlagData) => string,
     initialData?: FlagData | null,

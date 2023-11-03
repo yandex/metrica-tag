@@ -1,4 +1,10 @@
-export const CLICKMAP_RESOURCE = 'clmap';
+import { flags } from '@inject';
+import { SENDER_COLLECT_FEATURE } from 'generated/features';
+
+export const CLICKMAP_RESOURCE = flags[SENDER_COLLECT_FEATURE]
+    ? 'pclmap'
+    : 'clmap';
+export const SENDER_CLICKMAP = 'cm';
 
 export const DELTA_SAME_CLICKS = 2;
 export const TIMEOUT_CLICK = 50;

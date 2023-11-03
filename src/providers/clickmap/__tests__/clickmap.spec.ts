@@ -1,5 +1,7 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
+import { SENDER_COLLECT_FEATURE } from 'generated/features';
+import * as inject from '@inject';
 import * as sender from 'src/sender';
 import * as cEvent from 'src/utils/events';
 import * as provider from 'src/providers/clickmap/clickmap';
@@ -15,6 +17,7 @@ import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 describe('clickmap.ts : ', () => {
     const { window } = new JSDOMWrapper();
     const { MouseEvent } = window;
+
     describe('isCurrentClickTracked : ', () => {
         const a = window.document.createElement('a');
         const p = window.document.createElement('p');
@@ -285,6 +288,10 @@ describe('clickmap.ts : ', () => {
         });
 
         beforeEach(() => {
+            sandbox.stub(inject, 'flags').value({
+                ...inject.flags,
+                [SENDER_COLLECT_FEATURE]: false,
+            });
             useGetTargetStub = sandbox.stub(mouseEvents, 'getTarget');
             useGetPositionStub = sandbox.stub(mouseEvents, 'getPosition');
             useGetMouseButtonStub = sandbox.stub(mouseEvents, 'getMouseButton');

@@ -7,6 +7,7 @@ import { startsWithString } from 'src/utils/string/startsWith';
 import { equal } from 'src/utils/function';
 
 export const RETRANSMIT_PROVIDER = 'r';
+export const SENDER_RETRANSMIT = 'r';
 
 /**
  * A collection of callbacks verifying the counter is capable

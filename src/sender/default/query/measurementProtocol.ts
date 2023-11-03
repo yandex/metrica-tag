@@ -1,12 +1,17 @@
 import { TELEMETRY_FEATURE } from 'generated/features';
 import { flags } from '@inject';
-import { TRANSPORT_ID_BR_KEY, URL_PARAM } from 'src/api/common';
 import {
-    ARTIFICIAL_BR_KEY,
+    TRANSPORT_ID_BR_KEY,
+    URL_PARAM,
     EVENT_ACTION_KEY,
     EVENT_LABEL_KEY,
     EVENT_VALUE_KEY,
     HIT_TYPE_KEY,
+    HIT_TYPE_EVENT,
+    COUNTER_ID_PARAM,
+} from 'src/api/common';
+import {
+    ARTIFICIAL_BR_KEY,
     IS_DOWNLOAD_BR_KEY,
     IS_EXTERNAL_LINK_BR_KEY,
     NOT_BOUNCE_BR_KEY,
@@ -15,6 +20,17 @@ import {
     PARAMS_BR_KEY,
     SENDER_TIME_BR_KEY,
     TRACK_HASH_BR_KEY,
+    HIT_TYPE_PAGEVIEW,
+    EVENT_ACTION_GOAL,
+    UID_BR_KEY,
+    WATCH_REFERER_PARAM,
+    TITLE_BR_KEY,
+    BROWSER_LANGUAGE_BR_KEY,
+    DOCUMENT_ENCODING_BR_KEY,
+    IS_JAVA_ENABLED_BR_KEY,
+    RANDOM_NUMBER_BR_KEY,
+    SCREEN_SIZE_BR_KEY,
+    VIEWPORT_SIZE_BR_KEY,
 } from 'src/api/watch';
 import { cFind, cReduce, includes } from 'src/utils/array';
 import { BrowserInfo, browserInfo } from 'src/utils/browserInfo';
@@ -24,14 +40,26 @@ import { TimeOne, getSec } from 'src/utils/time';
 import type { FindCallback } from 'src/utils/array/types';
 import type { SenderInfo, UrlParams } from '../../SenderInfo';
 
-const HIT_TYPE_EVENT = 'event';
-const HIT_TYPE_PAGEVIEW = 'pageview';
-const EVENT_ACTION_GOAL = 'goal';
-
 /**
  * Public parameters as described by Measurement Protocol documentation - sent as is.
  */
-const publicParameters = 'dl,cid,dr,dt,de,ul,tid,z,vp,sr,je'.split(',');
+const publicParameters = [
+    BROWSER_LANGUAGE_BR_KEY,
+    COUNTER_ID_PARAM,
+    DOCUMENT_ENCODING_BR_KEY,
+    EVENT_ACTION_KEY,
+    EVENT_LABEL_KEY,
+    EVENT_VALUE_KEY,
+    HIT_TYPE_KEY,
+    IS_JAVA_ENABLED_BR_KEY,
+    RANDOM_NUMBER_BR_KEY,
+    SCREEN_SIZE_BR_KEY,
+    TITLE_BR_KEY,
+    UID_BR_KEY,
+    URL_PARAM,
+    VIEWPORT_SIZE_BR_KEY,
+    WATCH_REFERER_PARAM,
+];
 
 /**
  * These events are accompanied by 'ar' key.

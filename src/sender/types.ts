@@ -3,7 +3,7 @@ import { TransportList } from 'src/transport';
 import type { SenderInfo, InternalSenderInfo } from 'src/sender/SenderInfo';
 import { Middleware } from 'src/middleware/types';
 import { HIT_PROVIDER, Provider, LOGGER_PROVIDER } from 'src/providers';
-import { SENDER_COLLECT, SENDER_MIDDLEWARE, SENDER_WATCH } from './const';
+import { SENDER_MIDDLEWARE, SENDER_WATCH } from './const';
 import type { SenderWatch } from './watch';
 
 export type SenderRequest = (...args: any[]) => Promise<string | unknown>;
@@ -46,7 +46,6 @@ export type GetSenderType<P extends Provider> = ReturnType<
 >;
 
 export interface Senders {
-    SENDER_COLLECT: typeof SENDER_COLLECT;
     SENDER_MIDDLEWARE: typeof SENDER_MIDDLEWARE;
     SENDER_WATCH: typeof SENDER_WATCH;
 }
