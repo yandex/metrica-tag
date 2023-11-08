@@ -47,7 +47,7 @@ export const querySelectorByTagNamePolyfill = (
     tags: string[],
     target: Element | Document,
 ): Element[] => {
-    const copiedTags = arrayMerge([], tags);
+    const copiedTags: string[] = arrayMerge([], tags);
     const tag = copiedTags.shift();
     if (!tag) {
         return [];
