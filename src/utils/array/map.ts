@@ -10,7 +10,7 @@ import {
     MapCallback,
 } from './types';
 import { curry2, curry2SwapArgs } from '../function/curry';
-import { reducePoly } from './reduce';
+import { cReduce } from './reduce';
 import { isArray } from './isArray';
 import { toNativeOrFalse } from '../function/isNativeFunction';
 
@@ -39,17 +39,16 @@ const nativeMap = toNativeOrFalse(Array.prototype.map, 'map');
 export const mapPoly: ArrayMap = <T, U>(
     fn: MapCallback<T, U>,
     array: ArrayLike<T>,
-) => {
-    return reducePoly(
+) =>
+    cReduce<T, U[]>(
         (rawResult, item, i) => {
             const result = rawResult;
             result.push(fn(item, i));
             return result;
         },
         [],
-        array as any[],
+        array,
     );
-};
 const callNativeOrPolyMap =
     nativeMap && isLengthCorrect(window, Array.prototype.map)
         ? <T, U>(fn: MapCallback<T, U>, array: ArrayLike<T>) =>
@@ -69,8 +68,8 @@ const nativeFlatMap = toNativeOrFalse(Array.prototype.flatMap, 'flatMap');
 export const flatMapPoly: FlatMap = <T, U>(
     fn: FlatMapCallback<T, U>,
     array: ArrayLike<T>,
-) => {
-    return reducePoly<T, U[]>(
+) =>
+    cReduce<T, U[]>(
         (result, item, i) => {
             const fnResult = fn(item, i);
             return result.concat(isArray(fnResult) ? fnResult : [fnResult]);
@@ -78,7 +77,7 @@ export const flatMapPoly: FlatMap = <T, U>(
         [],
         array,
     );
-};
+
 const callNativeOrPolyFlatMap: FlatMap = nativeFlatMap
     ? <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>) =>
           (nativeFlatMap as F.Function<[FlatMapCallback<T, U>], U[]>).call(
