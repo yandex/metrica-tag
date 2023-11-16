@@ -1,6 +1,7 @@
 import { cReduce } from 'src/utils/array/reduce';
 import { isNil } from './assertions';
 import { curry2SwapArgs } from '../function/curry';
+import { has } from './has';
 
 // TODO Add enumerable entities support (for instance arrayLikeObject[1])
 type GetPath<Value, Path extends string> =
@@ -77,7 +78,7 @@ export const genPath = (path: (string | number)[], origCtx: any = {}) => {
             }
             if (isPrevLast) {
                 parent[field] = splittedPath[i + 1];
-            } else if (!parent[field]) {
+            } else if (!has(parent, field)) {
                 parent[field] = {};
             }
             return parent[field];
