@@ -1,7 +1,6 @@
 import { isFunction } from 'src/utils/object/assertions';
 import { POLYFILLS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
-import { F } from 'ts-toolbelt';
 import type { Bind, AnyFunc, ParamsFirst, FuncRest } from '../types';
 import { argsToArray } from '../args';
 import { toNativeOrFalse } from '../isNativeFunction/toNativeOrFalse';
@@ -61,7 +60,7 @@ export const bindPoly: Bind = function b() {
     };
 };
 
-const callBind = function bindDecorator(bindFunc: F.Function): Bind {
+const callBind = function bindDecorator(bindFunc: AnyFunc): Bind {
     return function bindFunction() {
         // eslint-disable-next-line prefer-rest-params
         const bindArgs = argsToArray(arguments);

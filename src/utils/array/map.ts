@@ -1,7 +1,6 @@
 import { isFF } from 'src/utils/browser/firefox';
 import { flags } from '@inject';
 import { POLYFILLS_FEATURE } from 'generated/features';
-import { F } from 'ts-toolbelt';
 import {
     ArrayMap,
     FlatMap,
@@ -80,21 +79,16 @@ export const flatMapPoly: FlatMap = <T, U>(
 
 const callNativeOrPolyFlatMap: FlatMap = nativeFlatMap
     ? <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>) =>
-          (nativeFlatMap as F.Function<[FlatMapCallback<T, U>], U[]>).call(
-              array,
-              fn,
-          )
+          (nativeFlatMap as (cb: FlatMapCallback<T, U>) => U[]).call(array, fn)
     : flatMapPoly;
 
 export const flatMap: FlatMap = flags[POLYFILLS_FEATURE]
     ? callNativeOrPolyFlatMap
     : <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>) =>
-          (
-              Array.prototype.flatMap as F.Function<
-                  [FlatMapCallback<T, U>],
-                  U[]
-              >
-          ).call(array, fn);
+          (Array.prototype.flatMap as (cb: FlatMapCallback<T, U>) => U[]).call(
+              array,
+              fn,
+          );
 
 export const ctxMap = curry2(cMap) as <T, R>(
     cb: (e: T, i: number) => R,

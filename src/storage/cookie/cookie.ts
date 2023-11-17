@@ -1,6 +1,5 @@
 import { arrayJoin, cForEach, cReduce } from 'src/utils/array';
 import { globalMemoWin, memo } from 'src/utils/function';
-import { Function as Func } from 'ts-toolbelt';
 import { getLocation } from 'src/utils/location';
 import { getSameSiteCookieInfo } from 'src/providers/sameSite';
 import { flags } from '@inject';
@@ -195,6 +194,6 @@ function cookieStorage(
 
 export const globalCookieStorage = memo(cookieStorage);
 
-export type CookieStorage = Func.Return<typeof cookieStorage>;
+export type CookieStorage = ReturnType<typeof cookieStorage>;
 
 export { deleteCookie, cookieStorage };

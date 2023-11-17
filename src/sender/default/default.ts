@@ -1,4 +1,3 @@
-import type { List } from 'ts-toolbelt';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import type { InternalSenderInfo } from 'src/sender/SenderInfo';
@@ -110,4 +109,4 @@ export const useDefaultSender =
         iterateTransports(ctx, transports, urls, senderInfo);
 
 export type SenderFn = ReturnType<typeof useDefaultSender>;
-export type SenderParams = List.Filter<Parameters<SenderFn>, undefined>;
+export type SenderParams = Parameters<SenderFn>;

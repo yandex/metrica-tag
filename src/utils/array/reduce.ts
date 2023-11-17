@@ -1,6 +1,5 @@
 import { flags } from '@inject';
 import { POLYFILLS_FEATURE } from 'generated/features';
-import { F } from 'ts-toolbelt';
 import { Reduce, ReduceCallback } from './types';
 import { bindArgs } from '../function/bind/bind';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
@@ -23,7 +22,7 @@ export const reducePoly: Reduce = <T, U>(
 };
 const callNativeOrPoly = nativeReduce
     ? <T, U>(fn: ReduceCallback<T, U>, first: U, array?: ArrayLike<T>) =>
-          (nativeReduce as F.Function<[ReduceCallback<T, U>, U], U>).call(
+          (nativeReduce as (cb: ReduceCallback<T, U>, a: U) => U).call(
               array,
               fn,
               first,
@@ -34,7 +33,7 @@ export const cReduce: Reduce = flags[POLYFILLS_FEATURE]
     ? callNativeOrPoly
     : <T, U>(fn: ReduceCallback<T, U>, first: U, array?: ArrayLike<T>) =>
           (
-              Array.prototype.reduce as F.Function<[ReduceCallback<T, U>, U], U>
+              Array.prototype.reduce as (cb: ReduceCallback<T, U>, a: U) => U
           ).call(array, fn, first);
 
 /**

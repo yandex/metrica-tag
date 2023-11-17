@@ -1,9 +1,9 @@
-import { T as Tuple, A as Any, F as Func } from 'ts-toolbelt';
+import { T as Tuple, A as Any } from 'ts-toolbelt';
 import type { SliceFrom } from 'src/utils/types';
 
 export type AnyFunc = (...args: any[]) => any;
-export type ParamsTail<F extends AnyFunc> = Tuple.Tail<Func.Parameters<F>>;
-export type ParamsFirst<F extends AnyFunc> = Func.Parameters<F>[0];
+export type ParamsTail<F extends AnyFunc> = Tuple.Tail<Parameters<F>>;
+export type ParamsFirst<F extends AnyFunc> = Parameters<F>[0];
 export type FuncRest<F extends AnyFunc, R = ReturnType<F>> = (
     ...args: ParamsTail<F>
 ) => R; // проверка для generic ф-ций
@@ -12,7 +12,7 @@ export type Bind = <
     FN extends AnyFunc,
     C extends any,
     F extends any[],
-    V extends Func.Parameters<FN>,
+    V extends Parameters<FN>,
 >(
     f: FN,
     ctx: C,
