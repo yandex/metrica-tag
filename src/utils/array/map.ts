@@ -84,11 +84,15 @@ const callNativeOrPolyFlatMap: FlatMap = nativeFlatMap
 
 export const flatMap: FlatMap = flags[POLYFILLS_FEATURE]
     ? callNativeOrPolyFlatMap
-    : <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>) =>
-          (Array.prototype.flatMap as (cb: FlatMapCallback<T, U>) => U[]).call(
-              array,
-              fn,
-          );
+    : /**
+       * NOTE: Currently flatMap is not very reliable
+       * and can be lacking even in browser versions
+       * that claim support (e.g. by caniuse DB).
+       * Thus fall back to its polyfill
+       * when the POLYFILLS_FEATURE is not enabled,
+       * in order to allow its stable usage.
+       */
+      flatMapPoly;
 
 export const ctxMap = curry2(cMap) as <T, R>(
     cb: (e: T, i: number) => R,
