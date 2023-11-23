@@ -60,7 +60,6 @@ if (flags[TRACK_HASH_FEATURE]) {
 
 initImports();
 
-
 const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
     counterId,
     counterParams?,
