@@ -47,7 +47,7 @@ import { destructingDecorator } from './utils/methodDecorators/destructing';
 import { throwKnownError } from './utils/errorLogger/knownError';
 import { cForEach, cMap } from './utils/array';
 import { throwFunction } from './utils/errorLogger/throwFunction';
-import { yaNamespace } from './const';
+import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -59,11 +59,6 @@ if (flags[TRACK_HASH_FEATURE]) {
 }
 
 initImports();
-
-// Надёжнее всего просто по одной таски запускать
-// Потому что там есть переходы из потоков выполнения которые
-// Не измеряются нормально
-const ASYNC_PROVIDERS_MAX_EXEC_TIME = 1;
 
 const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
     counterId,
