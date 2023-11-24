@@ -43,11 +43,11 @@ declare module 'rollup-plugin-visualizer' {
         openOptions?: open.Options;
 
         /**
-         * Which diagram type to use: sunburst, treemap, network, raw-data, list.
+         * Which diagram type to use: sunburst, treemap, network.
          *
          * @default treemap
          */
-        template?: string;
+        template?: 'sunburst' | 'treemap' | 'network';
 
         /**
          * Collect gzip size from source code and display it at chart.
