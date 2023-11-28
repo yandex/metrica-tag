@@ -135,7 +135,7 @@ export function processCommands(
 }
 
 export const killFn = (cp: ChildProcess) => (cb?: (...args: any[]) => any) => {
-    psTree(cp.pid, (err, children) => {
+    psTree(cp.pid!, (err, children) => {
         spawn('kill', ['-9', ...children.map((p) => String(p.PID))]);
         cp.kill();
         if (typeof cb === 'function') {
