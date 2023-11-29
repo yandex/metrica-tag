@@ -68,7 +68,7 @@ export const cEvent = memo((ctx: Window) => {
         ) {
             cForEach((name: T) => {
                 const opt = getOpt(options);
-                setEvent(elem, name, fn, opt, false);
+                setEvent(ctx, elem, name, fn, opt, false);
             }, names);
 
             return bind(self.un, self, elem, names, fn, options);
@@ -93,7 +93,7 @@ export const cEvent = memo((ctx: Window) => {
         ) {
             cForEach((name: T) => {
                 const opt = getOpt(options);
-                setEvent(elem, name, fn, opt, true);
+                setEvent(ctx, elem, name, fn, opt, true);
             }, names);
         },
     });

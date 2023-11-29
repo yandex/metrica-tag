@@ -1,3 +1,4 @@
+import { memo } from '../function';
 import { EventElement, EventOptions } from './types';
 
 const addFunction = 'addEventListener';
@@ -5,6 +6,15 @@ const removeFunction = 'removeEventListener';
 // for old browsers
 const attachFunction = 'attachEvent';
 const detachFunction = 'detachEvent';
+
+const getEventSubscribeMethods = memo((ctx: Window) => {
+    const supportsAdd = !!(ctx[addFunction] && ctx[removeFunction]);
+    return {
+        supportsAdd,
+        on: supportsAdd ? addFunction : attachFunction,
+        off: supportsAdd ? removeFunction : detachFunction,
+    };
+});
 
 export const setEvent = <
     E extends EventElement,
@@ -19,6 +29,7 @@ export const setEvent = <
         : never,
     T extends keyof M,
 >(
+    ctx: Window,
     el: E,
     name: T,
     handler: (this: E, ev: M[T]) => any,
@@ -26,19 +37,14 @@ export const setEvent = <
     detach?: boolean,
 ): void => {
     const anyEl = el as any;
-    const supportsAdd = anyEl[addFunction] && anyEl[removeFunction];
-    const supportsAttach =
-        !supportsAdd && anyEl[attachFunction] && anyEl[detachFunction];
-
-    if (supportsAdd || supportsAttach) {
-        const remove = supportsAdd ? removeFunction : detachFunction;
-        const add = supportsAdd ? addFunction : attachFunction;
-        const fn = detach ? remove : add;
-
-        if (supportsAdd) {
-            anyEl[fn](name, handler, opt);
-        } else {
-            anyEl[fn](`on${name}`, handler);
-        }
+    const { supportsAdd, on, off } = getEventSubscribeMethods(ctx);
+    const fn = detach ? off : on;
+    if (!anyEl[fn]) {
+        return;
+    }
+    if (supportsAdd) {
+        anyEl[fn](name, handler, opt);
+    } else {
+        anyEl[fn](`on${name}`, handler);
     }
 };

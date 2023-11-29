@@ -54,6 +54,7 @@ describe('EventHelper', () => {
             addEventListener: (event: string, callback: Function, opt: any) => {
                 return opt.passive;
             },
+            removeEventListener: () => {},
         } as unknown as Window);
         const offCb = handler.on(addableTarget, ['change'], cb, options);
         sinon.assert.calledWith(addEventListenerSpy, 'change', cb, options);
@@ -73,6 +74,8 @@ describe('EventHelper', () => {
         const options = { passive: true, capture: true };
         const handler = cEvent({
             addEventListener: () => {},
+            attachEvent: () => {},
+            detachEvent: () => {},
         } as unknown as Window);
         const offCb = handler.on(attachableTarget, ['change'], cb, options);
 
