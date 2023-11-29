@@ -11,6 +11,11 @@ For documentation about Metrica, please visit our website:
 ### Installation
 The project is based on [nodejs](https://nodejs.org/en/).
 
+If [nvm](http://nvm.sh) installed, you can run this command to install and use the required version of the nodejs.
+```bash
+nvm install
+```
+
 To install dependencies use the following command:
 ```
 npm ci

@@ -4,6 +4,7 @@
   ".github/workflows/check-code.yml":"metrika/frontend/watch/.github/workflows/check-code.yml",
   ".gitignore":"metrika/frontend/watch/.gitignore",
   ".npmrc":"metrika/frontend/watch/.npmrc",
+  ".nvmrc":"metrika/frontend/watch/.nvmrc",
   ".prettierignore":"metrika/frontend/watch/.prettierignore",
   ".prettierrc.js":"metrika/frontend/watch/.prettierrc.js",
   "AUTHORS.md":"metrika/frontend/watch/AUTHORS.md",
