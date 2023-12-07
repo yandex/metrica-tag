@@ -97,6 +97,7 @@ declare global {
             };
             loadTimes(): { firstPaintTime: number };
         };
+        XPathResult: typeof XPathResult;
     }
 
     interface Document {
