@@ -208,5 +208,10 @@
     "code": "STACK_PROXY_FEATURE",
     "path": "stackProxy",
     "desc": "Enables ability of window.ym() to call counter's methods before it is initialized"
+  },
+  {
+    "code": "FIRST_PAINT_FEATURE",
+    "path": "firstPaint",
+    "desc": "Enables first paint browserinfo flag"
   }
 ]

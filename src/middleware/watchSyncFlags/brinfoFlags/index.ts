@@ -21,7 +21,6 @@ import {
     IS_SAME_ORIGIN_AS_TOP_WINDOW_BR_KEY,
     FALSE_URL_BR_KEY,
     NET_TYPE_BR_KEY,
-    FIRST_PAINT_BR_KEY,
     DOCUMENT_ENCODING_BR_KEY,
     BROWSER_LANGUAGE_BR_KEY,
     UID_BR_KEY,
@@ -53,7 +52,6 @@ import { getRandom } from 'src/utils/number';
 import { ctxPath, getPath } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time';
 import { isFalseURL } from './falseUrl';
-import { firstPaint } from './firstPaint';
 import { getHid } from './hid';
 import { getParentHid } from './parentHid';
 import { getUidFlag } from './uid';
@@ -69,7 +67,6 @@ export const BRINFO_FLAG_GETTERS: FlagGettersHash = {
         firstArg as FirstArgOfType<string>,
     ),
     [NET_TYPE_BR_KEY]: netType,
-    [FIRST_PAINT_BR_KEY]: firstPaint,
     [FALSE_URL_BR_KEY]: isFalseURL,
     [DOCUMENT_ENCODING_BR_KEY]: getDocumentEncoding,
     [BROWSER_LANGUAGE_BR_KEY]: getNavigatorLanguage,
