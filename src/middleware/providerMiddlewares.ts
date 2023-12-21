@@ -5,20 +5,13 @@ import {
     MiddlewareWeightTuple,
 } from 'src/middleware/types';
 import { prerender } from 'src/middleware/prerender';
-import {
-    ProvidersMap,
-    HIT_PROVIDER,
-    Provider,
-    LOGGER_PROVIDER,
-} from 'src/providers';
+import { ProvidersMap, HIT_PROVIDER, Provider } from 'src/providers';
 import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { pageTitle } from 'src/middleware/pageTitle';
 import { counterFirstHit } from 'src/middleware/counterFirstHit';
 import { pipe, call, bindArg } from 'src/utils/function';
 import { ctxBindArgs } from 'src/utils/function/bind/ctxBind';
-import { PREPROD_FEATURE } from 'generated/features';
-import { flags } from '@inject';
 import { prepareUrlMiddleware } from './prepareUrl';
 import { addMiddlewareFor, addMiddlewareToTheList } from './utils';
 
@@ -52,10 +45,6 @@ export const addMiddlewareForProvider: (
     middleware?: MiddlewareGetter,
     weight?: number,
 ) => void = bindArg(providerMiddlewareList, addMiddlewareFor);
-
-if (flags[PREPROD_FEATURE]) {
-    addMiddlewareForProvider(LOGGER_PROVIDER);
-}
 
 // This should be always first
 // And it shouldn't get into the params middlewares list

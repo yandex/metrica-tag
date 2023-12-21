@@ -2,12 +2,7 @@ import { TransportFn, CheckTransport } from 'src/transport/types';
 import { useXHR } from 'src/transport/xhr';
 import { useFetch } from 'src/transport/fetch';
 import { cReduce, cFind, filterFalsy, head } from 'src/utils/array';
-import {
-    Provider,
-    ProvidersMap,
-    HIT_PROVIDER,
-    LOGGER_PROVIDER,
-} from 'src/providers';
+import { Provider, ProvidersMap, HIT_PROVIDER } from 'src/providers';
 import { useImage } from 'src/transport/image';
 import { useJsonp } from 'src/transport/jsonp';
 import { useBeacon } from 'src/transport/beacon';
@@ -15,7 +10,6 @@ import {
     BEACON_TRANSPORT_FEATURE,
     FETCH_FEATURE,
     JSONP_FEATURE,
-    PREPROD_FEATURE,
 } from 'generated/features';
 import { throwKnownError } from 'src/utils/errorLogger/knownError';
 import { flags } from '@inject';
@@ -88,10 +82,6 @@ export const withoutBeacon = filterFalsy<MaybeTransport>([
 export const nameMap: ProvidersMap<CheckTransport[]> = {
     [HIT_PROVIDER]: hitTransports,
 };
-
-if (flags[PREPROD_FEATURE]) {
-    nameMap[LOGGER_PROVIDER] = imageTransportOnly;
-}
 
 export const EMPTY_TRANSPORT_LIST = 'et';
 

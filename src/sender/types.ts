@@ -2,7 +2,7 @@ import { Tuple } from 'ts-toolbelt';
 import { TransportList } from 'src/transport';
 import type { SenderInfo, InternalSenderInfo } from 'src/sender/SenderInfo';
 import { Middleware } from 'src/middleware/types';
-import { HIT_PROVIDER, Provider, LOGGER_PROVIDER } from 'src/providers';
+import { HIT_PROVIDER, Provider } from 'src/providers';
 import { SENDER_MIDDLEWARE, SENDER_WATCH } from './const';
 import type { SenderWatch } from './watch';
 
@@ -19,7 +19,6 @@ export type SenderType = (
  */
 export interface NameMap extends Record<Provider, SenderType> {
     [HIT_PROVIDER]: SenderWatch;
-    [LOGGER_PROVIDER]: SenderType;
 }
 
 type MutateSender<S extends NameMap[keyof NameMap]> = (
