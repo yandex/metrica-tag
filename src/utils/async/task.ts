@@ -2,66 +2,60 @@ import { cont, curry2 } from '../function';
 import { cForEach } from '../array';
 
 export type ForkInterface<ResolveType> = (
-    reject: (a?: any) => void,
-    resolve: (a?: ResolveType) => void,
+    reject: (a: any) => void,
+    resolve: (a: ResolveType) => void,
 ) => void;
 
 export type TaskInterface<ResolveType> = <R>(
     fn: (forks: ForkInterface<ResolveType>) => R,
 ) => R;
 
-export const task = cont as any as <ResolveType = any>(
+export const task = cont as <ResolveType = any>(
     // eslint-disable-next-line no-use-before-define
     fork: ForkInterface<ResolveType>,
     // eslint-disable-next-line no-use-before-define
-) => <R>(fn: (forks: ForkInterface<ResolveType>) => R) => R;
+) => TaskInterface<ResolveType>;
 
 export const taskFork =
-    <In>(reject: (a?: In) => void, resolve: (a?: In) => void) =>
-    (fork: ForkInterface<In>) => {
-        return fork(reject, resolve);
-    };
+    <In>(reject: (a: In) => void, resolve: (a: In) => void) =>
+    (fork: ForkInterface<In>) =>
+        fork(reject, resolve);
 
-export const taskMap = curry2((mapFn: Function, fork: Function) =>
-    task((reject, resolve) => {
-        return fork(reject, (result: any) => {
-            try {
-                resolve(mapFn(result));
-            } catch (e) {
-                reject(e);
-            }
-        });
-    }),
-) as any as <MapIn = any, MapOut = any>(
-    mapFn: (a?: MapIn) => MapOut,
-) => (
-    fork: ForkInterface<MapIn>,
-    // eslint-disable-next-line no-use-before-define
-) => <R>(fn: (a: TaskInterface<MapIn>) => R) => R;
+export const taskMap = curry2(
+    <MapIn, MapOut>(mapFn: (a: MapIn) => MapOut, fork: ForkInterface<MapIn>) =>
+        task<MapOut>((reject, resolve) =>
+            fork(reject, (result) => {
+                try {
+                    resolve(mapFn(result));
+                } catch (e) {
+                    reject(e);
+                }
+            }),
+        ),
+);
 
-export const taskChain = curry2((fn: Function, fork: Function) =>
-    task((reject, resolve) =>
-        fork(reject, (result: any) => {
-            try {
-                fn(result)(taskFork(reject, resolve));
-            } catch (e) {
-                reject(e);
-            }
-        }),
-    ),
-) as any as <ChainIn = any, ChainOut = any>(
-    fn: (chainResult?: ChainIn) => any,
-) => (
-    fork: ForkInterface<ChainIn>,
-    // eslint-disable-next-line no-use-before-define
-) => <R>(func: (a: TaskInterface<ChainOut>) => R) => R;
+export const taskChain = curry2(
+    <ChainIn, ChainOut>(
+        fn: (chainResult: ChainIn) => TaskInterface<ChainOut>,
+        fork: ForkInterface<ChainIn>,
+    ) =>
+        task<ChainOut>((reject, resolve) =>
+            fork(reject, (result) => {
+                try {
+                    fn(result)(taskFork<ChainOut>(reject, resolve));
+                } catch (e) {
+                    reject(e);
+                }
+            }),
+        ),
+);
 
 export const taskRace = <T>(tasks: TaskInterface<T>[]): TaskInterface<T> => {
-    const rejectErrors: any[] = [];
+    const rejectErrors: unknown[] = [];
     let isResolved = false;
 
     return task((reject, resolve) => {
-        const onErrorCb = (error: any) => {
+        const onErrorCb = (error: unknown) => {
             const length = rejectErrors.push(error);
             if (length === tasks.length) {
                 reject(rejectErrors);
@@ -70,7 +64,7 @@ export const taskRace = <T>(tasks: TaskInterface<T>[]): TaskInterface<T> => {
 
         cForEach((taskItem, i) => {
             taskItem(
-                taskFork(onErrorCb, (res?: T) => {
+                taskFork(onErrorCb, (res: T) => {
                     if (!isResolved) {
                         try {
                             resolve(res);
@@ -107,13 +101,12 @@ export const taskAll = <T>(tasks: TaskInterface<T>[]): TaskInterface<T[]> => {
     });
 };
 
-export const fromPromise = <T>(promise: Promise<T>) => {
-    return task((reject, resolve) => {
+export const fromPromise = <T>(promise: Promise<T>) =>
+    task((reject, resolve) => {
         promise.then(resolve, reject);
     });
-};
 
-export const taskOf = (val?: any) =>
-    task((reject, resolve) => {
+export const taskOf = <T>(val: T) =>
+    task<T>((reject, resolve) => {
         resolve(val);
     });
