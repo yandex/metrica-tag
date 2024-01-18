@@ -1,7 +1,7 @@
 import { cForEach, cMap, cReduce } from 'src/utils/array';
 import { cKeys } from 'src/utils/object';
 import { bindArg } from '../function';
-import { isString } from '../string';
+import { isString, stringIndexOf } from '../string';
 import {
     ECOMMERCE_ACTION_FIELD,
     ECOMMERCE_CURRENCY,
@@ -26,7 +26,7 @@ const mapItemsFields = (
     const formattedItem: Record<string, any> = {};
     cForEach((key) => {
         const iteKey = getMappedKey(mappings, key);
-        if (key.indexOf(GTAG_CATEGORY) !== -1) {
+        if (stringIndexOf(key, GTAG_CATEGORY) !== -1) {
             const categoryKey = GTAG_COMMON_REPLACE_KEYS[GTAG_CATEGORY];
             if (!formattedItem[categoryKey]) {
                 formattedItem[categoryKey] = item[key];

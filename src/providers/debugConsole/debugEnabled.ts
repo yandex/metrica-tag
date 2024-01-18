@@ -1,10 +1,11 @@
 import { globalCookieStorage } from 'src/storage/cookie';
 import { memo } from 'src/utils/function';
 import { getLocation } from 'src/utils/location';
+import { stringIndexOf } from 'src/utils/string';
 import { DEBUG_CTX_FLAG, DEBUG_STORAGE_FLAG, DEBUG_URL_PARAM } from './const';
 
 export const isDebugUrlWithValue = (ctx: Window, value: string) =>
-    getLocation(ctx).href.indexOf(`${DEBUG_URL_PARAM}=${value}`) > -1;
+    stringIndexOf(getLocation(ctx).href, `${DEBUG_URL_PARAM}=${value}`) > -1;
 
 export const debugEnabled = memo((ctx: Window) => {
     const cookie = globalCookieStorage(ctx);

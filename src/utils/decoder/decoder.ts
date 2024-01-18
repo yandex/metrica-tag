@@ -1,3 +1,6 @@
+import { arrayJoin } from '../array';
+import { stringIndexOf } from '../string';
+
 const base64abc =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 const safeBase64replacement: Record<string, string> = {
@@ -45,10 +48,10 @@ export const decodeBase64 = (baseStr: string, safe = false): string => {
 
     do {
         // unpack four hexets into three octets using index points in b64b
-        const h1 = base64abc.indexOf(str.charAt(i++));
-        const h2 = base64abc.indexOf(str.charAt(i++));
-        const h3 = base64abc.indexOf(str.charAt(i++));
-        const h4 = base64abc.indexOf(str.charAt(i++));
+        const h1 = stringIndexOf(base64abc, str.charAt(i++));
+        const h2 = stringIndexOf(base64abc, str.charAt(i++));
+        const h3 = stringIndexOf(base64abc, str.charAt(i++));
+        const h4 = stringIndexOf(base64abc, str.charAt(i++));
 
         if (h1 < 0 || h2 < 0 || h3 < 0 || h4 < 0) {
             return '';
@@ -109,7 +112,7 @@ export const encodeBase64 = (data: number[], safe = false) => {
         default:
     }
 
-    const str = result.join('');
+    const str = arrayJoin('', result);
 
     return safe ? replaceBase64(str, true) : str;
 };

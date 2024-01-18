@@ -7,7 +7,7 @@ import {
     isNativeFunction,
     bindThisForMethodTest,
 } from 'src/utils/function';
-import { isString, stringIncludes } from 'src/utils/string';
+import { isString, stringIncludes, stringIndexOf } from 'src/utils/string';
 import { cMap, cReduce, cSome, includes, indexOfWin } from 'src/utils/array';
 import { ctxPath, getPath, isUndefined } from 'src/utils/object';
 import { isFF, isFFVersionRegExp } from 'src/utils/browser/firefox';
@@ -158,7 +158,7 @@ export const isSelenium = memo((ctx: Window) => {
     const externalStr = getPath(external, 'toString')
         ? `${external.toString()}` // toString может вернуть undefined
         : '';
-    const isSequentum = externalStr.indexOf('Sequentum') !== -1;
+    const isSequentum = stringIndexOf(externalStr, 'Sequentum') !== -1;
     const documentElement = getPath(ctx, 'document.documentElement');
     const docElemProps = ['selenium', 'webdriver', 'driver'];
 

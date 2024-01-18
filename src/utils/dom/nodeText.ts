@@ -1,5 +1,7 @@
 import { getPath } from 'src/utils/object';
 import { walkTree } from 'src/utils/treeWalker';
+import { arrayJoin } from '../array';
+import { trimText } from '../string/remove';
 
 export const getNodeText = (ctx: Window, elem: Element | null) => {
     if (!elem) {
@@ -19,7 +21,7 @@ export const getNodeText = (ctx: Window, elem: Element | null) => {
             textInfo = node.value;
         }
 
-        textInfo = textInfo && textInfo.trim();
+        textInfo = textInfo && trimText(textInfo);
         if (textInfo) {
             res.push(textInfo);
         }
@@ -29,5 +31,5 @@ export const getNodeText = (ctx: Window, elem: Element | null) => {
         return '';
     }
 
-    return res.join(' ');
+    return arrayJoin(' ', res);
 };

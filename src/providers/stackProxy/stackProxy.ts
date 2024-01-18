@@ -18,6 +18,7 @@ import {
 } from 'src/utils/function';
 import { arrayMerge, cForEach, cReduce, toArray } from 'src/utils/array';
 import { parseDecimalInt } from 'src/utils/number';
+import { stringIndexOf } from 'src/utils/string';
 import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
 import { consoleLog } from '../debugConsole/debugConsole';
 
@@ -77,7 +78,7 @@ export const getCounterAndOptions = (
     const urlCounterId = getCounterIdFromSrc(counterKeyStr);
     if (urlCounterId) {
         counterOptions.id = urlCounterId;
-    } else if (counterKeyStr.indexOf(':') === -1) {
+    } else if (stringIndexOf(counterKeyStr, ':') === -1) {
         const counterId = parseDecimalInt(counterKeyStr);
         counterOptions.id = counterId;
     } else {

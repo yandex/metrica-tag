@@ -1,6 +1,6 @@
 import { closest } from 'src/utils/dom/closest';
 import { Queryable, select } from 'src/utils/dom/select';
-import { cMap, filterFalsy } from 'src/utils/array';
+import { arrayJoin, cMap, filterFalsy } from 'src/utils/array';
 import {
     CONTENT,
     getData,
@@ -13,10 +13,13 @@ import {
 import { getNodeName } from 'src/utils/dom/dom';
 import { bindArg } from '../function';
 
-export const BUTTON_SELECTOR = `button,${cMap(
-    (type) => `input[type="${type}"]`,
-    ['button', 'submit', 'reset', 'file'],
-).join(',')},a`;
+export const BUTTON_SELECTOR = `button,${arrayJoin(
+    ',',
+    cMap(
+        (type) => `input[type="${type}"]`,
+        ['button', 'submit', 'reset', 'file'],
+    ),
+)},a`;
 
 export const MAYBE_BUTTON_SELECTOR = 'div';
 

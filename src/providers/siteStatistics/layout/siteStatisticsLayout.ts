@@ -3,6 +3,7 @@ import { cEvent } from 'src/utils/events';
 import { getPath, mix } from 'src/utils/object';
 import { cForEach, cReduce } from 'src/utils/array';
 import { bind, bindArgs, bindArg, call, noop } from 'src/utils/function';
+import { stringIndexOf } from 'src/utils/string';
 
 const positionAbsolute = { position: 'absolute' };
 const positionFixed = { position: 'fixed' };
@@ -245,7 +246,7 @@ export const siteStatisticsLayout = (ctx: Window, counterId: number) => {
             (event: SecurityPolicyViolationEvent) => {
                 const blockedURI = getPath(event, 'blockedURI');
 
-                if (blockedURI && blockedURI.indexOf(metrikaHost) >= 0) {
+                if (blockedURI && stringIndexOf(blockedURI, metrikaHost) >= 0) {
                     destruct();
                 }
             },

@@ -51,7 +51,7 @@ export const hashVal = (ctx: Window, val: string) => {
             const fileReader = new ctx.FileReader();
             fileReader.onload = (fileReaderEvent) => {
                 const result = getPath(fileReaderEvent, 'target.result') || '';
-                const commaIndex = result.indexOf(',');
+                const commaIndex = stringIndexOf(result, ',');
                 if (commaIndex !== -1) {
                     resolve(result.substring(commaIndex + 1));
                 } else {

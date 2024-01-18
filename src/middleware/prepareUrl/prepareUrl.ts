@@ -1,6 +1,6 @@
 import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
 import { getLocation } from 'src/utils/location';
-import { isString } from 'src/utils/string';
+import { isString, stringIndexOf } from 'src/utils/string';
 import { trimRegexp } from 'src/utils/string/remove';
 import { config } from 'src/config';
 import { isUndefined } from 'src/utils/object';
@@ -40,7 +40,7 @@ export const prepare = (ctx: Window, rawUrl?: string): string => {
     }
 
     if (firstChar === '/') {
-        index = href.indexOf(host);
+        index = stringIndexOf(href, host);
         if (index !== -1) {
             return href.substr(0, index + host.length) + url;
         }
