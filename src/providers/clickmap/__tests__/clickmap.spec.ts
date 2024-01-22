@@ -3,8 +3,10 @@ import * as sinon from 'sinon';
 import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import * as inject from '@inject';
 import * as sender from 'src/sender';
-import * as cEvent from 'src/utils/events';
 import * as provider from 'src/providers/clickmap/clickmap';
+import * as cEvent from 'src/utils/events';
+import type { EventElement } from 'src/utils/events/types';
+import type { AnyFunc } from 'src/utils/function/types';
 import * as mouseEvents from 'src/utils/mouseEvents';
 
 import { SenderInfo } from 'src/sender/SenderInfo';
@@ -276,11 +278,26 @@ describe('clickmap.ts : ', () => {
         dis1.setAttribute('class', 'ym-disable-clickmap');
 
         let senderOpt: SenderInfo | null = null;
-        let useCEventStub: any;
-        let useGetTargetStub: any;
-        let useGetPositionStub: any;
-        let useGetMouseButtonStub: any;
-        let counterStateGetterStub: sinon.SinonStub;
+        let useCEventStub: sinon.SinonStub<
+            Parameters<typeof cEvent.cEvent>,
+            ReturnType<typeof cEvent.cEvent>
+        >;
+        let useGetTargetStub: sinon.SinonStub<
+            Parameters<typeof mouseEvents.getTarget>,
+            ReturnType<typeof mouseEvents.getTarget>
+        >;
+        let useGetPositionStub: sinon.SinonStub<
+            Parameters<typeof mouseEvents.getPosition>,
+            ReturnType<typeof mouseEvents.getPosition>
+        >;
+        let useGetMouseButtonStub: sinon.SinonStub<
+            Parameters<typeof mouseEvents.getMouseButton>,
+            ReturnType<typeof mouseEvents.getMouseButton>
+        >;
+        let counterStateGetterStub: sinon.SinonStub<
+            Parameters<typeof getCountersUtils.counterStateGetter>,
+            ReturnType<typeof getCountersUtils.counterStateGetter>
+        >;
 
         afterEach(() => {
             sandbox.restore();
@@ -299,17 +316,23 @@ describe('clickmap.ts : ', () => {
                 .stub(sender, 'getSender')
                 .returns((senderInfo?: SenderInfo) => {
                     senderOpt = senderInfo!;
-                    return Promise.resolve();
+                    return Promise.resolve({});
                 });
 
             useCEventStub = sandbox.stub(cEvent, 'cEvent');
             useCEventStub.returns({
-                on: (ctx: Document, events: string[], handler: Function) => {
+                on: <T extends string>(
+                    elem: EventElement,
+                    events: T[],
+                    handler: AnyFunc,
+                ) => {
                     const [name] = events;
                     if (name === 'click') {
                         handler(new MouseEvent('click', { view: window }));
                     }
+                    return () => {};
                 },
+                un: () => {},
             });
             counterStateGetterStub = sandbox.stub(
                 getCountersUtils,
@@ -393,7 +416,11 @@ describe('clickmap.ts : ', () => {
             useCEventStub.restore();
             useCEventStub = sandbox.stub(cEvent, 'cEvent');
             useCEventStub.returns({
-                on: (ctx: Document, events: string[], handler: Function) => {
+                on: <T extends string>(
+                    elem: EventElement,
+                    events: T[],
+                    handler: AnyFunc,
+                ) => {
                     const [name] = events;
                     if (name === 'click') {
                         const useIsCurrentClickTrackedStub = sinon.stub(
@@ -418,7 +445,9 @@ describe('clickmap.ts : ', () => {
                         }
                         useIsCurrentClickTrackedStub.restore();
                     }
+                    return () => {};
                 },
+                un: () => {},
             });
 
             useGetTargetStub.returns(rp7);
