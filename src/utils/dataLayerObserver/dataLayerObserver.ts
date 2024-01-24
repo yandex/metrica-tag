@@ -1,6 +1,6 @@
 import { getGlobalStorage } from 'src/storage/global';
-import { getPath, isFunction } from 'src/utils/object';
-import { cForEach } from 'src/utils/array';
+import { ctxPath, getPath, isFunction } from 'src/utils/object';
+import { cForEach, cMap, includes } from 'src/utils/array';
 import { firstArg, noop, bindArg } from 'src/utils/function';
 import { argsToArray } from 'src/utils/function/args';
 import { emitter, Emitter, observer, Observer } from '../events';
@@ -10,7 +10,26 @@ export const INNER_DATA_LAYER_KEY = 'dataLayer';
 export const INNER_DATA_LAYER_NAMESPACE = 'ymetrikaEvent';
 export const INNER_DATA_LAYER_TYPE_KEY = 'type';
 
-export const pushToDataLayer = (dataLayer: any[], status: string) => {
+export type DataLayerEvent = {
+    [INNER_DATA_LAYER_NAMESPACE]: {
+        [INNER_DATA_LAYER_TYPE_KEY]: string;
+    };
+};
+
+const TYPE_PATH =
+    `${INNER_DATA_LAYER_NAMESPACE}.${INNER_DATA_LAYER_TYPE_KEY}` as const;
+
+export const pushToDataLayerOnce = (
+    dataLayer: DataLayerEvent[],
+    status: string,
+) => {
+    const alreadyHasStatus = includes(
+        status,
+        cMap(ctxPath(TYPE_PATH), dataLayer),
+    );
+    if (alreadyHasStatus) {
+        return;
+    }
     dataLayer.push({
         [INNER_DATA_LAYER_NAMESPACE]: {
             [INNER_DATA_LAYER_TYPE_KEY]: status,
@@ -20,7 +39,10 @@ export const pushToDataLayer = (dataLayer: any[], status: string) => {
 
 export const getInnerDataLayer = (ctx: Window) => {
     const globalStorage = getGlobalStorage(ctx);
-    const result: unknown[] = globalStorage.getVal(INNER_DATA_LAYER_KEY, []);
+    const result: DataLayerEvent[] = globalStorage.getVal(
+        INNER_DATA_LAYER_KEY,
+        [],
+    );
     globalStorage.setVal(INNER_DATA_LAYER_KEY, result);
     return result;
 };
