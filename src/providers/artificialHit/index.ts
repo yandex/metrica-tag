@@ -1,10 +1,10 @@
 import { flags } from '@inject';
-import { ARTIFICIAL_HIT_FEATURE } from 'generated/features';
+import { ARTIFICIAL_HIT_FEATURE, PREPROD_FEATURE } from 'generated/features';
 import { commonMiddlewares, providerMiddlewareList } from 'src/middleware';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
-import { fullList, nameMap } from 'src/transport';
+import { fullList, nameMap, withoutBeacon } from 'src/transport';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { artificialHitProvider } from './artificialHit';
 import { ARTIFICIAL_HIT_PROVIDER } from './const';
@@ -25,6 +25,11 @@ export const initProvider = () => {
         providersSync.push(ctxErrorLogger('p.ar', artificialHitProvider));
         providerMap[ARTIFICIAL_HIT_PROVIDER] = useSenderWatch;
         providerMiddlewareList[ARTIFICIAL_HIT_PROVIDER] = commonMiddlewares;
-        nameMap[ARTIFICIAL_HIT_PROVIDER] = fullList;
+        if (flags[PREPROD_FEATURE]) {
+            // Needs to check safety usage of sendBeacon API in the artificial hit https://st.yandex-team.ru/METR-57359
+            nameMap[ARTIFICIAL_HIT_PROVIDER] = fullList;
+        } else {
+            nameMap[ARTIFICIAL_HIT_PROVIDER] = withoutBeacon;
+        }
     }
 };
