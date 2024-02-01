@@ -94,4 +94,42 @@ describe('providers / artificial hit', () => {
         sinon.assert.calledOnce(callback);
         chai.expect(callback.thisValues[0]).to.be.equal(context);
     });
+
+    it('sends artificial hit when called with no arguments', () => {
+        const url = 'http://example.com';
+        const referrer = 'reff';
+        const counterOptions: any = { id: 123 };
+        const ctx = {
+            location: {
+                href: url,
+            },
+            document: {
+                referrer,
+            },
+        };
+        const makeArtificialHit = artificialHitProvider(
+            ctx as any,
+            counterOptions,
+        );
+        makeArtificialHit[METHOD_NAME_HIT]();
+        sinon.assert.calledOnce(logSpy);
+        sinon.assert.calledWithExactly(
+            senderStub,
+            {
+                middlewareInfo: {
+                    params: undefined,
+                    title: undefined,
+                },
+                urlParams: {
+                    [WATCH_URL_PARAM]: url,
+                    [WATCH_REFERER_PARAM]: referrer,
+                },
+                brInfo: {
+                    [PAGE_VIEW_BR_KEY]: 1,
+                    [ARTIFICIAL_BR_KEY]: 1,
+                },
+            },
+            counterOptions,
+        );
+    });
 });

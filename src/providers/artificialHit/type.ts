@@ -21,7 +21,7 @@ export type ArtificialHitOptions = {
  */
 export type ArtificialHandler<T = any> = (
     /** Artificial pseudo URL */
-    url: string,
+    url?: string,
     /** Page title */
     title?: string | ArtificialHitOptions,
     /** Page referrer */

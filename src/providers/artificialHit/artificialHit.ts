@@ -76,7 +76,7 @@ export const artificialHitProvider = (
 
     return {
         [METHOD_NAME_HIT]: (
-            url: string,
+            url?: string,
             title?: string | ArtificialHitOptions,
             referer?: string,
             params?: Record<string, any>,
@@ -90,9 +90,6 @@ export const artificialHitProvider = (
                     [ARTIFICIAL_BR_KEY]: 1,
                 }),
             };
-            if (!url) {
-                return undefined;
-            }
             const options = argsToOptions(
                 title,
                 referer,
@@ -101,13 +98,13 @@ export const artificialHitProvider = (
                 fnCtx,
             );
             const state = getArtificialState(counterOpt);
+            const pageUrl = url || getLocation(ctx).href;
 
-            if (state.url !== url) {
+            if (state.url !== pageUrl) {
                 state.ref = state.url;
                 state.url = url;
             }
 
-            const pageUrl = url || getLocation(ctx).href;
             const pageRef =
                 options.referer || state.ref || ctx.document.referrer;
 
