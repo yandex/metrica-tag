@@ -1,4 +1,5 @@
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
+import * as fsp from 'fs/promises';
 import * as path from 'path';
 
 export const DEFAULT_BUNDLE_VERSION = '25';
@@ -18,15 +19,15 @@ export const addBOMMark = (filePath: string) => {
 
 export const emptyBuildDir = async (bundle: string, createOnly = false) => {
     const bundleDir = buildDir(bundle);
-    await fs.ensureDir(bundleDir);
+    await fsp.mkdir(bundleDir, { recursive: true });
     if (createOnly) {
         return;
     }
-    const files = await fs.readdir(bundleDir);
+    const files = await fsp.readdir(bundleDir);
 
     await Promise.all(
         files
             .filter((file) => file !== 'package.json')
-            .map((file) => fs.unlink(path.join(bundleDir, file))),
+            .map((file) => fsp.unlink(path.join(bundleDir, file))),
     );
 };

@@ -1,4 +1,4 @@
-import * as fs from 'fs-extra';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 import commandLineArgs from 'command-line-args';
 import { spawnAsPromised } from './utils/proc';
@@ -105,7 +105,7 @@ ${featureBlocks
 
 const GEN_DIR = './generated';
 const run = async () => {
-    fs.ensureDirSync(GEN_DIR);
+    fs.mkdir(GEN_DIR, { recursive: true });
 
     const allFeatures: FeatureType[] = files
         .map((filePath) =>
