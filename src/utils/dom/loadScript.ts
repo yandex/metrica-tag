@@ -1,7 +1,4 @@
-import { mix, entries } from '../object';
 import { getElemCreateFunction } from './dom';
-import { dirtyPipe, getNativeFunction } from '../function';
-import { ctxMap } from '../array';
 
 export type ScriptOptions = {
     src: string;
@@ -14,43 +11,28 @@ export const loadScript = (
     ctx: Window,
     options: ScriptOptions,
 ): HTMLScriptElement | undefined => {
-    const { document: doc } = ctx;
-    const newOpt = mix(
-        {
-            type: 'text/javascript',
-            charset: 'utf-8',
-            async: true,
-        },
-        options,
-    );
     const createFn = getElemCreateFunction(ctx);
     if (!createFn) {
         return undefined;
     }
-    const scriptTag = createFn('script') as any;
-    dirtyPipe(
-        entries,
-        ctxMap(([key, val]: [keyof ScriptOptions, string]) => {
-            if (key === 'async' && val) {
-                scriptTag.async = true;
-            } else {
-                scriptTag[key] = val;
-            }
-        }),
-    )(newOpt);
+    const { document: doc } = ctx;
+    const scriptTag = createFn('script');
+    scriptTag.src = options.src;
+    scriptTag.type = options.type || 'text/javascript';
+    scriptTag.charset = options.charset || 'utf-8';
+    scriptTag.async = options.async || true;
     try {
-        const getElems = getNativeFunction('getElementsByTagName', doc);
-        let head = getElems('head')[0];
+        let head = doc.getElementsByTagName('head')[0];
         // fix for Opera
         if (!head) {
-            const html = getElems('html')[0];
+            const html = doc.getElementsByTagName('html')[0];
             head = createFn('head');
             if (html) {
                 html.appendChild(head);
             }
         }
         head.insertBefore(scriptTag, head.firstChild);
-        return scriptTag as HTMLScriptElement;
+        return scriptTag;
     } catch (e) {
         // empty
     }
