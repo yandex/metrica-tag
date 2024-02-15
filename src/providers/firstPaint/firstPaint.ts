@@ -1,7 +1,7 @@
-import { DEFER_KEY, FIRST_PAINT_BR_KEY } from 'src/api/watch';
+import { DEFER_KEY } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { cFilter } from 'src/utils/array';
-import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import {
     constructObject,
     equal,
@@ -10,15 +10,18 @@ import {
     pipe,
 } from 'src/utils/function';
 import { ctxPath, getPath, isFunction } from 'src/utils/object';
-import { BRINFO_FLAG_GETTERS } from 'src/middleware/watchSyncFlags/brinfoFlags';
 import { cEvent } from 'src/utils/events';
 import { getPerformance } from 'src/utils/time/performance';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { getGlobalStorage } from 'src/storage/global';
 import { timeNavigationStart } from 'src/middleware/watchSyncFlags/brinfoFlags/timeFlags';
-import { CONTENTFUL_PAINT, FIRST_HIDE_TIME_GS_KEY } from './const';
+import {
+    CONTENTFUL_PAINT,
+    FIRST_HIDE_TIME_GS_KEY,
+    FIRST_PAINT_ENABLED_GS_KEY,
+} from './const';
 
-const getTime = (ctx: Window): number | undefined => {
+const getFirstPaintTime = (ctx: Window): number | undefined => {
     const getEntriesByType = getPath(ctx, 'performance.getEntriesByType');
     if (isFunction(getEntriesByType)) {
         const data = cFilter(
@@ -47,8 +50,12 @@ const getTime = (ctx: Window): number | undefined => {
     }
     return undefined;
 };
-const getCounterState = memo(
-    constructObject as (ctx: Window) => Record<string, number | undefined>,
+
+type FirstPaintTimingState = {
+    firstPaintTime?: number;
+};
+const getFirstPaintTimingState = memo(
+    constructObject as (ctx: Window) => FirstPaintTimingState,
 );
 
 export const firstPaint = (
@@ -56,45 +63,54 @@ export const firstPaint = (
     counterOptions: CounterOptions,
     senderParams: SenderInfo,
 ) => {
+    // "nohit" won't be processed, thus wait for a real hit.
     if (senderParams.urlParams && senderParams.urlParams[DEFER_KEY]) {
         return null;
     }
-    const key = getCounterKey(counterOptions);
-    const counterInfo = getCounterState(ctx);
-    if (counterInfo[key]) {
+
+    // Opt out for pages rendered in inactive state.
+    const { getVal } = getGlobalStorage(ctx);
+    if (!getVal(FIRST_PAINT_ENABLED_GS_KEY)) {
         return null;
     }
-    const firstHideTime = getGlobalStorage(ctx).getVal(
-        FIRST_HIDE_TIME_GS_KEY,
-        Infinity,
-    );
-    const time = getTime(ctx);
-    if (time && firstHideTime > time) {
-        counterInfo[key] = time;
-        return Math.round(time);
+
+    // Send the FP timing only once
+    const counterInfo = getFirstPaintTimingState(ctx);
+    if (counterInfo.firstPaintTime) {
+        return null;
+    }
+
+    const firstHideTime = getVal(FIRST_HIDE_TIME_GS_KEY, Infinity);
+    const firstPaintTime = getFirstPaintTime(ctx);
+    if (firstPaintTime && firstHideTime > firstPaintTime) {
+        counterInfo.firstPaintTime = firstPaintTime;
+        return Math.round(firstPaintTime);
     }
     return null;
 };
 
 export const useFirstPaintRaw = (ctx: Window) => {
     const perf = getPerformance(ctx);
-    // This is needed to not measure FCP for pages which are opened in inactive state
-    // For more info see MOBYANDEXIOS-15582
+    /*
+        Don't measure FCP for pages which are:
+            - opened in inactive state;
+            - switched from before being painted.
+        For more info see MOBYANDEXIOS-15582
+     */
     if (perf && !ctx.document.hidden) {
+        const { setSafe } = getGlobalStorage(ctx);
+        // Enable once per pageview
+        setSafe(FIRST_PAINT_ENABLED_GS_KEY, 1);
         const unsubscribe = cEvent(ctx).on(
             ctx,
             ['visibilitychange', 'webkitvisibilitychange'],
             () => {
                 if (ctx.document.hidden) {
-                    getGlobalStorage(ctx).setVal(
-                        FIRST_HIDE_TIME_GS_KEY,
-                        perf.now(),
-                    );
+                    setSafe(FIRST_HIDE_TIME_GS_KEY, perf.now());
                     unsubscribe();
                 }
             },
         );
-        BRINFO_FLAG_GETTERS[FIRST_PAINT_BR_KEY] = firstPaint;
     }
 };
 
