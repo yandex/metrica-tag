@@ -20,7 +20,7 @@ import {
 import { createPhoneDomReplacer } from 'src/utils/phones/phonesDom';
 import { cEvent, observer, throttleObserver } from 'src/utils/events';
 import { removeSpaces, removeNonDigits } from 'src/utils/string/remove';
-import { genPath } from 'src/utils/object';
+import { genPath, mix } from 'src/utils/object';
 import { clearDefer, setDefer } from 'src/utils/defer';
 import { noop } from 'src/utils/function/noop';
 import { phoneSubscribeLoad, phoneSubscribeMutation } from './phonesSubscribe';
@@ -44,10 +44,12 @@ const setEnterHandler = (
     let unsubscribeLeave: () => void = noop;
 
     const show = () => {
-        cForEach(
-            bindArg(['style', 'opacity', ''], genPath),
-            toArray(phoneWrapper.childNodes),
-        );
+        cForEach((node) => {
+            if (!node.style) {
+                return;
+            }
+            mix(node.style, { opacity: '' });
+        }, toArray<HTMLElement>(phoneWrapper.childNodes));
 
         if (counterOpts) {
             const counter = getCounterInstance(ctx, counterOpts);
