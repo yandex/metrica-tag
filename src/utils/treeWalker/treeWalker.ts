@@ -3,7 +3,7 @@ import { arrayMerge, cForEach } from 'src/utils/array';
 import { isNil, isFunction } from 'src/utils/object';
 import { bindThisForMethod, firstArg, FirstArgOfType, pipe } from '../function';
 
-type NodeFilterFn = (n: Node) => number;
+type NodeFilterFn = (n: Node) => number | boolean;
 
 type TreeWalkerCallback = (n: Node) => boolean | number | void;
 
@@ -36,12 +36,22 @@ const nodeToArray = (ctx: Window, node: Node, filterCb?: NodeFilterFn) => {
     return result;
 };
 
+/**
+ *
+ * @param ctx Window
+ * @param root Root node
+ * @param callback on each childNode
+ * @param filterCb which nodes to accept
+ * @param whatToSeek type of entities to seek
+ * @param forceRoot traverse even if root is not accepted by filterCb
+ */
 export const walkTree = (
     ctx: Window,
     root: Node,
     callback: TreeWalkerCallback,
     filterCb?: NodeFilterFn,
     whatToSeek = -1,
+    forceRoot = false,
 ) => {
     const acceptNode = (node: Node) => {
         if (isFunction(filterCb)) {
@@ -53,11 +63,14 @@ export const walkTree = (
         return ctx.NodeFilter.FILTER_ACCEPT;
     };
 
+    const isRootAccepted = acceptNode(root);
     if (
         isFunction(callback) &&
-        acceptNode(root) === ctx.NodeFilter.FILTER_ACCEPT
+        (forceRoot || isRootAccepted === ctx.NodeFilter.FILTER_ACCEPT)
     ) {
-        callback(root);
+        if (isRootAccepted) {
+            callback(root);
+        }
         if (!isTextNode(root)) {
             const walker = ctx.document.createTreeWalker(
                 root,
