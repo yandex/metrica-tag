@@ -7,7 +7,7 @@ import { firstPaint, useFirstPaint } from './firstPaint';
 
 export const initProvider = () => {
     if (flags[FIRST_PAINT_FEATURE]) {
-        windowProviderInitializers.push(useFirstPaint);
+        windowProviderInitializers.unshift(useFirstPaint);
         BRINFO_FLAG_GETTERS[FIRST_PAINT_BR_KEY] = firstPaint;
     }
 };

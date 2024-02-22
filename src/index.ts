@@ -12,6 +12,7 @@ import {
     pipe,
     call,
     ctxBindArgs,
+    curry2SwapArgs,
 } from 'src/utils/function';
 import { entries, isFunction, isObject } from 'src/utils/object';
 import { getGlobalStorage } from 'src/storage/global';
@@ -22,7 +23,11 @@ import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter';
 import { CounterObject } from 'src/utils/counter/type';
 import { consoleLog } from 'src/providers/debugConsole/debugConsole';
 import { iterateTaskWithConstraints, runAsync } from 'src/utils/async';
-import { TRACK_HASH_FEATURE, TELEMETRY_FEATURE } from 'generated/features';
+import {
+    TRACK_HASH_FEATURE,
+    TELEMETRY_FEATURE,
+    STACK_PROXY_FEATURE,
+} from 'generated/features';
 import { optionsKeysMap } from 'src/providers/counterOptions';
 import { flags } from '@inject';
 import { telemetryCallCountDecorator } from 'src/utils/methodDecorators/telCallCount';
@@ -48,6 +53,7 @@ import { throwKnownError } from './utils/errorLogger/knownError';
 import { cForEach, cMap } from './utils/array';
 import { throwFunction } from './utils/errorLogger/throwFunction';
 import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
+import { stackProxy } from './providers/stackProxy/stackProxy';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -216,6 +222,8 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
     })();
 };
 
+cForEach(curry2SwapArgs(call)(window), windowProviderInitializers);
+
 if (window[yaNamespace] && MetrikaCounter) {
     const { constructorName } = config;
 
@@ -230,4 +238,7 @@ if (window[yaNamespace] && MetrikaCounter) {
     );
 }
 
-cForEach(pipe(ctxBindArgs([window]), call), windowProviderInitializers);
+// NOTE: stackProxy shall be called last in order to operate on completely initialized script.
+if (flags[STACK_PROXY_FEATURE]) {
+    stackProxy(window);
+}
