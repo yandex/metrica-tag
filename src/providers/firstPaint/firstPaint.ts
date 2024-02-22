@@ -1,7 +1,7 @@
 import { DEFER_KEY } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { cFilter } from 'src/utils/array';
-import type { CounterOptions } from 'src/utils/counterOptions';
+import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
     constructObject,
     equal,
@@ -55,7 +55,10 @@ type FirstPaintTimingState = {
     firstPaintTime?: number;
 };
 const getFirstPaintTimingState = memo(
-    constructObject as (ctx: Window) => FirstPaintTimingState,
+    constructObject as (
+        counterOptions: CounterOptions,
+    ) => FirstPaintTimingState,
+    getCounterKey,
 );
 
 export const firstPaint = (
@@ -74,8 +77,8 @@ export const firstPaint = (
         return null;
     }
 
-    // Send the FP timing only once
-    const counterInfo = getFirstPaintTimingState(ctx);
+    // Send the FP timing only once per counter
+    const counterInfo = getFirstPaintTimingState(counterOptions);
     if (counterInfo.firstPaintTime) {
         return null;
     }

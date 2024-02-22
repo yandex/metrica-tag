@@ -25,10 +25,12 @@ describe('first paint', () => {
     const fakeGlobalStorage = {
         getVal: gsGetValStub,
     } as unknown as gs.GlobalStorage;
-    const counterOptions = {
-        id: 123,
-        counterType: '0',
-    } as unknown as CounterOptions;
+    // NOTE: Get random counter ID in order to get different memoized states.
+    const counterOptions = () =>
+        ({
+            id: Math.floor(Math.random() * 1000),
+            counterType: '0',
+        } as CounterOptions);
 
     const winWithEntries = {
         performance: {
@@ -55,7 +57,7 @@ describe('first paint', () => {
 
     it('returns null for empty data', () => {
         const win = {} as unknown as Window;
-        const fpTime = firstPaint(win, counterOptions, {});
+        const fpTime = firstPaint(win, counterOptions(), {});
         chai.expect(fpTime).to.equal(null);
     });
 
@@ -63,25 +65,29 @@ describe('first paint', () => {
         const senderParams: SenderInfo = {
             urlParams: { [DEFER_KEY]: 'nohit' },
         };
-        const fpTime = firstPaint(winWithEntries, counterOptions, senderParams);
+        const fpTime = firstPaint(
+            winWithEntries,
+            counterOptions(),
+            senderParams,
+        );
         chai.expect(fpTime).to.equal(null);
     });
 
     it('returns null for disabled feature', () => {
         gsGetValStub.withArgs(FIRST_PAINT_ENABLED_GS_KEY).returns(undefined);
-        const fpTime = firstPaint(winWithEntries, counterOptions, {});
+        const fpTime = firstPaint(winWithEntries, counterOptions(), {});
         chai.expect(fpTime).to.equal(null);
     });
 
     it('returns null if first hide event ocurred before first paint', () => {
         gsGetValStub.withArgs(FIRST_HIDE_TIME_GS_KEY).returns(10);
-        const fpTime = firstPaint(winWithEntries, counterOptions, {});
+        const fpTime = firstPaint(winWithEntries, counterOptions(), {});
         chai.expect(fpTime).to.equal(null);
         sinon.assert.calledWith(gsGetValStub, FIRST_HIDE_TIME_GS_KEY, Infinity);
     });
 
-    it('returns first paint of getEntriesByType is defined', () => {
-        const fpTime = firstPaint(winWithEntries, counterOptions, {});
+    it('returns first paint if getEntriesByType is defined', () => {
+        const fpTime = firstPaint(winWithEntries, counterOptions(), {});
         chai.expect(fpTime).to.equal(time);
     });
 
@@ -93,7 +99,7 @@ describe('first paint', () => {
                 }),
             },
         } as unknown as Window;
-        const fpTime = firstPaint(win, counterOptions, {});
+        const fpTime = firstPaint(win, counterOptions(), {});
         chai.expect(fpTime).to.equal(time - ns);
     });
 
@@ -105,7 +111,20 @@ describe('first paint', () => {
                 },
             },
         } as unknown as Window;
-        const fpTime = firstPaint(win, counterOptions, {});
+        const fpTime = firstPaint(win, counterOptions(), {});
         chai.expect(fpTime).to.equal(time - ns);
+    });
+
+    it('returns the value once per counter', () => {
+        const opts1 = counterOptions();
+        const opts2 = counterOptions();
+        const fpTime11 = firstPaint(winWithEntries, opts1, {});
+        const fpTime21 = firstPaint(winWithEntries, opts2, {});
+        const fpTime12 = firstPaint(winWithEntries, opts1, {});
+        const fpTime22 = firstPaint(winWithEntries, opts2, {});
+        chai.expect(fpTime11).to.equal(time);
+        chai.expect(fpTime21).to.equal(time);
+        chai.expect(fpTime12).is.null;
+        chai.expect(fpTime22).is.null;
     });
 });
