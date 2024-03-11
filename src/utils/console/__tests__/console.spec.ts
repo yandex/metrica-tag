@@ -31,7 +31,7 @@ describe('utils/console', () => {
         const win = {
             console,
         } as any;
-        const logger = createConsole(win, '');
+        const logger = createConsole(win);
         logger.error(1);
         sinon.assert.calledOnce(logStub);
     });
@@ -41,7 +41,7 @@ describe('utils/console', () => {
         const win = {
             console: consoleCtx,
         } as any;
-        const logger = createConsole(win, '');
+        const logger = createConsole(win);
         logger.log(1);
         chai.assert(noopStub.calledWith(1));
     });

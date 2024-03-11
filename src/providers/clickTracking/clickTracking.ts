@@ -12,6 +12,10 @@ import { closestButton, getButtonData } from 'src/utils/dom/button';
 import { toZeroOrOne } from 'src/utils/boolean';
 import { METHOD_NAME_GOAL } from '../goal/const';
 import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
+import {
+    BUTTON_GOAL_CONSOLE_MESSAGE,
+    BUTTON_GOAL_INIT_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
 
 export const GOAL_PREFIX = 'btn';
 
@@ -37,7 +41,11 @@ export const handleClick = (
     const logGoals = getLoggerFn(
         ctx,
         counterOptions,
-        `Button goal. Counter ${counterOptions.id}. Button: ${query}.`,
+        BUTTON_GOAL_CONSOLE_MESSAGE,
+        {
+            ['id']: counterOptions.id,
+            ['query']: query,
+        },
     );
 
     const isTrustedEvent = getPath(event, 'isTrusted');
@@ -97,7 +105,10 @@ export const useClickTracking = ctxErrorLogger(
                 getLoggerFn(
                     ctx,
                     counterOptions,
-                    `Button goal. Counter ${counterOptions.id}. Init.`,
+                    BUTTON_GOAL_INIT_CONSOLE_MESSAGE,
+                    {
+                        ['id']: counterOptions.id,
+                    },
                 )();
 
                 return unsubscribe;

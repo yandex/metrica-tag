@@ -4,7 +4,6 @@ import {
 } from 'src/providers/params/const';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { getConsole } from 'src/utils/console';
 import { getCounterInstance } from 'src/utils/counter';
 import { isNumber } from 'src/utils/number';
 import { genPath } from 'src/utils/object';
@@ -16,6 +15,8 @@ import {
     SetUserIDHandler,
     USER_ID_PARAM,
 } from './const';
+import { DebugConsole } from '../debugConsole/debugConsole';
+import { WRONG_USER_ID_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 export const rawSetUserID = (
     ctx: Window,
@@ -28,11 +29,11 @@ export const rawSetUserID = (
             callbackCtx?: Window,
         ) => {
             if (!isString(id) && !isNumber(ctx, id)) {
-                const ctxConsole = getConsole(
+                const ctxConsole = DebugConsole(
                     ctx,
                     getCounterKey(counterOptions),
                 );
-                ctxConsole.error('Incorrect user ID');
+                ctxConsole.error(WRONG_USER_ID_CONSOLE_MESSAGE);
                 return;
             }
 

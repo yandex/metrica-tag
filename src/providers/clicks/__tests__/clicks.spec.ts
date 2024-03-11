@@ -21,6 +21,7 @@ import type { CounterOptions } from 'src/utils/counterOptions';
 import type { GetSenderType } from 'src/sender/types';
 import type { GlobalStorage } from 'src/storage/global';
 import type { LocalStorage } from 'src/storage/localStorage';
+import { LINK_CLICK_CONSOLE_MESSAGE } from 'src/providers/consoleRenderer/dictionary';
 import {
     sendClickLink,
     handleClickEventRaw,
@@ -259,6 +260,7 @@ describe('clicks.ts', () => {
             const assertGetLoggerFnCall = (
                 message: string,
                 options: SendOptions,
+                variables?: Record<string, string | number>,
             ) => {
                 assert.calledOnce(getLoggerFn);
                 assert.calledWith(
@@ -266,7 +268,8 @@ describe('clicks.ts', () => {
                     win,
                     counterOptions,
                     message,
-                    options.userOptions,
+                    variables,
+                    options.userOptions as Record<string, string | number>,
                 );
             };
 
@@ -280,11 +283,13 @@ describe('clicks.ts', () => {
                     ...defaultOptions,
                     isDownload: true,
                 } as SendOptions;
-                const message = `File. Counter ${counterOptions.id}. Url: ${options.url}`;
 
                 sendClickLink(win, counterOptions, options);
-
-                assertGetLoggerFnCall(message, options);
+                assertGetLoggerFnCall(LINK_CLICK_CONSOLE_MESSAGE, options, {
+                    ['prefix']: 'File',
+                    ['id']: counterOptions.id,
+                    ['url']: options.url,
+                });
             });
 
             it('for an external download link', () => {
@@ -293,11 +298,14 @@ describe('clicks.ts', () => {
                     isDownload: true,
                     isExternalLink: true,
                 } as SendOptions;
-                const message = `Ext link - File. Counter ${counterOptions.id}. Url: ${options.url}`;
 
                 sendClickLink(win, counterOptions, options);
 
-                assertGetLoggerFnCall(message, options);
+                assertGetLoggerFnCall(LINK_CLICK_CONSOLE_MESSAGE, options, {
+                    ['prefix']: 'Ext link - File',
+                    ['id']: counterOptions.id,
+                    ['url']: options.url,
+                });
             });
 
             it('for an external link', () => {
@@ -305,11 +313,14 @@ describe('clicks.ts', () => {
                     ...defaultOptions,
                     isExternalLink: true,
                 } as SendOptions;
-                const message = `Ext link. Counter ${counterOptions.id}. Url: ${options.url}`;
 
                 sendClickLink(win, counterOptions, options);
 
-                assertGetLoggerFnCall(message, options);
+                assertGetLoggerFnCall(LINK_CLICK_CONSOLE_MESSAGE, options, {
+                    ['prefix']: 'Ext link',
+                    ['id']: counterOptions.id,
+                    ['url']: options.url,
+                });
             });
         });
     });

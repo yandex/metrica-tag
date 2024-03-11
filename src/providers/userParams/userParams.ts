@@ -7,6 +7,10 @@ import { isObject } from 'src/utils/object';
 import { noop } from 'src/utils/function';
 import { METHOD_NAME_USER_PARAMS, USER_PARAMS_KEY } from './const';
 import { UserParamsHandler } from './types';
+import {
+    NO_COUNTER_INSTANCE_CONSOLE_MESSAGE,
+    WRONG_USER_PARAMS_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
 
 export const rawUserParams = (
     ctx: Window,
@@ -28,12 +32,12 @@ export const rawUserParams = (
                 );
 
                 if (!counterInstance) {
-                    warn('No counter instance found');
+                    warn(NO_COUNTER_INSTANCE_CONSOLE_MESSAGE);
                     return;
                 }
 
                 if (!isObject(data)) {
-                    warn('Wrong user params');
+                    warn(WRONG_USER_PARAMS_CONSOLE_MESSAGE);
                     return;
                 }
 

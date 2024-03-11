@@ -4,6 +4,7 @@ import { DebugConsole } from 'src/providers/debugConsole/debugConsole';
 import { debugEnabled } from 'src/providers/debugConsole/debugEnabled';
 import { dataLayerObserver } from 'src/utils/dataLayerObserver';
 import { nonNativeFunctionsList } from './report';
+import { NON_NATIVE_FUNCTION_WARNING_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 // eslint-disable-next-line no-useless-escape
 const regexTrash = /[\*\.\?\(\)]/g;
@@ -14,7 +15,8 @@ const logNonNativeFunction = memo(
                 .replace('\\s', ' ')
                 .replace(regexTrash, '');
             DebugConsole(ctx, '').warn(
-                `Function "${prettyName}" has been overridden, this may cause issues with Metrika counter`,
+                NON_NATIVE_FUNCTION_WARNING_CONSOLE_MESSAGE,
+                { ['name']: prettyName },
             );
         } catch (e) {
             // do nothing

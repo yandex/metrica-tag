@@ -1,45 +1,61 @@
 import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { getConsole } from 'src/utils/console';
-import { cForEach, clearArray } from 'src/utils/array';
-import {
-    noop,
-    memo,
-    bindArg,
-    call,
-    bindArgs,
-    secondArg,
-} from 'src/utils/function';
+import { noop, memo, bindArg, bindArgs, secondArg } from 'src/utils/function';
 import {
     DEBUG_CONSOLE_FEATURE,
     DEBUG_EVENTS_FEATURE,
 } from 'generated/features';
-import { argsToArray } from 'src/utils/function/args';
-import { wrapLogFunction } from 'src/providers/debugEvents/wrapLoggerFunction';
 import { flags } from '@inject';
-
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { isCounterSilent } from 'src/utils/isCounterSilent';
-import { getGlobalStorage } from 'src/storage/global';
-import { debugEnabled } from './debugEnabled';
+import { isCounterKeySilent } from 'src/utils/isCounterSilent';
+import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { isArray } from 'src/utils/array';
 
-type ConsoleMethods = 'log' | 'warn' | 'error';
-type LogQueue = [method: ConsoleMethods, args: any[]][];
+/**
+ * @param args console.log function arguments, string arguments could be template ids
+ * @param variables variables for present string message templates
+ */
+type LogFn = (
+    args: unknown | unknown[],
+    variables?: Record<string, string | number>,
+) => void;
+export type ConsoleObject = {
+    log: LogFn;
+    warn: LogFn;
+    error: LogFn;
+};
 
-const LOG_QUEUE_PREFIX = 'dclq';
-const LOG_ENABLED_PREFIX = 'dce';
+export const createDebuggerEventsConsole = (
+    ctx: Window,
+    counterKey: string,
+): ConsoleObject => {
+    const log = (
+        type: 'log' | 'warn' | 'error',
+        args: unknown | unknown[],
+        variables?: Record<string, string | number>,
+    ) => {
+        dispatchDebuggerEvent(ctx, {
+            ['name']: 'log',
+            ['counterKey']: counterKey,
+            ['data']: {
+                ['args']: isArray(args) ? args : [args],
+                ['type']: type,
+                ['variables']: variables,
+            },
+        });
+    };
 
-const createEmptyConsole = (ctx: Window, counterId: string) =>
-    flags[DEBUG_EVENTS_FEATURE]
-        ? {
-              log: wrapLogFunction(ctx, 'log', counterId, noop),
-              warn: wrapLogFunction(ctx, 'log', counterId, noop),
-              error: wrapLogFunction(ctx, 'log', counterId, noop),
-          }
-        : {
-              log: noop,
-              warn: noop,
-              error: noop,
-          };
+    return {
+        log: bindArg('log', log),
+        error: bindArg('error', log),
+        warn: bindArg('warn', log),
+    };
+};
+
+const createEmptyConsole = (): ConsoleObject => ({
+    log: noop,
+    warn: noop,
+    error: noop,
+});
 
 /**
  * Provider for global queue of actions and function to add them
@@ -49,111 +65,57 @@ const createEmptyConsole = (ctx: Window, counterId: string) =>
 const createDebugConsole = ctxErrorLogger(
     'dc.init',
     (ctx, counterKey: string) => {
-        const realConsole = getConsole(ctx, counterKey);
-        getGlobalStorage(ctx).setSafe<LogQueue>(
-            `${LOG_QUEUE_PREFIX}:${counterKey}`,
-            [],
-        );
-
-        const log = (method: ConsoleMethods, ...args: any[]) => {
-            const isConsoleEnabled = getGlobalStorage(ctx).getVal<boolean>(
-                `${LOG_ENABLED_PREFIX}:${counterKey}`,
-                false,
-            );
-            if (isConsoleEnabled) {
-                realConsole[method](...args);
+        if (flags[DEBUG_EVENTS_FEATURE] && flags[DEBUG_CONSOLE_FEATURE]) {
+            if (!isCounterKeySilent(counterKey)) {
+                return createDebuggerEventsConsole(ctx, counterKey);
             }
-            const logQueue = getGlobalStorage(ctx).getVal<LogQueue>(
-                `${LOG_QUEUE_PREFIX}:${counterKey}`,
-            );
-            logQueue.push([method, args]);
-        };
-
-        const canLog = debugEnabled(ctx);
-
-        return canLog
-            ? {
-                  log: bindArg('log', log),
-                  warn: bindArg('warn', log),
-                  error: bindArg('error', log),
-              }
-            : createEmptyConsole(ctx, counterKey);
+        }
+        return createEmptyConsole();
     },
 );
 
-export const DebugConsole = memo(
-    flags[DEBUG_CONSOLE_FEATURE] ? createDebugConsole : createEmptyConsole,
-    secondArg,
-);
+export const DebugConsole: (ctx: Window, counterKey: string) => ConsoleObject =
+    memo(createDebugConsole, secondArg);
 
-export const consoleLog: (
+/**
+ *
+ * @param ctx Window
+ * @param counterKey
+ * @param args console.log function arguments, string arguments could be template ids
+ * @param variables variables for present string message templates
+ */
+export const consoleLog = (
     ctx: Window,
     counterKey: string,
-    ...s: any[]
-) => void = flags[DEBUG_CONSOLE_FEATURE]
-    ? function consoleLogFn() {
-          // eslint-disable-next-line prefer-rest-params
-          const [ctx, counterKey, ...arg] = argsToArray(arguments);
-          const consoleObj = DebugConsole(ctx, counterKey);
-          consoleObj.log.apply(consoleLog, arg);
-      }
-    : noop;
+    args: unknown | unknown[],
+    variables?: Record<string, string | number>,
+) => {
+    // eslint-disable-next-line prefer-rest-params
+    const consoleObj = DebugConsole(ctx, counterKey);
+    consoleObj.log(args, variables);
+};
 
 /**
  * Function for getting an event logger of a certain format
  * @param ctx - Current window
  * @param counterOptions - Counter options on initialization
- * @param message - The text that will be output to the console
+ * @param message - The text that will be output to the console or message template id
+ * @param variables variables for present string message templates
  * @param params - Visit parameters to be sent with a hit
  */
 export const getLoggerFn = (
     ctx: Window,
     counterOptions: CounterOptions,
     message: string,
+    variables?: Record<string, string | number>,
     params?: Record<string, any> | string,
 ) =>
-    flags[DEBUG_CONSOLE_FEATURE] && !isCounterSilent(counterOptions)
-        ? bindArg(
-              bindArgs(
-                  [ctx, getCounterKey(counterOptions)].concat(
-                      (params
-                          ? [`${message}. Params:`, params]
-                          : [message]) as any[],
-                  ),
-                  consoleLog,
-              ),
-              call,
-          )
-        : noop;
-
-const emptyLogQueue = (ctx: Window, queueId: string) => {
-    getGlobalStorage(ctx).setVal<boolean>(
-        `${LOG_ENABLED_PREFIX}:${queueId}`,
-        true,
+    bindArgs(
+        [
+            ctx,
+            getCounterKey(counterOptions),
+            params ? [`${message}.p`, params] : message,
+            variables,
+        ],
+        consoleLog,
     );
-    const logQueue = getGlobalStorage(ctx).getVal<LogQueue>(
-        `${LOG_QUEUE_PREFIX}:${queueId}`,
-    );
-    if (logQueue) {
-        const console = DebugConsole(ctx, queueId);
-        cForEach(([method, args]) => {
-            console[method](...args);
-        }, logQueue);
-        clearArray(logQueue);
-    }
-};
-
-/**
- * Provider for debugging the events being sent and the actions taking place
- * @param ctx - Current window
- * @param counterOptions - Counter options on initialization
- */
-export const useDebugConsoleProvider = ctxErrorLogger(
-    'p.dc',
-    (ctx: Window, counterOptions: CounterOptions) => {
-        const counterKey = getCounterKey(counterOptions);
-        // This is queue for native functions warnings and such
-        emptyLogQueue(ctx, '');
-        emptyLogQueue(ctx, counterKey);
-    },
-);

@@ -4,7 +4,7 @@ import { dispatchDebuggerEvent } from './index';
 type LogFn = (...data: any[]) => void;
 export const wrapLogFunction = (
     ctx: Window,
-    type: string,
+    type: 'log' | 'warn' | 'error',
     counterKey: string,
     func: LogFn,
 ) => {

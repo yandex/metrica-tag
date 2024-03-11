@@ -15,6 +15,7 @@ import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallb
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { ArtificialHitOptions, ArtificialHandler } from './type';
 import { METHOD_NAME_HIT, ARTIFICIAL_HIT_PROVIDER } from './const';
+import { PAGE_VIEW_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 const ARTIFICIAL_TITLE_KEY = 'title';
 const ARTIFICIAL_REF_KEY = 'referer';
@@ -111,7 +112,12 @@ export const artificialHitProvider = (
             const logHit = getLoggerFn(
                 ctx,
                 counterOpt,
-                `PageView. Counter ${counterOpt.id}. URL: ${pageUrl}. Referrer: ${pageRef}`,
+                PAGE_VIEW_CONSOLE_MESSAGE,
+                {
+                    ['id']: counterOpt.id,
+                    ['url']: pageUrl,
+                    ['ref']: pageRef,
+                },
                 options.params,
             );
             const middlewareInfo = mix(senderOpt.middlewareInfo || {}, {

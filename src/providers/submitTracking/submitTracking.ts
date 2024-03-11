@@ -24,6 +24,10 @@ import { ternary } from 'src/utils/condition';
 import { toZeroOrOne } from 'src/utils/boolean';
 import { METHOD_NAME_GOAL } from '../goal/const';
 import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
+import {
+    FORM_GOALS_INIT_CONSOLE_MESSAGE,
+    FORM_GOAL_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
 
 const CLICK_DELAY = 300;
 
@@ -50,7 +54,12 @@ export const log = (
     shouldLogCheck(ctx, counterOptions).then(
         pipe(
             bindArgs(
-                [getLoggerFn(ctx, counterOptions, message), noop],
+                [
+                    getLoggerFn(ctx, counterOptions, message, {
+                        ['id']: counterOptions.id,
+                    }),
+                    noop,
+                ],
                 ternary,
             ),
             call,
@@ -81,7 +90,11 @@ export const handleSubmit = (
             [
                 ctx,
                 counterOptions,
-                `Form goal. Counter ${counterOptions.id}. Form: ${query}.`,
+                FORM_GOAL_CONSOLE_MESSAGE,
+                {
+                    ['id']: counterOptions.id,
+                    ['query']: query,
+                },
             ],
             log,
         );
@@ -190,11 +203,7 @@ export const useSubmitTracking = ctxErrorLogger(
             ),
         );
 
-        log(
-            ctx,
-            counterOptions,
-            `Form goal. Counter ${counterOptions.id}. Init.`,
-        );
+        log(ctx, counterOptions, FORM_GOALS_INIT_CONSOLE_MESSAGE);
 
         return bindArgs([callFirstArgument, unsubscribeMethodsList], cForEach);
     },

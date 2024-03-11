@@ -172,7 +172,7 @@
   {
     "code": "DEBUG_CONSOLE_FEATURE",
     "path": "debugConsole",
-    "desc": "Enables logging of debug info if get parameter _ym_debug=1 is set"
+    "desc": "Enables logging console events into debug events bus"
   },
   {
     "code": "DEBUG_FEATURE",
@@ -213,5 +213,10 @@
     "code": "FIRST_PAINT_FEATURE",
     "path": "firstPaint",
     "desc": "Enables first paint browserinfo flag"
+  },
+  {
+    "code": "DEBUG_CONSOLE_RENDER_FEATURE",
+    "path": "consoleRenderer",
+    "desc": "Enables logging of debug info if get parameter _ym_debug=1 is set"
   }
 ]

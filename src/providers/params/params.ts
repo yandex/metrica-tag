@@ -34,6 +34,11 @@ import {
     PARAMS_PROVIDER,
     YM_LOG_WHITELIST_KEYS,
 } from './const';
+import {
+    PARAMS_CONSOLE_MESSAGE,
+    SET_UID_CONSOLE_MESSAGE,
+    USER_PARAMS_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
 
 /**
  * Normalized session parameters
@@ -108,8 +113,10 @@ export const rawParams = (
             const { url } = getArtificialState(counterOptions);
 
             let shouldLogParams = !isCounterSilent(counterOptions);
-            const logMessageTail = `arams. Counter ${counterOptions['id']}`;
-            let logMessage = `P${logMessageTail}`;
+            let logMessage = PARAMS_CONSOLE_MESSAGE;
+            const logMessageVariables: Record<string, string | number> = {
+                ['id']: counterOptions['id'],
+            };
             let paramsToLog: Record<string, any> | string | undefined = params;
             let userId = '';
 
@@ -119,14 +126,15 @@ export const rawParams = (
                     `${INTERNAL_PARAMS_KEY}.${USER_ID_PARAM}`,
                 );
                 if (userId) {
-                    logMessage = `Set user id ${userId}`;
+                    logMessage = SET_UID_CONSOLE_MESSAGE;
+                    logMessageVariables['uid'] = userId;
                 }
             }
 
             if (flags[USER_PARAMS_FEATURE]) {
                 const isUser = includes(USER_PARAMS_KEY, cKeys(params));
                 if (isUser) {
-                    logMessage = `${'User p'}${logMessageTail}`;
+                    logMessage = USER_PARAMS_CONSOLE_MESSAGE;
                 }
             }
 
@@ -159,6 +167,7 @@ export const rawParams = (
                 ctx,
                 counterOptions,
                 logMessage,
+                logMessageVariables,
                 paramsToLog,
             );
 

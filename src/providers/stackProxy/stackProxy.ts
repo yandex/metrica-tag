@@ -21,6 +21,7 @@ import { parseDecimalInt } from 'src/utils/number';
 import { stringIndexOf } from 'src/utils/string';
 import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
 import { consoleLog } from '../debugConsole/debugConsole';
+import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 export const STACK_FN_NAME = 'ym';
 export const STACK_DATA_LAYER_NAME = 'a';
@@ -129,7 +130,8 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
             consoleLog(
                 ctx,
                 `${counterKey}`,
-                `Duplicate counter ${counterKey} initialization`,
+                DUPLICATE_COUNTERS_CONSOLE_MESSAGE,
+                { ['key']: counterKey },
             );
             return;
         }

@@ -21,7 +21,6 @@ import { COUNTER_STATE_NOT_BOUNCE } from 'src/providers/getCounters/const';
 import { getSender } from 'src/sender';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { counterLocalStorage } from 'src/storage/localStorage';
-import { getConsole } from 'src/utils/console';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { getCounterSettings } from 'src/utils/counterSettings';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
@@ -53,6 +52,8 @@ import {
     METHOD_NAME_NOT_BOUNCE,
     NOT_BOUNCE_HIT_PROVIDER,
 } from './const';
+import { DebugConsole } from '../debugConsole/debugConsole';
+import { NOT_BOUNCE_NO_CALLBACK_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 type ProviderResult = {
     [METHOD_NAME_NOT_BOUNCE]: NotBounceHandler;
@@ -148,10 +149,10 @@ const useNotBounceProviderRaw = (
                     );
                 }
 
-                const { warn } = getConsole(ctx, getCounterKey(counterOpt));
+                const { warn } = DebugConsole(ctx, getCounterKey(counterOpt));
 
                 if (!options['callback'] && options['ctx']) {
-                    warn('"callback" argument missing');
+                    warn(NOT_BOUNCE_NO_CALLBACK_CONSOLE_MESSAGE);
                 }
 
                 if (

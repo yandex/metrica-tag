@@ -38,14 +38,16 @@ import { cEvent } from 'src/utils/events';
 import { browserInfo } from 'src/utils/browserInfo';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { errorLogger } from 'src/utils/errorLogger';
-import { getConsole } from 'src/utils/console';
 import { getHid } from 'src/middleware/watchSyncFlags/brinfoFlags/hid';
 import {
     counterStateGetter,
     counterStateSetter,
 } from 'src/providers/getCounters/getCounters';
 import { COUNTER_STATE_TRACK_LINKS } from 'src/providers/getCounters/const';
-import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
+import {
+    DebugConsole,
+    getLoggerFn,
+} from 'src/providers/debugConsole/debugConsole';
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { toZeroOrOne } from 'src/utils/boolean';
@@ -71,6 +73,10 @@ import type {
 } from './types';
 import { textFromLink } from './getTextFromLink';
 import { dispatchDebuggerEvent } from '../debugEvents';
+import {
+    EMPTY_LINK_CONSOLE_MESSAGE,
+    LINK_CLICK_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {
@@ -153,16 +159,19 @@ export const sendClickLink = (
         });
     }
 
-    const result = options
-        .sender(senderInfo, counterOptions)
-        .then(
-            getLoggerFn(
-                ctx,
-                counterOptions,
-                `${prefix}. Counter ${counterOptions.id}. Url: ${options.url}`,
-                options.userOptions,
-            ),
-        );
+    const result = options.sender(senderInfo, counterOptions).then(
+        getLoggerFn(
+            ctx,
+            counterOptions,
+            LINK_CLICK_CONSOLE_MESSAGE,
+            {
+                ['prefix']: prefix,
+                ['id']: counterOptions.id,
+                ['url']: options.url,
+            },
+            options.userOptions,
+        ),
+    );
 
     return finallyCallUserCallback(
         ctx,
@@ -299,8 +308,8 @@ export const useClicksProvider = (
 ): ClickProviderParams => {
     const sender = getSender(ctx, LINK_CLICK_HIT_PROVIDER, counterOptions);
     const fileExtensions: string[] = [];
-    const ctxConsole = getConsole(ctx, getCounterKey(counterOptions));
     const counterKey = getCounterKey(counterOptions);
+    const ctxConsole = DebugConsole(ctx, counterKey);
 
     const trackLinks: TrackLinks = errorLogger(
         ctx,
@@ -350,7 +359,7 @@ export const useClicksProvider = (
                 userOptions,
             });
         } else {
-            ctxConsole.warn('Empty link');
+            ctxConsole.warn(EMPTY_LINK_CONSOLE_MESSAGE);
         }
     };
 

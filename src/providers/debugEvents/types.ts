@@ -22,8 +22,9 @@ export type CommonEvent = DebuggerEventGeneric<
 export type LogEvent = DebuggerEventGeneric<
     'log',
     {
-        args: any[];
-        type: string;
+        type: 'log' | 'warn' | 'error';
+        args: unknown[];
+        variables?: Record<string, string | number>;
     }
 >;
 

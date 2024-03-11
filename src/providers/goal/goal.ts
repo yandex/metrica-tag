@@ -24,6 +24,7 @@ import {
 } from './const';
 
 import { dispatchDebuggerEvent } from '../debugEvents';
+import { GOAL_REACH_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 const getGoalLocation = (
     ctx: Window,
@@ -84,7 +85,11 @@ export const useGoal = ctxErrorLogger(
                 const logGoals = getLoggerFn(
                     ctx,
                     counterOptions,
-                    `Reach goal. Counter: ${counterOptions.id}. Goal id: ${goalName}`,
+                    GOAL_REACH_CONSOLE_MESSAGE,
+                    {
+                        ['id']: counterOptions.id,
+                        ['goal']: goalName,
+                    },
                     params,
                 );
                 // предполагается что в случае схемы, отличной от goal, вызывающий код сам напишет лог

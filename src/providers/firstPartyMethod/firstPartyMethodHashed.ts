@@ -1,11 +1,11 @@
-import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
+import { DebugConsole } from 'src/providers/debugConsole/debugConsole';
 import {
     INTERNAL_PARAMS_KEY,
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
 import { cReduce } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
-import { CounterOptions } from 'src/utils/counterOptions';
+import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cKeys, entries, isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
 import {
@@ -13,8 +13,10 @@ import {
     FirstPartyOutputData,
     FIRST_PARTY_HASHED_PARAMS_KEY,
 } from './const';
-
-const LOGGER_PREFIX = 'First party params error.';
+import {
+    FIRST_PARTY_EMPTY_CONSOLE_MESSAGE,
+    FIRST_PARTY_NOT_AN_OBJECT_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
 
 export const encodeRecursiveHashed = (
     obj: FirstPartyInputData,
@@ -50,21 +52,14 @@ export const useFirstPartyMethodHashed =
         if (!counter) {
             return;
         }
+        const debugConsole = DebugConsole(ctx, getCounterKey(counterOptions));
 
         if (!isObject(data)) {
-            getLoggerFn(
-                ctx,
-                counterOptions,
-                `${LOGGER_PREFIX} Not an object.`,
-            )();
+            debugConsole.log(FIRST_PARTY_NOT_AN_OBJECT_CONSOLE_MESSAGE);
             return;
         }
         if (!len(cKeys(data))) {
-            getLoggerFn(
-                ctx,
-                counterOptions,
-                `${LOGGER_PREFIX} Empty object.`,
-            )();
+            debugConsole.log(FIRST_PARTY_EMPTY_CONSOLE_MESSAGE);
             return;
         }
 

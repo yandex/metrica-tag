@@ -3,8 +3,11 @@ import * as sinon from 'sinon';
 import { expect } from 'chai';
 import * as counterLib from 'src/utils/counter';
 import { CounterObject } from 'src/utils/counter/type';
-import * as debugConsole from 'src/providers/debugConsole/debugConsole';
-import { AnyFunc } from 'src/utils/function/types';
+import * as debugConsoleUtils from 'src/providers/debugConsole/debugConsole';
+import {
+    FIRST_PARTY_EMPTY_CONSOLE_MESSAGE,
+    FIRST_PARTY_NOT_AN_OBJECT_CONSOLE_MESSAGE,
+} from 'src/providers/consoleRenderer/dictionary';
 import {
     useFirstPartyMethodHashed,
     encodeRecursiveHashed,
@@ -18,38 +21,37 @@ describe('firstPartyMethodHashed', () => {
         [ctx: Window, counterOptions: CounterOptions],
         CounterObject | undefined
     >;
-    let getLoggerFnStub: sinon.SinonStub<
-        [
-            ctx: Window,
-            counterOptions: CounterOptions,
-            message: string,
-            params?: Record<string, any> | string,
-        ],
-        AnyFunc
+    const logStub = sandbox.stub();
+    const debugConsole = {
+        log: logStub,
+    } as unknown as debugConsoleUtils.ConsoleObject;
+    let debugConsoleStub: sinon.SinonStub<
+        [ctx: Window, counterKey: string],
+        debugConsoleUtils.ConsoleObject
     >;
-    let loggerFnStub: sinon.SinonSpy<any[], any>;
 
     const win = {} as Window;
     const opt = {
         id: 1,
         counterType: '0',
     } as CounterOptions;
+    const counterKey = '1:0';
 
     beforeEach(() => {
         paramsSpy = sandbox.spy();
-        loggerFnStub = sandbox.spy();
         getCounterInstanceStub = sandbox
             .stub(counterLib, 'getCounterInstance')
             .returns({ params: paramsSpy } as unknown as CounterObject);
-        getLoggerFnStub = sandbox
-            .stub(debugConsole, 'getLoggerFn')
-            .returns(loggerFnStub);
+        debugConsoleStub = sandbox
+            .stub(debugConsoleUtils, 'DebugConsole')
+            .returns(debugConsole);
     });
 
     afterEach(() => {
         // последовательность важна! restore очищает все стабы из песочницы
         sandbox.reset();
         sandbox.restore();
+        logStub.resetHistory();
     });
 
     describe('firstPartyMethodHashed', () => {
@@ -57,7 +59,7 @@ describe('firstPartyMethodHashed', () => {
             getCounterInstanceStub.returns(undefined);
             const testObj: FirstPartyInputData = {};
             useFirstPartyMethodHashed(win, opt)(testObj);
-            sinon.assert.notCalled(getLoggerFnStub);
+            sinon.assert.notCalled(logStub);
             sinon.assert.notCalled(paramsSpy);
         });
 
@@ -70,12 +72,14 @@ describe('firstPartyMethodHashed', () => {
             )(testObj as unknown as FirstPartyInputData);
 
             sinon.assert.calledOnceWithExactly(
-                getLoggerFnStub,
+                debugConsoleStub,
                 win,
-                opt,
-                'First party params error. Not an object.',
+                counterKey,
             );
-            sinon.assert.calledOnce(loggerFnStub);
+            sinon.assert.calledOnceWithExactly(
+                logStub,
+                FIRST_PARTY_NOT_AN_OBJECT_CONSOLE_MESSAGE,
+            );
             sinon.assert.notCalled(paramsSpy);
         });
 
@@ -85,12 +89,14 @@ describe('firstPartyMethodHashed', () => {
             useFirstPartyMethodHashed(win, opt)(testObj);
 
             sinon.assert.calledOnceWithExactly(
-                getLoggerFnStub,
+                debugConsoleStub,
                 win,
-                opt,
-                'First party params error. Empty object.',
+                counterKey,
             );
-            sinon.assert.calledOnce(loggerFnStub);
+            sinon.assert.calledOnceWithExactly(
+                logStub,
+                FIRST_PARTY_EMPTY_CONSOLE_MESSAGE,
+            );
             sinon.assert.notCalled(paramsSpy);
         });
 

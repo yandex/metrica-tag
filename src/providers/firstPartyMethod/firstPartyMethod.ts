@@ -30,6 +30,7 @@ import {
     GMAIL_DOMAIN,
     FIRST_PARTY_PARAMS_KEY,
 } from './const';
+import { METHOD_NOT_SUPPORTED_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 export const isEncoderSupported = memo<(ctx: Window) => boolean>((ctx) => {
     return (
@@ -150,7 +151,7 @@ export const rawFirstPartyMethod = (
     }
     const counterKey = getCounterKey(counterOptions);
     if (!isEncoderSupported(ctx)) {
-        consoleLog(ctx, counterKey, 'Not supported');
+        consoleLog(ctx, counterKey, METHOD_NOT_SUPPORTED_CONSOLE_MESSAGE);
         return noop;
     }
     const counter = getCounterInstance(ctx, counterOptions);

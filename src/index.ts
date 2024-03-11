@@ -54,6 +54,7 @@ import { cForEach, cMap } from './utils/array';
 import { throwFunction } from './utils/errorLogger/throwFunction';
 import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
+import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -174,11 +175,9 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         );
 
         if (counters[counterKey]) {
-            consoleLog(
-                ctx,
-                counterKey,
-                `Duplicate counter ${counterKey} initialization`,
-            );
+            consoleLog(ctx, counterKey, DUPLICATE_COUNTERS_CONSOLE_MESSAGE, {
+                ['key']: counterKey,
+            });
             return counters[counterKey];
         }
 

@@ -22,6 +22,7 @@ import { flags } from '@inject';
 import { browserInfo } from 'src/utils/browserInfo';
 import { bindArgs } from 'src/utils/function';
 import { runAsync } from 'src/utils/async';
+import { HIT_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 /**
  * Automatically send page view event. A basic provider enabled by default and not tied to any feature flag
@@ -71,8 +72,12 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
                 getLoggerFn(
                     ctx,
                     counterOpt,
-                    `PageView. Counter ${counterOpt.id}. URL: ${url}. ` +
-                        `Referrer: ${referrer}`,
+                    HIT_CONSOLE_MESSAGE,
+                    {
+                        ['id']: counterOpt.id,
+                        ['url']: url,
+                        ['ref']: referrer,
+                    },
                     counterOpt.params,
                 )();
             }
