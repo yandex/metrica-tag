@@ -1,4 +1,4 @@
-import { cReduce } from 'src/utils/array/reduce';
+import { cReduce, dirtyReduce } from 'src/utils/array/reduce';
 import { isNil } from './assertions';
 import { curry2SwapArgs } from '../function/curry';
 import { has } from './has';
@@ -68,7 +68,7 @@ export const genPath = (path: (string | number)[], origCtx: any = {}) => {
         return origCtx;
     }
     const splittedPath = path;
-    cReduce(
+    dirtyReduce(
         (cParent, field, i) => {
             const parent = cParent;
             const isLast = i === splittedPath.length - 1;

@@ -111,7 +111,7 @@ export const getData = (
 ) => {
     return cReduce(
         (acc, idKey) => {
-            let value = null;
+            let value: string | null = null;
             if (idKey in ATTRIBUTES_MAP) {
                 value = getAttribute(element, ATTRIBUTES_MAP[idKey]!);
             } else if (idKey in GETTERS_MAP) {
@@ -129,7 +129,7 @@ export const getData = (
                     0,
                     SIZE_LIMITS[idKey] || DEFAULT_SIZE_LIMIT,
                 );
-                acc[idKey as Identifier] = HASH[idKey]
+                acc[idKey] = HASH[idKey]
                     ? convertToString(fnv32a(slicedValue))
                     : slicedValue;
             }

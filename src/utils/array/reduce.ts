@@ -29,12 +29,22 @@ const callNativeOrPoly = nativeReduce
           )
     : reducePoly;
 
-export const cReduce: Reduce = flags[POLYFILLS_FEATURE]
+const baseReduce: Reduce = flags[POLYFILLS_FEATURE]
     ? callNativeOrPoly
     : <T, U>(fn: ReduceCallback<T, U>, first: U, array?: ArrayLike<T>) =>
           (
               Array.prototype.reduce as (cb: ReduceCallback<T, U>, a: U) => U
           ).call(array, fn, first);
+
+/** Pure reduce */
+export const cReduce = baseReduce;
+
+/**
+ * Impure reduce, side-efects possible.
+ * It's not marked PURE at build time
+ * and thus not cut off, if result is unused.
+ */
+export const dirtyReduce = baseReduce;
 
 /**
  * @type function(...?): ?

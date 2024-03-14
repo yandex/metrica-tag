@@ -1,7 +1,7 @@
 import { flags } from '@inject';
 import { TELEMETRY_FEATURE } from 'generated/features';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/watch';
-import { cReduce, cSome } from 'src/utils/array';
+import { dirtyReduce, cSome } from 'src/utils/array';
 import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { cont } from 'src/utils/function';
 import { parseDecimalInt } from 'src/utils/number';
@@ -31,7 +31,7 @@ export const getRetransmitRequestsRaw = (ctx: Window): RetransmitInfo[] => {
     const requests = getRetransmitLsState(ctx);
     const currentTime = time(getMs);
     const hid = getHid(ctx);
-    return cReduce(
+    return dirtyReduce(
         (result, [key, req]) => {
             if (
                 req &&

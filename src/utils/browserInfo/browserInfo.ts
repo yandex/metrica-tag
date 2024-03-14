@@ -1,6 +1,6 @@
 import { TITLE_BR_KEY } from 'src/api/watch';
 import { entries } from 'src/utils/object';
-import { cIndexOfWin, arrayJoin, cReduce } from 'src/utils/array';
+import { cIndexOfWin, arrayJoin, dirtyReduce } from 'src/utils/array';
 import {
     flagStorage,
     FlagStorage,
@@ -30,7 +30,7 @@ export const setInSerialized = (
 export const browserInfo = flagStorage((flags: FlagData) => {
     // title should always be last
     let titleComponent = '';
-    const result = cReduce(
+    const result = dirtyReduce(
         (carry, [key, value]) => {
             const brinfoComponent = `${key}${BR_INFO_DELIMITER}${value}`;
             if (key === TITLE_BR_KEY) {

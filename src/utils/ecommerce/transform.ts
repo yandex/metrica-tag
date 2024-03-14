@@ -1,4 +1,4 @@
-import { cForEach, cMap, cReduce } from 'src/utils/array';
+import { cForEach, cMap, dirtyReduce } from 'src/utils/array';
 import { cKeys } from 'src/utils/object';
 import { bindArg } from '../function';
 import { isString, stringIndexOf } from '../string';
@@ -77,7 +77,7 @@ export const dataGTagFormatToEcommerceFormat = (
 
     const ecommerceKeys = cKeys(ecommerceData);
     if (uaItemsField && ecommerceKeys.length > 1) {
-        result[event][ECOMMERCE_ACTION_FIELD] = cReduce<
+        result[event][ECOMMERCE_ACTION_FIELD] = dirtyReduce<
             string,
             Record<string, string>
         >(
