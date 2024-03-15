@@ -3,7 +3,8 @@ import {
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
 import { PolyPromise } from 'src/utils';
-import { cReduce } from 'src/utils/array';
+import { cReduce, cEvery } from 'src/utils/array';
+import { isNumber } from 'src/utils/number';
 import { getCounterInstance } from 'src/utils/counter';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
@@ -28,7 +29,10 @@ import {
     FirstPartyMethodHandler,
     GOOGLEMAIL_DOMAIN,
     GMAIL_DOMAIN,
+    EMAIL_LOCAL_PART_REGEX,
     FIRST_PARTY_PARAMS_KEY,
+    PHONE_MIN_VALID_DIGIT_CNT,
+    PHONE_MAX_VALID_DIGIT_CNT,
 } from './const';
 import { METHOD_NOT_SUPPORTED_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
@@ -64,15 +68,115 @@ export const hashVal = (ctx: Window, val: string) => {
     });
 };
 
-export const processPhoneNumber = (phone: string): string => {
-    const digits = removeNonDigits(phone);
-    return digits[0] === '8' ? `7${digits.slice(1)}` : digits;
+export const processPhoneNumber = (ctx: Window, origPhone: string): string => {
+    const phone = trimText(origPhone);
+    const digits = removeNonDigits(origPhone);
+
+    if (
+        digits.length < PHONE_MIN_VALID_DIGIT_CNT ||
+        digits.length > PHONE_MAX_VALID_DIGIT_CNT ||
+        phone.startsWith('+8')
+    ) {
+        return phone;
+    }
+    if (phone[0] === '8') {
+        return `7${digits.slice(1)}`;
+    }
+    if (phone[0] !== '+' && !isNumber(ctx, +phone[0])) {
+        return `7${digits}`;
+    }
+    return digits;
 };
 
-export const processEmail = (email: string): string => {
-    let [name, domain] = trimText(email).toLowerCase().split('@');
+/**
+ *  Quoted-string  = DQUOTE *QcontentSMTP DQUOTE
+ *
+ *  QcontentSMTP   = qtextSMTP / quoted-pairSMTP
+ *
+ *  quoted-pairSMTP  = %d92 %d32-126
+ *                   ; i.e., backslash followed by any ASCII
+ *                   ; graphic (including itself) or SPace
+ *
+ *  qtextSMTP      = %d32-33 / %d35-91 / %d93-126
+ *                 ; i.e., within a quoted string, any
+ *                 ; ASCII graphic or space is permitted
+ *                 ; without blackslash-quoting except
+ *                 ; double-quote and the backslash itself.
+ *
+ *  String         = Atom / Quoted-string
+ */
+export const validateLocalQuoted = (part: string): boolean => {
+    for (let i = 1; i + 2 < part.length; i += 1) {
+        const charCode = part.charCodeAt(i);
+        // %d32-33 / %d35-91 / %d93-126
+        // [32 .. 126] wo 34, 92
+        if (charCode < 32 || charCode === 34 || charCode > 126) {
+            return false;
+        }
+        if (charCode === 92) {
+            if (i + 2 === part.length) {
+                return false;
+            }
+            // %d32-126
+            if (part.charCodeAt(i + 1) < 32) {
+                return false;
+            }
+            i += 1;
+        }
+    }
+    return true;
+};
 
+export const validateLocalPart = (local: string): boolean => {
+    // https://www.rfc-editor.org/rfc/rfc5321#section-4.1.2
+    const MIN_LOCAL_PART_SIZE = 1;
+    const MAX_LOCAL_PART_SIZE = 64;
+
+    if (
+        local.length < MIN_LOCAL_PART_SIZE ||
+        local.length > MAX_LOCAL_PART_SIZE
+    ) {
+        return false;
+    }
+
+    return cEvery((part: string) => {
+        if (part.length < MIN_LOCAL_PART_SIZE) {
+            return false;
+        }
+        if (
+            part[0] === '"' &&
+            part[part.length - 1] === '"' &&
+            part.length > 2
+        ) {
+            return validateLocalQuoted(part);
+        }
+        if (!EMAIL_LOCAL_PART_REGEX.test(part)) {
+            return false;
+        }
+        return true;
+    }, local.split('.'));
+};
+
+/**
+ * https://www.rfc-editor.org/rfc/rfc5321#section-4.1.2
+ */
+export const validateEmail = (local: string, domain: string): boolean => {
     if (!domain) {
+        return false;
+    }
+    return validateLocalPart(local);
+};
+
+export const processEmail = (origEmail: string): string => {
+    const email = trimText(origEmail).replace(/^\++/gm, '').toLowerCase();
+    const atIndex = email.lastIndexOf('@');
+    if (atIndex === -1) {
+        return email;
+    }
+    let local = email.substr(0, atIndex);
+    let domain = email.substr(atIndex + 1);
+
+    if (!validateEmail(local, domain)) {
         return email;
     }
 
@@ -83,19 +187,19 @@ export const processEmail = (email: string): string => {
 
     if (domain === YANDEX_RU_DOMAIN) {
         // Замена точек в части имени пользователя на дефисы, для яндексовых адресов.
-        name = name.replace(DOT_REGEX_GLOBAL, '-');
+        local = local.replace(DOT_REGEX_GLOBAL, '-');
     } else if (domain === GMAIL_DOMAIN) {
         // Удаление точек для @gmail.
-        name = name.replace(DOT_REGEX_GLOBAL, '');
+        local = local.replace(DOT_REGEX_GLOBAL, '');
     }
 
     // Удаление хвоста в имени пользователя после плюса username+suffix@example.com --> username@example.com
-    const indexOfPlusSign = stringIndexOf(name, '+');
+    const indexOfPlusSign = stringIndexOf(local, '+');
     if (indexOfPlusSign !== -1) {
-        name = name.slice(0, indexOfPlusSign);
+        local = local.slice(0, indexOfPlusSign);
     }
 
-    return `${name}@${domain}`;
+    return `${local}@${domain}`;
 };
 
 export const encodeRecursive = (
@@ -127,7 +231,7 @@ export const encodeRecursive = (
             } else {
                 let value = val as string;
                 if (key === 'phone_number') {
-                    value = processPhoneNumber(value);
+                    value = processPhoneNumber(ctx, value);
                 } else if (key === 'email') {
                     value = processEmail(value);
                 }

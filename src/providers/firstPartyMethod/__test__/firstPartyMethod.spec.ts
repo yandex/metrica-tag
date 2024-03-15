@@ -78,6 +78,10 @@ describe('first party data', () => {
                     digest: digestStub,
                 },
             },
+            /* eslint-disable no-restricted-globals */
+            isFinite,
+            isNaN,
+            /* eslint-enable no-restricted-globals */
         } as unknown as Window;
         isHttpsStub = sandbox.stub(loc, 'isHttps').returns(true);
         getCounterInstanceStub = sandbox
@@ -195,8 +199,8 @@ describe('first party data', () => {
 
     describe('normalizes phones', () => {
         it('replaces starting "8" with "7', async () => {
-            const initialPhone = '8123456';
-            const processedPhone = `7123456`;
+            const initialPhone = '  81234567890  ';
+            const processedPhone = `71234567890`;
             const testObj = { phone_number: initialPhone };
             const fullData = await encodeRecursive(windowSpy, testObj);
             chai.expect(fullData).to.be.lengthOf(1);
@@ -209,8 +213,8 @@ describe('first party data', () => {
         });
 
         it('keep only digits', async () => {
-            const initialPhone = ' (123) 456-789  ';
-            const processedPhone = '123456789';
+            const initialPhone = ' (123) 456-789 00 ';
+            const processedPhone = '712345678900';
             const testObj = { phone_number: initialPhone };
             const fullData = await encodeRecursive(windowSpy, testObj);
             chai.expect(fullData).to.be.lengthOf(1);
