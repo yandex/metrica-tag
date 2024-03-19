@@ -9,6 +9,7 @@ import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
 import { fullList, nameMap } from 'src/transport';
+import { prepareUrlMiddleware } from 'src/middleware/prepareUrl';
 import { PARAMS_PROVIDER } from './const';
 import { useParams } from './params';
 
@@ -35,6 +36,7 @@ export const initProvider = () => {
             [prerender, 1],
             [counterFirstHit, 2],
             [watchSyncFlags(), 3],
+            [prepareUrlMiddleware, 4],
         ];
     }
 };
