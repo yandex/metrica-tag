@@ -30,7 +30,12 @@ describe('firstPartyMethodHashed', () => {
         debugConsoleUtils.ConsoleObject
     >;
 
-    const win = {} as Window;
+    const win = {
+        // eslint-disable-next-line no-restricted-globals
+        isFinite,
+        // eslint-disable-next-line no-restricted-globals
+        isNaN,
+    } as Window;
     const opt = {
         id: 1,
         counterType: '0',
@@ -127,9 +132,9 @@ describe('firstPartyMethodHashed', () => {
 
         it('encodes but does not send a valid input object with no valid properties', () => {
             const testObj = {
-                a: 1,
+                a: null,
                 b: '',
-                obj: { c: 2 },
+                obj: { c: undefined },
             } as unknown as FirstPartyInputData;
 
             expect(() =>
@@ -143,10 +148,10 @@ describe('firstPartyMethodHashed', () => {
         it('recursively converts an object into a multilevel array', () => {
             const testObj: FirstPartyInputData = {
                 a: '1',
-                obj: { d: '2', e: '3' },
+                obj: { d: '2', e: 3 },
             };
 
-            const result = encodeRecursiveHashed(testObj);
+            const result = encodeRecursiveHashed(win, testObj);
             expect(result).to.be.lengthOf(2);
             const [dataA, dataObj] = result;
 
@@ -167,19 +172,6 @@ describe('firstPartyMethodHashed', () => {
             const [keyNameE, valE] = dataE;
             expect(keyNameE).to.eq('e');
             expect(valE).to.eq('3');
-        });
-
-        it('drops non-string values', () => {
-            const testObj = { a: '1', b: 2 } as unknown as FirstPartyInputData;
-
-            const result = encodeRecursiveHashed(testObj);
-            expect(result).to.be.lengthOf(1);
-            const [dataA, rest] = result;
-
-            const [keyNameA, valA] = dataA;
-            expect(keyNameA).to.eq('a');
-            expect(valA).to.eq('1');
-            expect(rest).to.be.undefined;
         });
     });
 });

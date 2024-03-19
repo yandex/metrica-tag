@@ -1,5 +1,5 @@
 export interface FirstPartyInputData {
-    [x: string]: string | FirstPartyInputData;
+    [x: string]: string | number | FirstPartyInputData;
 }
 
 export type FirstPartyOutputData = [string, string | FirstPartyOutputData[]];

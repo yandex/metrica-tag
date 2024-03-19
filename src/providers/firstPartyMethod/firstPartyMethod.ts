@@ -4,7 +4,6 @@ import {
 } from 'src/providers/params/const';
 import { PolyPromise } from 'src/utils';
 import { cReduce, cEvery } from 'src/utils/array';
-import { isNumber } from 'src/utils/number';
 import { getCounterInstance } from 'src/utils/counter';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
@@ -22,6 +21,7 @@ import {
 import { cKeys, entries, getPath, isObject } from 'src/utils/object';
 import { removeNonDigits, trimText } from 'src/utils/string/remove';
 import { DOT_REGEX_GLOBAL, isString, stringIndexOf } from 'src/utils/string';
+import { isNumber } from 'src/utils/number';
 import { consoleLog } from '../debugConsole/debugConsole';
 import {
     FirstPartyInputData,
@@ -209,13 +209,20 @@ export const encodeRecursive = (
 ): Promise<FirstPartyOutputData[]> => {
     const entry = entries(obj);
     const promiseList = cReduce<
-        [string, string | FirstPartyInputData],
+        [string, string | number | FirstPartyInputData],
         Promise<FirstPartyOutputData>[]
     >(
-        (accum, [key, val]) => {
+        (accum, [key, originalValue]) => {
+            let val = originalValue;
             const valIsObject = isObject(val);
-            if (!isString(val) && !valIsObject) {
-                return accum;
+
+            if (!valIsObject) {
+                if (isNumber(ctx, val)) {
+                    val = `${val}`;
+                }
+                if (!isString(val)) {
+                    return accum;
+                }
             }
 
             let resultPromise: Promise<string | FirstPartyOutputData[]>;

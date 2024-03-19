@@ -8,6 +8,7 @@ import { getCounterInstance } from 'src/utils/counter';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cKeys, entries, isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
+import { isNumber } from 'src/utils/number';
 import {
     FirstPartyInputData,
     FirstPartyOutputData,
@@ -19,17 +20,28 @@ import {
 } from '../consoleRenderer/dictionary';
 
 export const encodeRecursiveHashed = (
+    ctx: Window,
     obj: FirstPartyInputData,
 ): FirstPartyOutputData[] =>
-    cReduce<[string, string | FirstPartyInputData], FirstPartyOutputData[]>(
-        (accum, [key, val]) => {
-            const valIsObject = isObject(val);
-            if (!isString(val) && !valIsObject) {
-                return accum;
+    cReduce<
+        [string, string | number | FirstPartyInputData],
+        FirstPartyOutputData[]
+    >(
+        (accum, [key, value]) => {
+            let val = value;
+            const valIsObject = isObject(value);
+
+            if (!valIsObject) {
+                if (isNumber(ctx, val)) {
+                    val = `${val}`;
+                }
+                if (!isString(val)) {
+                    return accum;
+                }
             }
 
             const result: string | FirstPartyOutputData[] = valIsObject
-                ? encodeRecursiveHashed(val as FirstPartyInputData)
+                ? encodeRecursiveHashed(ctx, val as FirstPartyInputData)
                 : (val as string);
             if (len(result)) {
                 accum.push([key, result]);
@@ -63,7 +75,7 @@ export const useFirstPartyMethodHashed =
             return;
         }
 
-        const result = encodeRecursiveHashed(data);
+        const result = encodeRecursiveHashed(ctx, data);
         if (!result || !len(result)) {
             return;
         }
