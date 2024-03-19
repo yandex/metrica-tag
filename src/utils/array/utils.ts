@@ -65,7 +65,7 @@ export const head = ctxPath('0');
 /**
  * Returns the last element of an array or string.
  */
-export const last = <T>(arrayOrString: string | T[] | ArrayLike<T>) =>
+export const last = <T>(arrayOrString: ArrayLike<T>): T | undefined =>
     arrayOrString[arrayOrString.length - 1];
 
 /**
