@@ -50,16 +50,12 @@ export const log = (
     ctx: Window,
     counterOptions: CounterOptions,
     message: string,
+    variables?: Record<string, string>,
 ) =>
     shouldLogCheck(ctx, counterOptions).then(
         pipe(
             bindArgs(
-                [
-                    getLoggerFn(ctx, counterOptions, message, {
-                        ['id']: counterOptions.id,
-                    }),
-                    noop,
-                ],
+                [getLoggerFn(ctx, counterOptions, message, variables), noop],
                 ternary,
             ),
             call,
