@@ -50,7 +50,7 @@ export const log = (
     ctx: Window,
     counterOptions: CounterOptions,
     message: string,
-    variables?: Record<string, string>,
+    variables?: Record<string, string | number>,
 ) =>
     shouldLogCheck(ctx, counterOptions).then(
         pipe(
@@ -199,7 +199,9 @@ export const useSubmitTracking = ctxErrorLogger(
             ),
         );
 
-        log(ctx, counterOptions, FORM_GOALS_INIT_CONSOLE_MESSAGE);
+        log(ctx, counterOptions, FORM_GOALS_INIT_CONSOLE_MESSAGE, {
+            ['id']: counterOptions.id,
+        });
 
         return bindArgs([callFirstArgument, unsubscribeMethodsList], cForEach);
     },

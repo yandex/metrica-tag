@@ -4,6 +4,7 @@ import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { cMap } from 'src/utils/array';
 import { has } from 'src/utils/object';
 import { isString } from 'src/utils/string';
+import { globalMemoWin } from 'src/utils/function';
 import { debugEnabled } from '../debugConsole/debugEnabled';
 import { getEvents } from '../debugEvents';
 import { CONSOLE_DICTIONARY, variableRegex } from './dictionary';
@@ -66,4 +67,7 @@ export const useConsoleRendererRaw = (ctx: Window) => {
     });
 };
 
-export const useConsoleRenderer = ctxErrorLogger('cr', useConsoleRendererRaw);
+export const useConsoleRenderer = ctxErrorLogger(
+    'cr',
+    globalMemoWin('conr', useConsoleRendererRaw),
+);
