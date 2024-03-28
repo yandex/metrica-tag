@@ -1,24 +1,24 @@
 import { cont, curry2 } from '../function';
 import { cForEach } from '../array';
 
-export type ForkInterface<ResolveType> = (
-    reject: (a: any) => void,
+export type ForkInterface<ResolveType, RejectType = unknown> = (
+    reject: (a: RejectType) => void,
     resolve: (a: ResolveType) => void,
 ) => void;
 
-export type TaskInterface<ResolveType> = <R>(
-    fn: (forks: ForkInterface<ResolveType>) => R,
+export type TaskInterface<ResolveType, RejectType = unknown> = <R>(
+    fn: (forks: ForkInterface<ResolveType, RejectType>) => R,
 ) => R;
 
-export const task = cont as <ResolveType = any>(
+export const task = cont as <ResolveType, RejectType = unknown>(
     // eslint-disable-next-line no-use-before-define
-    fork: ForkInterface<ResolveType>,
+    fork: ForkInterface<ResolveType, RejectType>,
     // eslint-disable-next-line no-use-before-define
-) => TaskInterface<ResolveType>;
+) => TaskInterface<ResolveType, RejectType>;
 
 export const taskFork =
-    <In>(reject: (a: In) => void, resolve: (a: In) => void) =>
-    (fork: ForkInterface<In>) =>
+    <In, E = unknown>(reject: (a: E) => void, resolve: (a: In) => void) =>
+    (fork: ForkInterface<In, E>) =>
         fork(reject, resolve);
 
 export const taskMap = curry2(
@@ -35,14 +35,14 @@ export const taskMap = curry2(
 );
 
 export const taskChain = curry2(
-    <ChainIn, ChainOut>(
-        fn: (chainResult: ChainIn) => TaskInterface<ChainOut>,
+    <ChainIn, ChainOut, E = unknown>(
+        fn: (chainResult: ChainIn) => TaskInterface<ChainOut, E>,
         fork: ForkInterface<ChainIn>,
     ) =>
         task<ChainOut>((reject, resolve) =>
             fork(reject, (result) => {
                 try {
-                    fn(result)(taskFork<ChainOut>(reject, resolve));
+                    fn(result)(taskFork<ChainOut, E>(reject, resolve));
                 } catch (e) {
                     reject(e);
                 }
@@ -102,7 +102,7 @@ export const taskAll = <T>(tasks: TaskInterface<T>[]): TaskInterface<T[]> => {
 };
 
 export const fromPromise = <T>(promise: Promise<T>) =>
-    task((reject, resolve) => {
+    task<T>((reject, resolve) => {
         promise.then(resolve, reject);
     });
 

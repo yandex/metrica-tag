@@ -141,7 +141,7 @@ describe('Tasks', () => {
             resolve(1);
         });
         const chain = taskChain((result?: number) =>
-            task((reject, resolve) => {
+            task<number>((reject, resolve) => {
                 resolve(result! + 1);
             }),
         );
