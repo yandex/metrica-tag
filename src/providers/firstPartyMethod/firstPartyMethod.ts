@@ -19,7 +19,11 @@ import {
     YANDEX_RU_DOMAIN,
 } from 'src/utils/location';
 import { cKeys, entries, getPath, isObject } from 'src/utils/object';
-import { removeNonDigits, trimText } from 'src/utils/string/remove';
+import {
+    removeNonDigits,
+    trimText,
+    removeByRegexp,
+} from 'src/utils/string/remove';
 import { DOT_REGEX_GLOBAL, isString, stringIndexOf } from 'src/utils/string';
 import { isNumber } from 'src/utils/number';
 import { consoleLog } from '../debugConsole/debugConsole';
@@ -68,8 +72,9 @@ export const hashVal = (ctx: Window, val: string) => {
     });
 };
 
+export const trimNonPhoneSymbols = removeByRegexp(/[^\d+()]/g);
 export const processPhoneNumber = (ctx: Window, origPhone: string): string => {
-    const phone = trimText(origPhone);
+    const phone = trimNonPhoneSymbols(origPhone);
     const digits = removeNonDigits(origPhone);
 
     if (
@@ -77,7 +82,7 @@ export const processPhoneNumber = (ctx: Window, origPhone: string): string => {
         digits.length > PHONE_MAX_VALID_DIGIT_CNT ||
         phone.startsWith('+8')
     ) {
-        return phone;
+        return trimText(origPhone);
     }
     if (phone[0] === '8') {
         return `7${digits.slice(1)}`;
