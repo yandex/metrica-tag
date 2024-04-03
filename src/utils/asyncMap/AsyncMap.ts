@@ -1,12 +1,11 @@
 import { PolyPromise } from 'src/utils';
-import { curry2, cont, constructObject, pipe, memo } from '../function';
+import { curry2, cont, constructObject, pipe, memo, noop } from '../function';
 
 type StoreType<ValT> = {
     [key: string]: {
-        promise: Promise<ValT>;
-        resolveCallback?: Function;
+        readonly promise: Promise<ValT>;
+        readonly resolveCallback: (value: ValT) => void;
         resolved: boolean;
-        rValue?: ValT;
     };
 };
 
@@ -16,19 +15,13 @@ export const setAsync =
         const store = rawStore;
         const value = store[key];
         if (value) {
-            value.rValue = val;
             value.resolved = true;
-
-            if (value.resolveCallback) {
-                value.resolveCallback(val);
-            } else {
-                value.promise = PolyPromise.resolve(val);
-            }
+            value.resolveCallback(val);
         } else {
             store[key] = {
                 promise: PolyPromise.resolve(val),
-                rValue: val,
                 resolved: true,
+                resolveCallback: noop,
             };
         }
     };
@@ -53,12 +46,12 @@ export const getAsync = curry2(
 
         return store[key].promise;
     },
-) as any as (
+) as (
     key: string,
     // eslint-disable-next-line no-use-before-define
-) => <T extends any>(rawStore: StoreType<T>) => Promise<T>;
+) => <T>(rawStore: StoreType<T>) => Promise<T>;
 
-export const AsyncMapFn = memo(pipe(constructObject, cont)) as any as <
+export const AsyncMapFn = memo(pipe(constructObject, cont)) as <
     ValT,
     // eslint-disable-next-line no-use-before-define
 >() => <R>(fn: (st: StoreType<ValT>) => R) => R;
