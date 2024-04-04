@@ -63,13 +63,11 @@ export const getVal = curry2(<ValT>(key: string, rawStore: StoreType<ValT>) => {
         return asyncObserverObj;
     }
     return value.observer;
-}) as any as (
+}) as (
     key: string,
-    // eslint-disable-next-line no-use-before-define
 ) => <T extends any>(rawStore: StoreType<T>) => Observer<T, any>;
 
 export const observerMapFn = memo((ctx: Window) => {
     const store = { ctx };
     return cont(store);
-    // eslint-disable-next-line no-use-before-define
-}) as any as <ValT>(ctx: Window) => <R>(fn: (st: StoreType<ValT>) => R) => R;
+}) as <ValT>(ctx: Window) => <R>(fn: (st: StoreType<ValT>) => R) => R;

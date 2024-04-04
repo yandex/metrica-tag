@@ -87,7 +87,6 @@ export const iterPopUntilMaxTime = (<T, R>(ctx: Window, maxTime: number) =>
     }) as any as (
     ctx: Window,
     maxTime: number,
-    // eslint-disable-next-line no-use-before-define
 ) => <T, R>(params: IterParams<T, R>) => T[];
 
 export const iterForEachUntilMaxTime = (<T, R>(ctx: Window, maxTime: number) =>
@@ -105,7 +104,6 @@ export const iterForEachUntilMaxTime = (<T, R>(ctx: Window, maxTime: number) =>
     }) as (
     ctx: Window,
     maxTime: number,
-    // eslint-disable-next-line no-use-before-define
 ) => <T, R>(params: IterParams<T, R>) => T[];
 
 // Собственно в чём суть этого решения - это обычный обход по мидлварам с next,

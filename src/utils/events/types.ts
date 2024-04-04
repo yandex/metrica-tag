@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 declare global {
     interface Window {
         attachEvent?<M extends WindowEventMap>(
@@ -48,7 +47,6 @@ declare global {
         DOMContentLoaded: Event;
     }
 }
-/* eslint-enable no-use-before-define */
 
 export type EventOptionsObject = {
     capture?: boolean;

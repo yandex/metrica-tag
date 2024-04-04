@@ -16,9 +16,8 @@ export type Bind = <
 >(
     f: FN,
     ctx: C,
-    ...args: F
-) => // eslint-disable-next-line no-shadow
-(...args: Tuple.Diff<V, F>) => ReturnType<FN>;
+    ...bindArgs: F
+) => (...callArgs: Tuple.Diff<V, F>) => ReturnType<FN>;
 
 export type BindArg = {
     <F extends AnyFunc>(firstArg: ParamsFirst<F>, fn: F): FuncRest<F>;
@@ -29,11 +28,9 @@ export type SliceArgs<F extends AnyFunc, L extends Partial<Parameters<F>>> =
     SliceFrom<Parameters<F>, Any.Cast<L, any[]>>;
 
 export type BindArgs = {
-    // eslint-disable-next-line no-shadow,no-use-before-define
     <A extends Partial<Parameters<F>>, F extends AnyFunc>(args: A, fn: F): (
         ...ar: SliceArgs<F, A>
     ) => ReturnType<F>;
-    // eslint-disable-next-line no-shadow,no-use-before-define
     <A extends Partial<Parameters<F>>, F extends AnyFunc>(args: A): (
         fn: F,
     ) => (...ar: SliceArgs<F, A>) => ReturnType<F>;

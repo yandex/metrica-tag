@@ -11,9 +11,7 @@ export type TaskInterface<ResolveType, RejectType = unknown> = <R>(
 ) => R;
 
 export const task = cont as <ResolveType, RejectType = unknown>(
-    // eslint-disable-next-line no-use-before-define
     fork: ForkInterface<ResolveType, RejectType>,
-    // eslint-disable-next-line no-use-before-define
 ) => TaskInterface<ResolveType, RejectType>;
 
 export const taskFork =

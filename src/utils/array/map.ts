@@ -103,6 +103,5 @@ export const ctxForEach: <T, R>(
 ) => (arr: T[]) => void = curry2(cForEach);
 
 export const ctxMapSwap = curry2SwapArgs(cMap) as <T, R>(
-    // eslint-disable-next-line no-use-before-define
     arr: T[],
 ) => (cb: (e: T, i: number) => R) => R[];

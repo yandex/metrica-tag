@@ -97,13 +97,20 @@ module.exports = {
                 'prefer-object-spread': 'off',
                 'prefer-regex-literals': 'off',
                 'default-param-last': 'off',
+                'no-shadow': 'off',
+                '@typescript-eslint/no-shadow': 'error',
+                'no-use-before-define': 'off',
+                '@typescript-eslint/no-use-before-define': [
+                    'error',
+                    { functions: false },
+                ],
             },
         },
         {
             files: ['./generated/**/*'],
             rules: {
                 camelcase: 'off',
-                'no-use-before-define': 'off',
+                '@typescript-eslint/no-use-before-define': 'off',
             },
         },
         {

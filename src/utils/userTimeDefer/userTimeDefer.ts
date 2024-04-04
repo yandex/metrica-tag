@@ -13,7 +13,6 @@ export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
     let executedOrCleared = false;
     const destroyTimer = () => {
         clearDefer(ctx, id);
-        // eslint-disable-next-line no-use-before-define
         setEvents(false);
     };
 
@@ -36,7 +35,6 @@ export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
             wasBlur = true;
             isBlurred = false;
             wasAction = true;
-            // eslint-disable-next-line no-use-before-define
             onCommon();
         }
     }
@@ -51,7 +49,6 @@ export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
 
     function executeCallback() {
         executedOrCleared = true;
-        // eslint-disable-next-line no-use-before-define
         setEvents(false);
         callback();
     }
@@ -59,7 +56,6 @@ export function setUserTimeDefer(ctx: Window, callback: AnyFunc, time: number) {
     function onCommon() {
         clearDefer(ctx, id);
         if (executedOrCleared) {
-            // eslint-disable-next-line no-use-before-define
             setEvents(false);
             return;
         }

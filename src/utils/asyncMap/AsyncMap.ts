@@ -46,12 +46,8 @@ export const getAsync = curry2(
 
         return store[key].promise;
     },
-) as (
-    key: string,
-    // eslint-disable-next-line no-use-before-define
-) => <T>(rawStore: StoreType<T>) => Promise<T>;
+) as (key: string) => <T>(rawStore: StoreType<T>) => Promise<T>;
 
-export const AsyncMapFn = memo(pipe(constructObject, cont)) as <
-    ValT,
-    // eslint-disable-next-line no-use-before-define
->() => <R>(fn: (st: StoreType<ValT>) => R) => R;
+export const AsyncMapFn = memo(pipe(constructObject, cont)) as <ValT>() => <R>(
+    fn: (st: StoreType<ValT>) => R,
+) => R;

@@ -1,19 +1,13 @@
 import { protoToString } from 'src/utils/string';
 import { equal } from '../function/curry';
 
-export const isNull = equal(null) as (
-    o: any,
-    // eslint-disable-next-line no-use-before-define
-) => o is null;
+export const isNull = equal(null) as (o: any) => o is null;
 
 export const isFunction = (fn: any): fn is (...args: any[]) => any => {
     return typeof fn === 'function';
 };
 
-export const isUndefined = equal(undefined) as (
-    o: any,
-    // eslint-disable-next-line no-use-before-define
-) => o is undefined;
+export const isUndefined = equal(undefined) as (o: any) => o is undefined;
 
 export const isNil = (object: any): object is null | undefined => {
     return isUndefined(object) || isNull(object);
