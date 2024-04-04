@@ -20,7 +20,7 @@ describe('remoteControl / inline', () => {
     let eventHandlerOn: sinon.SinonStub;
     let eventHandlerUn: sinon.SinonStub;
     let testEventData = {};
-    let loadScriptStub: sinon.SinonStub;
+    let insertScriptStub: sinon.SinonStub;
     let setValSpy: sinon.SinonSpy;
     let bindArgsStub: sinon.SinonStub;
 
@@ -46,7 +46,7 @@ describe('remoteControl / inline', () => {
 
         setValSpy = sandbox.spy();
 
-        loadScriptStub = sandbox.stub(domUtils, 'loadScript');
+        insertScriptStub = sandbox.stub(domUtils, 'insertScript');
         sandbox.stub(globalUtils, 'getGlobalStorage').returns({
             setVal: setValSpy,
             setSafe: sandbox.spy(),
@@ -107,7 +107,7 @@ describe('remoteControl / inline', () => {
 
         remoteControl(windowStub);
 
-        sinon.assert.calledWith(loadScriptStub, windowStub, {
+        sinon.assert.calledWith(insertScriptStub, windowStub, {
             src: createResourcePath('form'),
         });
         checkUtils('form');
@@ -118,7 +118,7 @@ describe('remoteControl / inline', () => {
 
         remoteControl(windowStub);
 
-        sinon.assert.calledWith(loadScriptStub, windowStub, {
+        sinon.assert.calledWith(insertScriptStub, windowStub, {
             src: createResourcePath('button'),
         });
         checkUtils('button');
@@ -133,7 +133,7 @@ describe('remoteControl / inline', () => {
 
         remoteControl(windowStub);
 
-        sinon.assert.calledWith(loadScriptStub, windowStub, {
+        sinon.assert.calledWith(insertScriptStub, windowStub, {
             src: createResourcePath('phone'),
         });
         checkHidePhones(['89995556677']);

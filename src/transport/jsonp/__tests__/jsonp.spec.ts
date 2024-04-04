@@ -22,7 +22,7 @@ describe('JSONP', () => {
     const sandbox = sinon.createSandbox();
 
     let createFn: sinon.SinonStub<any>;
-    let loadScript: sinon.SinonStub<any>;
+    let insertScript: sinon.SinonStub<any>;
     let getRandom: sinon.SinonStub<any>;
     let removeNode: sinon.SinonStub<any>;
     let createKnownStub: sinon.SinonStub<any>;
@@ -40,7 +40,7 @@ describe('JSONP', () => {
                 debugStack: [],
             };
 
-            loadScript.returns(scriptStub);
+            insertScript.returns(scriptStub);
 
             const result = useJsonp(win);
 
@@ -66,7 +66,7 @@ describe('JSONP', () => {
             chai.expect(resp).to.deep.eq(testResp);
             chai.expect(win).to.not.have.property(CALLBACK_KEY);
             chai.expect(actualTid).to.eq(TID);
-            sinon.assert.calledOnce(loadScript);
+            sinon.assert.calledOnce(insertScript);
             sinon.assert.calledOnce(removeNode.withArgs(scriptStub));
         });
     };
@@ -80,7 +80,7 @@ describe('JSONP', () => {
         getRandom = sandbox.stub(numberUtils, 'getRandom');
         setDeferStub = sandbox.stub(deferBase, 'setDeferBase').returns(TID);
         clearDeferStub = sandbox.stub(deferBase, 'clearDefer');
-        loadScript = sandbox.stub(domUtils, 'loadScript');
+        insertScript = sandbox.stub(domUtils, 'insertScript');
         createFn = sandbox.stub(domUtils, 'getElemCreateFunction');
         createKnownStub = sandbox.stub(knownErrorUtils, 'createKnownError');
 
@@ -107,7 +107,7 @@ describe('JSONP', () => {
         if (!result) {
             chai.expect.fail('wrong type');
         }
-        loadScript.callsFake(() => {
+        insertScript.callsFake(() => {
             chai.expect((win as any)[CALLBACK_KEY]).to.be.ok;
             return scriptStub;
         });
@@ -138,7 +138,7 @@ describe('JSONP', () => {
     testWmode(false);
     it('produces a verbose error message', () => {
         const scriptStub = {} as { onerror: () => void };
-        loadScript.returns(scriptStub);
+        insertScript.returns(scriptStub);
         const resolve = sinon.stub();
         const reject = sinon.stub();
         const result = useJsonp(win) as Exclude<
@@ -169,7 +169,7 @@ describe('JSONP', () => {
         };
         const resolve = sinon.stub();
         const reject = sinon.stub();
-        loadScript.returns(scriptStub);
+        insertScript.returns(scriptStub);
         removeNode.throws(error);
 
         const result = useJsonp(win) as TransportFn;
@@ -189,7 +189,7 @@ describe('JSONP', () => {
         };
         const resolve = sinon.stub();
         const reject = sinon.stub();
-        loadScript.returns(scriptStub);
+        insertScript.returns(scriptStub);
 
         const result = useJsonp(win) as TransportFn;
         result(testUrl, transportOpt);

@@ -1,5 +1,5 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
-import { getElemCreateFunction, removeNode, loadScript } from 'src/utils/dom';
+import { getElemCreateFunction, removeNode, insertScript } from 'src/utils/dom';
 import { PolyPromise } from 'src/utils';
 import { getRandom } from 'src/utils/number';
 import { mix } from 'src/utils/object';
@@ -57,7 +57,7 @@ const request = (
         ctxAny[callbackName] = callback;
         query[REQUEST_MODE_KEY] = WATCH_WMODE_JSONP;
 
-        script = loadScript(ctx, {
+        script = insertScript(ctx, {
             ['src']: getSrcUrl(senderUrl, opt, query),
         });
 

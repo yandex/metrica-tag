@@ -2,7 +2,7 @@ export * from './dom';
 export * from './closest';
 export * from './element';
 export * from './hiddenIframe';
-export * from './loadScript';
+export * from './insertScript';
 export * from './targetLink';
 export * from './select';
 export * from './identifiers';

@@ -4,7 +4,7 @@ import {
     getCachedTags,
     getElemCreateFunction,
     getRootElement,
-    loadScript,
+    insertScript,
 } from 'src/utils/dom';
 import { getGlobalStorage } from 'src/storage/global';
 import {
@@ -86,7 +86,7 @@ const buildRemoteIframe = (ctx: ExtendedWindow, src: string) => {
         csp.setAttribute('content', 'script-src *');
         iframeEl.contentWindow!.document.head.appendChild(csp);
 
-        loadScript(iframeEl.contentWindow as Window, { src });
+        insertScript(iframeEl.contentWindow as Window, { src });
     };
 
     // eslint-disable-next-line camelcase,no-underscore-dangle
@@ -247,7 +247,7 @@ export const setupUtilsAndLoadScript = (
     }
 
     if (src) {
-        loadScript(ctx, { src });
+        insertScript(ctx, { src });
     }
 };
 

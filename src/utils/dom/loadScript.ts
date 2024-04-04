@@ -1,40 +1,68 @@
-import { getElemCreateFunction } from './dom';
+import { cEvent } from '../events';
+import { insertScript } from './insertScript';
 
-export type ScriptOptions = {
-    src: string;
-    type?: string;
-    charset?: string;
-    async?: boolean;
+// eslint-disable-next-line no-shadow
+const enum ScriptState {
+    Pending = 0,
+    Loaded = 1,
+    Error = 2,
+}
+
+const scriptsState: Record<
+    string,
+    {
+        script: HTMLScriptElement | undefined;
+        state: ScriptState;
+    }
+> = {};
+
+// didn't simply use memo because it has side effects therefore it isn't deleted by rollup as the result of tree-shaking
+// FIXME: find a way to make memo tree-shakable
+const insertScriptOnce = (ctx: Window, src: string) => {
+    if (!scriptsState[src]) {
+        scriptsState[src] = {
+            script: insertScript(ctx, { src }),
+            state: ScriptState.Pending,
+        };
+    }
+
+    return scriptsState[src];
 };
 
+/**
+ * @description This function loads script only once. Warning - it doesn't work in ie8 and lower because it has no working api for onload events for scripts (onload/attachEvent not working).
+ */
 export const loadScript = (
     ctx: Window,
-    options: ScriptOptions,
-): HTMLScriptElement | undefined => {
-    const createFn = getElemCreateFunction(ctx);
-    if (!createFn) {
-        return undefined;
-    }
-    const { document: doc } = ctx;
-    const scriptTag = createFn('script');
-    scriptTag.src = options.src;
-    scriptTag.type = options.type || 'text/javascript';
-    scriptTag.charset = options.charset || 'utf-8';
-    scriptTag.async = options.async || true;
-    try {
-        let head = doc.getElementsByTagName('head')[0];
-        // fix for Opera
-        if (!head) {
-            const html = doc.getElementsByTagName('html')[0];
-            head = createFn('head');
-            if (html) {
-                html.appendChild(head);
-            }
+    src: string,
+    onLoadCb: () => void,
+    onErrorCb?: () => void,
+) => {
+    const scriptLoadState = insertScriptOnce(ctx, src);
+    const { script, state } = scriptLoadState;
+    const onError = () => {
+        scriptLoadState.state = ScriptState.Error;
+        if (onErrorCb) {
+            onErrorCb();
         }
-        head.insertBefore(scriptTag, head.firstChild);
-        return scriptTag;
-    } catch (e) {
-        // empty
+    };
+
+    const onLoad = () => {
+        scriptLoadState.state = ScriptState.Loaded;
+        onLoadCb();
+    };
+
+    if (!script || state === ScriptState.Error) {
+        onError();
+        return;
     }
-    return undefined;
+
+    if (state === ScriptState.Loaded) {
+        onLoad();
+        return;
+    }
+
+    const events = cEvent(ctx);
+    events.on(script, ['load'], onLoad);
+    events.on(script, ['error'], onError);
 };
