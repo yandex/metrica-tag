@@ -3,6 +3,7 @@ import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cForEach } from 'src/utils/array';
 import { isFunction } from 'src/utils/object';
+import { deleteOriginalOptions } from 'src/utils/counterOptions/originalOptionsState';
 import { DestructHandler } from './const';
 
 type UnsubscribeCallbacks = (Function | undefined)[];
@@ -30,7 +31,7 @@ export const destruct = ctxErrorLogger(
                     errorLogger(ctx, `dest.fr.${index}`, cb)(),
                 unsubscribeMethods,
             );
-
+            deleteOriginalOptions(ctx, getCounterKey(counterOptions));
             delete globalConfig.getVal<{ [key: string]: object }>('counters')[
                 getCounterKey(counterOptions)
             ];

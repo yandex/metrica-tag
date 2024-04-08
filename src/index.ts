@@ -5,7 +5,11 @@ import {
     ProviderResultPromised,
     MetrikaCounterConstructor,
 } from 'src/types';
-import { normalizeOptions, getCounterKey } from 'src/utils/counterOptions';
+import {
+    normalizeOptions,
+    getCounterKey,
+    normalizeOriginalOptions,
+} from 'src/utils/counterOptions';
 import {
     bindArgs,
     firstArg,
@@ -55,6 +59,7 @@ import { throwFunction } from './utils/errorLogger/throwFunction';
 import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
+import { saveOriginalOptions } from './utils/counterOptions/originalOptionsState';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -181,6 +186,16 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             return counters[counterKey];
         }
 
+        saveOriginalOptions(
+            ctx,
+            counterKey,
+            normalizeOriginalOptions(
+                counterId,
+                counterParams,
+                counterType,
+                counterDefer,
+            ),
+        );
         counters[counterKey] = this;
         globalConfig.setVal(COUNTERS_GLOBAL_KEY, counters);
         globalConfig.setSafe('counter', this);

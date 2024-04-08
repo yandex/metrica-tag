@@ -15,7 +15,7 @@ export type MetrikaCounterConstructor = (
 export interface MetrikaCounter extends MetrikaCounterConstructor {}
 
 export type CounterMethod = keyof CounterObject;
-type ProviderResultObject = Record<string, Function> & {
+export type ProviderResultObject = Record<string, Function> & {
     [UNSUBSCRIBE_PROPERTY]?: () => void;
 };
 export type ProviderResult =

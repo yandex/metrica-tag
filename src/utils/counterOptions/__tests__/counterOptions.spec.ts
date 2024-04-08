@@ -25,10 +25,10 @@ describe('Counter Options', () => {
                 optKey: 'params',
             },
             counterType: {
-                optKey: 'counterType',
+                optKey: 'type',
             },
             counterDefer: {
-                optKey: 'counterDefer',
+                optKey: 'defer',
             },
         };
     });

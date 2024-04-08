@@ -9,7 +9,6 @@ import {
     EMPTY_LINK_CONSOLE_MESSAGE,
     PAGE_VIEW_CONSOLE_MESSAGE,
 } from '../dictionary';
-import * as enabledUtils from '../../debugConsole/debugEnabled';
 import { DebuggerEvent } from '../../debugEvents/types';
 
 describe('consoleRenderer', () => {
@@ -30,14 +29,10 @@ describe('consoleRenderer', () => {
         Parameters<typeof observerUtils.dataLayerObserver>,
         ReturnType<typeof observerUtils.dataLayerObserver>
     >;
-    let isDebugEnabled: sinon.SinonStub<[ctx: Window], boolean>;
 
     beforeEach(() => {
         sandbox.stub(consoleUtils, 'getConsole').returns(fakeConsole);
         sandbox.stub(eventsUtils, 'getEvents').returns(fakeEvents);
-        isDebugEnabled = sandbox
-            .stub(enabledUtils, 'debugEnabled')
-            .returns(true);
         getObserver = sandbox.stub(observerUtils, 'dataLayerObserver');
     });
 
@@ -47,14 +42,6 @@ describe('consoleRenderer', () => {
         fakeConsole.log.resetHistory();
         fakeConsole.warn.resetHistory();
         fakeConsole.error.resetHistory();
-    });
-
-    it('does nothing if debug is disabled', () => {
-        const win = {} as Window;
-        isDebugEnabled.returns(false);
-        useConsoleRendererRaw(win);
-
-        sinon.assert.notCalled(getObserver);
     });
 
     it('subscribes and renders console messages', () => {

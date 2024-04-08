@@ -2,22 +2,29 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as globalStorage from 'src/storage/global';
 import { CounterOptions } from 'src/utils/counterOptions';
+import * as optionsUtils from 'src/utils/counterOptions/originalOptionsState';
 import { destruct } from '../destruct';
 
 describe('destruct provider', () => {
-    let globalStorageMock: any;
+    const sandbox = sinon.createSandbox();
+    let deleteOriginalOptions: sinon.SinonStub<
+        Parameters<typeof optionsUtils.deleteOriginalOptions>,
+        ReturnType<typeof optionsUtils.deleteOriginalOptions>
+    >;
     const gs = {
-        getVal: sinon.stub(),
+        getVal: sandbox.stub(),
     };
 
     beforeEach(() => {
-        globalStorageMock = sinon
-            .stub(globalStorage, 'getGlobalStorage')
-            .returns(gs as any);
+        deleteOriginalOptions = sandbox.stub(
+            optionsUtils,
+            'deleteOriginalOptions',
+        );
+        sandbox.stub(globalStorage, 'getGlobalStorage').returns(gs as any);
     });
 
     afterEach(() => {
-        globalStorageMock.restore();
+        sandbox.restore();
         gs.getVal.resetHistory();
     });
 
@@ -43,6 +50,11 @@ describe('destruct provider', () => {
         const destructor = destruct(windowStub, counterOptions, callbacks);
         destructor();
 
+        sinon.assert.calledOnceWithExactly(
+            deleteOriginalOptions,
+            windowStub,
+            counterKey,
+        );
         chai.expect(cb1.calledOnce).to.be.true;
         chai.expect(cb2.calledOnce).to.be.true;
         chai.expect(counters['100:0']).to.not.exist;

@@ -5,7 +5,6 @@ import { cMap } from 'src/utils/array';
 import { has } from 'src/utils/object';
 import { isString } from 'src/utils/string';
 import { globalMemoWin } from 'src/utils/function';
-import { debugEnabled } from '../debugConsole/debugEnabled';
 import { getEvents } from '../debugEvents';
 import { CONSOLE_DICTIONARY, variableRegex } from './dictionary';
 
@@ -44,9 +43,6 @@ export const getMessage = (
 };
 
 export const useConsoleRendererRaw = (ctx: Window) => {
-    if (!debugEnabled(ctx)) {
-        return;
-    }
     const debuggerEvents = getEvents(ctx);
     const console = getConsole(ctx);
     dataLayerObserver(ctx, debuggerEvents, (observer) => {
