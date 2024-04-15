@@ -456,7 +456,6 @@
   "src/utils/events/__tests__/emitter.spec.ts":"metrika/frontend/watch/public/src/utils/events/__tests__/emitter.spec.ts",
   "src/utils/events/__tests__/events.spec.ts":"metrika/frontend/watch/public/src/utils/events/__tests__/events.spec.ts",
   "src/utils/events/asyncHandlerObserver.ts":"metrika/frontend/watch/public/src/utils/events/asyncHandlerObserver.ts",
-  "src/utils/events/asyncObserver.ts":"metrika/frontend/watch/public/src/utils/events/asyncObserver.ts",
   "src/utils/events/bufferObserver.ts":"metrika/frontend/watch/public/src/utils/events/bufferObserver.ts",
   "src/utils/events/emitter.ts":"metrika/frontend/watch/public/src/utils/events/emitter.ts",
   "src/utils/events/events.ts":"metrika/frontend/watch/public/src/utils/events/events.ts",
