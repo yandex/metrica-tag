@@ -3,7 +3,7 @@ import {
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
 import { PolyPromise } from 'src/utils';
-import { cReduce, cEvery } from 'src/utils/array';
+import { cReduce, cEvery, includes } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
@@ -207,6 +207,7 @@ export const processEmail = (origEmail: string): string => {
     return `${local}@${domain}`;
 };
 
+const NON_HASHABLE_KEYS: string[] = ['yandex_cid', 'yandex_public_id'];
 export const encodeRecursive = (
     ctx: Window,
     obj: FirstPartyInputData,
@@ -237,8 +238,8 @@ export const encodeRecursive = (
                     val as FirstPartyInputData,
                     level + 1,
                 );
-            } else if (!level && key === 'yandex_cid') {
-                // METR-48665
+            } else if (!level && includes(key, NON_HASHABLE_KEYS)) {
+                // METR-48665, METR-59109
                 resultPromise = PolyPromise.resolve(val as string);
             } else {
                 let value = val as string;
