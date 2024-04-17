@@ -3,7 +3,7 @@ import { DEBUG_CONSOLE_FEATURE } from 'generated/features';
 import { windowProviderInitializers } from 'src/providersEntrypoint';
 import { COOKIES_WHITELIST } from 'src/storage/cookie/isAllowed';
 import { useReportNonNativeFunctionProvider } from '../reportNonNativeFunctions';
-import { DEBUG_CTX_FLAG, DEBUG_STORAGE_FLAG } from './const';
+import { DEBUG_CTX_FLAG, DEBUG_COOKIE } from './const';
 
 declare global {
     interface Window {
@@ -13,7 +13,7 @@ declare global {
 
 export const initProvider = () => {
     if (flags[DEBUG_CONSOLE_FEATURE]) {
-        COOKIES_WHITELIST.push(DEBUG_STORAGE_FLAG);
+        COOKIES_WHITELIST.push(DEBUG_COOKIE);
         windowProviderInitializers.unshift(useReportNonNativeFunctionProvider);
     }
 };
