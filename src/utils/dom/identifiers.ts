@@ -9,6 +9,7 @@ import {
     CLICK_TRACKING_FEATURE,
     LOCAL_FEATURE,
     PREPROD_FEATURE,
+    REMOTE_CONTROL_FEATURE,
     SUBMIT_TRACKING_FEATURE,
 } from 'generated/features';
 import { equal, pipe } from 'src/utils/function';
@@ -55,12 +56,12 @@ export const getAttribute = (element: HTMLElement, name: string) => {
 
 const ATTRIBUTES_MAP: Partial<Record<Identifier, string>> = {};
 
-if (flags[SUBMIT_TRACKING_FEATURE]) {
+if (flags[SUBMIT_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
     ATTRIBUTES_MAP[ID] = 'id';
     ATTRIBUTES_MAP[NAME] = 'name';
 }
 
-if (flags[CLICK_TRACKING_FEATURE]) {
+if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
     ATTRIBUTES_MAP[HREF] = 'href';
     ATTRIBUTES_MAP[TYPE] = 'type';
 
@@ -75,11 +76,15 @@ export const GETTERS_MAP: Partial<
     } & Record<Exclude<Identifier, typeof PATH | typeof CONTENT>, GenericGetter>
 > = {};
 
-if (flags[SUBMIT_TRACKING_FEATURE] || flags[CLICK_TRACKING_FEATURE]) {
+if (
+    flags[SUBMIT_TRACKING_FEATURE] ||
+    flags[CLICK_TRACKING_FEATURE] ||
+    flags[REMOTE_CONTROL_FEATURE]
+) {
     GETTERS_MAP[PATH] = getElementPath;
 }
 
-if (flags[CLICK_TRACKING_FEATURE]) {
+if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
     GETTERS_MAP[CONTENT] = (ctx, element, selectFn) => {
         let result = trimText(getPath(element, 'textContent'));
         if (result && selectFn) {

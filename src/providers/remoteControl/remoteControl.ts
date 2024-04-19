@@ -13,6 +13,7 @@ import {
     LOCAL_FEATURE,
     SUBMIT_TRACKING_FEATURE,
     CHECK_STATUS_FEATURE,
+    REMOTE_CONTROL_FEATURE,
 } from 'generated/features';
 import {
     memo,
@@ -205,7 +206,13 @@ export const setupUtilsAndLoadScript = (
     counterId = '',
     phones = '',
 ) => {
-    if (flags[CLICK_TRACKING_FEATURE] || flags[SUBMIT_TRACKING_FEATURE]) {
+    if (
+        flags[CLICK_TRACKING_FEATURE] ||
+        flags[SUBMIT_TRACKING_FEATURE] ||
+        flags[HIDE_PHONES_FEATURE] ||
+        flags[REMOTE_CONTROL_FEATURE] ||
+        flags[CHECK_STATUS_FEATURE]
+    ) {
         const globalConfig = getGlobalStorage(ctx);
         const utils: Record<
             string,
@@ -213,21 +220,21 @@ export const setupUtilsAndLoadScript = (
         > = {};
 
         utils['getCachedTags'] = getCachedTags;
-        if (flags[SUBMIT_TRACKING_FEATURE]) {
+        if (flags[SUBMIT_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
             utils['form'] = {
                 [UTILS_CLOSEST_KEY]: bindArg(ctx, closestForm),
                 [UTILS_SELECT_KEY]: selectForms,
                 [UTILS_GET_DATA_KEY]: bindArg(ctx, getFormData),
             };
         }
-        if (flags[CLICK_TRACKING_FEATURE]) {
+        if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
             utils['button'] = {
                 [UTILS_CLOSEST_KEY]: bindArg(ctx, closestButton),
                 [UTILS_SELECT_KEY]: selectButtons,
                 [UTILS_GET_DATA_KEY]: bindArg(ctx, getButtonData),
             };
         }
-        if (flags[HIDE_PHONES_FEATURE]) {
+        if (flags[HIDE_PHONES_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
             utils['phone'] = {
                 [UTILS_HIDE_PHONES_KEY]: bindArgs(
                     [ctx, null, [phones]],
