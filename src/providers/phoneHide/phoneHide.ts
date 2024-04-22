@@ -14,7 +14,7 @@ import { stringIncludes } from 'src/utils/string';
 import { globalLocalStorage } from 'src/storage/localStorage';
 import { COUNTER_SETTINGS_HIDE_PHONES_KEY } from './const';
 
-const FORCE_HIDE_PHONES_KEY = '_ym_hide_phones';
+const FORCE_HIDE_PHONES_KEY = 'hide_phones';
 
 /**
  * Hide part of the phone number and show it when clicked or hovered
@@ -42,7 +42,7 @@ export const usePhoneHideProvider = ctxErrorLogger(
             const isForcedPhoneHide =
                 stringIncludes(
                     getLocation(ctx).search,
-                    `${FORCE_HIDE_PHONES_KEY}=1`,
+                    `_ym_${FORCE_HIDE_PHONES_KEY}=1`,
                 ) || ls.getVal(FORCE_HIDE_PHONES_KEY, 0);
             let phoneHideSettings = getPath(
                 settings,
