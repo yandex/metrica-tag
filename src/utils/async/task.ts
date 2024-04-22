@@ -48,11 +48,11 @@ export const taskChain = curry2(
         ),
 );
 
-export const taskRace = <T>(tasks: TaskInterface<T>[]): TaskInterface<T> => {
+export const taskRace = <T>(tasks: TaskInterface<T>[]) => {
     const rejectErrors: unknown[] = [];
     let isResolved = false;
 
-    return task((reject, resolve) => {
+    return task<T, unknown[]>((reject, resolve) => {
         const onErrorCb = (error: unknown) => {
             const length = rejectErrors.push(error);
             if (length === tasks.length) {
