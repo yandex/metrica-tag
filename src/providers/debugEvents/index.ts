@@ -28,7 +28,9 @@ export const dispatchDebuggerEvent = (ctx: Window, event: DebuggerEvent) => {
         return;
     }
 
-    const { counterKey } = event;
+    // eslint-disable-next-line prefer-destructuring
+    const counterKey = event['counterKey'];
+
     if (counterKey) {
         const [counterId, counterType] = counterKey.split(':');
         const isSilent = isCounterIdSilent(parseIntSafe(counterId)!);
