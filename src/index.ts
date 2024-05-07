@@ -18,6 +18,7 @@ import {
     ctxBindArgs,
     curry2SwapArgs,
 } from 'src/utils/function';
+import type { AnyFunc } from 'src/utils/function/types';
 import { entries, isFunction, isObject } from 'src/utils/object';
 import { getGlobalStorage } from 'src/storage/global';
 import { HIT_PARAMS_KEY, LAST_REFERRER_KEY } from 'src/storage/global/consts';
@@ -95,7 +96,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             counterDefer,
         );
 
-        const unsubscribeMethods: Array<Function | undefined> = [];
+        const unsubscribeMethods: Array<() => void | null | undefined> = [];
 
         const decorators = [
             errorsDecorator,
@@ -107,10 +108,10 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             decorators.unshift(telemetryCallCountDecorator);
         }
 
-        const initMethod = <FN extends (...args: any) => ReturnType<FN>>(
+        const initMethod = <FN extends (...args: unknown[]) => ReturnType<FN>>(
             method: FN,
             methodName: keyof CounterObject,
-            extraDecorators?: any[],
+            extraDecorators?: AnyFunc[],
         ) => {
             thisInstance[methodName] = decoratorPipe(
                 ctx,
@@ -145,7 +146,10 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         };
 
         const callProvider = (fn: ProviderFunction) => {
-            const result = destructingDecorator<ProviderFunction>(
+            const result = destructingDecorator<
+                ProviderFunction,
+                ReturnType<ProviderFunction>
+            >(
                 ctx,
                 counterOptions,
                 '',

@@ -1,11 +1,15 @@
-import { CounterOptions } from 'src/utils/counterOptions';
 import { getCounterInstance } from 'src/utils/counter';
+import { CounterObject } from 'src/utils/counter/type';
 import { isUndefined } from 'src/utils/object';
-import { argsToArray } from '../../function/args';
+import { argsToArray } from '../function/args';
+import type { Decorator } from './types';
 
-export function selfReturnDecorator<
-    FN extends (...args: any) => ReturnType<FN>,
->(ctx: Window, counterOptions: CounterOptions, methodName: string, fn: FN) {
+export const selfReturnDecorator: Decorator<CounterObject | undefined, true> = (
+    ctx,
+    counterOptions,
+    methodName,
+    fn,
+) => {
     return function selfReturn() {
         // eslint-disable-next-line prefer-rest-params
         const fnArgs = argsToArray(arguments);
@@ -17,4 +21,4 @@ export function selfReturnDecorator<
 
         return result;
     };
-}
+};

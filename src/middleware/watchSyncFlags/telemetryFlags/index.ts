@@ -17,7 +17,7 @@ import { entries } from 'src/utils/object';
 import { cReduce } from 'src/utils/array';
 import { getMainThreadBlockingTime } from 'src/utils/errorLogger/executionTimeErrorDecorator';
 import { GLOBAL_STORAGE_CLICKS_KEY } from 'src/providers/clickmap/const';
-import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from 'src/utils/methodDecorators/telCallCount/consts';
+import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from 'src/utils/methodDecorators/telCallCount/const';
 import { FlagGettersHash } from '../const';
 import { numRequestsTelemetry } from './numRequests';
 

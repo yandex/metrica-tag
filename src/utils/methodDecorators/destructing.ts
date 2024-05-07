@@ -1,15 +1,13 @@
-import { CounterOptions } from 'src/utils/counterOptions';
 import { getCounterInstance } from 'src/utils/counter';
 import { argsToArray } from 'src/utils/function/args';
+import type { Decorator } from './types';
 
-export function destructingDecorator<
-    FN extends (...args: any) => ReturnType<FN>,
->(
-    ctx: Window,
-    counterOptions: CounterOptions,
-    methodName: string,
-    fn: FN,
-): (...a: Parameters<FN>) => ReturnType<FN> | undefined {
+export const destructingDecorator: Decorator<undefined> = (
+    ctx,
+    counterOptions,
+    methodName,
+    fn,
+) => {
     return function destructing() {
         const counter = getCounterInstance(ctx, counterOptions);
         if (!counter) {
@@ -20,4 +18,4 @@ export function destructingDecorator<
         const fnArgs = argsToArray(arguments);
         return fn(...fnArgs);
     };
-}
+};
