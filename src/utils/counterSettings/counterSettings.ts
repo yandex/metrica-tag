@@ -7,6 +7,14 @@ import { getMs, Time } from '../time';
 import { CounterSettings, RawCounterSettings } from './types';
 import { AsyncMapFn, getAsync, setAsync } from '../asyncMap';
 
+export const setSettingsRaw = (
+    counterKey: string,
+    settings: CounterSettings,
+) => {
+    const settingsStorage = AsyncMapFn<CounterSettings>();
+    return settingsStorage(setAsync(counterKey, settings));
+};
+
 export const setSettings = (
     ctx: Window,
     counterOptions: CounterOptions,
@@ -31,8 +39,7 @@ export const setSettings = (
         });
     }
 
-    const settingsStorage = AsyncMapFn<CounterSettings>();
-    return settingsStorage(setAsync(counterKey, settings));
+    return setSettingsRaw(counterKey, settings);
 };
 
 export const getCounterSettings = <R>(
