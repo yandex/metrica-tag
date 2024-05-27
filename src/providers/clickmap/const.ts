@@ -1,5 +1,6 @@
 import { flags } from '@inject';
 import { SENDER_COLLECT_FEATURE } from 'generated/features';
+import type { AnyFunc } from 'src/utils/function/types';
 
 export const CLICKMAP_RESOURCE = flags[SENDER_COLLECT_FEATURE]
     ? 'pclmap'
@@ -128,7 +129,7 @@ export type TClickMapParams =
     | boolean
     | {
           /** A function that allows you to decide which clicks to send */
-          filter?: Function;
+          filter?: AnyFunc;
           /** Ignore list of HTML tags */
           ignoreTags?: string[];
           /** Clicks count limitation */

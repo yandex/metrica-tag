@@ -13,6 +13,7 @@ import * as events from 'src/utils/events';
 import * as domUtils from 'src/utils/dom';
 import * as globalUtils from 'src/storage/global';
 import * as functionUtils from 'src/utils/function';
+import type { AnyFunc } from 'src/utils/function/types';
 
 describe('remoteControl / inline', () => {
     const sandbox = sinon.createSandbox();
@@ -34,7 +35,7 @@ describe('remoteControl / inline', () => {
     beforeEach(() => {
         eventHandlerOn = sinon
             .stub()
-            .callsFake((ctx: Window, event: string, cb: Function) => {
+            .callsFake((ctx: Window, event: string, cb: AnyFunc) => {
                 cb(testEventData);
             });
         eventHandlerUn = sinon.stub();

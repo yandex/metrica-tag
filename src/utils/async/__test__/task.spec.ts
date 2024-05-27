@@ -13,7 +13,7 @@ import {
 
 describe('task', () => {
     it('transforms from promise', (done) => {
-        let resolve: Function = () => {};
+        let resolve: (value: unknown) => void = () => {};
         const testResult = 123123;
         const promise = new Promise((pResolve) => {
             resolve = pResolve;

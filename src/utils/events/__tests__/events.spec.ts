@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as functionUtils from 'src/utils/function';
+import type { AnyFunc } from 'src/utils/function/types';
 import { checkSupportsPassive, opts } from '..';
 import { cEvent } from '../events';
 
@@ -51,7 +52,7 @@ describe('EventHelper', () => {
         const cb = () => {};
         const options = { passive: false, capture: true };
         const handler = cEvent({
-            addEventListener: (event: string, callback: Function, opt: any) => {
+            addEventListener: (event: string, callback: AnyFunc, opt: any) => {
                 return opt.passive;
             },
             removeEventListener: () => {},

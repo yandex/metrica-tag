@@ -1,3 +1,5 @@
+import type { AnyFunc } from 'src/utils/function/types';
+
 /**
  * Intermediate state of counter parameters
  */
@@ -12,7 +14,7 @@ export interface CounterInfo {
     clickmap?:
         | boolean
         | Partial<{
-              filter: Function;
+              filter: AnyFunc;
               ignoreTags: string[];
               quota: number;
           }>;

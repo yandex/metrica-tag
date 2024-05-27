@@ -1,9 +1,10 @@
 import * as chai from 'chai';
+import type { AnyFunc } from 'src/utils/function/types';
 import { callbackInit, CALLBACK_ARRAY_NAME } from '../callbackInit';
 
 describe('callbackInit', () => {
     const [one, many] = CALLBACK_ARRAY_NAME;
-    const win = (fnOne: Function, fnTwo: Function) => {
+    const win = (fnOne: AnyFunc, fnTwo: AnyFunc) => {
         const out: Record<string, any> = {};
         out[one] = fnOne;
         out[many] = [fnTwo];

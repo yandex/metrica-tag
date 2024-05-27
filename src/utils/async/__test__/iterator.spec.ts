@@ -1,4 +1,5 @@
 import { noop } from 'src/utils/function';
+import type { AnyFunc } from 'src/utils/function/types';
 import * as time from 'src/utils/time';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
@@ -47,8 +48,8 @@ describe('iterator universal', () => {
         const iterFn = iterForOf<number, any>(
             testArrayOrigin.slice(),
             (elem, list) => {
-                if (arrayToMerge.length) {
-                    list.push(arrayToMerge.pop());
+                if (arrayToMerge.length && Array.isArray(list)) {
+                    list.push(arrayToMerge.pop()!);
                 }
                 checkHistoryArray.push(elem);
                 return elem;
@@ -76,18 +77,18 @@ describe('iterator universal', () => {
     });
     it('iter on next functions', () => {
         let count = 0;
-        const syncFn = (next: Function) => {
+        const syncFn = (next: () => void) => {
             count += 1;
             next();
         };
-        const finishFn = (next: Function) => {
+        const finishFn = (next: () => void) => {
             count += 1;
             expect(count).to.be.eq(3);
             next();
         };
         const iterator = iterForOf(
             [syncFn, syncFn, finishFn],
-            (fn: Function, next) => {
+            (fn: AnyFunc, next) => {
                 fn(next);
             },
         );

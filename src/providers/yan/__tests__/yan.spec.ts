@@ -54,7 +54,7 @@ describe('yan', () => {
 
         counterInstanceStub = sandbox.stub(counter, 'getCounterInstance');
         counterInstanceStub.returns({
-            [METHOD_NAME_PARAMS]: (params: object) =>
+            [METHOD_NAME_PARAMS]: (params: unknown) =>
                 chai.expect(params).to.be.deep.equal(testParams),
         } as any);
     });

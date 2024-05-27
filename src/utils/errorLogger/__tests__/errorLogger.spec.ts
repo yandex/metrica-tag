@@ -36,8 +36,8 @@ describe('errorLogger', () => {
         any
     >;
     let isNativeFunctionStub: sinon.SinonStub<
-        [functionName: string, fn: Function],
-        boolean
+        Parameters<typeof functionUtils.isNativeFunction>,
+        ReturnType<typeof functionUtils.isNativeFunction>
     >;
     let runCallbacksStub: sinon.SinonStub<
         [namespace: string, error: string, scope: string, stack?: string],

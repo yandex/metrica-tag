@@ -21,7 +21,7 @@ export const cIndexOf = (ctx: Window) => {
         if (indexMemo) {
             return indexMemo;
         }
-        let checkIndexFn: boolean | Function = false;
+        let checkIndexFn = false;
         try {
             // Тест для IE 6 или старого safari (никто точно не помнит)
             // eslint-disable-next-line

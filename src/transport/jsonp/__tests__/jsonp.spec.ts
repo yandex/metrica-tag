@@ -5,6 +5,7 @@ import * as numberUtils from 'src/utils/number';
 import * as deferBase from 'src/utils/defer/base';
 import * as domUtils from 'src/utils/dom';
 import * as knownErrorUtils from 'src/utils/errorLogger/knownError';
+import type { AnyFunc } from 'src/utils/function/types';
 import * as watchModes from 'src/transport/watchModes';
 import * as utils from 'src/utils';
 import { InternalTransportOptions, TransportFn } from 'src/transport/types';
@@ -28,7 +29,7 @@ describe('JSONP', () => {
     let createKnownStub: sinon.SinonStub<any>;
     let setDeferStub: sinon.SinonStub<any>;
     let clearDeferStub: sinon.SinonStub<any>;
-    let promiseCallback: Function | null = null;
+    let promiseCallback: AnyFunc | null = null;
     let win: Window;
 
     const testWmode = (wmode: boolean) => {

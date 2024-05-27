@@ -30,7 +30,7 @@ import { DEFAULT_NOT_BOUNCE_TIMEOUT } from '../const';
 describe('notBounce', () => {
     const window = { Math } as Window;
     let senderInfo: SenderInfo | undefined;
-    const timeouts: [number, Function][] = [];
+    const timeouts: [number, AnyFunc][] = [];
     const sandbox = sinon.createSandbox();
 
     let counterStateStub: sinon.SinonStub<[val: RawCounterInfo], void>;
@@ -87,14 +87,12 @@ describe('notBounce', () => {
         randomStub.returns(0.01);
 
         setUserTimeDeferStub = sandbox.stub(userTimeDefer, 'setUserTimeDefer');
-        setUserTimeDeferStub.callsFake(
-            (ctx: Window, callback: Function, t: number) => {
-                const timeoutId = timeouts.push([t, callback]) - 1;
-                return () => {
-                    timeouts.splice(timeoutId, 1);
-                };
-            },
-        );
+        setUserTimeDeferStub.callsFake((ctx, callback, t) => {
+            const timeoutId = timeouts.push([t, callback]) - 1;
+            return () => {
+                timeouts.splice(timeoutId, 1);
+            };
+        });
 
         senderSpy = sinon.spy((senderOpt: SenderInfo) => {
             senderInfo = senderOpt;

@@ -1,5 +1,6 @@
 import { iterateTaskWithConstraints } from '../async';
 import { asSideEffect, pipe } from '../function';
+import type { AnyFunc } from '../function/types';
 import { Observer, observer } from './observer';
 
 // разбивает поток выполнения
@@ -23,9 +24,7 @@ export const asyncHandlerObserver = <T, U>(
         iterateTaskWithConstraints(
             ctx,
             resultObserver.listeners,
-            (fn: Function) => {
-                return fn(data);
-            },
+            (fn: AnyFunc) => fn(data),
             maxTime,
         );
     }) as any;

@@ -1,11 +1,12 @@
 import { createError } from '../errorLogger';
 import { throwFunction } from '../errorLogger/throwFunction';
 import { bindArg, cont, curry2, firstArg } from '../function';
+import type { AnyFunc } from '../function/types';
 import { getMs, TimeOne } from '../time';
 
 export type IterParams<T, R> = {
     itemList: T[];
-    iterHandler: (item: T, next?: Function | any) => R;
+    iterHandler: (item: T, next?: T[] | (() => void)) => R;
     stopIter: boolean;
     iterCursor: number;
 };
@@ -44,7 +45,7 @@ export const iterNext = <T, R>(rawParams: IterParams<T, R>) => {
 
 export const iterForEach = curry2(
     <T, R>(
-        handler: (item: R, iterFn: Function) => T,
+        handler: (item: R, iterFn: AnyFunc) => T,
         params: IterParams<T, R>,
     ) => {
         const allResult: R[] = [];
@@ -139,7 +140,7 @@ export const iterNextCall = <T, R>(iterParams: IterParams<T, R>) => {
 
 export const iterForOf = <Item, Result>(
     itemList: Item[],
-    handler?: (a: Item, nextFn?: Function | any) => Result,
+    handler?: (a: Item, nextFn?: Item[] | (() => void)) => Result,
 ) => {
     const iterParams = {
         itemList,

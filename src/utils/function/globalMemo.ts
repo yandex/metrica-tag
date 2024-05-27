@@ -2,6 +2,7 @@ import { getVersion } from 'src/version';
 import { getGlobalStorage } from 'src/storage/global';
 import { getPath } from 'src/utils/object/path';
 import { memo } from './memo';
+import type { AnyFunc } from './types';
 
 const MEMO_FN_KEY = `m${getVersion()}`;
 const GLOBAL_MEMO_FN_KEY = 'global';
@@ -40,7 +41,7 @@ export const globalMemoWin = <R, T extends Variadic = Variadic>(
 
         const storage = getGlobalStorage(ctx);
         const gsKey = global ? GLOBAL_MEMO_FN_KEY : MEMO_FN_KEY;
-        const memoStorage = storage.getVal<Record<string, Function>>(gsKey, {});
+        const memoStorage = storage.getVal<Record<string, AnyFunc>>(gsKey, {});
 
         let wrappedFunction = getPath(memoStorage, key);
         if (!wrappedFunction) {
@@ -51,6 +52,7 @@ export const globalMemoWin = <R, T extends Variadic = Variadic>(
 
         // eslint-disable-next-line prefer-rest-params
         // eslint-disable-next-line prefer-spread
+        // @ts-expect-error -- argumentas object is not a pure Array, which is ok.
         return wrappedFunction.apply(null, arguments);
     };
 };

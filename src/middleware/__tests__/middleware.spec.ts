@@ -5,6 +5,7 @@ import { HIT_PROVIDER } from 'src/providers';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { getProviderMiddlewares } from '..';
 import { combineMiddlewares } from '../combine';
+import type { Middleware } from '../types';
 
 describe('index Middleware', () => {
     const sandbox = sinon.createSandbox();
@@ -29,9 +30,9 @@ describe('index Middleware', () => {
     });
     it('combine middleware last next should be called', () => {
         forOfStub.returns(() => {});
-        const middlewareList = [
+        const middlewareList: Middleware[] = [
             {
-                afterRequest: (a: any, next: Function) => {
+                afterRequest: (a, next) => {
                     chai.expect(next).to.be.ok;
                     next();
                 },

@@ -5,6 +5,7 @@ import * as browserUtils from 'src/utils/browser';
 import * as knownErrorUtils from 'src/utils/errorLogger/knownError';
 import * as defer from 'src/utils/defer/base';
 import { REQUEST_MODE_KEY } from 'src/api/common';
+import type { TransportFn } from 'src/transport/types';
 import * as wm from '../../watchModes';
 import { useImage } from '../image';
 
@@ -55,7 +56,7 @@ describe('Image', () => {
             },
         };
         createElementFunctionStub.returns(fakeImage);
-        const request = useImage(ctx) as Function;
+        const request = useImage(ctx) as TransportFn;
 
         const requestPromise = request(senderUrl, options);
         const [url, opts, q] = getSrcUrlStub.getCall(0).args;

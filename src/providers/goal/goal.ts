@@ -40,7 +40,7 @@ const getGoalLocation = (
     return [`${schemePrefix}://${hostname}/${target}`, href || ''];
 };
 
-const VALIDATE_MAP: Record<string, Function> = {
+const VALIDATE_MAP: Record<string, (a: string) => boolean> = {
     goal: bindThisForMethodTest(/[/&=?#]/),
 };
 

@@ -1,4 +1,5 @@
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
+import type { AnyFunc } from '../function/types';
 
 export const clearDefer = (ctx: Window, deferId: number) => {
     const clearTimeout: Window['clearTimeout'] = getNativeFunction(
@@ -12,7 +13,7 @@ export const clearDefer = (ctx: Window, deferId: number) => {
 // Без errorLogger - для избежания циклических зависимостей в транспортах и callForeignCallback
 export const setDeferBase = (
     ctx: Window,
-    fn: Function,
+    fn: AnyFunc,
     timeOut: number,
 ): number => {
     const setTimeout: Window['setTimeout'] = getNativeFunction(

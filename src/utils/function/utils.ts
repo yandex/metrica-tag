@@ -4,7 +4,7 @@ import { AnyFunc } from './types';
 
 export type CallWithoutArguments = <T>(fn: () => T) => T;
 
-export const call = <FnType extends AnyFunc | Function, ArgType>(
+export const call = <FnType extends AnyFunc, ArgType>(
     fn: FnType,
     arg?: ArgType,
 ): FnType extends AnyFunc ? ReturnType<FnType> : never =>

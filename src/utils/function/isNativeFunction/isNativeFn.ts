@@ -1,9 +1,14 @@
+import type { AnyConstructor, AnyFunc } from '../types';
+
 const APPROXIMATE_LENGTH_OF_NATIVE_FN_STRINGIFIED = 35;
 const nativeCode = '[native code]';
 const NATIVE_CODE_LENGTH = nativeCode.length;
 const SEPARATOR_INDEX = 7;
 
-export const isNativeFn = (functionName: string, fn: Function) => {
+export const isNativeFn = (
+    functionName: string,
+    fn: AnyConstructor | AnyFunc,
+) => {
     // ie8: "typeof window.attachEvent" => "object"
     const isNil = !fn;
     const isNotAFunction = typeof fn !== 'function';

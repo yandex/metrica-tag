@@ -24,24 +24,23 @@ export const combineMiddlewares = (
             beforeRequest: resolveFn,
             afterRequest: resolveFn,
         });
-        const iterator = iterForOf(
-            middlewareList,
-            (middleware, next: () => void) => {
-                const fn = before
-                    ? middleware.beforeRequest
-                    : middleware.afterRequest;
-                if (fn) {
-                    try {
-                        fn(senderParams, next);
-                    } catch (e) {
-                        iterator(iterBreak);
-                        reject(e);
-                    }
-                } else {
-                    next();
+        const iterator = iterForOf(middlewareList, (middleware, next) => {
+            // FIXME: This casting is a product of bad iterForOf typings.
+            const nextFn = next as () => void;
+            const fn = before
+                ? middleware.beforeRequest
+                : middleware.afterRequest;
+            if (fn) {
+                try {
+                    fn(senderParams, nextFn);
+                } catch (e) {
+                    iterator(iterBreak);
+                    reject(e);
                 }
-            },
-        );
+            } else {
+                nextFn();
+            }
+        });
         iterator(iterNextCall);
     });
 };

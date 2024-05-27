@@ -6,7 +6,7 @@ import { argsToArray } from '../args';
 import { toNativeOrFalse } from '../isNativeFunction/toNativeOrFalse';
 
 export const callPoly = (
-    rawFnName: string | Function,
+    rawFnName: string | AnyFunc,
     args: any[] = [],
     rawCtx?: any,
 ) => {

@@ -1,6 +1,7 @@
 import * as sinon from 'sinon';
 import * as eventUtils from 'src/utils/events';
 import type { EventSetter } from 'src/utils/events/types';
+import type { AnyFunc } from 'src/utils/function/types';
 import * as timeUtils from 'src/utils/time';
 import * as browserUtils from 'src/utils/browser';
 import { setUserTimeDefer } from '../userTimeDefer';
@@ -12,13 +13,13 @@ type WindowWithTimeMocks = Window & {
 };
 
 const timeoutMock = () => {
-    let timeoutsHash: { [id: number]: [Function, number] } = {};
+    let timeoutsHash: { [id: number]: [AnyFunc, number] } = {};
     let timeoutId = 0;
     let now = 0;
 
     return {
         document: {},
-        setTimeout: (callback: Function, time: number) => {
+        setTimeout: (callback: AnyFunc, time: number) => {
             timeoutId += 1;
             timeoutsHash[timeoutId] = [callback, time];
 
@@ -44,7 +45,7 @@ const timeoutMock = () => {
                 }
 
                 timeoutsHash[id] = [callback, timeoutTime - time] as [
-                    Function,
+                    AnyFunc,
                     number,
                 ];
             });
@@ -105,7 +106,7 @@ describe('userTimeDefer', () => {
 
     it('Works normally with blur and other events', () => {
         const ctx = timeoutMock();
-        const eventsHash: Record<string, Function> = {};
+        const eventsHash: Record<string, AnyFunc> = {};
         isIEStub.returns(false);
         timeUtilsStub.returns(<R>() => ctx.getNowTime() as unknown as R);
         eventsStub.returns({

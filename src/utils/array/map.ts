@@ -12,8 +12,9 @@ import { curry2, curry2SwapArgs } from '../function/curry';
 import { cReduce } from './reduce';
 import { isArray } from './isArray';
 import { toNativeOrFalse } from '../function/isNativeFunction';
+import type { AnyFunc } from '../function/types';
 
-const isLengthCorrect = (ctx: Window, method: Function) => {
+const isLengthCorrect = (ctx: Window, method: AnyFunc) => {
     if (!isFF(ctx)) {
         return true;
     }

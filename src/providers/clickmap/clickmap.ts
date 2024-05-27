@@ -40,6 +40,7 @@ import {
     noop,
     pipe,
 } from 'src/utils/function';
+import type { AnyFunc } from 'src/utils/function/types';
 import { getLocation } from 'src/utils/location';
 import { getMouseButton, getPosition, getTarget } from 'src/utils/mouseEvents';
 import { getRandom } from 'src/utils/number';
@@ -66,7 +67,7 @@ export const isCurrentClickTracked = (
     click: ClickInfo,
     lastClick: ClickInfo,
     ignoreTags: string[],
-    filter: Function | undefined,
+    filter: AnyFunc | undefined,
 ): boolean => {
     if (has(ctx, 'ymDisabledClickmap') || !click || !click.element) {
         return false;

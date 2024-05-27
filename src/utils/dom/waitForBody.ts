@@ -9,9 +9,9 @@ export const waitForBodyTask = (
     target: Window | HTMLIFrameElement = ctx,
 ) => {
     const pathToBody = `${
-        (target as any).nodeType ? 'contentWindow.' : ''
+        (target as Node).nodeType ? 'contentWindow.' : ''
     }document.body`;
-    const wait = (resolve: Function) => {
+    const wait = (resolve: (a?: unknown) => void) => {
         if (getPath(target, pathToBody)) {
             resolve();
         } else {

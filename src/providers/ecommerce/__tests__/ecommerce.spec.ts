@@ -72,7 +72,7 @@ describe('ecommerce', () => {
             });
         counterSettingsStub = sandbox
             .stub(counterSettingsUtils, 'getCounterSettings')
-            .callsFake((__, callback: Function) => {
+            .callsFake((__, callback) => {
                 callback(counterSettings);
                 return Promise.resolve();
             });
@@ -91,8 +91,8 @@ describe('ecommerce', () => {
         });
 
         it('if ecommerce is off', () => {
-            counterSettingsStub.callsFake((_, callback: Function) => {
-                callback({});
+            counterSettingsStub.callsFake((_, callback) => {
+                callback({} as CounterSettings);
                 return Promise.resolve();
             });
             ecommerce(ctx, noEcommerceCounterOptions);

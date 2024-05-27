@@ -19,7 +19,7 @@ type FeatureType = FeatureTypeRaw & {
 const { disableFeatures, files } = commandLineArgs([
     { name: 'disableFeatures', alias: 'd', type: Boolean, defaultValue: false },
     { name: 'files', alias: 'f', type: String, multiple: true },
-]) as { disableFeatures: Boolean; files: string[] };
+]) as { disableFeatures: boolean; files: string[] };
 
 if (!files || !files.length) {
     console.error(

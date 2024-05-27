@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
+import type { TransportFn } from 'src/transport/types';
 import * as json from 'src/utils/json';
 import * as isKnownErrorUtils from 'src/utils/errorLogger/knownError';
 import * as errorLogger from 'src/utils/errorLogger/handleError';
@@ -151,7 +152,7 @@ describe('XHR', () => {
                 host: 'local:10202',
             },
             XMLHttpRequest: MockXHR,
-        } as any as Window) as Function;
+        } as any as Window) as TransportFn;
         const req = request('some', { debugStack: [] });
         MockXHR.getInstance().resolve();
         return req
@@ -169,7 +170,7 @@ describe('XHR', () => {
                 host: 'local:10202',
             },
             XMLHttpRequest: MockXHR,
-        } as any as Window) as Function;
+        } as any as Window) as TransportFn;
         parseStub.returns(resp);
 
         const req = request('some', { debugStack: [] });
@@ -197,7 +198,7 @@ describe('XHR', () => {
                 host: 'local:10202',
             },
             XMLHttpRequest: MockXHR,
-        } as any as Window) as Function;
+        } as any as Window) as TransportFn;
         const debugStack = ['x', 'h', 'r'];
 
         parseStub.returns(null);

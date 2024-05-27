@@ -10,12 +10,10 @@ describe('Trigger event provider', () => {
 
     beforeEach(() => {
         createAndDispatchEventMock = sinon.stub(DOM, 'createAndDispatchEvent');
-        utilsMock = sinon
-            .stub(defer, 'setDefer')
-            .callsFake((ctx: any, cb: Function) => {
-                cb();
-                return 1;
-            });
+        utilsMock = sinon.stub(defer, 'setDefer').callsFake((ctx, cb) => {
+            cb();
+            return 1;
+        });
     });
 
     afterEach(() => {

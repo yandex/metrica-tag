@@ -1,7 +1,8 @@
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
-import { CounterObject } from 'src/utils/counter/type';
+import type { CounterObject } from 'src/utils/counter/type';
+import type { CounterOptions } from 'src/utils/counterOptions';
+import type { AnyFunc } from 'src/utils/function/types';
 import { yaNamespace } from './const';
-import { CounterOptions } from './utils/counterOptions';
 
 export type MetrikaCounterConstructor = (
     this: CounterObject,
@@ -15,7 +16,7 @@ export type MetrikaCounterConstructor = (
 export interface MetrikaCounter extends MetrikaCounterConstructor {}
 
 export type CounterMethod = keyof CounterObject;
-export type ProviderResultObject = Record<string, Function> & {
+export type ProviderResultObject = Record<string, AnyFunc> & {
     [UNSUBSCRIBE_PROPERTY]?: () => void;
 };
 export type ProviderResult =

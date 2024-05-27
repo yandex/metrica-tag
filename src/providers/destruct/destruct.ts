@@ -2,11 +2,12 @@ import { getGlobalStorage } from 'src/storage/global';
 import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cForEach } from 'src/utils/array';
+import type { AnyFunc } from 'src/utils/function/types';
 import { isFunction } from 'src/utils/object';
 import { deleteOriginalOptions } from 'src/utils/counterOptions/originalOptionsState';
 import { DestructHandler } from './const';
 
-type UnsubscribeCallbacks = (Function | undefined)[];
+type UnsubscribeCallbacks = (AnyFunc | undefined)[];
 
 /**
  * Method for deinitializing provider of the counter, useful when changing the counter without refreshing the page
@@ -32,7 +33,7 @@ export const destruct = ctxErrorLogger(
                 unsubscribeMethods,
             );
             deleteOriginalOptions(ctx, getCounterKey(counterOptions));
-            delete globalConfig.getVal<{ [key: string]: object }>('counters')[
+            delete globalConfig.getVal<{ [key: string]: unknown }>('counters')[
                 getCounterKey(counterOptions)
             ];
             delete ctx[`yaCounter${counterId}` as any];

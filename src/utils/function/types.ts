@@ -2,6 +2,7 @@ import { T as Tuple, A as Any } from 'ts-toolbelt';
 import type { SliceFrom } from 'src/utils/types';
 
 export type AnyFunc = (...args: any[]) => any;
+export type AnyConstructor = new (...args: any[]) => any;
 export type ParamsTail<F extends AnyFunc> = Tuple.Tail<Parameters<F>>;
 export type ParamsFirst<F extends AnyFunc> = Parameters<F>[0];
 export type FuncRest<F extends AnyFunc, R = ReturnType<F>> = (

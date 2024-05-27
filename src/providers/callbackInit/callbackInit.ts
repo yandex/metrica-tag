@@ -3,6 +3,7 @@ import { ctxErrorLogger } from 'src/utils/errorLogger';
 import { argOptions } from '@inject';
 import { isFunction } from 'src/utils/object';
 import { callUserCallback } from 'src/utils/function';
+import type { AnyFunc } from 'src/utils/function/types';
 
 export const CALLBACK_ARRAY_NAME = [
     `yandex_metrika_callback${argOptions['callbackPostfix']}`,
@@ -20,9 +21,9 @@ export const callbackInit = ctxErrorLogger('cb.i', (ctx: Window) => {
         anyCtx[one]();
     }
     if (typeof anyCtx[many] === 'object') {
-        cForEach((fn: Function, i) => {
+        cForEach((fn: AnyFunc, i) => {
             anyCtx[many][i] = null;
-            callUserCallback(ctx, fn as any);
+            callUserCallback(ctx, fn);
         }, anyCtx[many]);
     }
     cForEach((callbackName: string) => {
