@@ -46,7 +46,7 @@ module.exports = {
                 'prettier/@typescript-eslint',
                 'plugin:import/typescript',
             ],
-            plugins: ['@typescript-eslint', 'ban'],
+            plugins: ['@typescript-eslint', 'ban', 'n'],
             env: {
                 browser: true,
             },
@@ -54,6 +54,7 @@ module.exports = {
                 env: 'readonly',
             },
             rules: {
+                'n/no-process-env': 'error',
                 'ban/ban': bannedFunctions,
                 '@typescript-eslint/prefer-interface': 'off',
                 semi: 'error',
@@ -136,9 +137,16 @@ module.exports = {
             files: './scripts/**/*',
             rules: {
                 'ban/ban': 'off',
+                'n/no-process-env': 'off',
                 'no-console': 'off',
                 'no-await-in-loop': 'off',
                 'no-bitwise': 'off',
+            },
+        },
+        {
+            files: ['./src/inject/*.ts', './src/version.ts'],
+            rules: {
+                'n/no-process-env': 'off',
             },
         },
     ],

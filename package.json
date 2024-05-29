@@ -23,7 +23,7 @@
     "setup-hooks": "cp -f hooks/pre-commit .git/hooks/pre-commit",
     "test:unit": "npm run test:unit:coverage -- './src/**/*.spec.ts'",
     "test:unit:coverage": "npm run test:unit:mocha -- --reporter=mochawesome --reporter-options reportDir=test/unit/coverage,reportFilename=index.html",
-    "test:unit:mocha": "VERSION=25 TS_NODE_PROJECT=tsconfig.unit.json mocha -r ts-node/register -r tsconfig-paths/register",
+    "test:unit:mocha": "TS_NODE_PROJECT=tsconfig.unit.json mocha -r ts-node/register -r tsconfig-paths/register",
     "ts-node": "TS_NODE_FILES=true NODE_OPTIONS=--max-old-space-size=6144 ts-node -r tsconfig-paths/register --swc"
   },
   "dependencies": {
@@ -58,6 +58,7 @@
     "eslint-import-resolver-typescript": "2.0.0",
     "eslint-plugin-ban": "1.5.2",
     "eslint-plugin-import": "2.25.3",
+    "eslint-plugin-n": "16.6.2",
     "eslint-plugin-no-only-tests": "2.4.0",
     "jsdom": "19.0.0",
     "mocha": "9.2.2",

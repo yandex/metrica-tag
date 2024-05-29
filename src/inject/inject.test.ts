@@ -32,3 +32,5 @@ export const argOptions = Object.assign(args, {
 }) as Readonly<Args>;
 
 export const resourceId = 'test.js';
+
+export const getVersion: () => string = () => '25';

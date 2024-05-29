@@ -1,7 +1,6 @@
 import { isIE as isIEFn } from 'src/utils/browser';
-import { getVersion } from 'src/version';
 import { LOCAL_FEATURE } from 'generated/features';
-import { flags, argOptions } from '@inject';
+import { flags, argOptions, getVersion } from '@inject';
 import { Constructor } from 'src/types';
 
 const constructorName: Constructor =

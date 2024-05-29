@@ -1,4 +1,4 @@
-import { getVersion } from 'src/version';
+import { getVersion } from '@inject';
 import { getGlobalStorage } from 'src/storage/global';
 import { getPath } from 'src/utils/object/path';
 import { memo } from './memo';

@@ -19,3 +19,8 @@ export const argOptions: Args = process.env.ARG_OPTIONS as any;
  * File name
  */
 export const resourceId = process.env.JS_NAME as string;
+
+/**
+ * Release version
+ */
+export const getVersion: () => string = () => process.env.VERSION! || '25';
