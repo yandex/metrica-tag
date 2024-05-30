@@ -9,7 +9,6 @@ import {
 import { getGlobalStorage } from 'src/storage/global';
 import {
     CLICK_TRACKING_FEATURE,
-    HIDE_PHONES_FEATURE,
     LOCAL_FEATURE,
     SUBMIT_TRACKING_FEATURE,
     CHECK_STATUS_FEATURE,
@@ -37,7 +36,6 @@ import {
 } from 'src/utils/array';
 import { closestButton, selectButtons } from 'src/utils/dom/button';
 import { closestForm, getFormData, selectForms } from 'src/utils/dom/form';
-import { hidePhones } from 'src/utils/phones/phonesHide';
 import { checkStatusFn } from 'src/providers/statusCheck/statusCheckFn';
 import { parseDecimalInt } from 'src/utils/number';
 import { AnyFunc } from 'src/utils/function/types';
@@ -158,11 +156,10 @@ export const UTILS_CLOSEST_KEY = 'closest';
 export const UTILS_SELECT_KEY = 'select';
 export const UTILS_GET_DATA_KEY = 'getData';
 
-export const UTILS_HIDE_PHONES_KEY = 'hidePhones';
 export const UTILS_CHECK_STATUS_KEY = 'checkStatus';
 
 const SPLITTER = '.';
-const AVAILABLE_FILES = ['form', 'button', 'phone', 'status'];
+const AVAILABLE_FILES = ['form', 'button', 'status'];
 
 const BETA_URL = 'https://s3.mds.yandex.net/internal-metrika-betas';
 const URL = 'https://yastatic.net/s3/metrika';
@@ -204,12 +201,10 @@ export const setupUtilsAndLoadScript = (
     ctx: ExtendedWindow,
     src?: string,
     counterId = '',
-    phones = '',
 ) => {
     if (
         flags[CLICK_TRACKING_FEATURE] ||
         flags[SUBMIT_TRACKING_FEATURE] ||
-        flags[HIDE_PHONES_FEATURE] ||
         flags[REMOTE_CONTROL_FEATURE] ||
         flags[CHECK_STATUS_FEATURE]
     ) {
@@ -232,14 +227,6 @@ export const setupUtilsAndLoadScript = (
                 [UTILS_CLOSEST_KEY]: bindArg(ctx, closestButton),
                 [UTILS_SELECT_KEY]: selectButtons,
                 [UTILS_GET_DATA_KEY]: bindArg(ctx, getButtonData),
-            };
-        }
-        if (flags[HIDE_PHONES_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
-            utils['phone'] = {
-                [UTILS_HIDE_PHONES_KEY]: bindArgs(
-                    [ctx, null, [phones]],
-                    hidePhones,
-                ),
             };
         }
         if (flags[CHECK_STATUS_FEATURE]) {
@@ -269,8 +256,8 @@ export const handleMessage = memo(
         cForEach(pipe(ctxBindArgs(args), call), REMOTE_CONTROL_LISTENERS);
         if (message['inline']) {
             const src = getResourceUrl(message);
-            const { ['data']: data = '', id = '' } = message;
-            setupUtilsAndLoadScript(ctx, src, id, data);
+            const { id = '' } = message;
+            setupUtilsAndLoadScript(ctx, src, id);
         } else if (
             message['resource'] &&
             isAllowedResource(message['resource'])

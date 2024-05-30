@@ -1,10 +1,11 @@
 import * as chai from 'chai';
-import Sinon, * as sinon from 'sinon';
+import * as sinon from 'sinon';
 import { yaNamespace } from 'src/const';
 import { metrikaNamespace } from 'src/storage/global';
 import * as functionUtils from 'src/utils/function';
 import * as events from 'src/utils/events';
 import * as global from 'src/storage/global';
+import type { EventSetter } from 'src/utils/events/types';
 import * as fnv32a from 'src/utils/fnv32a';
 import * as inject from '@inject';
 import { LOCAL_FEATURE } from 'generated/features';
@@ -123,7 +124,7 @@ describe('getResourceUrl', () => {
     });
 
     it('Only allowed ids', () => {
-        ['button', 'form', 'phone'].forEach((fileId) => {
+        ['button', 'form'].forEach((fileId) => {
             chai.expect(
                 remoteControl.getResourceUrl({
                     lang: 'ru',
@@ -201,8 +202,8 @@ describe('getResourceUrl', () => {
 
 describe('remoteControl/onMessage', () => {
     const sandbox = sinon.createSandbox();
-    const ctx = { JSON } as unknown as Window;
-    let handleMessageStub: Sinon.SinonStub<
+    const ctx = { JSON } as Window;
+    let handleMessageStub: sinon.SinonStub<
         [ctx: Window, event: MessageEvent, message: remoteControl.Message],
         void
     >;
@@ -222,19 +223,19 @@ describe('remoteControl/onMessage', () => {
         remoteControl.onMessage(ctx, {
             data: JSON.stringify({ action: 'something_wrong' }),
             origin: 'https://metrika.yandex.com',
-        } as unknown as MessageEvent);
+        } as MessageEvent);
         sinon.assert.notCalled(handleMessageStub);
     });
 
     it('handles events from valid metrika origins', () => {
         const message = {
             action: 'appendremote',
-        } as unknown as remoteControl.Message;
+        } as remoteControl.Message;
         const origin = 'https://metrika.yandex.com';
         const event = {
             data: JSON.stringify(message),
             origin,
-        } as unknown as MessageEvent;
+        } as MessageEvent;
         remoteControl.onMessage(ctx, event);
         sinon.assert.calledWith(handleMessageStub, ctx, event, message);
     });
@@ -242,32 +243,36 @@ describe('remoteControl/onMessage', () => {
 
 describe('remoteControl', () => {
     const eventHandlerUnsubscribe = sinon.stub();
-    const eventHandlerOn = sinon.stub().returns(eventHandlerUnsubscribe);
+    const eventHandlerOn = sinon
+        .stub<Parameters<EventSetter['on']>, ReturnType<EventSetter['on']>>()
+        .returns(eventHandlerUnsubscribe);
     const eventHandlerUn = sinon.stub();
     const getGlobalValue = sinon.stub();
     const setGlobalValue = sinon.stub();
     const hashResult = 100;
     const sandbox = sinon.createSandbox();
 
-    let cEvent: any;
+    let cEvent: sinon.SinonStub<
+        Parameters<typeof events.cEvent>,
+        ReturnType<typeof events.cEvent>
+    >;
 
     beforeEach(() => {
         sandbox.stub(fnv32a, 'fnv32a').returns(hashResult);
         sandbox
             .stub(functionUtils, 'bindArg')
-            .callsFake((arg: any, callback: (...args: any[]) => any) => {
-                return callback;
-            });
+            .callsFake((arg, callback) => callback);
         getGlobalValue.withArgs(remoteControl.REMOTE_CONTROL).returns(false);
         sandbox.stub(global, 'getGlobalStorage').returns({
             getVal: getGlobalValue,
             setSafe: setGlobalValue,
             setVal: setGlobalValue,
-        } as any);
-        cEvent = sandbox.stub(events, 'cEvent').returns({
+        });
+        cEvent = sandbox.stub(events, 'cEvent');
+        cEvent.returns({
             on: eventHandlerOn,
             un: eventHandlerUn,
-        });
+        } as EventSetter);
     });
 
     afterEach(() => {
@@ -284,27 +289,22 @@ describe('remoteControl', () => {
             [yaNamespace]: {
                 [metrikaNamespace]: {},
             },
-        } as unknown as Window;
-        const errorMessage = 'addEventListener was called with wrong arguments';
+        } as Window;
 
         remoteControl.remoteControl(windowStub);
 
-        chai.expect(cEvent.called).to.be.true;
-        chai.expect(
-            eventHandlerOn.getCall(0).args[1],
-            errorMessage,
-        ).to.deep.equal(['message']);
-        chai.expect(eventHandlerOn.getCall(0).args[2], errorMessage).to.equal(
+        sinon.assert.calledOnceWithExactly(
+            eventHandlerOn,
+            windowStub,
+            ['message'],
             remoteControl.onMessage,
         );
+
         getGlobalValue.withArgs(remoteControl.REMOTE_CONTROL).returns(true);
 
         remoteControl.remoteControl(windowStub);
         remoteControl.remoteControl(windowStub);
 
-        chai.assert(
-            eventHandlerOn.calledOnce,
-            'addEventListener should be called only once',
-        );
+        sinon.assert.calledOnce(eventHandlerOn);
     });
 });
