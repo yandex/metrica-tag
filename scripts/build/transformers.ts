@@ -45,6 +45,7 @@ const pureFunctions = [
     'arrayJoin',
     'AsyncMap',
     'bindArg',
+    'bindArgs',
     'bindThisForMethod',
     'bindThisForMethodTest',
     'cFilter',
