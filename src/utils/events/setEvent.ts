@@ -33,7 +33,7 @@ export const setEvent = <
     el: E,
     name: T,
     handler: (this: E, ev: M[T]) => any,
-    opt: EventOptions,
+    opt?: EventOptions,
     detach?: boolean,
 ): void => {
     const anyEl = el as any;
@@ -43,7 +43,11 @@ export const setEvent = <
         return;
     }
     if (supportsAdd) {
-        anyEl[fn](name, handler, opt);
+        if (opt) {
+            anyEl[fn](name, handler, opt);
+        } else {
+            anyEl[fn](name, handler);
+        }
     } else {
         anyEl[fn](`on${name}`, handler);
     }

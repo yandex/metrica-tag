@@ -52,7 +52,7 @@ export type EventOptionsObject = {
     capture?: boolean;
     passive?: boolean;
 };
-export type EventOptions = EventOptionsObject | boolean;
+export type EventOptions = EventOptionsObject | boolean | null;
 export type EventElement = HTMLElement | Document | Window | VisualViewport;
 
 export type EventSetter = {

@@ -32,8 +32,8 @@ describe('EventHelper', () => {
     it('Mix opt if it undef', () => {
         const c = opts(true)(undefined);
         if (typeof c !== 'boolean') {
-            chai.expect(c.passive).to.be.true;
-            chai.expect(c.capture).to.be.true;
+            chai.expect(c!.passive).to.be.true;
+            chai.expect(c!.capture).to.be.true;
         }
     });
     it('Opt return boolean if opt not supported', () => {

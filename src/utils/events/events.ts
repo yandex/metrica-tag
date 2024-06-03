@@ -18,7 +18,7 @@ export const checkSupportsPassive = memo((ctx: Window) => {
                 return 1;
             },
         });
-        ctx.addEventListener('test', noop, opt);
+        ctx.addEventListener('test', noop, opt!);
     } catch (e) {
         // empty
     }
@@ -29,7 +29,10 @@ export const opts = curry2(
     (
         isSupportsPassive: boolean,
         opt: EventOptions | undefined,
-    ): EventOptions => {
+    ): EventOptions | undefined => {
+        if (opt === null) {
+            return undefined;
+        }
         if (!isSupportsPassive) {
             return !!opt;
         }
