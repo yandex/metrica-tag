@@ -3,7 +3,7 @@ import { WithRequiredProperties } from 'src/utils/types';
 /**
  * Use this type if transportOptions will be transferred to defaultSender
  */
-export type TransportOptions = {
+export interface TransportOptions {
     /** HTTP method */
     verb?: string;
     /** Request headers */
@@ -24,7 +24,7 @@ export type TransportOptions = {
     returnRawResponse?: boolean;
     /** Needed for some transports that do not require full url */
     resource?: string;
-};
+}
 
 export type TransportResponse = Record<string, unknown> | string | null;
 
