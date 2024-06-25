@@ -29,3 +29,4 @@ export const removeByRegexp = curry2((regexp: RegExp, str: string) =>
 );
 export const removeSpaces = removeByRegexp(/\s/g);
 export const removeNonDigits = removeByRegexp(/\D/g);
+export const removeDigits = removeByRegexp(/\d/g);
