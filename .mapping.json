@@ -427,6 +427,7 @@
   "src/utils/dom/identifiers.ts":"metrika/frontend/watch/public/src/utils/dom/identifiers.ts",
   "src/utils/dom/index.ts":"metrika/frontend/watch/public/src/utils/dom/index.ts",
   "src/utils/dom/insertScript.ts":"metrika/frontend/watch/public/src/utils/dom/insertScript.ts",
+  "src/utils/dom/isRemovedFromDoc.ts":"metrika/frontend/watch/public/src/utils/dom/isRemovedFromDoc.ts",
   "src/utils/dom/loadScript.ts":"metrika/frontend/watch/public/src/utils/dom/loadScript.ts",
   "src/utils/dom/nodeText.ts":"metrika/frontend/watch/public/src/utils/dom/nodeText.ts",
   "src/utils/dom/nonce.ts":"metrika/frontend/watch/public/src/utils/dom/nonce.ts",
