@@ -108,7 +108,7 @@ const run = async () => {
     fs.mkdir(GEN_DIR, { recursive: true });
 
     const allFeatures: FeatureType[] = files
-        .map((filePath) =>
+        .flatMap((filePath) =>
             readAsJSON<FeatureTypeRaw[]>(filePath).map((feature) => {
                 return {
                     weight: 0,
@@ -117,9 +117,6 @@ const run = async () => {
                 } as FeatureType;
             }),
         )
-        .reduce((carry: FeatureType[], features: FeatureType[]) => {
-            return carry.concat(features);
-        }, [])
         .sort((a, b) => a.weight - b.weight);
 
     await Promise.all([
