@@ -12,7 +12,7 @@ import {
     useFirstPartyMethodHashed,
     encodeRecursiveHashed,
 } from '../firstPartyMethodHashed';
-import { FirstPartyInputData, FirstPartyOutputData } from '../const';
+import { FirstPartyInputData, FirstPartyOutputData } from '../types';
 
 describe('firstPartyMethodHashed', () => {
     const sandbox = sinon.createSandbox();

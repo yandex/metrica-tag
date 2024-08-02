@@ -12,13 +12,13 @@ import {
     errorLogger,
 } from 'src/utils/errorLogger';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { memo, noop } from 'src/utils/function';
+import { bindThisForMethodTest, memo, noop } from 'src/utils/function';
 import {
     isHttps,
     isYandexSearchDomain,
     YANDEX_RU_DOMAIN,
 } from 'src/utils/location';
-import { cKeys, entries, getPath, isObject } from 'src/utils/object';
+import { cKeys, entries, getPath, isObject, len } from 'src/utils/object';
 import {
     removeNonDigits,
     trimText,
@@ -28,16 +28,22 @@ import { DOT_REGEX_GLOBAL, isString, stringIndexOf } from 'src/utils/string';
 import { isNumber } from 'src/utils/number';
 import { consoleLog } from '../debugConsole/debugConsole';
 import {
-    FirstPartyInputData,
-    FirstPartyOutputData,
-    FirstPartyMethodHandler,
     GOOGLEMAIL_DOMAIN,
     GMAIL_DOMAIN,
     EMAIL_LOCAL_PART_REGEX,
     FIRST_PARTY_PARAMS_KEY,
     PHONE_MIN_VALID_DIGIT_CNT,
     PHONE_MAX_VALID_DIGIT_CNT,
+    MIN_EMAIL_LENGTH,
+    MAX_EMAIL_LENGTH,
+    MIN_TEL_LENGTH,
+    MAX_TEL_LENGTH,
 } from './const';
+import type {
+    FirstPartyInputData,
+    FirstPartyOutputData,
+    FirstPartyMethodHandler,
+} from './types';
 import { METHOD_NOT_SUPPORTED_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 export const isEncoderSupported = memo<(ctx: Window) => boolean>((ctx) => {
@@ -73,9 +79,30 @@ export const hashVal = (ctx: Window, val: string) => {
 };
 
 export const trimNonPhoneSymbols = removeByRegexp(/[^\d+()]/g);
-export const processPhoneNumber = (ctx: Window, origPhone: string): string => {
-    const phone = trimNonPhoneSymbols(origPhone);
+const hasLetters = bindThisForMethodTest(/[a-zа-яё,.]/gi);
+export const processPhoneNumber = (
+    ctx: Window,
+    origPhone: string,
+): string | undefined => {
     const digits = removeNonDigits(origPhone);
+    const digitsCount = len(digits);
+    if (
+        hasLetters(origPhone) ||
+        len(origPhone) - digitsCount > digitsCount || // Число цифровых символов должно быть не меньше чем число вспомогательных.
+        len(digits) < MIN_TEL_LENGTH ||
+        len(digits) > MAX_TEL_LENGTH
+    ) {
+        return undefined;
+    }
+
+    const firstLetter = origPhone[0];
+    const firstDigit = digits[0];
+    const secondLetter = origPhone[1];
+    if (firstLetter === '+' && secondLetter !== firstDigit) {
+        return undefined;
+    }
+
+    const phone = trimNonPhoneSymbols(origPhone);
 
     if (
         digits.length < PHONE_MIN_VALID_DIGIT_CNT ||
@@ -172,17 +199,24 @@ export const validateEmail = (local: string, domain: string): boolean => {
     return validateLocalPart(local);
 };
 
-export const processEmail = (origEmail: string): string => {
+const checkEmailLength = (email: string): string | undefined => {
+    const emailLength = len(email);
+    return emailLength < MIN_EMAIL_LENGTH || emailLength > MAX_EMAIL_LENGTH
+        ? undefined
+        : email;
+};
+
+export const processEmail = (origEmail: string): string | undefined => {
     const email = trimText(origEmail).replace(/^\++/gm, '').toLowerCase();
     const atIndex = email.lastIndexOf('@');
     if (atIndex === -1) {
-        return email;
+        return checkEmailLength(email);
     }
     let local = email.substr(0, atIndex);
     let domain = email.substr(atIndex + 1);
 
     if (!validateEmail(local, domain)) {
-        return email;
+        return checkEmailLength(email);
     }
 
     domain = domain.replace(GOOGLEMAIL_DOMAIN, GMAIL_DOMAIN);
@@ -204,7 +238,7 @@ export const processEmail = (origEmail: string): string => {
         local = local.slice(0, indexOfPlusSign);
     }
 
-    return `${local}@${domain}`;
+    return checkEmailLength(`${local}@${domain}`);
 };
 
 const NON_HASHABLE_KEYS: string[] = ['yandex_cid', 'yandex_public_id'];
@@ -242,11 +276,14 @@ export const encodeRecursive = (
                 // METR-48665, METR-59109
                 resultPromise = PolyPromise.resolve(val as string);
             } else {
-                let value = val as string;
+                let value: string | undefined = val as string;
                 if (key === 'phone_number') {
                     value = processPhoneNumber(ctx, value);
                 } else if (key === 'email') {
                     value = processEmail(value);
+                }
+                if (!value) {
+                    return accum;
                 }
                 resultPromise = hashVal(ctx, value);
             }

@@ -184,6 +184,7 @@
   "src/providers/firstPartyMethod/firstPartyMethod.ts":"metrika/frontend/watch/public/src/providers/firstPartyMethod/firstPartyMethod.ts",
   "src/providers/firstPartyMethod/firstPartyMethodHashed.ts":"metrika/frontend/watch/public/src/providers/firstPartyMethod/firstPartyMethodHashed.ts",
   "src/providers/firstPartyMethod/index.ts":"metrika/frontend/watch/public/src/providers/firstPartyMethod/index.ts",
+  "src/providers/firstPartyMethod/types.ts":"metrika/frontend/watch/public/src/providers/firstPartyMethod/types.ts",
   "src/providers/getClientID/const.ts":"metrika/frontend/watch/public/src/providers/getClientID/const.ts",
   "src/providers/getClientID/getClientID.ts":"metrika/frontend/watch/public/src/providers/getClientID/getClientID.ts",
   "src/providers/getClientID/index.ts":"metrika/frontend/watch/public/src/providers/getClientID/index.ts",

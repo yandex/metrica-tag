@@ -9,11 +9,8 @@ import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cKeys, entries, isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
 import { isNumber } from 'src/utils/number';
-import {
-    FirstPartyInputData,
-    FirstPartyOutputData,
-    FIRST_PARTY_HASHED_PARAMS_KEY,
-} from './const';
+import { FIRST_PARTY_HASHED_PARAMS_KEY } from './const';
+import type { FirstPartyInputData, FirstPartyOutputData } from './types';
 import {
     FIRST_PARTY_EMPTY_CONSOLE_MESSAGE,
     FIRST_PARTY_NOT_AN_OBJECT_CONSOLE_MESSAGE,

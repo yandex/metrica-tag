@@ -1,13 +1,3 @@
-export interface FirstPartyInputData {
-    [x: string]: string | number | FirstPartyInputData;
-}
-
-export type FirstPartyOutputData = [string, string | FirstPartyOutputData[]];
-
-export type FirstPartyMethodHandler = (
-    data: FirstPartyInputData,
-) => Promise<unknown> | void;
-
 export const METHOD_NAME_FIRST_PARTY = 'firstPartyParams';
 export const METHOD_NAME_FIRST_PARTY_HASHED = 'firstPartyParamsHashed';
 export const FIRST_PARTY_PARAMS_KEY = 'fpp';
@@ -18,10 +8,7 @@ export const EMAIL_LOCAL_PART_REGEX = /^[a-zA-Z0-9'!#$%&*+-/=?^_`{|}~]+$/;
 
 export const PHONE_MIN_VALID_DIGIT_CNT = 10;
 export const PHONE_MAX_VALID_DIGIT_CNT = 13;
-
-declare module 'src/utils/counter/type' {
-    interface CounterObject {
-        [METHOD_NAME_FIRST_PARTY]?: FirstPartyMethodHandler;
-        [METHOD_NAME_FIRST_PARTY_HASHED]?: FirstPartyMethodHandler;
-    }
-}
+export const MIN_TEL_LENGTH = 10;
+export const MAX_TEL_LENGTH = 16;
+export const MIN_EMAIL_LENGTH = 5;
+export const MAX_EMAIL_LENGTH = 100;

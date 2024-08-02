@@ -5,7 +5,7 @@ import * as counterLib from 'src/utils/counter';
 import * as loc from 'src/utils/location';
 import * as errorLogger from 'src/utils/errorLogger';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import type { FirstPartyOutputData } from '../const';
+import type { FirstPartyOutputData } from '../types';
 import { rawFirstPartyMethod, encodeRecursive } from '../firstPartyMethod';
 
 describe('first party data', () => {
