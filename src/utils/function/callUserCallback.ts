@@ -19,11 +19,7 @@ export const callUserCallback: CallUserCallback = function z(
         if (isFunction(callback)) {
             // eslint-disable-next-line prefer-rest-params
             const [, , , ...args] = argsToArray(arguments);
-            if (!isNil(userContext)) {
-                callback.apply(userContext, args);
-            } else {
-                callback.apply(null, args);
-            }
+            callback.apply(isNil(userContext) ? null : userContext, args);
         }
     } catch (error) {
         setDeferBase(ctx, bindArg(error, throwFunction), 0);
