@@ -23,7 +23,7 @@ export const checkStatusRaw = (ctx: Window, counterOptions: CounterOptions) => {
         counterOptions.id === id &&
         counterOptions.counterType === DEFAULT_COUNTER_TYPE
     ) {
-        const src = getResourceUrl({
+        const src = getResourceUrl(ctx, {
             ['lang']: langForCheck(ctx),
             ['fileId']: 'status',
         });

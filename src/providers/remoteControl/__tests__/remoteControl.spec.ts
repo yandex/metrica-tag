@@ -102,10 +102,12 @@ describe('isAllowedOrigin', () => {
 });
 
 describe('getResourceUrl', () => {
+    // eslint-disable-next-line no-restricted-globals
+    const ctx = { isFinite, isNaN } as Window;
     it('Only allowed langs', () => {
         ['ru', 'en', 'tr'].forEach((lang) => {
             chai.expect(
-                remoteControl.getResourceUrl({
+                remoteControl.getResourceUrl(ctx, {
                     lang,
                     appVersion: '1.2.3',
                     fileId: 'button',
@@ -115,7 +117,7 @@ describe('getResourceUrl', () => {
             );
         });
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'de',
                 appVersion: '1.2.3',
                 fileId: 'button',
@@ -126,7 +128,7 @@ describe('getResourceUrl', () => {
     it('Only allowed ids', () => {
         ['button', 'form'].forEach((fileId) => {
             chai.expect(
-                remoteControl.getResourceUrl({
+                remoteControl.getResourceUrl(ctx, {
                     lang: 'ru',
                     appVersion: '1.2.3',
                     fileId,
@@ -136,7 +138,7 @@ describe('getResourceUrl', () => {
             );
         });
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: '1.2.3',
                 fileId: '',
@@ -146,7 +148,7 @@ describe('getResourceUrl', () => {
 
     it('Validate version', () => {
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: '11.22.33',
                 fileId: 'button',
@@ -155,7 +157,7 @@ describe('getResourceUrl', () => {
             'https://yastatic.net/s3/metrika/11.22.33/form-selector/button_ru.js',
         );
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: '1684933',
                 fileId: 'button',
@@ -164,31 +166,40 @@ describe('getResourceUrl', () => {
             'https://yastatic.net/s3/metrika/1684933/form-selector/button_ru.js',
         );
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: 'invalidVer',
                 fileId: 'button',
             }),
         ).to.eq('https://yastatic.net/s3/metrika/form-selector/button_ru.js');
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: '1.a',
                 fileId: 'button',
             }),
         ).to.eq('https://yastatic.net/s3/metrika/1/form-selector/button_ru.js');
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: '/.//.',
                 fileId: 'button',
             }),
         ).to.eq('https://yastatic.net/s3/metrika/form-selector/button_ru.js');
+        chai.expect(
+            remoteControl.getResourceUrl(ctx, {
+                lang: 'ru',
+                appVersion: '0.0.0',
+                fileId: 'button',
+            }),
+        ).to.eq(
+            'https://yastatic.net/s3/metrika/0.0.0/form-selector/button_ru.js',
+        );
     });
 
     it('Beta url', () => {
         chai.expect(
-            remoteControl.getResourceUrl({
+            remoteControl.getResourceUrl(ctx, {
                 lang: 'ru',
                 appVersion: '1.2.3',
                 fileId: 'button',

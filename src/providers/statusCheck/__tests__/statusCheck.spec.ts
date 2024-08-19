@@ -106,7 +106,7 @@ describe('CHECK_STATUS_FEATURE', () => {
             const [, callback, time] = setDefer.getCall(0).args;
             chai.expect(time).to.equal(0);
             callback();
-            sinon.assert.calledOnceWithExactly(getResourceUrlStub, {
+            sinon.assert.calledOnceWithExactly(getResourceUrlStub, ctx, {
                 ['lang']: 'ru',
                 ['fileId']: 'status',
             });

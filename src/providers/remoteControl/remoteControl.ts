@@ -23,21 +23,16 @@ import {
     firstArg,
     ctxBindArgs,
     call,
+    curry2,
 } from 'src/utils/function';
 import { getPath } from 'src/utils/object';
 import { cEvent } from 'src/utils/events';
 import { flags } from '@inject';
-import {
-    arrayJoin,
-    cForEach,
-    cMap,
-    filterFalsy,
-    includes,
-} from 'src/utils/array';
+import { arrayJoin, cFilter, cForEach, cMap, includes } from 'src/utils/array';
 import { closestButton, selectButtons } from 'src/utils/dom/button';
 import { closestForm, getFormData, selectForms } from 'src/utils/dom/form';
 import { checkStatusFn } from 'src/providers/statusCheck/statusCheckFn';
-import { parseDecimalInt } from 'src/utils/number';
+import { isNumber, parseDecimalInt } from 'src/utils/number';
 import { AnyFunc } from 'src/utils/function/types';
 
 /* eslint-disable camelcase */
@@ -164,7 +159,10 @@ const AVAILABLE_FILES = ['form', 'button', 'status'];
 const BETA_URL = 'https://s3.mds.yandex.net/internal-metrika-betas';
 const URL = 'https://yastatic.net/s3/metrika';
 
-export const getResourceUrl = (message: InlineMessageProps): string => {
+export const getResourceUrl = (
+    ctx: Window,
+    message: InlineMessageProps,
+): string => {
     const {
         ['lang']: lang = '',
         ['appVersion']: appVersion = '',
@@ -173,7 +171,8 @@ export const getResourceUrl = (message: InlineMessageProps): string => {
     } = message;
     const validVersion = arrayJoin(
         SPLITTER,
-        filterFalsy(
+        cFilter(
+            curry2(isNumber)(ctx),
             cMap(pipe(firstArg, parseDecimalInt), appVersion.split(SPLITTER)),
         ),
     );
@@ -255,7 +254,7 @@ export const handleMessage = memo(
         const args = [ctx, event, message];
         cForEach(pipe(ctxBindArgs(args), call), REMOTE_CONTROL_LISTENERS);
         if (message['inline']) {
-            const src = getResourceUrl(message);
+            const src = getResourceUrl(ctx, message);
             const { id = '' } = message;
             setupUtilsAndLoadScript(ctx, src, id);
         } else if (
