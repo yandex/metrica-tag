@@ -301,7 +301,6 @@ export const onMessage = (ctx: ExtendedWindow, event: MessageEvent) => {
  */
 export const remoteControl = (ctx: ExtendedWindow) => {
     const globalConfig = getGlobalStorage(ctx);
-
     if (globalConfig.getVal(REMOTE_CONTROL)) {
         return;
     }

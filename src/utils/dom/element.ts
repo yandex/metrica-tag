@@ -22,6 +22,7 @@ import {
     getNodeName,
     hasClass,
 } from './dom';
+import { isRemovedFromDoc } from './isRemovedFromDoc';
 /* eslint-disable */
 
 export const getElementXY = (ctx: Window, el: HTMLElement | null) => {
@@ -163,6 +164,22 @@ export const getElementPath = (
     }
 
     return trimText(path, MAX_LEN_PATH);
+};
+
+export const getElementPathCached = (
+    ctx: Window,
+    el: HTMLElement | null,
+    ignored?: HTMLElement,
+) => {
+    // this is needed to get data from element that was selected and then removed from DOM
+    if (el && isRemovedFromDoc(ctx, el) && el['_ymp']) {
+        return el['_ymp'];
+    }
+    const path = getElementPath(ctx, el, ignored);
+    if (el) {
+        el['_ymp'] = path;
+    }
+    return path;
 };
 
 export const getElementsByClassName = (

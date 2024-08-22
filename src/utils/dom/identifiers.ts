@@ -1,6 +1,6 @@
 import { cReduce, cSome } from 'src/utils/array';
 import { ctxPath, getPath } from 'src/utils/object';
-import { getElementPath } from 'src/utils/dom/element';
+import { getElementPathCached } from 'src/utils/dom/element';
 import { convertToString } from 'src/utils/string';
 import { trimText } from 'src/utils/string/remove';
 import { isInputElement } from 'src/utils/dom/dom';
@@ -33,7 +33,7 @@ type ContentGetter = (
     selectFn?: (node: Queryable) => HTMLElement[],
 ) => string | null;
 export type IdentifierGetter =
-    | typeof getElementPath
+    | typeof getElementPathCached
     | ContentGetter
     | GenericGetter;
 
@@ -71,7 +71,7 @@ if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
 
 export const GETTERS_MAP: Partial<
     {
-        p: typeof getElementPath;
+        p: typeof getElementPathCached;
         c: ContentGetter;
     } & Record<Exclude<Identifier, typeof PATH | typeof CONTENT>, GenericGetter>
 > = {};
@@ -81,7 +81,7 @@ if (
     flags[CLICK_TRACKING_FEATURE] ||
     flags[REMOTE_CONTROL_FEATURE]
 ) {
-    GETTERS_MAP[PATH] = getElementPath;
+    GETTERS_MAP[PATH] = getElementPathCached;
 }
 
 if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
