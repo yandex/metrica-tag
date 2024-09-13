@@ -59,12 +59,10 @@ export const isSameSiteBrowser = memo((ctx: Window): boolean => {
 
 export const isAndroid = memo((ctx: Window) => {
     const userAgent = (getAgent(ctx) || '').toLowerCase();
-    const platform = getPlatform(ctx);
 
     return (
         stringIncludes(userAgent, 'android') &&
-        stringIncludes(userAgent, 'mobile') &&
-        /^android|linux armv/i.test(platform)
+        stringIncludes(userAgent, 'mobile')
     );
 });
 
