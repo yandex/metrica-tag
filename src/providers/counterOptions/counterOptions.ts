@@ -8,8 +8,8 @@ import {
     EXTERNAL_LINK_FEATURE,
     ENABLE_ALL_METHOD_FEATURE,
 } from 'generated/features';
-import { entries, isObject, isUndefined } from 'src/utils/object';
-import { cForEach, cReduce, isArray } from 'src/utils/array';
+import { entries, isObject, isUndefined, mix } from 'src/utils/object';
+import { cReduce, isArray } from 'src/utils/array';
 import { flags } from '@inject';
 import { toBoolean } from 'src/utils/boolean';
 import type { CounterOption, CounterOptions } from 'src/utils/counterOptions';
@@ -110,13 +110,7 @@ export const optionsKeysMap = cReduce(
 export const addCounterOptions = <T extends CounterOption>(
     options: OptionInitializerMap<T>,
 ) => {
-    cForEach(([obfuscatedKey, initializer]) => {
-        const { optKey, normalizeFunction } = initializer!;
-        optionsKeysMap[obfuscatedKey] = {
-            optKey,
-            normalizeFunction,
-        };
-    }, entries(options));
+    mix(optionsKeysMap, options);
 };
 
 export const getOriginalOptions = (
