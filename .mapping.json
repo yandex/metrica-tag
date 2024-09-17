@@ -419,6 +419,7 @@
   "src/utils/dom/__tests__/nodeName.spec.ts":"metrika/frontend/watch/public/src/utils/dom/__tests__/nodeName.spec.ts",
   "src/utils/dom/__tests__/nodeText.spec.ts":"metrika/frontend/watch/public/src/utils/dom/__tests__/nodeText.spec.ts",
   "src/utils/dom/__tests__/waitForBody.spec.ts":"metrika/frontend/watch/public/src/utils/dom/__tests__/waitForBody.spec.ts",
+  "src/utils/dom/block.ts":"metrika/frontend/watch/public/src/utils/dom/block.ts",
   "src/utils/dom/button.ts":"metrika/frontend/watch/public/src/utils/dom/button.ts",
   "src/utils/dom/closest.ts":"metrika/frontend/watch/public/src/utils/dom/closest.ts",
   "src/utils/dom/dom.ts":"metrika/frontend/watch/public/src/utils/dom/dom.ts",

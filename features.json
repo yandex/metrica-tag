@@ -194,6 +194,10 @@
     "desc": "Enables metrika inpage scripts work (i.g. selecting buttons for quick goals in the metrika interface)"
   },
   {
+    "code": "REMOTE_CONTROL_BLOCK_HELPERS_FEATURE",
+    "desc": "Enables metrika block selection helpers for inpage scripts to work"
+  },
+  {
     "code": "CSRF_TOKEN_FEATURE",
     "desc": "Add API token required for authorized traffic",
     "path": "turboParams"

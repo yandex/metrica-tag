@@ -1,6 +1,9 @@
 import { cReduce, cSome } from 'src/utils/array';
 import { ctxPath, getPath } from 'src/utils/object';
-import { getElementPathCached } from 'src/utils/dom/element';
+import {
+    getElementCSSSelector,
+    getElementPathCached,
+} from 'src/utils/dom/element';
 import { convertToString } from 'src/utils/string';
 import { trimText } from 'src/utils/string/remove';
 import { isInputElement } from 'src/utils/dom/dom';
@@ -9,6 +12,7 @@ import {
     CLICK_TRACKING_FEATURE,
     LOCAL_FEATURE,
     PREPROD_FEATURE,
+    REMOTE_CONTROL_BLOCK_HELPERS_FEATURE,
     REMOTE_CONTROL_FEATURE,
     SUBMIT_TRACKING_FEATURE,
 } from 'generated/features';
@@ -22,8 +26,9 @@ export const PATH = 'p';
 export const CONTENT = 'c';
 export const HREF = 'h';
 export const TYPE = 'ty';
+export const CSS = 'cs';
 
-const IDENTIFIERS = [ID, NAME, HREF, PATH, CONTENT, TYPE] as const;
+const IDENTIFIERS = [ID, NAME, HREF, PATH, CONTENT, TYPE, CSS] as const;
 
 export type Identifier = typeof IDENTIFIERS[number];
 type GenericGetter = (ctx: Window, element: HTMLElement) => string | null;
@@ -82,6 +87,15 @@ if (
     flags[REMOTE_CONTROL_FEATURE]
 ) {
     GETTERS_MAP[PATH] = getElementPathCached;
+}
+
+if (
+    flags[REMOTE_CONTROL_BLOCK_HELPERS_FEATURE] &&
+    (flags[REMOTE_CONTROL_FEATURE] ||
+        flags[CLICK_TRACKING_FEATURE] ||
+        flags[SUBMIT_TRACKING_FEATURE])
+) {
+    GETTERS_MAP[CSS] = getElementCSSSelector;
 }
 
 if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {

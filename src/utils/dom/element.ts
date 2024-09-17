@@ -23,6 +23,8 @@ import {
     hasClass,
 } from './dom';
 import { isRemovedFromDoc } from './isRemovedFromDoc';
+import { arrayFrom } from '../array/arrayFrom';
+import { select } from './select';
 /* eslint-disable */
 
 export const getElementXY = (ctx: Window, el: HTMLElement | null) => {
@@ -140,6 +142,55 @@ export const getCachedTags = memo(() => {
 
     return cacheTags;
 });
+
+export const getElementCSSSelector = (ctx: Window, el: HTMLElement | null) => {
+    let selector = '';
+    let element = el;
+    const body = getBody(ctx)!;
+    let elementSelector: string[] = [];
+    const getFullSelector = () => {
+        const lastComponentSelector = arrayJoin('', elementSelector);
+        return selector
+            ? `${lastComponentSelector} ${selector}`
+            : lastComponentSelector;
+    };
+    const getUniqueSelector = () => {
+        const fullSelector = getFullSelector();
+        const selectedNodes = select(fullSelector, body);
+        if (selectedNodes.length === 1) {
+            return fullSelector;
+        }
+        return null;
+    };
+
+    while (element && element.parentElement) {
+        if (element.id) {
+            elementSelector.push(`#${element.id}`);
+            const uniqueSelector = getUniqueSelector();
+            if (uniqueSelector) {
+                return uniqueSelector;
+            }
+        }
+        if (element.classList.length) {
+            cForEach(
+                (className) => elementSelector.push(`.${className}`),
+                arrayFrom(element.classList),
+            );
+            const uniqueSelector = getUniqueSelector();
+            if (uniqueSelector) {
+                return uniqueSelector;
+            }
+        }
+
+        if (elementSelector.length) {
+            selector = getFullSelector();
+        }
+        elementSelector = [];
+        element = element.parentElement;
+    }
+
+    return null;
+};
 
 export const getElementPath = (
     ctx: Window,

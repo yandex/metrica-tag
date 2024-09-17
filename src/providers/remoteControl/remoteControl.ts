@@ -13,6 +13,7 @@ import {
     SUBMIT_TRACKING_FEATURE,
     CHECK_STATUS_FEATURE,
     REMOTE_CONTROL_FEATURE,
+    REMOTE_CONTROL_BLOCK_HELPERS_FEATURE,
 } from 'generated/features';
 import {
     memo,
@@ -34,6 +35,11 @@ import { closestForm, getFormData, selectForms } from 'src/utils/dom/form';
 import { checkStatusFn } from 'src/providers/statusCheck/statusCheckFn';
 import { isNumber, parseDecimalInt } from 'src/utils/number';
 import { AnyFunc } from 'src/utils/function/types';
+import {
+    getClosestTextContainer,
+    getTextContainerData,
+    selectTextContainer,
+} from 'src/utils/dom/block';
 
 /* eslint-disable camelcase */
 type ExtendedWindow = Window & {
@@ -144,6 +150,8 @@ export type Message = {
     inpageMode: string;
     /** Feature init data */
     initMessage: string;
+    /** Are block utils needed */
+    isBlockUtilsEnabled?: boolean;
 } & InlineMessageProps;
 
 export const UTILS_KEY = '_u';
@@ -200,6 +208,7 @@ export const setupUtilsAndLoadScript = (
     ctx: ExtendedWindow,
     src?: string,
     counterId = '',
+    isBlockUtilsEnabled?: boolean,
 ) => {
     if (
         flags[CLICK_TRACKING_FEATURE] ||
@@ -219,6 +228,19 @@ export const setupUtilsAndLoadScript = (
                 [UTILS_CLOSEST_KEY]: bindArg(ctx, closestForm),
                 [UTILS_SELECT_KEY]: selectForms,
                 [UTILS_GET_DATA_KEY]: bindArg(ctx, getFormData),
+            };
+        }
+        if (
+            flags[REMOTE_CONTROL_BLOCK_HELPERS_FEATURE] &&
+            (flags[REMOTE_CONTROL_FEATURE] ||
+                flags[CLICK_TRACKING_FEATURE] ||
+                flags[SUBMIT_TRACKING_FEATURE]) &&
+            isBlockUtilsEnabled
+        ) {
+            utils['block'] = {
+                [UTILS_CLOSEST_KEY]: bindArg(ctx, getClosestTextContainer),
+                [UTILS_SELECT_KEY]: selectTextContainer,
+                [UTILS_GET_DATA_KEY]: bindArg(ctx, getTextContainerData),
             };
         }
         if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
@@ -256,7 +278,12 @@ export const handleMessage = memo(
         if (message['inline']) {
             const src = getResourceUrl(ctx, message);
             const { id = '' } = message;
-            setupUtilsAndLoadScript(ctx, src, id);
+            setupUtilsAndLoadScript(
+                ctx,
+                src,
+                id,
+                message['isBlockUtilsEnabled'],
+            );
         } else if (
             message['resource'] &&
             isAllowedResource(message['resource'])
