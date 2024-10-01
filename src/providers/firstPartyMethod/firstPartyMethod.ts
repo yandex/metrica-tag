@@ -3,7 +3,7 @@ import {
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
 import { PolyPromise } from 'src/utils';
-import { cReduce, cEvery, includes } from 'src/utils/array';
+import { cReduce, includes } from 'src/utils/array';
 import { getCounterInstance } from 'src/utils/counter';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
@@ -12,39 +12,20 @@ import {
     errorLogger,
 } from 'src/utils/errorLogger';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { bindThisForMethodTest, memo, noop } from 'src/utils/function';
-import {
-    isHttps,
-    isYandexSearchDomain,
-    YANDEX_RU_DOMAIN,
-} from 'src/utils/location';
-import { cKeys, entries, getPath, isObject, len } from 'src/utils/object';
-import {
-    removeNonDigits,
-    trimText,
-    removeByRegexp,
-} from 'src/utils/string/remove';
-import { DOT_REGEX_GLOBAL, isString, stringIndexOf } from 'src/utils/string';
+import { memo, noop } from 'src/utils/function';
+import { isHttps } from 'src/utils/location';
+import { cKeys, entries, getPath, isObject } from 'src/utils/object';
+import { isString, stringIndexOf } from 'src/utils/string';
 import { isNumber } from 'src/utils/number';
 import { consoleLog } from '../debugConsole/debugConsole';
-import {
-    GOOGLEMAIL_DOMAIN,
-    GMAIL_DOMAIN,
-    EMAIL_LOCAL_PART_REGEX,
-    FIRST_PARTY_PARAMS_KEY,
-    PHONE_MIN_VALID_DIGIT_CNT,
-    PHONE_MAX_VALID_DIGIT_CNT,
-    MIN_EMAIL_LENGTH,
-    MAX_EMAIL_LENGTH,
-    MIN_TEL_LENGTH,
-    MAX_TEL_LENGTH,
-} from './const';
+import { FIRST_PARTY_PARAMS_KEY } from './const';
 import type {
     FirstPartyInputData,
     FirstPartyOutputData,
     FirstPartyMethodHandler,
 } from './types';
 import { METHOD_NOT_SUPPORTED_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
+import { processEmail, processPhoneNumber } from './process';
 
 export const isEncoderSupported = memo<(ctx: Window) => boolean>((ctx) => {
     return (
@@ -76,169 +57,6 @@ export const hashVal = (ctx: Window, val: string) => {
             fileReader.readAsDataURL(blob);
         }, reject);
     });
-};
-
-export const trimNonPhoneSymbols = removeByRegexp(/[^\d+()]/g);
-const hasLetters = bindThisForMethodTest(/[a-zа-яё,.]/gi);
-export const processPhoneNumber = (
-    ctx: Window,
-    origPhone: string,
-): string | undefined => {
-    const digits = removeNonDigits(origPhone);
-    const digitsCount = len(digits);
-    if (
-        hasLetters(origPhone) ||
-        len(origPhone) - digitsCount > digitsCount || // Число цифровых символов должно быть не меньше чем число вспомогательных.
-        len(digits) < MIN_TEL_LENGTH ||
-        len(digits) > MAX_TEL_LENGTH
-    ) {
-        return undefined;
-    }
-
-    const firstLetter = origPhone[0];
-    const firstDigit = digits[0];
-    const secondLetter = origPhone[1];
-    if (firstLetter === '+' && secondLetter !== firstDigit) {
-        return undefined;
-    }
-
-    const phone = trimNonPhoneSymbols(origPhone);
-
-    if (
-        digits.length < PHONE_MIN_VALID_DIGIT_CNT ||
-        digits.length > PHONE_MAX_VALID_DIGIT_CNT ||
-        phone.startsWith('+8')
-    ) {
-        return trimText(origPhone);
-    }
-    if (phone[0] === '8') {
-        return `7${digits.slice(1)}`;
-    }
-    if (phone[0] !== '+' && !isNumber(ctx, +phone[0])) {
-        return `7${digits}`;
-    }
-    return digits;
-};
-
-/**
- *  Quoted-string  = DQUOTE *QcontentSMTP DQUOTE
- *
- *  QcontentSMTP   = qtextSMTP / quoted-pairSMTP
- *
- *  quoted-pairSMTP  = %d92 %d32-126
- *                   ; i.e., backslash followed by any ASCII
- *                   ; graphic (including itself) or SPace
- *
- *  qtextSMTP      = %d32-33 / %d35-91 / %d93-126
- *                 ; i.e., within a quoted string, any
- *                 ; ASCII graphic or space is permitted
- *                 ; without blackslash-quoting except
- *                 ; double-quote and the backslash itself.
- *
- *  String         = Atom / Quoted-string
- */
-export const validateLocalQuoted = (part: string): boolean => {
-    for (let i = 1; i + 2 < part.length; i += 1) {
-        const charCode = part.charCodeAt(i);
-        // %d32-33 / %d35-91 / %d93-126
-        // [32 .. 126] wo 34, 92
-        if (charCode < 32 || charCode === 34 || charCode > 126) {
-            return false;
-        }
-        if (charCode === 92) {
-            if (i + 2 === part.length) {
-                return false;
-            }
-            // %d32-126
-            if (part.charCodeAt(i + 1) < 32) {
-                return false;
-            }
-            i += 1;
-        }
-    }
-    return true;
-};
-
-export const validateLocalPart = (local: string): boolean => {
-    // https://www.rfc-editor.org/rfc/rfc5321#section-4.1.2
-    const MIN_LOCAL_PART_SIZE = 1;
-    const MAX_LOCAL_PART_SIZE = 64;
-
-    if (
-        local.length < MIN_LOCAL_PART_SIZE ||
-        local.length > MAX_LOCAL_PART_SIZE
-    ) {
-        return false;
-    }
-
-    return cEvery((part: string) => {
-        if (part.length < MIN_LOCAL_PART_SIZE) {
-            return false;
-        }
-        if (
-            part[0] === '"' &&
-            part[part.length - 1] === '"' &&
-            part.length > 2
-        ) {
-            return validateLocalQuoted(part);
-        }
-        if (!EMAIL_LOCAL_PART_REGEX.test(part)) {
-            return false;
-        }
-        return true;
-    }, local.split('.'));
-};
-
-/**
- * https://www.rfc-editor.org/rfc/rfc5321#section-4.1.2
- */
-export const validateEmail = (local: string, domain: string): boolean => {
-    if (!domain) {
-        return false;
-    }
-    return validateLocalPart(local);
-};
-
-const checkEmailLength = (email: string): string | undefined => {
-    const emailLength = len(email);
-    return emailLength < MIN_EMAIL_LENGTH || emailLength > MAX_EMAIL_LENGTH
-        ? undefined
-        : email;
-};
-
-export const processEmail = (origEmail: string): string | undefined => {
-    const email = trimText(origEmail).replace(/^\++/gm, '').toLowerCase();
-    const atIndex = email.lastIndexOf('@');
-    if (atIndex === -1) {
-        return checkEmailLength(email);
-    }
-    let local = email.substr(0, atIndex);
-    let domain = email.substr(atIndex + 1);
-
-    if (!validateEmail(local, domain)) {
-        return checkEmailLength(email);
-    }
-
-    domain = domain.replace(GOOGLEMAIL_DOMAIN, GMAIL_DOMAIN);
-    if (isYandexSearchDomain(domain)) {
-        domain = YANDEX_RU_DOMAIN;
-    }
-
-    if (domain === YANDEX_RU_DOMAIN) {
-        // Замена точек в части имени пользователя на дефисы, для яндексовых адресов.
-        local = local.replace(DOT_REGEX_GLOBAL, '-');
-    } else if (domain === GMAIL_DOMAIN) {
-        // Удаление точек для @gmail.
-        local = local.replace(DOT_REGEX_GLOBAL, '');
-    }
-
-    // Удаление хвоста в имени пользователя после плюса username+suffix@example.com --> username@example.com
-    const indexOfPlusSign = stringIndexOf(local, '+');
-    if (indexOfPlusSign !== -1) {
-        local = local.slice(0, indexOfPlusSign);
-    }
-
-    return checkEmailLength(`${local}@${domain}`);
 };
 
 const NON_HASHABLE_KEYS: string[] = ['yandex_cid', 'yandex_public_id'];
