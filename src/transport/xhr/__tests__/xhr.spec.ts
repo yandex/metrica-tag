@@ -108,7 +108,7 @@ describe('XHR', () => {
         const XHRmockM = function myF() {};
         const checkResult = useXHR({
             XMLHttpRequest: XHRmockM,
-        } as any as Window);
+        } as unknown as Window);
         chai.expect(checkResult).to.be.not.ok;
     });
     it('should check good opera conditions', () => {
@@ -125,7 +125,7 @@ describe('XHR', () => {
             opera: {
                 version: () => '13.12',
             },
-        } as any as Window);
+        } as unknown as Window);
         chai.expect(checkResult).to.be.ok;
     });
     it('should check bad opera conditions', () => {
@@ -142,7 +142,7 @@ describe('XHR', () => {
             opera: {
                 version: () => '12.12',
             },
-        } as any as Window);
+        } as unknown as Window);
         chai.expect(checkResult).to.be.not.ok;
     });
     it('should send bad request', () => {
@@ -152,7 +152,7 @@ describe('XHR', () => {
                 host: 'local:10202',
             },
             XMLHttpRequest: MockXHR,
-        } as any as Window) as TransportFn;
+        } as unknown as Window) as TransportFn;
         const req = request('some', { debugStack: [] });
         MockXHR.getInstance().resolve();
         return req
@@ -170,7 +170,7 @@ describe('XHR', () => {
                 host: 'local:10202',
             },
             XMLHttpRequest: MockXHR,
-        } as any as Window) as TransportFn;
+        } as unknown as Window) as TransportFn;
         parseStub.returns(resp);
 
         const req = request('some', { debugStack: [] });
@@ -198,7 +198,7 @@ describe('XHR', () => {
                 host: 'local:10202',
             },
             XMLHttpRequest: MockXHR,
-        } as any as Window) as TransportFn;
+        } as unknown as Window) as TransportFn;
         const debugStack = ['x', 'h', 'r'];
 
         parseStub.returns(null);

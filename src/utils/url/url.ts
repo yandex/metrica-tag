@@ -1,5 +1,7 @@
 import { getElemCreateFunction } from 'src/utils/dom';
+import { arrayJoin } from '../array';
 import { memo } from '../function';
+import { stringIncludes } from '../string';
 
 export type UrlInfo = {
     protocol?: string;
@@ -61,4 +63,21 @@ export const isSameDomainInUrls = (url1: string, url2: string) => {
     }
 
     return getDomain(url1) === getDomain(url2);
+};
+
+export const addQuery = (
+    senderUrl: string,
+    query?: string | Uint8Array,
+): string => {
+    if (!query || !query.length) {
+        return senderUrl;
+    }
+    const [url, ...anchors] = senderUrl.split('#');
+    let stringAnchors = arrayJoin('#', anchors);
+
+    stringAnchors = stringAnchors ? `#${stringAnchors}` : '';
+    if (stringIncludes(senderUrl, '?')) {
+        return `${url}&${query}${stringAnchors}`;
+    }
+    return `${url}?${query}${stringAnchors}`;
 };

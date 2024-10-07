@@ -1,12 +1,15 @@
 import { stringify } from 'src/utils/querystring';
+import { addQuery } from 'src/utils/url';
 import { TransportOptions } from './types';
 
 export const WATCH_WMODE_JSON = '7';
 export const WATCH_WMODE_JSONP = '5';
 export const WATCH_WMODE_IMAGE = '0';
 
-// переносим тело POST запроса в арументы GET запроса
-// для транспортов которые не умеют тело запроса
+/**
+ * Moves the body of the POST request to the arguments of the GET request
+ * for transports that cannot transmit the request body, e.g. beacon
+ */
 export const getSrcUrl = (
     senderUrl: string,
     opt: TransportOptions,
@@ -16,11 +19,11 @@ export const getSrcUrl = (
     const stringifiedQuery = stringify(query);
 
     if (stringifiedQuery) {
-        resultUrl += `?${stringifiedQuery}`;
+        resultUrl = addQuery(resultUrl, stringifiedQuery);
     }
 
     if (opt.rBody) {
-        resultUrl += `${stringifiedQuery ? '&' : '?'}${opt.rBody}`;
+        resultUrl = addQuery(resultUrl, opt.rBody);
     }
     return resultUrl;
 };

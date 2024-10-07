@@ -15,6 +15,7 @@ import {
 import { stringify } from 'src/utils/querystring';
 import { throwFunction } from 'src/utils/errorLogger/throwFunction';
 import { makeHttpError } from 'src/utils/errorLogger/createError';
+import { addQuery } from 'src/utils/url';
 import { WATCH_WMODE_JSON } from '../watchModes';
 
 const request = (
@@ -36,7 +37,7 @@ const request = (
         abort: noop,
     };
 
-    const fetchRequest = ctx.fetch!(`${url}?${stringify(query)}`, {
+    const fetchRequest = ctx.fetch!(addQuery(url, stringify(query)), {
         method: opt.verb,
         body: opt.rBody,
         credentials: opt.withCreds === false ? 'omit' : 'include',

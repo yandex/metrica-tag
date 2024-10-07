@@ -12,6 +12,7 @@ import { stringify } from 'src/utils/querystring';
 import { parse as parseJSON } from 'src/utils/json';
 import { ctxMap } from 'src/utils/array';
 import { makeHttpError } from 'src/utils/errorLogger/createError';
+import { addQuery } from 'src/utils/url';
 import { WATCH_WMODE_JSON } from '../watchModes';
 
 const CYRILLIC_DOMAIN_REGEXP = /[^a-z0-9.:-]/;
@@ -76,7 +77,7 @@ const request = (
     );
 
     return new PolyPromise((resolve, reject) => {
-        xhr.open(opt.verb || 'GET', `${url}?${stringify(query)}`, true);
+        xhr.open(opt.verb || 'GET', addQuery(url, stringify(query)), true);
         xhr.withCredentials = !(opt.withCreds === false);
         if (opt.timeOut) {
             xhr.timeout = opt.timeOut;

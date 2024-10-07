@@ -313,6 +313,7 @@
   "src/storage/localStorage/localStorage.ts":"metrika/frontend/watch/public/src/storage/localStorage/localStorage.ts",
   "src/transport/__tests__/beacon.spec.ts":"metrika/frontend/watch/public/src/transport/__tests__/beacon.spec.ts",
   "src/transport/__tests__/transport.spec.ts":"metrika/frontend/watch/public/src/transport/__tests__/transport.spec.ts",
+  "src/transport/__tests__/watchModes.spec.ts":"metrika/frontend/watch/public/src/transport/__tests__/watchModes.spec.ts",
   "src/transport/beacon/beacon.ts":"metrika/frontend/watch/public/src/transport/beacon/beacon.ts",
   "src/transport/beacon/index.ts":"metrika/frontend/watch/public/src/transport/beacon/index.ts",
   "src/transport/fetch/__tests__/fetch.spec.ts":"metrika/frontend/watch/public/src/transport/fetch/__tests__/fetch.spec.ts",
