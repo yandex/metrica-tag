@@ -79,13 +79,15 @@ export const getElementSize = (ctx: Window, element: HTMLElement) => {
 };
 
 /**
- * Возвращает позицию и размеры элемента.
+ * @param ctx window element
+ * @param el element to process
  *
- * @param {HTMLElement} el
- *
- * @returns {Array} Массив вида [left, top, width, height].
+ * @returns Position and size of an element.
  */
-export const getElementRegion = (ctx: Window, el: HTMLElement) => {
+export const getElementRegion = (
+    ctx: Window,
+    el: HTMLElement,
+): [left: number, top: number, width: number, height: number] => {
     const { left, top } = getElementXY(ctx, el);
     const [width, height] = getElementSize(ctx, el);
 
@@ -264,18 +266,17 @@ export const getElementsByClassName = (
 };
 
 /**
- * Возвращает массив детей элемента, пропуская hidden элементы формы.
+ * @param ctx
+ * @param el
+ * @param nodeName An optional name of a node used for filtering the result
  *
- * @param {HTMLElement} el
- * @param {String} [nodeName] Если указан этот параметр, то выбираются только дети с таким nodeName.
- *
- * @returns {Array}
+ * @returns An array of element children except hidden form elements
  */
 export const getElementChildren = (
     ctx: Window,
     el?: HTMLElement | null,
     nodeName?: string,
-) => {
+): ChildNode[] => {
     const result = [];
 
     if (el) {

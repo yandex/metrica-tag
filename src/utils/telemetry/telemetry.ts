@@ -3,9 +3,6 @@ import { entries, isNull } from 'src/utils/object';
 import { flagStorage, FlagStorage } from '../flagsStorage/flagsStorage';
 import { arrayJoin, cMap } from '../array';
 
-/**
- * @param {Object} [ctx]
- */
 export const telemetry = flagStorage((flags) => {
     const flagEntries = entries(flags);
     return arrayJoin(

@@ -46,13 +46,7 @@ export const getCookie: CookieGetter = (ctx: Window, name: string) => {
 const PORT_REGEXP = /:\d+$/;
 
 /**
- * Ставим куки на домен
- * @param ctx
- * @param name
- * @param val
- * @param {number} [minutes]
- * @param {string} [domain]
- * @param {string} [path]
+ * Set cookie for a domain.
  */
 export const setCookie = (
     ctx: Window,
@@ -89,13 +83,7 @@ export const setCookie = (
         }
     }
 };
-/**
- *
- * @param {Object} ctx
- * @param {string} name
- * @param {string} [domain]
- * @param {string} [path]
- */
+
 function deleteCookie(
     ctx: Window,
     name: string,
@@ -106,12 +94,6 @@ function deleteCookie(
     return setCookie(ctx, name, '', -100, domain, path, ignoreState);
 }
 
-/**
- *
- * @param ctx
- * @param {string} [domain]
- * @param {string} [path]
- */
 export const checkCookie = (ctx: Window, domain?: string, path?: string) => {
     const checkName = ENABLED_COOKIE_KEY;
     setCookie(ctx, checkName, '1', 0, domain, path, true);

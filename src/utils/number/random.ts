@@ -4,10 +4,7 @@ export const RND_MAX = 1073741824;
 export const RND_MIN = 1;
 
 /**
- * Генерим рандомное число
- * @param {Object} ctx
- * @param {number} [rawMin]
- * @param {number} [rawMax]
+ * Generate a random number in a given frame
  */
 export const getRandom = (ctx: Window, rawMin?: number, rawMax?: number) => {
     let min: number;

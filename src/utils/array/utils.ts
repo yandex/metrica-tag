@@ -49,9 +49,6 @@ export const exclude = <T>(from: T[] | readonly T[], what: T[]) => {
 
 /**
  * Checks length property of an array-like and returns a boolean.
- *
- * @param {T extends string | unknown[] } array
- * @returns {boolean}
  */
 export const isEmptyArray = <T extends string | unknown[] | { length: number }>(
     array: T,
@@ -71,6 +68,6 @@ export const last = <T>(arrayOrString: ArrayLike<T>): T | undefined =>
 /**
  * Removes all elements from an array returning the deleted elements.
  *
- * @returns — An array containing the elements that were deleted.
+ * @returns An array containing the elements that were deleted.
  */
 export const clearArray = <T>(array: T[]) => array.splice(0, array.length);

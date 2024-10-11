@@ -5,12 +5,6 @@ import { handleError } from './handleError';
 import { throwFunction } from './throwFunction';
 import { executionTimeErrorDecorator } from './executionTimeErrorDecorator';
 
-/**
- * @param {Object} ctx
- * @param {string} scopeName
- * @param {function(...?): ?} [fn]
- * @param {function (...?): ?} [errorCatch]
- */
 export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
     ctx: Window,
     scopeName: string,

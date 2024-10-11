@@ -103,8 +103,7 @@ const checkEmailLength = (email: string): string | undefined => {
  * Validates and normalizes an email.
  * For invalid input returns undefined.
  *
- * @param {string} origEmail email
- * @returns {string | undefined}
+ * @param origEmail email
  */
 export const processEmail = (origEmail: string): string | undefined => {
     const email = trimText(origEmail).replace(/^\++/gm, '').toLowerCase();

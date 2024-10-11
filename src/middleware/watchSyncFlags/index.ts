@@ -18,7 +18,6 @@ const getDefaultFlags = memo(() =>
 
 /**
  * Constructs a middleware that fills in brInfo and telemetry
- * @param {Array<string>} [inputFlags]
  */
 export const watchSyncFlags =
     (inputFlags?: string[]): MiddlewareGetter =>

@@ -19,8 +19,7 @@ const hasLettersRegex = /[a-zа-яё,.]/gi;
  * For invalid input returns undefined.
  *
  * @param {Pick<Window, 'isFinite' | 'isNaN'>} ctx global object that provides isFinite and isNan functions.
- * @param {string} origPhone - phone number
- * @returns {string | undefined}
+ * @param origPhone - phone number
  */
 export const processPhoneNumber = (
     ctx: Window,

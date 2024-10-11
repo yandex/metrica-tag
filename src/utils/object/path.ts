@@ -59,9 +59,7 @@ export const len = ctxPath('length') as <T>(
 ) => T extends ArrayLike<unknown> ? number : unknown;
 
 /**
- * Получаем из списка [1,2,3] объект {1: {2: 3}}
- * @param {string} path
- * @param {Object} [origCtx]
+ * Transform a list `[1,2,3]` into an object `{1: {2: 3}}`
  */
 export const genPath = (path: (string | number)[], origCtx: any = {}) => {
     if (!path || path.length < 1) {
