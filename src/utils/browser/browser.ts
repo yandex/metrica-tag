@@ -153,9 +153,11 @@ export const isSelenium = memo((ctx: Window) => {
         '__fxdriver_unwrapped',
     ];
     const external = getPath(ctx, 'external')!;
+    /* eslint-disable no-restricted-properties */
     const externalStr = getPath(external, 'toString')
         ? `${external.toString()}` // toString может вернуть undefined
         : '';
+    /* eslint-enable no-restricted-properties */
     const isSequentum = stringIndexOf(externalStr, 'Sequentum') !== -1;
     const documentElement = getPath(ctx, 'document.documentElement');
     const docElemProps = ['selenium', 'webdriver', 'driver'];

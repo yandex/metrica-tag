@@ -1,4 +1,4 @@
-module.exports = [
+const bannedFunctions = [
     2,
     // String
     {
@@ -45,3 +45,10 @@ module.exports = [
         message: 'use PolyPromise from utils',
     },
 ];
+const bannedProperties = bannedFunctions
+    .slice(1)
+    .map((f) => ({ property: f.name, message: f.message }));
+module.exports = {
+    bannedFunctions,
+    bannedProperties,
+};

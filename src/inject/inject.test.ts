@@ -15,6 +15,7 @@ if (!global.window) {
     global.window = {};
 }
 
+// eslint-disable-next-line no-restricted-properties
 export const flags: Readonly<BuildFlags> = features.reduce((acc, feature) => {
     acc[feature] = true;
     return acc;

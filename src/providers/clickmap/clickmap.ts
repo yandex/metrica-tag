@@ -201,6 +201,7 @@ export const useClickMapProviderBase = (
 
             const params =
                 typeof rawClickMapParams === 'object' ? rawClickMapParams : {};
+            // eslint-disable-next-line no-restricted-properties
             const { filter } = params;
             const isTrackHash = params['isTrackHash'] || false;
             const ignoreTags = cMap(

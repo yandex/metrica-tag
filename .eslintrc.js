@@ -1,4 +1,9 @@
-const bannedFunctions = require('./eslintBannedFunctions');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const airbnbBase = require('eslint-config-airbnb-base/rules/best-practices');
+const {
+    bannedFunctions,
+    bannedProperties,
+} = require('./eslintBannedFunctions');
 
 /**
  * @type {import('eslint').Linter.Config}
@@ -56,6 +61,10 @@ module.exports = {
             rules: {
                 'n/no-process-env': 'error',
                 'ban/ban': bannedFunctions,
+                'no-restricted-properties':
+                    airbnbBase.rules['no-restricted-properties'].concat(
+                        bannedProperties,
+                    ),
                 '@typescript-eslint/prefer-interface': 'off',
                 semi: 'error',
                 curly: 'error',
@@ -123,6 +132,8 @@ module.exports = {
             rules: {
                 'import/no-extraneous-dependencies': 'off',
                 'ban/ban': 'off',
+                'no-restricted-properties':
+                    airbnbBase.rules['no-restricted-properties'],
                 'no-unused-expressions': 'off',
                 'no-only-tests/no-only-tests': [
                     'error',
@@ -137,6 +148,8 @@ module.exports = {
             files: './scripts/**/*',
             rules: {
                 'ban/ban': 'off',
+                'no-restricted-properties':
+                    airbnbBase.rules['no-restricted-properties'],
                 'n/no-process-env': 'off',
                 'no-console': 'off',
                 'no-await-in-loop': 'off',
@@ -147,6 +160,18 @@ module.exports = {
             files: ['./src/inject/*.ts', './src/version.ts'],
             rules: {
                 'n/no-process-env': 'off',
+            },
+        },
+        {
+            files: [
+                './src/utils/string/*.ts',
+                './src/utils/promise/*.ts',
+                './src/utils/object/*.ts',
+                './src/utils/array/*.ts',
+            ],
+            rules: {
+                'no-restricted-properties':
+                    airbnbBase.rules['no-restricted-properties'],
             },
         },
     ],
