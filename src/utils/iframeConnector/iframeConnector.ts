@@ -197,15 +197,18 @@ export const handleInputMessage = (
 ) => {
     let messageInfo: FullMessage | null = null;
     let meta: string | null = null;
-    const state = getIframeState(ctx);
     let message = null;
     try {
+        if (event.data[0] !== '{') {
+            return;
+        }
         messageInfo = parse(ctx, event.data) as FullMessage;
         meta = messageInfo[NAME_SPACE];
         message = messageInfo[IFRAME_MESSAGE_DATA];
     } catch (e) {
         return;
     }
+    const state = getIframeState(ctx);
     if (
         isNil(meta) ||
         !meta.substring ||
