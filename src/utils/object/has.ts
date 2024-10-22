@@ -1,6 +1,6 @@
 import { isNil } from './assertions';
 
-export const { hasOwnProperty } = Object.prototype;
+const { hasOwnProperty } = Object.prototype;
 
 export const has = (
     object: any,

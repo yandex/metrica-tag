@@ -1,6 +1,6 @@
 import { yaNamespace } from 'src/const';
 import { isUndefined } from 'src/utils/object/assertions';
-import { hasOwnProperty } from 'src/utils/object/has';
+import { has } from 'src/utils/object/has';
 
 export type GlobalStorage = {
     setSafe<T>(name: string, value: T): GlobalStorage;
@@ -25,7 +25,7 @@ export const globalStorage = (ctx: Window): GlobalStorage => {
 
     return {
         setSafe<T>(name: string, value: T): GlobalStorage {
-            if (!hasOwnProperty.call(storage, name)) {
+            if (!has(storage, name)) {
                 storage[name] = value;
             }
             return this;
@@ -36,7 +36,7 @@ export const globalStorage = (ctx: Window): GlobalStorage => {
         },
         getVal<T>(name: string, defVal?: T): T {
             const val = storage[name] as T;
-            if (!hasOwnProperty.call(storage, name) && !isUndefined(defVal)) {
+            if (!has(storage, name) && !isUndefined(defVal)) {
                 return defVal;
             }
             return val;
