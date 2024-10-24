@@ -127,6 +127,7 @@ export const useGoal = ctxErrorLogger(
                             ['data']: {
                                 ['schema']: schemePrefix,
                                 ['name']: goalName,
+                                ['params']: params,
                             },
                         });
                     }

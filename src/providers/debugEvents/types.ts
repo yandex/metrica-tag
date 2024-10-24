@@ -16,6 +16,8 @@ export type CommonEvent = DebuggerEventGeneric<
         schema: string;
         /** Event name */
         name: string;
+        /** Params attached to event */
+        params?: Record<string, unknown>;
     }
 >;
 
