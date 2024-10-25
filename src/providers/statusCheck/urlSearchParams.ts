@@ -1,7 +1,6 @@
 import { parse } from 'src/utils/querystring';
-import { memo, pipe } from 'src/utils/function';
+import { memo } from 'src/utils/function';
 import { getLocation } from 'src/utils/location';
-import { ctxPath } from 'src/utils/object';
 import { parseDecimalInt } from 'src/utils/number';
 
 export const CHECK_URL_PARAM = '_ym_status-check';
@@ -12,28 +11,19 @@ export const DEFAULT_LANGUAGE = 'ru';
 /** Search parameters values */
 interface StatusCheckSearchParams {
     /** Status check */
-    [CHECK_URL_PARAM]: string;
+    id: number;
     /** Language */
-    [LANG_URL_PARAM]: string;
+    lang: string;
 }
 
-const getSearchParams = memo((ctx: Window) => {
-    const location = getLocation(ctx);
-    const searchParams: Partial<StatusCheckSearchParams> = parse(
-        location.search.substring(1),
-    );
+export const getStatusCheckSearchParams = memo(
+    (ctx: Window): StatusCheckSearchParams => {
+        const location = getLocation(ctx);
+        const searchParams = parse(location.search.substring(1));
 
-    searchParams[CHECK_URL_PARAM] = searchParams[CHECK_URL_PARAM] || '';
-    searchParams[LANG_URL_PARAM] =
-        searchParams[LANG_URL_PARAM] || DEFAULT_LANGUAGE;
-
-    return searchParams as StatusCheckSearchParams;
-});
-
-export const counterIdForCheck = pipe(
-    getSearchParams,
-    ctxPath(CHECK_URL_PARAM),
-    parseDecimalInt,
+        return {
+            id: parseDecimalInt(searchParams[CHECK_URL_PARAM] || ''),
+            lang: searchParams[LANG_URL_PARAM] || DEFAULT_LANGUAGE,
+        };
+    },
 );
-
-export const langForCheck = pipe(getSearchParams, ctxPath(LANG_URL_PARAM));

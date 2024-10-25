@@ -8,8 +8,7 @@ import {
     CHECK_URL_PARAM,
     LANG_URL_PARAM,
     DEFAULT_LANGUAGE,
-    langForCheck,
-    counterIdForCheck,
+    getStatusCheckSearchParams,
 } from '../urlSearchParams';
 import { checkStatusRaw } from '../statusCheck';
 import { checkStatusFn } from '../statusCheckFn';
@@ -22,45 +21,46 @@ describe('CHECK_STATUS_FEATURE', () => {
     const locationSearchWithoutLangParameter = `?${CHECK_URL_PARAM}=${counterId}`;
     const locationSearchWithoutCheckParameter = `?counterid=${counterId}`;
 
-    const windowWithSearchParams = (inputSearchParams: string) => ({
-        location: {
-            search: inputSearchParams,
-        },
-    });
+    const windowWithSearchParams = (inputSearchParams: string) =>
+        ({
+            location: {
+                search: inputSearchParams,
+            },
+        } as Window);
 
     describe('langForCheck', () => {
         it(`returns the value of "${LANG_URL_PARAM}" search parameter as defined in location`, () => {
-            const ctx: any = windowWithSearchParams(
+            const ctx = windowWithSearchParams(
                 locationSearchWithCheckParameter,
             );
-            const parsedLang = langForCheck(ctx);
-            chai.expect(parsedLang).to.equal(lang);
+            const params = getStatusCheckSearchParams(ctx);
+            chai.expect(params.lang).to.equal(lang);
         });
 
         it(`returns "${DEFAULT_LANGUAGE}" when "${LANG_URL_PARAM}" search parameter is not defined in location`, () => {
-            const ctx: any = windowWithSearchParams(
+            const ctx = windowWithSearchParams(
                 locationSearchWithoutLangParameter,
             );
-            const parsedLang = langForCheck(ctx);
-            chai.expect(parsedLang).to.equal(DEFAULT_LANGUAGE);
+            const params = getStatusCheckSearchParams(ctx);
+            chai.expect(params.lang).to.equal(DEFAULT_LANGUAGE);
         });
     });
 
     describe('counterIdForCheck', () => {
         it(`returns the numeric value of "${CHECK_URL_PARAM}" search parameter as defined in location`, () => {
-            const ctx: any = windowWithSearchParams(
+            const ctx = windowWithSearchParams(
                 locationSearchWithCheckParameter,
             );
-            const parsedCounterId = counterIdForCheck(ctx);
-            chai.expect(parsedCounterId).to.equal(numericCounterId);
+            const { id } = getStatusCheckSearchParams(ctx);
+            chai.expect(id).to.equal(numericCounterId);
         });
 
         it(`returns NaN when "${CHECK_URL_PARAM}" search parameter is not defined in location`, () => {
-            const ctx: any = windowWithSearchParams(
+            const ctx = windowWithSearchParams(
                 locationSearchWithoutCheckParameter,
             );
-            const parsedCounterId = counterIdForCheck(ctx);
-            chai.expect(parsedCounterId).to.be.NaN;
+            const { id } = getStatusCheckSearchParams(ctx);
+            chai.expect(id).to.be.NaN;
         });
     });
 
@@ -91,7 +91,7 @@ describe('CHECK_STATUS_FEATURE', () => {
         });
 
         it(`does not trigger setupAndLoadScript when the check is disabled in search parameters`, () => {
-            const ctx: any = windowWithSearchParams(
+            const ctx = windowWithSearchParams(
                 locationSearchWithoutCheckParameter,
             );
             checkStatusRaw(ctx, counterOptions);
@@ -99,7 +99,7 @@ describe('CHECK_STATUS_FEATURE', () => {
         });
 
         it(`triggers setupAndLoadScript with counter ID from search parameters`, () => {
-            const ctx: any = windowWithSearchParams(
+            const ctx = windowWithSearchParams(
                 locationSearchWithCheckParameter,
             );
             checkStatusRaw(ctx, counterOptions);
@@ -121,7 +121,7 @@ describe('CHECK_STATUS_FEATURE', () => {
 
     describe('checkStatusFn', () => {
         it('returns the counter id and checkStatus=true for existing counter', () => {
-            const ctx: any = {
+            const ctx = {
                 Ya: {
                     _metrika: {
                         getCounters: () => [{ id: numericCounterId }],
@@ -130,7 +130,7 @@ describe('CHECK_STATUS_FEATURE', () => {
                 location: {
                     search: locationSearchWithCheckParameter,
                 },
-            };
+            } as unknown as Window;
 
             const status = checkStatusFn(ctx);
             chai.expect(status.id).to.equal(numericCounterId);
@@ -138,7 +138,7 @@ describe('CHECK_STATUS_FEATURE', () => {
         });
 
         it('returns the counter id and checkStatus=false for missing counter', () => {
-            const ctx: any = {
+            const ctx = {
                 Ya: {
                     _metrika: {
                         getCounters: () => [{ id: 2 }],
@@ -147,7 +147,7 @@ describe('CHECK_STATUS_FEATURE', () => {
                 location: {
                     search: locationSearchWithCheckParameter,
                 },
-            };
+            } as unknown as Window;
 
             const status = checkStatusFn(ctx);
             chai.expect(status.id).to.equal(numericCounterId);

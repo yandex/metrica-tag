@@ -8,7 +8,7 @@ import {
     ExportedCounterInfo,
     GetCountersMethod,
 } from 'src/providers/getCounters/types';
-import { counterIdForCheck } from './urlSearchParams';
+import { getStatusCheckSearchParams } from './urlSearchParams';
 
 /** Result of checking if counter exists on page */
 interface CheckStatusResult {
@@ -19,7 +19,7 @@ interface CheckStatusResult {
 }
 
 export const checkStatusFn = (ctx: Window): CheckStatusResult => {
-    const id = counterIdForCheck(ctx);
+    const { id } = getStatusCheckSearchParams(ctx);
 
     const globalConfig = getGlobalStorage(ctx);
     const getCountersFn = globalConfig.getVal<GetCountersMethod>(
