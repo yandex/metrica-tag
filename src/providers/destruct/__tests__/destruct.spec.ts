@@ -2,23 +2,23 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as globalStorage from 'src/storage/global';
 import { CounterOptions } from 'src/utils/counterOptions';
-import * as optionsUtils from 'src/utils/counterOptions/originalOptionsState';
+import * as optionsUtils from 'src/utils/counterOptions/saveCounterOptions';
 import { destruct } from '../destruct';
 
 describe('destruct provider', () => {
     const sandbox = sinon.createSandbox();
-    let deleteOriginalOptions: sinon.SinonStub<
-        Parameters<typeof optionsUtils.deleteOriginalOptions>,
-        ReturnType<typeof optionsUtils.deleteOriginalOptions>
+    let deleteCounterOptions: sinon.SinonStub<
+        Parameters<typeof optionsUtils.deleteCounterOptions>,
+        ReturnType<typeof optionsUtils.deleteCounterOptions>
     >;
     const gs = {
         getVal: sandbox.stub(),
     };
 
     beforeEach(() => {
-        deleteOriginalOptions = sandbox.stub(
+        deleteCounterOptions = sandbox.stub(
             optionsUtils,
-            'deleteOriginalOptions',
+            'deleteCounterOptions',
         );
         sandbox.stub(globalStorage, 'getGlobalStorage').returns(gs as any);
     });
@@ -51,7 +51,7 @@ describe('destruct provider', () => {
         destructor();
 
         sinon.assert.calledOnceWithExactly(
-            deleteOriginalOptions,
+            deleteCounterOptions,
             windowStub,
             counterKey,
         );

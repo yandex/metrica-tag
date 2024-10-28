@@ -11,7 +11,7 @@ import { SenderInfo } from 'src/sender/SenderInfo';
 import * as storage from 'src/storage/global';
 import * as config from 'src/config';
 import * as json from 'src/utils/json';
-import * as debug from 'src/providers/debugEvents';
+import * as debug from 'src/utils/debugEvents';
 import { getRange } from 'src/utils/array';
 import { paramsMiddleware } from '../params';
 

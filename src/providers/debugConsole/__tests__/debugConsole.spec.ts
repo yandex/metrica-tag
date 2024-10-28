@@ -6,7 +6,7 @@ import {
 } from 'generated/features';
 import * as inject from '@inject';
 import { noop } from 'src/utils/function';
-import * as debuggerEventsUtils from 'src/providers/debugEvents';
+import * as debuggerEventsUtils from 'src/utils/debugEvents';
 import { DebugConsole } from '../debugConsole';
 import { DEBUG_URL_PARAM } from '../const';
 

@@ -1,122 +1,128 @@
-import { TransportFn, CheckTransport } from 'src/transport/types';
-import { useXHR } from 'src/transport/xhr';
-import { useFetch } from 'src/transport/fetch';
-import { cReduce, cFind, filterFalsy, head } from 'src/utils/array';
+import { TransportFn } from 'src/transport/types';
+import { cReduce } from 'src/utils/array';
 import { Provider, ProvidersMap, HIT_PROVIDER } from 'src/providers';
-import { useImage } from 'src/transport/image';
-import { useJsonp } from 'src/transport/jsonp';
-import { useBeacon } from 'src/transport/beacon';
-import {
-    BEACON_TRANSPORT_FEATURE,
-    FETCH_FEATURE,
-    JSONP_FEATURE,
-} from 'generated/features';
+import { FETCH_FEATURE, JSONP_FEATURE } from 'generated/features';
 import { throwKnownError } from 'src/utils/errorLogger/knownError';
 import { flags } from '@inject';
-import { equal, memo, pipe, secondArg } from 'src/utils/function';
+import { memo, secondArg } from 'src/utils/function';
+import {
+    BEACON_TRANSPORT_ID,
+    FETCH_TRANSPORT_ID,
+    IMAGE_TRANSPORT_ID,
+    JSONP_TRANSPORT_ID,
+    TRANSPORTS_MAP,
+    TransportId,
+    TransportInfo,
+    XHR_TRANSPORT_ID,
+} from './transportsMap';
 
 export type TransportList = [number, TransportFn][];
-
-export const fetchTransport = flags[FETCH_FEATURE] ? useFetch : 0;
-export const jsonpTransport = flags[JSONP_FEATURE] ? useJsonp : 0;
-export const beaconTransport = flags[BEACON_TRANSPORT_FEATURE] ? useBeacon : 0;
-
-export type MaybeTransport = CheckTransport | 0;
 export const ALL_TRANSPORT_OVERRIDE = '*';
-export const transportOverrides: Record<string, CheckTransport[]> = {};
+export const transportOverrides: Record<string, TransportId[]> = {};
+
+const mapTransportList = (transportIds?: TransportId[]) => {
+    if (!transportIds) {
+        return undefined;
+    }
+    return cReduce<TransportId, TransportInfo[]>(
+        (result, transport) => {
+            const transportInfo = TRANSPORTS_MAP[transport];
+            if (transportInfo) {
+                result.push(transportInfo);
+            }
+
+            return result;
+        },
+        [],
+        transportIds,
+    );
+};
 
 const getTransportOverride = (provider?: Provider) => {
     if (transportOverrides[ALL_TRANSPORT_OVERRIDE]) {
-        return transportOverrides[ALL_TRANSPORT_OVERRIDE];
+        return mapTransportList(transportOverrides[ALL_TRANSPORT_OVERRIDE]);
     }
 
-    return provider && transportOverrides[provider];
+    return provider
+        ? mapTransportList(transportOverrides[provider])
+        : undefined;
 };
 
-type TransportInfo = [transport: CheckTransport, transportId: number];
-export const allTransportsList = filterFalsy<TransportInfo | 0>([
-    // beacon особый транспорт он должен идти в списке первым
-    beaconTransport && [beaconTransport, 0],
-    fetchTransport && [fetchTransport, 1],
-    [useXHR, 2],
-    jsonpTransport && [jsonpTransport, 3],
-    [useImage, 4],
-]);
+export const fullList: TransportId[] = [
+    BEACON_TRANSPORT_ID,
+    FETCH_TRANSPORT_ID,
+    XHR_TRANSPORT_ID,
+    JSONP_TRANSPORT_ID,
+    IMAGE_TRANSPORT_ID,
+];
 
-export const fullList = filterFalsy<MaybeTransport>([
-    beaconTransport,
-    fetchTransport,
-    useXHR,
-    jsonpTransport,
-    useImage,
-]);
-
-const hitTransportList: MaybeTransport[] = [useXHR];
+const hitTransportList: TransportId[] = [XHR_TRANSPORT_ID];
 if (flags[FETCH_FEATURE]) {
-    hitTransportList.unshift(fetchTransport);
+    hitTransportList.unshift(FETCH_TRANSPORT_ID);
 }
 if (flags[JSONP_FEATURE]) {
-    hitTransportList.push(jsonpTransport);
+    hitTransportList.push(JSONP_TRANSPORT_ID);
 }
 
-export const hitTransports = filterFalsy<MaybeTransport>(hitTransportList);
-export const imageTransportOnly = filterFalsy<MaybeTransport>([useImage]);
-export const corsTransports = filterFalsy<MaybeTransport>([
-    fetchTransport,
-    useXHR,
-]);
-export const queryStringTransports = filterFalsy<MaybeTransport>([
-    fetchTransport,
-    useImage,
-]);
-export const withoutBeacon = filterFalsy<MaybeTransport>([
-    fetchTransport,
-    useXHR,
-    jsonpTransport,
-    useImage,
-]);
+export const hitTransports: TransportId[] = hitTransportList;
+export const imageTransportOnly: TransportId[] = [IMAGE_TRANSPORT_ID];
+export const corsTransports: TransportId[] = [
+    FETCH_TRANSPORT_ID,
+    XHR_TRANSPORT_ID,
+];
+export const queryStringTransports: TransportId[] = [
+    FETCH_TRANSPORT_ID,
+    IMAGE_TRANSPORT_ID,
+];
+export const withoutBeacon: TransportId[] = [
+    FETCH_TRANSPORT_ID,
+    XHR_TRANSPORT_ID,
+    JSONP_TRANSPORT_ID,
+    IMAGE_TRANSPORT_ID,
+];
 
 /**
  * Mapping between providers and transport lists.
  */
-export const nameMap: ProvidersMap<CheckTransport[]> = {
+export const nameMap: ProvidersMap<TransportId[]> = {
     [HIT_PROVIDER]: hitTransports,
 };
 
 export const EMPTY_TRANSPORT_LIST = 'et';
 
-export const getTransportList = memo((ctx: Window, provider?: Provider) => {
-    let transportList: CheckTransport[] | undefined =
-        getTransportOverride(provider);
+export const getTransportList = memo(
+    (
+        ctx: Window,
+        provider?: Provider,
+        manuallySetTransports?: TransportId[],
+    ) => {
+        let transportList: TransportInfo[] | undefined =
+            getTransportOverride(provider) ||
+            mapTransportList(manuallySetTransports);
 
-    if (!transportList) {
-        if (provider) {
-            transportList = nameMap[provider] || [];
-        } else {
-            transportList = fullList;
+        if (!transportList) {
+            const transportIds = provider ? nameMap[provider] : fullList;
+            transportList = mapTransportList(transportIds);
         }
-    }
 
-    const result = cReduce(
-        (list, check) => {
-            const checkResult = check(ctx);
-            if (checkResult) {
-                const info = cFind(pipe(head, equal(check)), allTransportsList);
-                if (info) {
-                    const transportId = info[1];
-                    list.push([transportId, checkResult]);
+        const result = cReduce<TransportInfo, TransportList>(
+            (list, { check, id }) => {
+                const checkResult = check(ctx);
+                if (checkResult) {
+                    list.push([id, checkResult]);
                 }
-            }
 
-            return list;
-        },
-        [] as TransportList,
-        transportList,
-    );
+                return list;
+            },
+            [],
+            transportList || [],
+        );
 
-    if (!result.length) {
-        throwKnownError();
-    }
+        if (!result.length) {
+            throwKnownError();
+        }
 
-    return result;
-}, secondArg);
+        return result;
+    },
+    secondArg,
+);

@@ -7,7 +7,7 @@ import { convertToString } from 'src/utils/string';
 import { ecommerce } from './ecommerce';
 import { ECOMMERCE_PARAMS_KEY } from './const';
 
-declare module 'src/providers/debugEvents/types' {
+declare module 'src/utils/debugEvents/types' {
     export type EcommerceEvent = DebuggerEventGeneric<
         'ecommerce',
         Record<string, any>

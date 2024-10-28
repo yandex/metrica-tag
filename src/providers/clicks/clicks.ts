@@ -51,6 +51,7 @@ import {
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { toZeroOrOne } from 'src/utils/boolean';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import {
     INTERNAL_LINK_STORAGE_KEY,
     MAX_LEN_INTERNAL_LINK,
@@ -72,7 +73,6 @@ import type {
     AddFileExtensionHandler,
 } from './types';
 import { textFromLink } from './getTextFromLink';
-import { dispatchDebuggerEvent } from '../debugEvents';
 import {
     EMPTY_LINK_CONSOLE_MESSAGE,
     LINK_CLICK_CONSOLE_MESSAGE,

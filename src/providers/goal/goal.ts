@@ -15,6 +15,7 @@ import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { isFunction } from 'src/utils/object';
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { getArtificialState } from '../artificialHit/artificialHit';
 import {
     GOAL_PROVIDER,
@@ -23,7 +24,6 @@ import {
     METHOD_NAME_GOAL,
 } from './const';
 
-import { dispatchDebuggerEvent } from '../debugEvents';
 import { GOAL_REACH_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 const getGoalLocation = (

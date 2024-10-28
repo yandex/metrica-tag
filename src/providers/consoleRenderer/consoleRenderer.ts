@@ -5,7 +5,7 @@ import { cMap } from 'src/utils/array';
 import { has } from 'src/utils/object';
 import { isString } from 'src/utils/string';
 import { globalMemoWin } from 'src/utils/function';
-import { getEvents } from '../debugEvents';
+import { getEvents } from 'src/utils/debugEvents';
 import { CONSOLE_DICTIONARY, variableRegex } from './dictionary';
 
 export const getMessage = (

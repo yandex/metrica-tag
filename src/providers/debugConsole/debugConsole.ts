@@ -7,7 +7,7 @@ import {
 import { flags } from '@inject';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { isCounterKeySilent } from 'src/utils/isCounterSilent';
-import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { isArray } from 'src/utils/array';
 
 /**

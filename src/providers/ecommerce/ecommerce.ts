@@ -18,7 +18,7 @@ import {
 import { getCounterSettings } from 'src/utils/counterSettings';
 import { isString } from 'src/utils/string';
 import { getGlobalStorage } from 'src/storage/global';
-import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import {
     handleTagManagerEcommerce,
     handleEcommerce,

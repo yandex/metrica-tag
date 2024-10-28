@@ -3,7 +3,7 @@ import { DEBUG_EVENTS_FEATURE, TURBO_PARAMS_FEATURE } from 'generated/features';
 import { DEFER_KEY, PAGE_VIEW_BR_KEY, REQUEST_BODY_KEY } from 'src/api/watch';
 import { config } from 'src/config';
 import { MiddlewareGetter } from 'src/middleware/types';
-import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { cFilter, cForEach, head, indexOfWin } from 'src/utils/array';

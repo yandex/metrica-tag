@@ -1,12 +1,9 @@
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE, DEBUG_FEATURE } from 'generated/features';
+import { DEBUG_FEATURE } from 'generated/features';
 import { RSYA_COUNTER_TYPE } from 'src/providers/counterOptions/const';
-import { providersSync } from 'src/providersEntrypoint';
-import { getCounterKey } from 'src/utils/counterOptions';
 import { constructArray, globalMemoWin } from 'src/utils/function';
 import { isCounterIdSilent } from 'src/utils/isCounterSilent';
 import { parseIntSafe } from 'src/utils/number';
-import { getOriginalOptions } from 'src/providers/counterOptions';
 import { debugEnabled } from 'src/providers/debugConsole/debugEnabled';
 import { DebuggerEvent } from './types';
 
@@ -44,16 +41,4 @@ export const dispatchDebuggerEvent = (ctx: Window, event: DebuggerEvent) => {
         events.shift();
     }
     events.push(event);
-};
-
-export const initProvider = () => {
-    if (flags[DEBUG_EVENTS_FEATURE]) {
-        providersSync.push((ctx, counterOptions) => {
-            dispatchDebuggerEvent(ctx, {
-                ['counterKey']: getCounterKey(counterOptions),
-                ['name']: 'counter',
-                ['data']: getOriginalOptions(counterOptions),
-            });
-        });
-    }
 };

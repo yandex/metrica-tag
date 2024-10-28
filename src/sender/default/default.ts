@@ -13,7 +13,7 @@ import {
     debugLogRequest,
     logRequestFailure,
     logRequestSuccess,
-} from 'src/providers/debugEvents/debugRequest';
+} from 'src/utils/debugEvents/debugRequest';
 import { CONTENT_TYPE_HEADER } from './const';
 import { createQuery } from './query';
 

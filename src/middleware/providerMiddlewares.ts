@@ -1,4 +1,4 @@
-import { cForEach, cMap, head } from 'src/utils/array';
+import { cForEach, cMap, head, isArray } from 'src/utils/array';
 import {
     MiddlewareGetter,
     Middleware,
@@ -36,7 +36,9 @@ export const addCommonMiddleware = bindArg(
 /**
  * A mapping between providers and corresponding middleware chains.
  */
-export const providerMiddlewareList: ProvidersMap<MiddlewareWeightTuple[]> = {
+export const providerMiddlewareList: Partial<
+    ProvidersMap<MiddlewareWeightTuple[]>
+> = {
     [HIT_PROVIDER]: commonMiddlewares,
 };
 
@@ -53,16 +55,17 @@ addCommonMiddleware(prepareUrlMiddleware, -100);
 /**
  * Gets middlewares of specified provider
  * @param ctx - Current window
- * @param provider - The provider whose middlewares will be returned
+ * @param providerOrMiddlewares - The provider whose middlewares will be returned, or middlewares list to be to be supplemented with universal middlewares
  * @param opt - Counter options on initialization
  */
 export const getProviderMiddlewares = (
     ctx: Window,
-    provider: Provider,
+    providerOrMiddlewares: Provider | MiddlewareWeightTuple[],
     opt: CounterOptions,
 ) => {
-    const middlewareList =
-        providerMiddlewareList[provider] || commonMiddlewares;
+    const middlewareList = isArray(providerOrMiddlewares)
+        ? providerOrMiddlewares
+        : providerMiddlewareList[providerOrMiddlewares] || commonMiddlewares;
     const returnMiddlewares = cMap(head, middlewareList);
     cForEach(
         (middleware) => returnMiddlewares.unshift(middleware),

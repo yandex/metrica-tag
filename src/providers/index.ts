@@ -11,6 +11,4 @@ export interface PROVIDERS {
 
 export type Provider = PROVIDERS[keyof PROVIDERS];
 
-export type ProvidersMap<T> = {
-    [provider in Provider]?: T;
-};
+export type ProvidersMap<T> = Partial<Record<Provider, T>>;

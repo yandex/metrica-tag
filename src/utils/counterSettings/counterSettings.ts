@@ -1,6 +1,6 @@
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
-import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { mix } from 'src/utils/object';
 import { CounterOptions, getCounterKey } from '../counterOptions';
 import { getMs, Time } from '../time';

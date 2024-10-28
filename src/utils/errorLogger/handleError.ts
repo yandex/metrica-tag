@@ -7,7 +7,7 @@ import {
     DEBUG_EVENTS_FEATURE,
 } from 'generated/features';
 import { flags } from '@inject';
-import { dispatchDebuggerEvent } from 'src/providers/debugEvents';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { isKnownError } from './knownError';
 import {
     TOO_LONG_ERROR_NAME,

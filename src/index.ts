@@ -5,11 +5,7 @@ import {
     ProviderResultPromised,
     MetrikaCounterConstructor,
 } from 'src/types';
-import {
-    normalizeOptions,
-    getCounterKey,
-    normalizeOriginalOptions,
-} from 'src/utils/counterOptions';
+import { normalizeOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
     bindArgs,
     firstArg,
@@ -32,8 +28,12 @@ import {
     TRACK_HASH_FEATURE,
     TELEMETRY_FEATURE,
     STACK_PROXY_FEATURE,
+    DEBUG_EVENTS_FEATURE,
 } from 'generated/features';
-import { optionsKeysMap } from 'src/providers/counterOptions';
+import {
+    getOriginalOptions,
+    optionsKeysMap,
+} from 'src/providers/counterOptions';
 import { flags } from '@inject';
 import { telemetryCallCountDecorator } from 'src/utils/methodDecorators/telCallCount';
 import {
@@ -60,7 +60,8 @@ import { throwFunction } from './utils/errorLogger/throwFunction';
 import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
-import { saveOriginalOptions } from './utils/counterOptions/originalOptionsState';
+import { saveCounterOptions } from './utils/counterOptions/saveCounterOptions';
+import { dispatchDebuggerEvent } from './utils/debugEvents';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -190,16 +191,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             return counters[counterKey];
         }
 
-        saveOriginalOptions(
-            ctx,
-            counterKey,
-            normalizeOriginalOptions(
-                counterId,
-                counterParams,
-                counterType,
-                counterDefer,
-            ),
-        );
+        saveCounterOptions(ctx, counterKey, counterOptions);
         counters[counterKey] = this;
         globalConfig.setVal(COUNTERS_GLOBAL_KEY, counters);
         globalConfig.setSafe('counter', this);
@@ -235,6 +227,13 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         );
 
         cForEach(callProvider, providersSync);
+        if (flags[DEBUG_EVENTS_FEATURE]) {
+            dispatchDebuggerEvent(ctx, {
+                ['counterKey']: getCounterKey(counterOptions),
+                ['name']: 'counter',
+                ['data']: getOriginalOptions(counterOptions),
+            });
+        }
 
         return undefined;
     })();

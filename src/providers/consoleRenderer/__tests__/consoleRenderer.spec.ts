@@ -1,15 +1,15 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import * as eventsUtils from 'src/utils/debugEvents';
+import { DebuggerEvent } from 'src/utils/debugEvents/types';
 import { useConsoleRendererRaw } from '../consoleRenderer';
 import * as observerUtils from '../../../utils/dataLayerObserver';
 import * as consoleUtils from '../../../utils/console';
-import * as eventsUtils from '../../debugEvents';
 import {
     CONSOLE_DICTIONARY,
     EMPTY_LINK_CONSOLE_MESSAGE,
     PAGE_VIEW_CONSOLE_MESSAGE,
 } from '../dictionary';
-import { DebuggerEvent } from '../../debugEvents/types';
 
 describe('consoleRenderer', () => {
     const sandbox = sinon.createSandbox();
