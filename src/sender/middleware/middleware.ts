@@ -1,15 +1,15 @@
 import { host as defaultHost } from 'src/config';
 import { combineMiddlewares } from 'src/middleware/combine';
-import { getSenderMiddlewares } from 'src/middleware/senderMiddlewares';
 import type { Middleware } from 'src/middleware/types';
 import { useDefaultSender } from 'src/sender/default';
 import type { InternalSenderInfo, UrlInfo } from 'src/sender/SenderInfo';
-import { Sender } from 'src/sender/types';
 import type { TransportList } from 'src/transport';
 import type { TransportResponse } from 'src/transport/types';
 import { arrayMerge, cMap } from 'src/utils/array';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { bindArg, firstArg, FirstArgOfType } from 'src/utils/function';
+import { getSenderMiddlewares } from 'src/middleware/senderMiddlewares';
+import { Sender } from 'src/sender/types';
 import { returnFullHost } from './returnFullHost';
 
 export const useMiddlewareSender = (
