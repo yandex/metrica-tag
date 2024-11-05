@@ -32,7 +32,7 @@ export const emitter = <T, U>(ctx: Window): Emitter<T, U> => {
             getPath(observers, eventName)
                 ? errorLogger(
                       ctx,
-                      `e.${event}`,
+                      `e.${eventName}`,
                       observers[eventName].trigger,
                   )(event)
                 : [],
