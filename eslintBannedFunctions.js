@@ -30,6 +30,10 @@ const bannedFunctions = [
         name: 'reduce',
         message: 'Use cReduce from utils',
     },
+    {
+        name: 'join',
+        message: 'Use arrayJoin from utils',
+    },
     // timeout
     {
         name: 'setTimeout',

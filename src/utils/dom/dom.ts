@@ -8,7 +8,7 @@ import {
 import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
 import { ctxPath, isNil, getPath, isFunction } from 'src/utils/object';
-import { toArray, cIndexOf, cFind, cSome, arrayJoin } from 'src/utils/array';
+import { toArray, cIndexOf, cFind, cSome } from 'src/utils/array';
 import { isString, convertToString } from 'src/utils/string';
 import { isIE } from 'src/utils/browser';
 
@@ -391,10 +391,8 @@ export const INPUT_NODES = [
     'SELECT',
     'PROGRESS',
 ];
-export const IS_INPUT_REGEX = new RegExp(
-    `^(${arrayJoin('|', INPUT_NODES)})$`,
-    'i',
-);
+// eslint-disable-next-line no-restricted-properties -- the join is evaluated at build time
+export const IS_INPUT_REGEX = new RegExp(`^(${INPUT_NODES.join('|')})$`, 'i');
 export const isInput = pipe(getNodeName, bindThisForMethodTest(IS_INPUT_REGEX));
 
 const inputTypesWithoutValue = ['submit', 'image', 'hidden'];
