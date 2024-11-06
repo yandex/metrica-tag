@@ -60,7 +60,6 @@ import { throwFunction } from './utils/errorLogger/throwFunction';
 import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
-import { saveCounterOptions } from './utils/counterOptions/saveCounterOptions';
 import { dispatchDebuggerEvent } from './utils/debugEvents';
 
 type CounterMethod = keyof CounterObject;
@@ -191,7 +190,6 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             return counters[counterKey];
         }
 
-        saveCounterOptions(ctx, counterKey, counterOptions);
         counters[counterKey] = this;
         globalConfig.setVal(COUNTERS_GLOBAL_KEY, counters);
         globalConfig.setSafe('counter', this);

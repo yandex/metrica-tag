@@ -4,7 +4,6 @@ import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cForEach } from 'src/utils/array';
 import type { AnyFunc } from 'src/utils/function/types';
 import { isFunction } from 'src/utils/object';
-import { deleteCounterOptions } from 'src/utils/counterOptions/saveCounterOptions';
 import { DestructHandler } from './const';
 
 type UnsubscribeCallbacks = (AnyFunc | undefined)[];
@@ -32,7 +31,6 @@ export const destruct = ctxErrorLogger(
                     errorLogger(ctx, `dest.fr.${index}`, cb)(),
                 unsubscribeMethods,
             );
-            deleteCounterOptions(ctx, getCounterKey(counterOptions));
             delete globalConfig.getVal<{ [key: string]: unknown }>('counters')[
                 getCounterKey(counterOptions)
             ];

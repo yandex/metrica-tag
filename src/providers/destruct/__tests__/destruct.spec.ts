@@ -2,24 +2,15 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as globalStorage from 'src/storage/global';
 import { CounterOptions } from 'src/utils/counterOptions';
-import * as optionsUtils from 'src/utils/counterOptions/saveCounterOptions';
 import { destruct } from '../destruct';
 
 describe('destruct provider', () => {
     const sandbox = sinon.createSandbox();
-    let deleteCounterOptions: sinon.SinonStub<
-        Parameters<typeof optionsUtils.deleteCounterOptions>,
-        ReturnType<typeof optionsUtils.deleteCounterOptions>
-    >;
     const gs = {
         getVal: sandbox.stub(),
     };
 
     beforeEach(() => {
-        deleteCounterOptions = sandbox.stub(
-            optionsUtils,
-            'deleteCounterOptions',
-        );
         sandbox.stub(globalStorage, 'getGlobalStorage').returns(gs as any);
     });
 
@@ -50,11 +41,6 @@ describe('destruct provider', () => {
         const destructor = destruct(windowStub, counterOptions, callbacks);
         destructor();
 
-        sinon.assert.calledOnceWithExactly(
-            deleteCounterOptions,
-            windowStub,
-            counterKey,
-        );
         chai.expect(cb1.calledOnce).to.be.true;
         chai.expect(cb2.calledOnce).to.be.true;
         chai.expect(counters['100:0']).to.not.exist;
