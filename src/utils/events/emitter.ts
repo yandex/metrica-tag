@@ -6,7 +6,7 @@ import { Observer, observer, Listener } from './observer';
 export type Emitter<T, U> = {
     on: (a: string[], listener: Listener<T, U>) => Emitter<T, U>;
     off: (a: string[], listener: Listener<T, U>) => Emitter<T, U>;
-    trigger: (a: string, d?: any) => any[];
+    trigger: (a: string, d?: T) => U[];
 };
 
 export const emitter = <T, U>(ctx: Window): Emitter<T, U> => {
@@ -34,6 +34,7 @@ export const emitter = <T, U>(ctx: Window): Emitter<T, U> => {
                       ctx,
                       `e.${eventName}`,
                       observers[eventName].trigger,
+                      [],
                   )(event)
                 : [],
     };

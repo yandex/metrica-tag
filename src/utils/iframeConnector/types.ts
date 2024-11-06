@@ -34,7 +34,10 @@ export type Message = {
     string: string;
 };
 
-export type MessageHandler = (e: Event, ...data: Record<string, any>[]) => void;
+export type MessageHandler = (
+    e: MessageEvent,
+    ...data: Record<string, unknown>[]
+) => void;
 
 export type EventInfo = [MessageEvent, MessageData];
 

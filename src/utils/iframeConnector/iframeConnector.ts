@@ -40,6 +40,7 @@ import {
     MessageHandler,
     MessageMeta,
     IframeConnector,
+    MessageData,
 } from './types';
 
 import {
@@ -246,7 +247,7 @@ export const handleInputMessage = (
             ]);
             const normResp = cMap(
                 pipe(firstArg, ctxMix(counterInfo)),
-                resp.concat([{}]),
+                resp.concat([undefined]),
             );
             const data = serialize(
                 [dateInfo, key, message[IFRAME_MESSAGE_COUNTER_ID]!],
@@ -273,10 +274,7 @@ export const handleInputMessage = (
         }
     }
 };
-const safeHandleInputMessage: typeof handleInputMessage = ctxErrorLogger(
-    's.fh',
-    handleInputMessage,
-);
+const safeHandleInputMessage = ctxErrorLogger('s.fh', handleInputMessage);
 
 export const iframeConnector = (
     ctx: Window,
@@ -330,7 +328,10 @@ export const iframeConnector = (
                 type: INIT_MESSAGE_CHILD,
             },
             (e, data) => {
-                emitterObj.trigger(INIT_MESSAGE_PARENT, [e, data]);
+                emitterObj.trigger(INIT_MESSAGE_PARENT, [
+                    e,
+                    data as MessageData,
+                ]);
             },
         );
     }, iframeList);
@@ -342,7 +343,7 @@ export const iframeConnector = (
                 type: INIT_MESSAGE_PARENT,
             },
             (e, data) => {
-                emitterObj.trigger(INIT_MESSAGE, [e, data]);
+                emitterObj.trigger(INIT_MESSAGE, [e, data as MessageData]);
             },
         );
     }
