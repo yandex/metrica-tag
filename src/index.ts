@@ -5,7 +5,11 @@ import {
     ProviderResultPromised,
     MetrikaCounterConstructor,
 } from 'src/types';
-import { normalizeOptions, getCounterKey } from 'src/utils/counterOptions';
+import {
+    normalizeOptions,
+    getCounterKey,
+    normalizeOriginalOptions,
+} from 'src/utils/counterOptions';
 import {
     bindArgs,
     firstArg,
@@ -29,6 +33,7 @@ import {
     TELEMETRY_FEATURE,
     STACK_PROXY_FEATURE,
     DEBUG_EVENTS_FEATURE,
+    TURBO_PARAMS_FEATURE,
 } from 'generated/features';
 import {
     getOriginalOptions,
@@ -61,6 +66,8 @@ import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
 import { dispatchDebuggerEvent } from './utils/debugEvents';
+import { getCounterOptionsState } from './utils/counterOptions/counterOptionsStore';
+import { setTurboInfo } from './utils/turboParams/turboParams';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -88,13 +95,18 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         }
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const thisInstance = this;
-        const counterOptions = normalizeOptions(
+        const counterData = normalizeOriginalOptions(
             counterId,
-            optionsKeysMap,
             counterParams,
             counterType,
             counterDefer,
         );
+        const counterOptions = normalizeOptions(counterData, optionsKeysMap);
+        const state = getCounterOptionsState(counterOptions);
+        state.rawOptions = counterData;
+        if (flags[TURBO_PARAMS_FEATURE]) {
+            setTurboInfo(counterOptions, counterOptions.params || {});
+        }
 
         const unsubscribeMethods: Array<() => void | null | undefined> = [];
 

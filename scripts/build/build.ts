@@ -55,6 +55,7 @@ const inputOptions: RollupOptions = {
     input: 'src/index.ts',
     treeshake: {
         annotations: true,
+        propertyReadSideEffects: false,
     },
     plugins: [
         replace({

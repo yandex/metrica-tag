@@ -21,9 +21,24 @@ import { runOnErrorCallbacks } from './onError';
 import { stringIncludes } from '../string';
 
 export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
-    // Undefined as error
-    let message = 'u.a.e';
-    let stack = '';
+    if (flags[DEBUG_FEATURE]) {
+        if (flags[DEBUG_EVENTS_FEATURE]) {
+            dispatchDebuggerEvent(ctx, {
+                ['data']: {
+                    ['scopeName']: scopeName,
+                    ['error']: e,
+                },
+                ['name']: 'error',
+            });
+        }
+        // break promise catch exceptions
+        const setTimeout: Window['setTimeout'] = getNativeFunction(
+            'setTimeout',
+            ctx,
+        );
+        // eslint-disable-next-line ban/ban
+        return setTimeout(bindArg(e, throwFunction), 0);
+    }
 
     if (
         flags[LOCAL_FEATURE] &&
@@ -35,6 +50,11 @@ export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
         // eslint-disable-next-line no-console
         console.error(e);
     }
+
+    // Undefined as error
+    let message = 'u.a.e';
+    let stack = '';
+
     if (e) {
         if (typeof e === 'object') {
             if (e[UNCATCHABLE_ERROR_PROPERTY]) {
@@ -46,27 +66,8 @@ export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
                     e.stack.replace(/\n/g, '\\n')) ||
                 'n.s.e.s';
         } else {
-            message = `${e as any}`;
+            message = `${e}`;
         }
-    }
-
-    // break promise catch exceptions
-    if (flags[DEBUG_FEATURE]) {
-        const setTimeout: Window['setTimeout'] = getNativeFunction(
-            'setTimeout',
-            ctx,
-        );
-        if (flags[DEBUG_EVENTS_FEATURE]) {
-            dispatchDebuggerEvent(ctx, {
-                ['data']: {
-                    ['scopeName']: scopeName,
-                    ['error']: e,
-                },
-                ['name']: 'error',
-            });
-        }
-        // eslint-disable-next-line ban/ban
-        return setTimeout(bindArg(e, throwFunction), 0);
     }
 
     const ignoreCondition =

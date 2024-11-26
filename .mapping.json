@@ -388,6 +388,7 @@
   "src/utils/counter/type.ts":"metrika/frontend/watch/public/src/utils/counter/type.ts",
   "src/utils/counterOptions/__tests__/counterOptions.spec.ts":"metrika/frontend/watch/public/src/utils/counterOptions/__tests__/counterOptions.spec.ts",
   "src/utils/counterOptions/counterOptions.ts":"metrika/frontend/watch/public/src/utils/counterOptions/counterOptions.ts",
+  "src/utils/counterOptions/counterOptionsStore.ts":"metrika/frontend/watch/public/src/utils/counterOptions/counterOptionsStore.ts",
   "src/utils/counterOptions/getCounterKey.ts":"metrika/frontend/watch/public/src/utils/counterOptions/getCounterKey.ts",
   "src/utils/counterOptions/index.ts":"metrika/frontend/watch/public/src/utils/counterOptions/index.ts",
   "src/utils/counterOptions/types.ts":"metrika/frontend/watch/public/src/utils/counterOptions/types.ts",

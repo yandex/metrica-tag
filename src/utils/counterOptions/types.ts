@@ -3,6 +3,8 @@ import {
     RSYA_COUNTER_TYPE,
 } from 'src/providers/counterOptions/const';
 
+export type RawCounterOptions = Record<string, unknown>;
+
 export type RawTrackLinkParams = string | Record<string, unknown> | boolean;
 
 export type CounterTypeInterface =

@@ -1,8 +1,6 @@
 {
     "experimentalDecorators": true,
     "compilerOptions": {
-        "jsx": "react-jsx",
-        "jsxImportSource": "preact",
         "incremental": true,
         "strict": true,
         "module": "commonjs",

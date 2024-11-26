@@ -41,11 +41,13 @@ describe('Counter Options', () => {
         const opt: {
             [key: string]: any;
         } = normalizeOptions(
-            id,
+            {
+                id,
+                params,
+                type: counterType,
+                defer: counterDefer,
+            },
             optionsKeysMapStub,
-            params,
-            counterType,
-            counterDefer,
         );
         sinon.assert.calledOnce(normalizeIdFake);
         chai.expect(opt.id).to.eq(resultId);
