@@ -7,7 +7,11 @@ import {
     IFRAME_MESSAGE_DUID,
 } from 'src/utils/iframeConnector';
 
-// Uses iframeConnector parent domain id, that is written in counterFirstHit/waitParentDuid middleware
+/**
+ * For TP browsers in iframe context try to
+ * use iframeConnector parent domain id,
+ * that is written in counterFirstHit/waitParentDuid middleware.
+ */
 export const getSelfOrParentUid = (ctx: Window, opt: CounterOptions) => {
     if (!isTP(ctx) || !isIframe(ctx)) {
         return getUid(ctx, opt);
@@ -26,7 +30,5 @@ export const getSelfOrParentUid = (ctx: Window, opt: CounterOptions) => {
 
 export const getUidFlag = memo(
     getSelfOrParentUid,
-    (ctx: Window, opt: CounterOptions) => {
-        return `{${opt.ldc}${opt.noCookie}`;
-    },
+    (ctx: Window, opt: CounterOptions) => `${opt.ldc}${opt.noCookie}`,
 );
