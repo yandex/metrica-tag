@@ -1,20 +1,18 @@
 import { DEFER_KEY } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import { cFilter } from 'src/utils/array';
+import { cFilter } from 'src/utils/array/filter';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import {
-    constructObject,
-    equal,
-    firstArg,
-    memo,
-    pipe,
-} from 'src/utils/function';
+import { constructObject } from 'src/utils/function/construct';
 import { ctxPath, getPath, isFunction } from 'src/utils/object';
-import { cEvent } from 'src/utils/events';
+import { cEvent } from 'src/utils/events/events';
 import { getPerformance } from 'src/utils/time/performance';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { getGlobalStorage } from 'src/storage/global';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { timeNavigationStart } from 'src/middleware/watchSyncFlags/brinfoFlags/timeFlags';
+import { pipe } from 'src/utils/function/pipe';
+import { firstArg } from 'src/utils/function/identity';
+import { equal } from 'src/utils/function/curry';
+import { memo } from 'src/utils/function/memo';
 import {
     CONTENTFUL_PAINT,
     FIRST_HIDE_TIME_GS_KEY,

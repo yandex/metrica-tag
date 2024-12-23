@@ -3,7 +3,7 @@ import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { mix } from 'src/utils/object';
 import { CounterOptions, getCounterKey } from '../counterOptions';
-import { getMs, Time } from '../time';
+import { getMs, Time } from '../time/time';
 import { CounterSettings, RawCounterSettings } from './types';
 import { AsyncMapFn, getAsync, setAsync } from '../asyncMap';
 

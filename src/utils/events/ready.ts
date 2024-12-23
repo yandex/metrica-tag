@@ -1,7 +1,7 @@
-import { includes } from 'src/utils/array';
+import { includes } from 'src/utils/array/includes';
 import { cEvent } from 'src/utils/events/events';
 
-import { runAsync } from 'src/utils/async';
+import { runAsync } from 'src/utils/async/async';
 import { AnyFunc } from '../function/types';
 
 const INTERACTIVE_READY_STATE = 'interactive';

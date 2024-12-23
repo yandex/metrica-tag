@@ -1,7 +1,7 @@
 import { flags } from '@inject';
 import { POLYFILLS_FEATURE } from 'generated/features';
+import { curry2 } from 'src/utils/function/curry';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
-import { curry2 } from '../function';
 
 export const trimRegexp = /^\s+|\s+$/g;
 

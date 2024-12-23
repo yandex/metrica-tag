@@ -3,18 +3,19 @@ import { iframeSender } from 'src/utils/iframeConnector/iframeSender';
 import {
     getInnerDataLayer,
     innerDataLayerObserver,
-} from 'src/utils/dataLayerObserver';
+} from 'src/utils/dataLayerObserver/dataLayerObserver';
 import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
-import { bindArgs, pipe } from 'src/utils/function';
+import { bindArgs } from 'src/utils/function/bind';
 import {
     MessageData,
     IFRAME_MESSAGE_DATA,
     IFRAME_MESSAGE_TYPE,
 } from 'src/utils/iframeConnector';
-import { getCounterInstance } from 'src/utils/counter';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { includes } from 'src/utils/array';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { includes } from 'src/utils/array/includes';
 import { ctxPath } from 'src/utils/object';
+import { pipe } from 'src/utils/function/pipe';
 
 export const INNER_DL_PARAMS = 'params';
 export const INNER_PARENT_PARAMS = 'parent';

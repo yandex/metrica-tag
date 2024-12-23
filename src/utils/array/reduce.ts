@@ -49,7 +49,10 @@ export const dirtyReduce = baseReduce;
 /**
  * @type function(...?): ?
  */
-export const ctxReduce = <T, E>(
-    fn: (carry: T, element: E, index?: number, array?: E[]) => T,
-    first?: T,
-) => bindArgs([fn, first], cReduce) as (arr: E[]) => T;
+export const ctxReduce = <Result, Item>(
+    fn: ReduceCallback<Item, Result>,
+    first: Result,
+) =>
+    bindArgs([fn, first], cReduce<Item, Result>) as (
+        array: ArrayLike<Item>,
+    ) => Result;

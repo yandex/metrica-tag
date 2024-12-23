@@ -8,10 +8,10 @@ import type { CounterOptions } from 'src/utils/counterOptions';
 import { getSender } from 'src/sender';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { HIT_PROVIDER } from 'src/providers';
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
-import { setSettings } from 'src/utils/counterSettings';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
+import { setSettings } from 'src/utils/counterSettings/counterSettings';
 import type { TransportResponse } from 'src/transport/types';
-import { getLocation } from 'src/utils/location';
+import { getLocation } from 'src/utils/location/location';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import {
     ARTIFICIAL_HIT_FEATURE,
@@ -19,9 +19,10 @@ import {
     USER_PARAMS_FEATURE,
 } from 'generated/features';
 import { flags } from '@inject';
-import { browserInfo } from 'src/utils/browserInfo';
-import { bindArgs } from 'src/utils/function';
-import { runAsync } from 'src/utils/async';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
+import { bindArgs } from 'src/utils/function/bind';
+import { runAsync } from 'src/utils/async/async';
+import { RawCounterSettings } from 'src/utils/counterSettings/types';
 import { HIT_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 /**
@@ -30,7 +31,11 @@ import { HIT_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
  * @param counterOpt - Counter options during initialization
  */
 export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
-    const sender = getSender(ctx, HIT_PROVIDER, counterOpt);
+    // FIXME: wrong sender types involve this casting
+    const sender = getSender(ctx, HIT_PROVIDER, counterOpt) as unknown as (
+        opt: SenderInfo,
+        counterOptions: CounterOptions,
+    ) => Promise<TransportResponse>;
     const url = counterOpt.forceUrl || `${getLocation(ctx).href}`;
     const referrer = counterOpt.forceReferrer || ctx.document.referrer;
 
@@ -82,7 +87,18 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
                 )();
             }
 
-            runAsync(ctx, bindArgs([ctx, counterOpt, hitParams], setSettings));
+            runAsync(
+                ctx,
+                bindArgs(
+                    [
+                        ctx,
+                        counterOpt,
+                        // FIXME: wrong TransportResponse type involves this casting
+                        hitParams as unknown as RawCounterSettings,
+                    ],
+                    setSettings,
+                ),
+            );
         })
         .catch(errorLogger(ctx, 'h.g.s'));
 };

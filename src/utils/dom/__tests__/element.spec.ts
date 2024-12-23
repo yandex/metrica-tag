@@ -1,4 +1,4 @@
-import { getElementPath, getElementCSSSelector } from 'src/utils/dom';
+import { getElementPath, getElementCSSSelector } from 'src/utils/dom/element';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import chai from 'chai';
 

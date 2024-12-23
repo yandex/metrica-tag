@@ -1,10 +1,14 @@
-import { CookieStorage, globalCookieStorage } from 'src/storage/cookie';
-import { globalLocalStorage } from 'src/storage/localStorage';
-import { getRandom, parseDecimalInt } from 'src/utils/number';
-import { getSec, TimeOne } from 'src/utils/time';
-import { globalMemoWin, IS_RECOVERED_FN_KEY } from 'src/utils/function';
+import { CookieStorage, globalCookieStorage } from 'src/storage/cookie/cookie';
+import { globalLocalStorage } from 'src/storage/localStorage/localStorage';
+import { parseDecimalInt } from 'src/utils/number/number';
+import { getSec, TimeOne } from 'src/utils/time/time';
+import {
+    globalMemoWin,
+    IS_RECOVERED_FN_KEY,
+} from 'src/utils/function/globalMemo';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { arrayJoin } from '../array';
+import { arrayJoin } from '../array/join';
+import { getRandom } from '../number/random';
 
 export const setUid = (
     cookieStorageObj: CookieStorage,

@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import type { TransportFn } from 'src/transport/types';
-import * as json from 'src/utils/json';
+import * as json from 'src/utils/json/json';
 import * as isKnownErrorUtils from 'src/utils/errorLogger/knownError';
 import * as errorLogger from 'src/utils/errorLogger/handleError';
-import * as nativeFunctionUtils from 'src/utils/function/isNativeFunction';
+import * as nativeFunctionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
 import { useXHR, SEND_METHOD_NAME } from '..';
 
 class MockXHR {

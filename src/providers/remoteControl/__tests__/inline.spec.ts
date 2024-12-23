@@ -8,11 +8,11 @@ import {
     UTILS_KEY,
     UTILS_SELECT_KEY,
 } from 'src/providers/remoteControl/remoteControl';
-import * as events from 'src/utils/events';
-import * as domUtils from 'src/utils/dom';
+import * as events from 'src/utils/events/events';
+import * as domUtils from 'src/utils/dom/insertScript';
 import type { EventSetter } from 'src/utils/events/types';
-import * as globalUtils from 'src/storage/global';
-import type { GlobalStorage } from 'src/storage/global';
+import * as globalUtils from 'src/storage/global/getGlobal';
+import type { GlobalStorage } from 'src/storage/global/global';
 
 describe('remoteControl / inline', () => {
     const sandbox = sinon.createSandbox();
@@ -30,8 +30,8 @@ describe('remoteControl / inline', () => {
         ReturnType<typeof domUtils.insertScript>
     >;
     let setValSpy: sinon.SinonSpy<
-        Parameters<globalUtils.GlobalStorage['setVal']>,
-        ReturnType<globalUtils.GlobalStorage['setVal']>
+        Parameters<GlobalStorage['setVal']>,
+        ReturnType<GlobalStorage['setVal']>
     >;
 
     const metrikaOrigin = 'https://metrika.example.com';

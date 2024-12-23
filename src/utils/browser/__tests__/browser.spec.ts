@@ -11,18 +11,17 @@ import {
     getLanguage,
     netType,
     NET_MAP,
-    isFF,
     isIE as isIEFn,
     getNavigatorLanguage,
     isAndroid,
     getPlatform,
-    isGecko,
     isWebKit,
     isPrerender,
     isITP,
     isIOS,
     isAndroidWebView,
-} from '..';
+} from '../browser';
+import { isFF, isGecko } from '../firefox';
 
 describe('browser Utils', () => {
     const win = (obj: any = {}) => {

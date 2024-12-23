@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import { useMiddlewareSender } from 'src/sender/middleware';
 import * as middleware from 'src/middleware/combine';
-import * as defaultSender from 'src/sender/default';
+import * as defaultSender from 'src/sender/default/default';
 import { expect } from 'chai';
 import type { InternalSenderInfo, SenderInfo } from 'src/sender/SenderInfo';
 import type { DefaultSenderResult } from 'src/sender/default';

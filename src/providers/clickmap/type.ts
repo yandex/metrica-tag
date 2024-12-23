@@ -1,4 +1,4 @@
-import { TMouseButton } from 'src/utils/mouseEvents';
+import { TMouseButton } from 'src/utils/mouseEvents/mouseEvents';
 
 /**
  * Structure to store click event

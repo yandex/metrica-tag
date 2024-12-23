@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as DOM from 'src/utils/dom';
-import * as defer from 'src/utils/defer';
+import * as DOM from 'src/utils/dom/dom';
+import * as defer from 'src/utils/defer/defer';
 import { useTriggerEvent } from '../triggerEvent';
 
 describe('Trigger event provider', () => {

@@ -1,10 +1,11 @@
 import { flags } from '@inject';
 import { DEBUG_FEATURE } from 'generated/features';
 import { RSYA_COUNTER_TYPE } from 'src/providers/counterOptions/const';
-import { constructArray, globalMemoWin } from 'src/utils/function';
+import { globalMemoWin } from 'src/utils/function/globalMemo';
 import { isCounterIdSilent } from 'src/utils/isCounterSilent';
-import { parseIntSafe } from 'src/utils/number';
+import { parseIntSafe } from 'src/utils/number/number';
 import { debugEnabled } from 'src/providers/debugConsole/debugEnabled';
+import { constructArray } from 'src/utils/function/construct';
 import { DebuggerEvent } from './types';
 
 const MAX_EVENT_NUMBER = 1000;

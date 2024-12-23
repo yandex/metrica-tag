@@ -1,7 +1,9 @@
-import { cEvent, Observer } from 'src/utils/events';
+import { cEvent } from 'src/utils/events/events';
 import { waitForBodyTask } from 'src/utils/dom/waitForBody';
-import { isNativeFunction, noop } from 'src/utils/function';
-import { taskFork } from '../async';
+import { noop } from 'src/utils/function/noop';
+import { isNativeFunction } from 'src/utils/function/isNativeFunction';
+import { taskFork } from '../async/task';
+import { Observer } from '../events/observer';
 
 export const phoneSubscribeLoad = (
     ctx: Window,

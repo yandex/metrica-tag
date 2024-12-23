@@ -5,11 +5,13 @@ import { useDefaultSender } from 'src/sender/default';
 import type { InternalSenderInfo, UrlInfo } from 'src/sender/SenderInfo';
 import type { TransportList } from 'src/transport';
 import type { TransportResponse } from 'src/transport/types';
-import { arrayMerge, cMap } from 'src/utils/array';
+import { arrayMerge } from 'src/utils/array/merge';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { bindArg, firstArg, FirstArgOfType } from 'src/utils/function';
+import { bindArg } from 'src/utils/function/bind';
 import { getSenderMiddlewares } from 'src/middleware/senderMiddlewares';
 import { Sender } from 'src/sender/types';
+import { FirstArgOfType, firstArg } from 'src/utils/function/identity';
+import { cMap } from 'src/utils/array/map';
 import { returnFullHost } from './returnFullHost';
 
 export const useMiddlewareSender = (

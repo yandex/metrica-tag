@@ -1,7 +1,21 @@
-import { isTextNode } from 'src/utils/dom';
-import { arrayMerge, cForEach } from 'src/utils/array';
+import { isTextNode } from 'src/utils/dom/dom';
+import { arrayMerge } from 'src/utils/array/merge';
 import { isNil, isFunction } from 'src/utils/object';
-import { bindThisForMethod, firstArg, FirstArgOfType, pipe } from '../function';
+import { pipe } from 'src/utils/function/pipe';
+import { FirstArgOfType, firstArg } from 'src/utils/function/identity';
+import { bindThisForMethod } from 'src/utils/function/bind';
+import { cForEach } from 'src/utils/array/map';
+
+declare global {
+    interface Document {
+        createTreeWalker(
+            root: Node,
+            whatToShow?: number,
+            filter?: NodeFilter | null,
+            entityExpandBol?: boolean,
+        ): TreeWalker;
+    }
+}
 
 type NodeFilterFn = (n: Node) => number | boolean;
 

@@ -1,9 +1,9 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sender from 'src/sender';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
 import { WATCH_URL_PARAM, PARAMS_BR_KEY } from 'src/api/watch';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { genPath } from 'src/utils/object';

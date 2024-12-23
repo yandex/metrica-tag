@@ -7,24 +7,25 @@ import {
     NOINDEX_BR_KEY,
     IS_TRUSTED_EVENT_BR_KEY,
 } from 'src/api/watch';
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { getPath, has, isNil } from 'src/utils/object';
-import { getLocation } from 'src/utils/location';
-import { cEvent } from 'src/utils/events';
-import { browserInfo } from 'src/utils/browserInfo';
+import { getLocation } from 'src/utils/location/location';
+import { cEvent } from 'src/utils/events/events';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { getSender } from 'src/sender';
 import { GetSenderType } from 'src/sender/types';
-import { bind, noop } from 'src/utils/function';
+import { bind } from 'src/utils/function/bind';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { yaDirectExists } from 'src/utils/direct';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { LAST_REFERRER_KEY } from 'src/storage/global/consts';
-import { setDeferInterval, clearDeferInterval } from 'src/utils/defer';
+import { setDeferInterval, clearDeferInterval } from 'src/utils/defer/defer';
 import { counterStateSetter } from 'src/providers/getCounters/getCounters';
 import { COUNTER_STATE_TRACK_HASH } from 'src/providers/getCounters/const';
 import { toZeroOrOne } from 'src/utils/boolean';
+import { noop } from 'src/utils/function/noop';
 import { METHOD_TRACK_HASH, TRACK_HASH_PROVIDER } from './const';
 
 export const HASH_CHECKS_INTERVAL = 200;

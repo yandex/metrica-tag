@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { getRandom, RND_MAX } from '..';
+import { getRandom, RND_MAX } from '../random';
 
 describe('number util', () => {
     const rnd = 0.42;

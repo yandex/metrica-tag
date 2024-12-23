@@ -1,7 +1,8 @@
 import type { CounterOptions } from 'src/utils/counterOptions/types';
+import { AnyFunc } from '../function/types';
 
 export type Decorator<A = never, E extends boolean = false> = <
-    FN extends (...args: any[]) => ReturnType<FN>,
+    FN extends AnyFunc,
     R extends ReturnType<FN>,
 >(
     ctx: Window,

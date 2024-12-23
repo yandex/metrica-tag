@@ -13,7 +13,7 @@ import {
     useMiddlewareBasedSender,
 } from 'src/sender/middleware';
 import { nameMap, withoutBeacon } from 'src/transport';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { RETRANSMIT_PROVIDER, SENDER_RETRANSMIT } from './const';
 import { useRetransmitProvider } from './retransmit';
 

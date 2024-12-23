@@ -1,4 +1,5 @@
-import { cForEach, cMap, head, isArray } from 'src/utils/array';
+import { isArray } from 'src/utils/array/isArray';
+import { cForEach, cMap } from 'src/utils/array/map';
 import {
     MiddlewareGetter,
     Middleware,
@@ -10,8 +11,11 @@ import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { pageTitle } from 'src/middleware/pageTitle';
 import { counterFirstHit } from 'src/middleware/counterFirstHit';
-import { pipe, call, bindArg } from 'src/utils/function';
+import { pipe } from 'src/utils/function/pipe';
+import { call } from 'src/utils/function/utils';
 import { ctxBindArgs } from 'src/utils/function/bind/ctxBind';
+import { bindArg } from 'src/utils/function/bind/bind';
+import { head } from 'src/utils/array/utils';
 import { prepareUrlMiddleware } from './prepareUrl';
 import { addMiddlewareFor, addMiddlewareToTheList } from './utils';
 

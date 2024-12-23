@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import {
     task,
     taskFork,

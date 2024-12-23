@@ -2,11 +2,11 @@ import * as chai from 'chai';
 import sinon from 'sinon';
 import { config } from 'src/config';
 import { yaNamespace } from 'src/const';
-import * as dlObserver from 'src/utils/dataLayerObserver';
-import * as counterInstance from 'src/utils/counter';
-import * as counterOptions from 'src/utils/counterOptions';
-import { metrikaNamespace } from 'src/storage/global';
-import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter';
+import * as dlObserver from 'src/utils/dataLayerObserver/dataLayerObserver';
+import * as counterInstance from 'src/utils/counter/getInstance';
+import * as counterOptions from 'src/utils/counterOptions/getCounterKey';
+import { metrikaNamespace } from 'src/storage/global/global';
+import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
 import { METHOD_NAME_HIT } from 'src/providers/artificialHit/const';
 import {
     stackProxy,

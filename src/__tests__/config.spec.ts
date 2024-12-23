@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import * as chai from 'chai';
 import { config } from 'src/config';
-import { isIE } from 'src/utils/browser';
+import { isIE } from 'src/utils/browser/browser';
 
 describe('config', () => {
     it('should not ie config', () => {

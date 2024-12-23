@@ -1,8 +1,8 @@
 import * as sinon from 'sinon';
-import * as browserUtils from 'src/utils/browser';
-import * as uidUtils from 'src/utils/uid';
+import * as browserUtils from 'src/utils/browser/browser';
+import * as uidUtils from 'src/utils/uid/uid';
 import { CounterOptions } from 'src/utils/counterOptions';
-import * as frameConnectorUtils from 'src/utils/iframeConnector';
+import * as frameConnectorUtils from 'src/utils/iframeConnector/iframeConnector';
 import * as chai from 'chai';
 import {
     IFRAME_MESSAGE_DUID,

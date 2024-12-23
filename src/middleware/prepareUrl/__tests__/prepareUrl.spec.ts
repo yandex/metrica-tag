@@ -1,12 +1,12 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as loc from 'src/utils/location';
+import * as loc from 'src/utils/location/location';
 import {
     WATCH_URL_PARAM,
     WATCH_REFERER_PARAM,
     ARTIFICIAL_BR_KEY,
 } from 'src/api/watch';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import type { CounterOptions } from 'src/utils/counterOptions';

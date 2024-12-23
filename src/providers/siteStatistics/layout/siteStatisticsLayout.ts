@@ -1,9 +1,13 @@
-import { getElemCreateFunction } from 'src/utils/dom';
-import { cEvent } from 'src/utils/events';
+import { getElemCreateFunction } from 'src/utils/dom/dom';
+import { cEvent } from 'src/utils/events/events';
 import { getPath, mix } from 'src/utils/object';
-import { cForEach, cReduce } from 'src/utils/array';
-import { bind, bindArgs, bindArg, call, noop } from 'src/utils/function';
+import { cReduce } from 'src/utils/array/reduce';
+import { cForEach } from 'src/utils/array/map';
+import { bind, bindArgs, bindArg } from 'src/utils/function/bind/bind';
+import { noop } from 'src/utils/function/noop';
 import { stringIndexOf } from 'src/utils/string';
+import { AnyFunc } from 'src/utils/function/types';
+import { call } from 'src/utils/function/utils';
 
 const positionAbsolute = { position: 'absolute' };
 const positionFixed = { position: 'fixed' };
@@ -227,7 +231,7 @@ export const siteStatisticsLayout = (ctx: Window, counterId: number) => {
                         ),
                     ],
                 ],
-                cForEach,
+                cForEach<AnyFunc>,
             ),
         ),
         windowEventWrapper.on(
@@ -237,7 +241,7 @@ export const siteStatisticsLayout = (ctx: Window, counterId: number) => {
         ),
         bind(body.removeChild, body, layout),
     ];
-    const destruct = bindArgs([call, unsubscribers], cForEach);
+    const destruct = bindArgs([call, unsubscribers], cForEach<AnyFunc>);
 
     unsubscribers.push(
         windowEventWrapper.on(

@@ -3,13 +3,14 @@ import * as sinon from 'sinon';
 import { host } from 'src/config';
 import { CLICKMAP_POINTER_PARAM } from 'src/api/clmap';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
-import * as time from 'src/utils/time';
-import * as localStorage from 'src/storage/localStorage';
-import * as globalStorage from 'src/storage/global';
+import * as time from 'src/utils/time/time';
+import * as localStorage from 'src/storage/localStorage/localStorage';
+import * as globalStorage from 'src/storage/global/getGlobal';
 import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
 import * as state from 'src/middleware/retransmit/state';
 import { startsWithString } from 'src/utils/string/startsWith';
+import type { GlobalStorage } from 'src/storage/global/global';
 import * as constants from '../const';
 import { getRetransmitRequestsRaw } from '../getRetransmitRequests';
 
@@ -27,10 +28,7 @@ describe('getRetransmitRequests', () => {
         [ctx: Window],
         <R>(fn: (a: time.TimeState) => R) => R
     >;
-    let globalStorageStub: sinon.SinonStub<
-        [ctx: Window],
-        globalStorage.GlobalStorage
-    >;
+    let globalStorageStub: sinon.SinonStub<[ctx: Window], GlobalStorage>;
     let localStorageStub: sinon.SinonStub<
         [ctx: Window, nameSpace?: string | number, prefix?: string],
         localStorage.LocalStorage
@@ -50,7 +48,7 @@ describe('getRetransmitRequests', () => {
         globalStorageStub.callsFake(() => {
             return {
                 getVal: sinon.stub().returns(CURRENT_HID),
-            } as unknown as globalStorage.GlobalStorage;
+            } as unknown as GlobalStorage;
         });
         localStorageStub = sandbox.stub(localStorage, 'globalLocalStorage');
         localStorageStub.returns(mockLs);

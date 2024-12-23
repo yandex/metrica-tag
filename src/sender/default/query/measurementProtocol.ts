@@ -32,12 +32,16 @@ import {
     SCREEN_SIZE_BR_KEY,
     VIEWPORT_SIZE_BR_KEY,
 } from 'src/api/watch';
-import { cFind, cReduce, includes } from 'src/utils/array';
-import { BrowserInfo, browserInfo } from 'src/utils/browserInfo';
-import { bindArg, equal, pipe } from 'src/utils/function';
+import { includes } from 'src/utils/array/includes';
+import { cFind } from 'src/utils/array/find';
+import { cReduce } from 'src/utils/array/reduce';
+import { BrowserInfo, browserInfo } from 'src/utils/browserInfo/browserInfo';
+import { bindArg } from 'src/utils/function/bind';
 import { entries, getPath, isNil, mix } from 'src/utils/object';
-import { TimeOne, getSec } from 'src/utils/time';
+import { TimeOne, getSec } from 'src/utils/time/time';
 import type { FindCallback } from 'src/utils/array/types';
+import { pipe } from 'src/utils/function/pipe';
+import { equal } from 'src/utils/function/curry';
 import type { SenderInfo, UrlParams } from '../../SenderInfo';
 
 /**

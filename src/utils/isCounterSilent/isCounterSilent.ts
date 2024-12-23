@@ -1,9 +1,10 @@
-import { ctxIncludes } from 'src/utils/array';
+import { ctxIncludes } from 'src/utils/array/includes';
 import { getCounterKey } from 'src/utils/counterOptions/getCounterKey';
 import { CounterOptions } from 'src/utils/counterOptions/types';
-import { memo, pipe } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 import { ctxPath } from 'src/utils/object';
-import { parseIntSafe } from '../number';
+import { pipe } from 'src/utils/function/pipe';
+import { parseIntSafe } from '../number/number';
 
 export const ignoredCounters: number[] = [26812653];
 

@@ -1,9 +1,9 @@
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as sinon from 'sinon';
-import * as browserUtils from 'src/utils/browser';
-import * as deferUtils from 'src/utils/defer';
-import * as frameConnectorUtils from 'src/utils/iframeConnector';
-import { emitter } from 'src/utils/events';
+import * as browserUtils from 'src/utils/browser/browser';
+import * as deferUtils from 'src/utils/defer/defer';
+import * as frameConnectorUtils from 'src/utils/iframeConnector/iframeConnector';
+import { emitter } from 'src/utils/events/emitter';
 import {
     EventInfo,
     IframeConnector,

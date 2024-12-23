@@ -1,5 +1,5 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
-import { PolyPromise } from 'src/utils';
+import { PolyPromise } from 'src/utils/promise';
 import { getPath, mix } from 'src/utils/object';
 import { setDeferBase } from 'src/utils/defer/base';
 import {
@@ -7,7 +7,7 @@ import {
     CheckTransport,
     TransportResponse,
 } from 'src/transport/types';
-import { bindArgs, bindArg, noop } from 'src/utils/function';
+import { bindArgs, bindArg } from 'src/utils/function/bind';
 import {
     createKnownError,
     throwKnownError,
@@ -16,6 +16,7 @@ import { stringify } from 'src/utils/querystring';
 import { throwFunction } from 'src/utils/errorLogger/throwFunction';
 import { makeHttpError } from 'src/utils/errorLogger/createError';
 import { addQuery } from 'src/utils/url';
+import { noop } from 'src/utils/function/noop';
 import { WATCH_WMODE_JSON } from '../watchModes';
 
 const request = (

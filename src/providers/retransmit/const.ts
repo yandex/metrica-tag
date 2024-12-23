@@ -4,7 +4,7 @@ import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import { COLLECT_RESOURCE } from 'src/middleware/senderCollectInfo';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
 import { startsWithString } from 'src/utils/string/startsWith';
-import { equal } from 'src/utils/function';
+import { equal } from 'src/utils/function/curry';
 
 export const RETRANSMIT_PROVIDER = 'r';
 export const SENDER_RETRANSMIT = 'r';

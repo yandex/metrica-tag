@@ -1,6 +1,8 @@
-import { arrayJoin, cMap } from 'src/utils/array';
-import { cEvent } from 'src/utils/events';
-import { cont, memo } from 'src/utils/function';
+import { cMap } from 'src/utils/array/map';
+import { arrayJoin } from 'src/utils/array/join';
+import { cEvent } from 'src/utils/events/events';
+import { memo } from 'src/utils/function/memo';
+import { cont } from 'src/utils/function/curry';
 import { performanceInfo, getMsFromPerformance } from './performance';
 
 const leadingZeroFormatter = (n: number) => {

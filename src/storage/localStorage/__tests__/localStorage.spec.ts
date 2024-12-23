@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import * as chai from 'chai';
-import { localStorage } from '..';
+import { localStorage } from '../localStorage';
 
 describe('LocalStorage', () => {
     const { window } = new JSDOMWrapper(undefined, {

@@ -1,8 +1,8 @@
 import * as sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { FORCE_URLENCODED_KEY } from 'src/api/common';
-import * as func from 'src/utils/function';
-import * as bro from 'src/utils/browser';
+import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
+import * as bro from 'src/utils/browser/browser';
 import { isKnownError } from 'src/utils/errorLogger/knownError';
 import { request, useBeacon } from '../beacon';
 

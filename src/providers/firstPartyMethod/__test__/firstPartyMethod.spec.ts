@@ -1,9 +1,9 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import { noop } from 'src/utils/function';
-import * as counterLib from 'src/utils/counter';
-import * as loc from 'src/utils/location';
-import * as errorLogger from 'src/utils/errorLogger';
+import { noop } from 'src/utils/function/noop';
+import * as counterLib from 'src/utils/counter/getInstance';
+import * as loc from 'src/utils/location/location';
+import * as errorLogger from 'src/utils/errorLogger/errorLogger';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import type { FirstPartyOutputData } from '../types';
 import { rawFirstPartyMethod, encodeRecursive } from '../firstPartyMethod';

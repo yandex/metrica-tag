@@ -5,13 +5,14 @@ import { TELEMETRY_FEATURE } from 'generated/features';
 import { host } from 'src/config';
 import { CLICKMAP_POINTER_PARAM } from 'src/api/clmap';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
-import * as time from 'src/utils/time';
-import * as localStorage from 'src/storage/localStorage';
-import * as globalStorage from 'src/storage/global';
+import * as time from 'src/utils/time/time';
+import * as localStorage from 'src/storage/localStorage/localStorage';
+import * as globalStorage from 'src/storage/global/getGlobal';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
+import type { GlobalStorage } from 'src/storage/global/global';
 import * as state from '../state';
 import { retransmitProviderMiddleware } from '../retransmit';
 
@@ -38,7 +39,7 @@ describe('retransmitProviderMiddleware', () => {
             .returns(<R>(fn: (a: any) => R) => now as unknown as R);
         sandbox.stub(globalStorage, 'getGlobalStorage').returns({
             getVal: sinon.stub().returns(HID),
-        } as unknown as globalStorage.GlobalStorage);
+        } as unknown as GlobalStorage);
         sandbox
             .stub(localStorage, 'globalLocalStorage')
             .returns(mockLocalStorage);

@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as errorLogger from 'src/utils/errorLogger';
+import * as errorLogger from 'src/utils/errorLogger/errorLogger';
 import * as sender from 'src/sender/index';
-import * as browserInfo from 'src/utils/browserInfo';
+import * as browserInfo from 'src/utils/browserInfo/browserInfo';
 import * as DebugConsole from 'src/providers/debugConsole/debugConsole';
 import {
     WATCH_URL_PARAM,

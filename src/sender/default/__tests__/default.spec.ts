@@ -2,10 +2,10 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import * as inject from '@inject';
-import * as time from 'src/utils/time';
+import * as time from 'src/utils/time/time';
 import { REQUEST_BODY_KEY } from 'src/api/watch';
 import { CONTENT_TYPE_HEADER } from 'src/sender/default/const';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { telemetry } from 'src/utils/telemetry/telemetry';
 import type { TransportList } from 'src/transport';
 import { useDefaultSender } from '../default';
@@ -46,16 +46,20 @@ describe('sender/default', () => {
         };
     };
     let transportSuccesses: ReturnType<typeof createUrlResponses>;
-    const transport1 = sandbox.stub().callsFake((url: string) => {
-        return transportSuccesses[url].tr1
-            ? Promise.resolve(result)
-            : Promise.reject(new Error(transportException));
-    });
-    const transport2 = sandbox.stub().callsFake((url: string) => {
-        return transportSuccesses[url].tr2
-            ? Promise.resolve(result)
-            : Promise.reject(new Error(transportException));
-    });
+    const transport1 = sandbox
+        .stub()
+        .callsFake((url: keyof typeof transportSuccesses) => {
+            return transportSuccesses[url].tr1
+                ? Promise.resolve(result)
+                : Promise.reject(new Error(transportException));
+        });
+    const transport2 = sandbox
+        .stub()
+        .callsFake((url: keyof typeof transportSuccesses) => {
+            return transportSuccesses[url].tr2
+                ? Promise.resolve(result)
+                : Promise.reject(new Error(transportException));
+        });
     const transportList: TransportList = [
         [0, transport1],
         [1, transport2],

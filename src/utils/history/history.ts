@@ -1,4 +1,4 @@
-import { isNativeFunction } from 'src/utils/function';
+import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
 
 export const replaceState = (
     ctx: Window,

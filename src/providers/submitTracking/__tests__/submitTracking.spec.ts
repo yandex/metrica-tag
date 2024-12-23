@@ -8,18 +8,18 @@ import {
 } from 'src/providers/submitTracking/submitTracking';
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as asyncMap from 'src/utils/asyncMap';
-import * as domUtils from 'src/utils/dom';
+import * as domUtils from 'src/utils/dom/closest';
 import * as goalProvider from 'src/providers/goal/goal';
-import * as deferUtils from 'src/utils/defer';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
-import * as eventUtils from 'src/utils/events';
-import * as counterSettingUtils from 'src/utils/counterSettings';
+import * as deferUtils from 'src/utils/defer/defer';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
+import * as eventUtils from 'src/utils/events/events';
+import * as counterSettingUtils from 'src/utils/counterSettings/counterSettings';
 import * as counterOptionsUtils from 'src/utils/counterOptions';
-import { ID, NAME, PATH } from 'src/utils/dom';
+import { ID, NAME, PATH } from 'src/utils/dom/identifiers';
 import * as formUtils from 'src/utils/dom/form';
 import * as debugConsole from 'src/providers/debugConsole/debugConsole';
 import { METHOD_NAME_GOAL } from 'src/providers/goal/const';
-import { CounterSettings } from 'src/utils/counterSettings';
+import type { CounterSettings } from 'src/utils/counterSettings/types';
 import {
     INTERNAL_PARAMS_KEY,
     IS_TRUSTED_EVENT_KEY,

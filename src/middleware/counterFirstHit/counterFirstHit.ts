@@ -2,10 +2,12 @@ import { PAGE_VIEW_BR_KEY, ARTIFICIAL_BR_KEY } from 'src/api/watch';
 import type { MiddlewareGetter } from 'src/middleware/types';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import type { BrowserInfo } from 'src/utils/browserInfo';
-import { memo, call, bindArgs } from 'src/utils/function';
-import { cForEach } from 'src/utils/array';
+import type { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
+import { memo } from 'src/utils/function/memo';
+import { call } from 'src/utils/function/utils';
+import { cForEach } from 'src/utils/array/map';
 import { waitParentDuid } from 'src/middleware/counterFirstHit/waitParentDuid';
+import { bindArgs } from 'src/utils/function/bind/bind';
 
 type FirstHitState = {
     /** Request flags of first hit */

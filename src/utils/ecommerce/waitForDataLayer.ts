@@ -1,10 +1,10 @@
-import { isArray } from 'src/utils/array';
+import { isArray } from 'src/utils/array/isArray';
 import {
     dataLayerObserver,
     DataLayerObserverObject,
-} from 'src/utils/dataLayerObserver';
-import { clearDefer, setDefer } from 'src/utils/defer';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+} from 'src/utils/dataLayerObserver/dataLayerObserver';
+import { clearDefer, setDefer } from 'src/utils/defer/defer';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { getPath } from 'src/utils/object';
 
 const ECOMMERCE_WAIT_TIME = 1000;

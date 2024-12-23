@@ -1,8 +1,8 @@
 import { iterForOf } from './iterator';
 import { executeIterator } from './executor';
 import { taskFork } from './task';
-import { errorLogger } from '../errorLogger';
-import { noop } from '../function';
+import { errorLogger } from '../errorLogger/errorLogger';
+import { noop } from '../function/noop';
 
 export const iterateTaskWithConstraints = <T>(
     ctx: Window,

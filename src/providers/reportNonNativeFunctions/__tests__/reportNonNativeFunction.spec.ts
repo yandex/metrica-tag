@@ -2,8 +2,8 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as DC from 'src/providers/debugConsole/debugConsole';
 import * as debugEnabled from 'src/providers/debugConsole/debugEnabled';
-import * as dlObserver from 'src/utils/dataLayerObserver';
-import type { DataLayerObserverObject } from 'src/utils/dataLayerObserver';
+import * as dlObserver from 'src/utils/dataLayerObserver/dataLayerObserver';
+import type { DataLayerObserverObject } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import { useReportNonNativeFunctionProviderRaw } from '../index';
 import * as report from '../report';
 

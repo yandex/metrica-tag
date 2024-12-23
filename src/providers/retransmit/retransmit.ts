@@ -4,14 +4,16 @@ import { RetransmitInfo } from 'src/middleware/retransmit';
 import { getSender } from 'src/sender';
 import { DefaultSenderResult } from 'src/sender/default';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { PolyPromise } from 'src/utils';
-import { cReduce } from 'src/utils/array';
-import { browserInfo } from 'src/utils/browserInfo';
+import { PolyPromise } from 'src/utils/promise';
+import { cReduce } from 'src/utils/array/reduce';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { getCounterSettings } from 'src/utils/counterSettings';
-import { errorLogger } from 'src/utils/errorLogger';
-import { bindArg, bindArgs, firstArg } from 'src/utils/function';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
+import { errorLogger } from 'src/utils/errorLogger/errorLogger';
+import { bindArg, bindArgs } from 'src/utils/function/bind/bind';
 import { telemetry } from 'src/utils/telemetry/telemetry';
+import { ProviderResult } from 'src/types';
+import { firstArg } from 'src/utils/function/identity';
 import { RETRANSMIT_PROVIDER } from './const';
 import { getRetransmitRequests } from './getRetransmitRequests';
 
@@ -23,12 +25,12 @@ import { getRetransmitRequests } from './getRetransmitRequests';
 export const useRetransmitProvider = (
     ctx: Window,
     counterOpt: CounterOptions,
-): Promise<void> => {
+): Promise<ProviderResult> => {
     const retransmitRequests = getRetransmitRequests(ctx);
     const retransmitSender = getSender(ctx, RETRANSMIT_PROVIDER, counterOpt);
     const errorCatcher = errorLogger(ctx, 'rts.p');
     const makeRetransmit = (
-        prev: Promise<DefaultSenderResult>,
+        prev: Promise<DefaultSenderResult> | Promise<void>,
         req: RetransmitInfo,
     ) => {
         const counterOptions: CounterOptions = {
@@ -63,7 +65,10 @@ export const useRetransmitProvider = (
         counterOpt,
         bindArgs(
             [makeRetransmit, PolyPromise.resolve(), retransmitRequests],
-            cReduce,
+            cReduce<
+                RetransmitInfo,
+                Promise<DefaultSenderResult> | Promise<void>
+            >,
         ),
     ).catch(errorCatcher);
 };

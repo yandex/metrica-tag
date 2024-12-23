@@ -1,5 +1,6 @@
-import { iterateTaskWithConstraints } from '../async';
-import { asSideEffect, pipe } from '../function';
+import { iterateTaskWithConstraints } from '../async/helpers';
+import { asSideEffect } from '../function/curry';
+import { pipe } from '../function/pipe';
 import type { AnyFunc } from '../function/types';
 import { Observer, observer } from './observer';
 

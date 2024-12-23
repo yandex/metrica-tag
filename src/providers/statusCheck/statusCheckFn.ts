@@ -1,7 +1,8 @@
-import { includes, cMap } from 'src/utils/array';
-import { constructArray } from 'src/utils/function';
+import { cMap } from 'src/utils/array/map';
+import { includes } from 'src/utils/array/includes';
+import { constructArray } from 'src/utils/function/construct';
 import { ctxPath } from 'src/utils/object';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 
 import { GLOBAL_COUNTERS_METHOD_NAME } from 'src/providers/getCounters/const';
 import {

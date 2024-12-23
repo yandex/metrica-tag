@@ -1,13 +1,13 @@
 import * as sinon from 'sinon';
 import { METHOD_NAME_PARAMS, ParamsHandler } from 'src/providers/params/const';
-import * as counter from 'src/utils/counter';
+import * as counter from 'src/utils/counter/getInstance';
 import type { CounterObject } from 'src/utils/counter/type';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import type { CounterSettings } from 'src/utils/counterSettings';
-import * as counterSettingsUtils from 'src/utils/counterSettings';
-import type { DataLayerObserverObject } from 'src/utils/dataLayerObserver';
-import * as ecom from 'src/utils/ecommerce';
-import * as numberUtils from 'src/utils/number';
+import type { CounterSettings } from 'src/utils/counterSettings/types';
+import * as counterSettingsUtils from 'src/utils/counterSettings/counterSettings';
+import type { DataLayerObserverObject } from 'src/utils/dataLayerObserver/dataLayerObserver';
+import * as ecom from 'src/utils/ecommerce/waitForDataLayer';
+import * as numberUtils from 'src/utils/number/number';
 import {
     ECOMMERCE_ACTION_FIELD,
     ECOMMERCE_CURRENCY,

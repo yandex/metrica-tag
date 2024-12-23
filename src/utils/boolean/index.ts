@@ -1,4 +1,4 @@
-import { bindArgs } from 'src/utils/function';
+import { bindArgs } from 'src/utils/function/bind';
 import { ternary } from 'src/utils/condition/condition';
 
 export const toOneOrNull = bindArgs([1, null], ternary) as (

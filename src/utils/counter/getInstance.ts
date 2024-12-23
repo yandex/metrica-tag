@@ -1,5 +1,5 @@
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { CounterObject } from './type';
 
 export const COUNTERS_GLOBAL_KEY = 'counters';

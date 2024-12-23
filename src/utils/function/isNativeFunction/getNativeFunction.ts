@@ -1,5 +1,6 @@
 import { getPath as getFunctionUtils } from 'src/utils/object/path';
 
+// FIXME: get rid of any
 export const getNativeFunction = (functionName: string, owner: any) => {
     const ownerFn = getFunctionUtils(owner, functionName);
     const fn =

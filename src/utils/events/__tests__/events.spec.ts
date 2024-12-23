@@ -1,9 +1,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as functionUtils from 'src/utils/function';
+import * as functionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
 import type { AnyFunc } from 'src/utils/function/types';
-import { checkSupportsPassive, opts } from '..';
-import { cEvent } from '../events';
+import { cEvent, checkSupportsPassive, opts } from '../events';
 
 describe('EventHelper', () => {
     let isNativeMock: sinon.SinonStub<

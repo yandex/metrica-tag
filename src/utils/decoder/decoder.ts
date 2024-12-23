@@ -1,4 +1,4 @@
-import { arrayJoin } from '../array';
+import { arrayJoin } from '../array/join';
 import { stringIndexOf } from '../string';
 
 const base64abc =

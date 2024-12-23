@@ -1,9 +1,9 @@
-import { isIE } from 'src/utils/browser';
-import { clearDefer, setDefer } from 'src/utils/defer';
-import { cEvent } from 'src/utils/events';
+import { isIE } from 'src/utils/browser/browser';
+import { clearDefer, setDefer } from 'src/utils/defer/defer';
+import { cEvent } from 'src/utils/events/events';
 import { AnyFunc } from 'src/utils//function/types';
-import { getMs, TimeOne } from 'src/utils/time';
-import { bindArgs } from '../function';
+import { getMs, TimeOne } from 'src/utils/time/time';
+import { bindArgs } from '../function/bind';
 
 // Это скорректированный таймаут который перезапускает таймер если всякие блюры были
 // Потому что таймауты работают фигово, если окно рефокусится и блюрится

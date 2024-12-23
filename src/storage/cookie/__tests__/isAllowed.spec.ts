@@ -1,4 +1,4 @@
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import {

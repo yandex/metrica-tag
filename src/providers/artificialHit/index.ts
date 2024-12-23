@@ -5,7 +5,7 @@ import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
 import { fullList, nameMap } from 'src/transport';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { artificialHitProvider } from './artificialHit';
 import { ARTIFICIAL_HIT_PROVIDER } from './const';
 

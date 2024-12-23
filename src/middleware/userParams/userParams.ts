@@ -1,5 +1,5 @@
 import { MiddlewareGetter } from 'src/middleware/types';
-import { getCounterInstance } from 'src/utils/counter';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { METHOD_NAME_USER_PARAMS } from 'src/providers/userParams/const';
 import { CounterOptions } from 'src/utils/counterOptions';
 

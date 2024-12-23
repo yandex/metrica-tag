@@ -3,11 +3,9 @@ import type { MiddlewareGetter } from 'src/middleware/types';
 import type { UrlParams } from 'src/sender/SenderInfo';
 import { getPath, mix } from 'src/utils/object';
 import { isFirstHit } from 'src/middleware/counterFirstHit';
-import {
-    CounterSettings,
-    COUNTER_SETTINGS_SETTINGS_KEY,
-    getCounterSettings,
-} from 'src/utils/counterSettings';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
+import { CounterSettings } from 'src/utils/counterSettings/types';
+import { COUNTER_SETTINGS_SETTINGS_KEY } from 'src/utils/counterSettings/const';
 
 export const CSRF_TOKEN_SETTINGS_KEY = CSRF_TOKEN_URL_PARAM;
 

@@ -2,13 +2,13 @@ import { useSenderWatch } from 'src/sender/watch';
 import { HIT_PROVIDER, Provider } from 'src/providers';
 import { getProviderMiddlewares } from 'src/middleware';
 import { getTransportList } from 'src/transport';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { mix } from 'src/utils/object';
 import { argsToArray } from 'src/utils/function/args';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { bind } from 'src/utils/function';
-import { PolyPromise } from 'src/utils';
+import { bind } from 'src/utils/function/bind';
+import { PolyPromise } from 'src/utils/promise';
 import { NameMap, AnySender, GetSenderType } from './types';
 import { InternalSenderInfo, SenderInfo } from './SenderInfo';
 
@@ -44,7 +44,7 @@ export const getSender: GetSender = ctxErrorLogger(
             // eslint-disable-next-line prefer-rest-params
             const [rawSenderOpt, ...rest] = argsToArray(arguments) as [
                 SenderInfo,
-                ...any[]
+                ...any[],
             ];
             const { transportInfo = {} } = rawSenderOpt;
             const senderOpt = mix(rawSenderOpt, {

@@ -1,5 +1,5 @@
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { bindArg } from 'src/utils/function';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { bindArg } from 'src/utils/function/bind';
 import { counterStateSetter } from 'src/providers/getCounters/getCounters';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { COUNTER_STATE_CLICKMAP } from 'src/providers/getCounters/const';

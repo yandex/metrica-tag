@@ -1,5 +1,5 @@
-import { setDefer } from 'src/utils/defer';
-import { noop } from '../function';
+import { setDefer } from 'src/utils/defer/defer';
+import { noop } from '../function/noop';
 import { observer, Observer } from './observer';
 
 export const throttleObserver = <T, U>(

@@ -1,9 +1,9 @@
-import { globalLocalStorage } from 'src/storage/localStorage';
-import { cForEach } from 'src/utils/array';
+import { globalLocalStorage } from 'src/storage/localStorage/localStorage';
+import { cForEach } from 'src/utils/array/map';
 import { CounterTypeInterface } from 'src/utils/counterOptions';
-import { globalMemoWin } from 'src/utils/function';
+import { globalMemoWin } from 'src/utils/function/globalMemo';
 import { entries } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
+import { getMs, TimeOne } from 'src/utils/time/time';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 
 export const LS_PROTOCOL = 'protocol';

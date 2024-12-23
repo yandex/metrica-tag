@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as dom from 'src/utils/dom';
+import * as dom from 'src/utils/dom/dom';
 import { stringify } from 'src/utils/querystring';
 import * as parse from '../url';
 import { addQuery } from '../url';

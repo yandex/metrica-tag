@@ -1,4 +1,5 @@
-import { arrayJoin, cFilter } from '../array';
+import { cFilter } from '../array/filter';
+import { arrayJoin } from '../array/join';
 
 export const safeEncodeURIComponent = (str: string) => {
     try {

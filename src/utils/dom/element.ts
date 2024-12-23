@@ -1,17 +1,18 @@
 import { getPath } from 'src/utils/object';
-import {
-    includes,
-    isArray,
-    cMap,
-    toArray,
-    flatMap,
-    cFilter,
-    arrayJoin,
-    cForEach,
-} from 'src/utils/array';
+import { includes } from 'src/utils/array/includes';
 import { trimText } from 'src/utils/string/remove';
-import { pipe, bindThisForMethod, bindArg, memo } from 'src/utils/function';
+import { pipe } from 'src/utils/function/pipe';
 import { TAGS } from 'src/providers/clickmap/const';
+import { memo } from 'src/utils/function/memo';
+import { bindArg, bindThisForMethod } from 'src/utils/function/bind/bind';
+import { arrayFrom } from 'src/utils/array/arrayFrom';
+import { arrayJoin } from 'src/utils/array/join';
+import { cForEach, cMap, flatMap } from 'src/utils/array/map';
+import { isArray } from 'src/utils/array/isArray';
+import { toArray } from 'src/utils/array/utils';
+import { cFilter } from 'src/utils/array/filter';
+import { select } from './select';
+import { isRemovedFromDoc } from './isRemovedFromDoc';
 import {
     getBody,
     getBoundingClientRect,
@@ -22,9 +23,6 @@ import {
     getNodeName,
     hasClass,
 } from './dom';
-import { isRemovedFromDoc } from './isRemovedFromDoc';
-import { arrayFrom } from '../array/arrayFrom';
-import { select } from './select';
 /* eslint-disable */
 
 export const getElementXY = (ctx: Window, el: HTMLElement | null) => {

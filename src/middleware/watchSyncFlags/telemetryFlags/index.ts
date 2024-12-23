@@ -12,12 +12,13 @@ import {
     REQUEST_NUMBER_TEL_KEY,
     CLMAP_CLICKS_TEL_KEY,
 } from 'src/api/watch';
-import { getGlobalStorage, globalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { entries } from 'src/utils/object';
-import { cReduce } from 'src/utils/array';
+import { cReduce } from 'src/utils/array/reduce';
 import { getMainThreadBlockingTime } from 'src/utils/errorLogger/executionTimeErrorDecorator';
 import { GLOBAL_STORAGE_CLICKS_KEY } from 'src/providers/clickmap/const';
 import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from 'src/utils/methodDecorators/telCallCount/const';
+import { globalStorage } from 'src/storage/global/global';
 import { FlagGettersHash } from '../const';
 import { numRequestsTelemetry } from './numRequests';
 

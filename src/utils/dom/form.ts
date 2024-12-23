@@ -1,7 +1,7 @@
 import { getData, ID, NAME, PATH } from 'src/utils/dom/identifiers';
 import { select } from 'src/utils/dom/select';
 import { closest } from 'src/utils/dom/closest';
-import { bindArg } from '../function';
+import { bindArg } from '../function/bind';
 
 const FORM_SELECTOR = 'form';
 

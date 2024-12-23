@@ -1,5 +1,3 @@
-import type { DefaultSenderResult } from 'src/sender/default';
-
 export const syncPromise = {
     then(callback?: (...args: any[]) => any) {
         if (callback) {
@@ -10,4 +8,4 @@ export const syncPromise = {
     catch() {
         return this;
     },
-} as Promise<DefaultSenderResult>;
+} as Promise<void>;

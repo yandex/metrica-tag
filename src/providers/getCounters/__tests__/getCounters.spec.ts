@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import sinon from 'sinon';
-import * as globalConfig from 'src/storage/global';
-import * as closureStorageModule from 'src/storage/closureStorage';
-import type { GlobalStorage } from 'src/storage/global';
+import * as globalConfig from 'src/storage/global/getGlobal';
+import * as closureStorageModule from 'src/storage/closureStorage/closureStorage';
+import type { GlobalStorage } from 'src/storage/global/global';
 import type { StateManager } from 'src/storage/closureStorage/types';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { createCountersGetter, getCountersProvider } from '../getCounters';

@@ -1,5 +1,9 @@
-import { PolyPromise } from 'src/utils';
-import { curry2, cont, constructObject, pipe, memo, noop } from '../function';
+import { PolyPromise } from 'src/utils/promise';
+import { curry2, cont } from 'src/utils/function/curry';
+import { noop } from 'src/utils/function/noop';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
+import { constructObject } from 'src/utils/function/construct';
 
 type StoreType<ValT> = {
     [key: string]: {

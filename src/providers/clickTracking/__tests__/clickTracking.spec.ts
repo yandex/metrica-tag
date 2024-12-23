@@ -5,14 +5,14 @@ import {
     useClickTracking,
 } from 'src/providers/clickTracking/clickTracking';
 import { CounterOptions } from 'src/utils/counterOptions';
-import * as eventUtils from 'src/utils/events';
+import * as eventUtils from 'src/utils/events/events';
 import * as buttonUtils from 'src/utils/dom/button';
-import * as counterSettingUtils from 'src/utils/counterSettings';
+import * as counterSettingUtils from 'src/utils/counterSettings/counterSettings';
 import * as goalUtils from 'src/providers/goal/goal';
-import { ID } from 'src/utils/dom';
+import { ID } from 'src/utils/dom/identifiers';
 import { stringify } from 'src/utils/querystring';
 import * as debugConsole from 'src/providers/debugConsole/debugConsole';
-import { CounterSettings } from 'src/utils/counterSettings';
+import type { CounterSettings } from 'src/utils/counterSettings/types';
 import chai from 'chai';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import { METHOD_NAME_GOAL } from 'src/providers/goal/const';

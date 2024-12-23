@@ -1,7 +1,7 @@
 import { RSYA_COUNTER_TYPE } from 'src/providers/counterOptions/const';
 import type { OptionsKeysMaps } from 'src/providers/counterOptions/types';
-import { cReduce } from 'src/utils/array';
-import { equal } from 'src/utils/function';
+import { cReduce } from 'src/utils/array/reduce';
+import { equal } from 'src/utils/function/curry';
 import { entries, isObject } from 'src/utils/object';
 import type {
     CounterOptions,
@@ -10,8 +10,9 @@ import type {
 } from './types';
 
 // NOTE: Extend the type in order to be able to check all string inputs.
-export const isRsyaCounter =
-    equal<CounterTypeInterface | string>(RSYA_COUNTER_TYPE);
+export const isRsyaCounter = equal<CounterTypeInterface | string>(
+    RSYA_COUNTER_TYPE,
+);
 
 export const normalizeOriginalOptions = (
     counterId: RawCounterOptions | number,

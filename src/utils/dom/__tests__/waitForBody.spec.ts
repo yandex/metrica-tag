@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as defer from 'src/utils/defer';
-import { noop } from 'src/utils/function';
-import { taskFork } from 'src/utils/async';
+import * as defer from 'src/utils/defer/defer';
+import { noop } from 'src/utils/function/noop';
+import { taskFork } from 'src/utils/async/task';
 import { waitForBodyTask, TIMEOUT_FOR_BODY } from '../waitForBody';
 
 describe('waitForBody', () => {

@@ -1,7 +1,8 @@
-import { observer, Observer } from '../events';
+import { observer, Observer } from '../events/observer';
 import { asyncHandlerObserver } from '../events/asyncHandlerObserver';
 import { bufferObserver } from '../events/bufferObserver';
-import { cont, curry2, memo } from '../function';
+import { cont, curry2 } from '../function/curry';
+import { memo } from '../function/memo';
 
 type ObserverItem<T> = {
     originalObserver: Observer<T, any>;
@@ -63,9 +64,7 @@ export const getVal = curry2(<ValT>(key: string, rawStore: StoreType<ValT>) => {
         return asyncObserverObj;
     }
     return value.observer;
-}) as (
-    key: string,
-) => <T extends any>(rawStore: StoreType<T>) => Observer<T, any>;
+}) as (key: string) => <T>(rawStore: StoreType<T>) => Observer<T, any>;
 
 export const observerMapFn = memo((ctx: Window) => {
     const store = { ctx };

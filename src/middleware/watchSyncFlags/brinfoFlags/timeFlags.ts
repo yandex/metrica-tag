@@ -1,4 +1,6 @@
-import { pipe, cont, memo } from 'src/utils/function';
+import { cont } from 'src/utils/function/curry';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
 import {
     TimeOne,
     getTimezone,
@@ -6,7 +8,7 @@ import {
     getSec,
     getNs,
     TimeState,
-} from 'src/utils/time';
+} from 'src/utils/time/time';
 
 export const timeZone = memo(
     pipe(TimeOne, cont<(timeState: TimeState) => number, number>(getTimezone)),

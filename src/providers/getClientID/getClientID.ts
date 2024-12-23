@@ -1,7 +1,7 @@
-import { callUserCallback } from 'src/utils/function';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { getUid } from 'src/utils/uid';
+import { callUserCallback } from 'src/utils/function/callUserCallback';
 import { GetClientIDHandler, METHOD_NAME_GET_CLIENT_ID } from './const';
 
 export const rawGetClientID = (ctx: Window, counterOptions: CounterOptions) => {

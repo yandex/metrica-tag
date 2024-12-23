@@ -1,4 +1,4 @@
-import { ctxMapSwap } from '../array';
+import { ctxMapSwap } from '../array/map';
 import { observer, Observer } from './observer';
 
 // сохраняет N событий из потока

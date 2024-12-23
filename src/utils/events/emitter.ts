@@ -1,6 +1,6 @@
-import { cForEach } from 'src/utils/array';
+import { cForEach } from 'src/utils/array/map';
 import { getPath } from 'src/utils/object';
-import { errorLogger } from 'src/utils/errorLogger';
+import { errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { Observer, observer, Listener } from './observer';
 
 export type Emitter<T, U> = {

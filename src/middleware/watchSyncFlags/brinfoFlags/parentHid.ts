@@ -1,4 +1,4 @@
-import { isIframe } from 'src/utils/browser';
+import { isIframe } from 'src/utils/browser/browser';
 import {
     counterIframeConnector,
     IFRAME_MESSAGE_HID,

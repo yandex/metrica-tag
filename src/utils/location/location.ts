@@ -1,6 +1,9 @@
-import { cReduce, includes } from 'src/utils/array';
+import { includes } from 'src/utils/array/includes';
+import { cReduce } from 'src/utils/array/reduce';
 import { ctxPath, getPath } from 'src/utils/object';
-import { equal, memo, pipe } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
+import { equal } from 'src/utils/function/curry';
 
 const props = [
     'hash',

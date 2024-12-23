@@ -1,4 +1,4 @@
-import { bindArg } from '../function';
+import { bindArg } from '../function/bind';
 import { closest } from './closest';
 import { CSS, PATH, getData } from './identifiers';
 import { select } from './select';

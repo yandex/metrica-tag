@@ -1,7 +1,8 @@
-import { cMap } from 'src/utils/array';
+import { cMap } from 'src/utils/array/map';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { bindArgs, pipe } from 'src/utils/function';
+import { pipe } from 'src/utils/function/pipe';
 import type { AnyFunc } from 'src/utils/function/types';
+import { bindArgs } from 'src/utils/function/bind';
 import type { Decorator } from './types';
 
 export function decoratorPipe<
@@ -20,7 +21,8 @@ export function decoratorPipe<
     }
     const fnList = cMap(
         (decorator): ((fn: CounterMethod) => AnyFunc) =>
-            bindArgs([ctx, counterOptions, methodName], decorator),
+            // FIXME: fix decorator arguments
+            bindArgs([ctx, counterOptions, methodName] as any, decorator),
         decorators,
     );
     return pipe(...fnList)(method);

@@ -1,6 +1,7 @@
 import { config } from 'src/config';
-import { bindThisForMethodTest } from 'src/utils/function';
-import { arrayJoin, isArray } from 'src/utils/array';
+import { bindThisForMethodTest } from 'src/utils/function/bind';
+import { isArray } from 'src/utils/array/isArray';
+import { arrayJoin } from 'src/utils/array/join';
 import { isString } from 'src/utils/string';
 import { KNOWN_ERROR, DELIMITER } from './consts';
 import { argsToArray } from '../function/args';

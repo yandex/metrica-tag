@@ -1,16 +1,13 @@
 import sinon from 'sinon';
 import * as chai from 'chai';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
-import {
-    bind,
-    memo,
-    bindThisForMethod,
-    pipe,
-    globalMemoWin,
-    callUserCallback,
-} from '..';
+import { pipe } from '../pipe';
 import * as defer from '../../defer/base';
 import { constructArray, constructObject } from '../construct';
+import { bind, bindThisForMethod } from '../bind/bind';
+import { memo } from '../memo';
+import { globalMemoWin } from '../globalMemo';
+import { callUserCallback } from '../callUserCallback';
 
 describe('utils/function', () => {
     it('constructs new items', () => {

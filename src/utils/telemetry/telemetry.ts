@@ -1,7 +1,8 @@
 import { entries, isNull } from 'src/utils/object';
 
 import { flagStorage, FlagStorage } from '../flagsStorage/flagsStorage';
-import { arrayJoin, cMap } from '../array';
+import { arrayJoin } from '../array/join';
+import { cMap } from '../array/map';
 
 export const telemetry = flagStorage((flags) => {
     const flagEntries = entries(flags);

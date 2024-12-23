@@ -3,8 +3,9 @@ import * as sinon from 'sinon';
 import { DEFER_KEY } from 'src/api/watch';
 import * as timeFlags from 'src/middleware/watchSyncFlags/brinfoFlags/timeFlags';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import * as gs from 'src/storage/global';
+import * as gs from 'src/storage/global/getGlobal';
 import { CounterOptions } from 'src/utils/counterOptions';
+import type { GlobalStorage } from 'src/storage/global/global';
 import { firstPaint } from '../firstPaint';
 import {
     CONTENTFUL_PAINT,
@@ -17,14 +18,13 @@ describe('first paint', () => {
     const ns = 100;
     const time = 1000;
     const firstHideTime = 5000;
-    const gsGetValStub =
-        sandbox.stub<
-            Parameters<gs.GlobalStorage['getVal']>,
-            ReturnType<gs.GlobalStorage['getVal']>
-        >();
+    const gsGetValStub = sandbox.stub<
+        Parameters<GlobalStorage['getVal']>,
+        ReturnType<GlobalStorage['getVal']>
+    >();
     const fakeGlobalStorage = {
         getVal: gsGetValStub,
-    } as unknown as gs.GlobalStorage;
+    } as unknown as GlobalStorage;
     // NOTE: Get random counter ID in order to get different memoized states.
     const counterOptions = () =>
         ({

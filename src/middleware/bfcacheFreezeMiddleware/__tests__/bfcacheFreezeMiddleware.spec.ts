@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as eventUtils from 'src/utils/events';
+import * as eventUtils from 'src/utils/events/events';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { bfCacheFreezeMiddleware } from '../bfcacheFreezeMiddleware';

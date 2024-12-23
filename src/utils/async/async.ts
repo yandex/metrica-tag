@@ -1,8 +1,8 @@
-import { setDefer } from 'src/utils/defer';
-import { noop } from 'src/utils/function';
-import { getRandom } from 'src/utils/number';
-import { cEvent } from 'src/utils/events';
-import { errorLogger } from 'src/utils/errorLogger';
+import { setDefer } from 'src/utils/defer/defer';
+import { noop } from 'src/utils/function/noop';
+import { getRandom } from 'src/utils/number/random';
+import { cEvent } from 'src/utils/events/events';
+import { errorLogger } from 'src/utils/errorLogger/errorLogger';
 
 const defaultScope = 'as';
 

@@ -1,5 +1,4 @@
-import { Emitter } from 'src/utils/events';
-
+import { Emitter } from '../events/emitter';
 import {
     IFRAME_MESSAGE_TYPE,
     IFRAME_MESSAGE_HID,

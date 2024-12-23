@@ -1,5 +1,5 @@
 import { host } from 'src/config';
-import { cReduce } from 'src/utils/array';
+import { cReduce } from 'src/utils/array/reduce';
 
 type TldOverride = (ctx: Window, resource?: string) => string | undefined;
 export const TLD_OVERRIDES: TldOverride[] = [];

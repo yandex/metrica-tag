@@ -11,7 +11,7 @@ import {
     NOT_BOUNCE_BR_KEY,
     NOT_BOUNCE_CLIENT_TIME_BR_KEY,
 } from 'src/api/watch';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers';
 import {
     counterStateGetter,
@@ -20,26 +20,23 @@ import {
 import { COUNTER_STATE_NOT_BOUNCE } from 'src/providers/getCounters/const';
 import { getSender } from 'src/sender';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { counterLocalStorage } from 'src/storage/localStorage';
+import { counterLocalStorage } from 'src/storage/localStorage/localStorage';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { getCounterSettings } from 'src/utils/counterSettings';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import {
-    bindArg,
-    call,
-    CallWithoutArguments,
-    noop,
-    pipe,
-} from 'src/utils/function';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { bindArg } from 'src/utils/function/bind';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
-import { getLocation } from 'src/utils/location';
+import { getLocation } from 'src/utils/location/location';
 import { ctxPath } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
+import { getMs, TimeOne } from 'src/utils/time/time';
 import { isSameDomainInUrls } from 'src/utils/url';
 import { setUserTimeDefer } from 'src/utils/userTimeDefer';
 import { addTelemetryToSenderParams } from 'src/utils/telemetry/telemetry';
 import { getUid } from 'src/utils/uid';
-import { parseDecimalInt } from 'src/utils/number';
+import { parseDecimalInt } from 'src/utils/number/number';
+import { pipe } from 'src/utils/function/pipe';
+import { CallWithoutArguments, call } from 'src/utils/function/utils';
+import { noop } from 'src/utils/function/noop';
 import { getArtificialState } from '../artificialHit/artificialHit';
 import {
     AccurateTrackBounceHandler,

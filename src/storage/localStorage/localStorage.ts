@@ -1,5 +1,5 @@
 import { JSONValue, parse, stringify } from 'src/utils/json';
-import { memo } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 import { isNull, isUndefined } from 'src/utils/object';
 
 export const DEFAULT_LS_PREFIX = '_ym';

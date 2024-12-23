@@ -1,3 +1,3 @@
-export const throwFunction = (reason: Error) => {
+export const throwFunction = (reason: unknown) => {
     throw reason;
 };

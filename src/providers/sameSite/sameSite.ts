@@ -1,6 +1,6 @@
-import { memo } from 'src/utils/function';
-import { isSameSiteBrowser } from 'src/utils/browser';
-import { isHttps } from 'src/utils/location';
+import { memo } from 'src/utils/function/memo';
+import { isSameSiteBrowser } from 'src/utils/browser/browser';
+import { isHttps } from 'src/utils/location/location';
 
 /**
  * Decides if we need to set same site option

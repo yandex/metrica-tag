@@ -1,4 +1,4 @@
-import { cEvent } from '../events';
+import { cEvent } from '../events/events';
 import { insertScript } from './insertScript';
 
 // eslint-disable-next-line no-shadow

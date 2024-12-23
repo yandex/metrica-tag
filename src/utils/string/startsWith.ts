@@ -1,4 +1,5 @@
-import { curry2SwapArgs, equal, pipe } from '../function';
+import { pipe } from 'src/utils/function/pipe';
+import { curry2SwapArgs, equal } from 'src/utils/function/curry';
 import { stringIndexOf } from './string';
 
 export const startsWith = pipe(stringIndexOf, equal(0));

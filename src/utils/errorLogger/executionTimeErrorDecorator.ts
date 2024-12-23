@@ -1,6 +1,6 @@
 import { getPerformance } from 'src/utils/time/performance';
 import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from './consts';
-import { isNativeFunction } from '../function';
+import { isNativeFunction } from '../function/isNativeFunction/isNativeFunction';
 import { throwFunction } from './throwFunction';
 import { runOnErrorCallbacks } from './onError';
 

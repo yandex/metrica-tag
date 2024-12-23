@@ -1,7 +1,7 @@
 import { PRERENDER_MW_BR_KEY } from 'src/api/watch';
-import { cEvent } from 'src/utils/events';
+import { cEvent } from 'src/utils/events/events';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { isPrerender } from 'src/utils/browser';
+import { isPrerender } from 'src/utils/browser/browser';
 import { MiddlewareGetter } from '../types';
 
 declare global {

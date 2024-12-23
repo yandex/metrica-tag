@@ -1,6 +1,6 @@
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import type { AnyFunc } from 'src/utils/function/types';
-import * as time from 'src/utils/time';
+import * as time from 'src/utils/time/time';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import Sinon from 'sinon';

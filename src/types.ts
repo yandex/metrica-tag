@@ -41,10 +41,10 @@ export type StaticMethodInitializer = (
 export type Constructor = string;
 
 declare global {
-    const CompressionStream: {
+    interface CompressionStream {
         prototype: GenericTransformStream;
         new (format: 'gzip' | 'deflate'): GenericTransformStream;
-    };
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface yaNamespaceStorage {}
@@ -84,7 +84,6 @@ declare global {
         webdriver?: boolean;
         RTCPeerConnection?: () => void;
         isWebKit?: () => boolean;
-        fbq?: any;
         PerformanceObserver?: typeof PerformanceObserver;
         HTMLImageElement: typeof HTMLImageElement;
         HTMLInputElement: typeof HTMLInputElement;

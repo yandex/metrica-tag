@@ -1,15 +1,15 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as providers from 'src/sender';
-import * as loc from 'src/utils/location';
+import * as loc from 'src/utils/location/location';
 import * as art from 'src/providers/artificialHit/artificialHit';
-import * as url from 'src/utils/url';
+import * as url from 'src/utils/url/url';
 import * as dConsole from 'src/providers/debugConsole/debugConsole';
 import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { GOAL_PROVIDER, METHOD_NAME_GOAL } from 'src/providers/goal/const';
-import { PolyPromise } from 'src/utils';
+import { PolyPromise } from 'src/utils/promise';
 import { syncPromise } from 'src/__tests__/utils/syncPromise';
 import { useGoal } from '../goal';
 

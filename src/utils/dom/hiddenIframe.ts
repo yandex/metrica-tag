@@ -1,6 +1,10 @@
-import { memo, pipe, equal, notFn } from 'src/utils/function';
-import { includes, cFilter } from 'src/utils/array';
+import { memo } from 'src/utils/function/memo';
+import { includes } from 'src/utils/array/includes';
 import { getPath, isNull, mix } from 'src/utils/object';
+import { pipe } from 'src/utils/function/pipe';
+import { equal } from 'src/utils/function/curry';
+import { notFn } from 'src/utils/function/identity';
+import { cFilter } from 'src/utils/array/filter';
 import { getElemCreateFunction, getRootElement, removeNode } from './dom';
 
 type HiddenFrame = {

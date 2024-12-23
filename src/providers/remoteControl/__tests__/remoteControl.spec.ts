@@ -1,12 +1,12 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { yaNamespace } from 'src/const';
-import { metrikaNamespace } from 'src/storage/global';
-import * as functionUtils from 'src/utils/function';
-import * as events from 'src/utils/events';
-import * as global from 'src/storage/global';
+import { metrikaNamespace } from 'src/storage/global/global';
+import * as functionUtils from 'src/utils/function/bind/bind';
+import * as events from 'src/utils/events/events';
+import * as global from 'src/storage/global/getGlobal';
 import type { EventSetter } from 'src/utils/events/types';
-import * as fnv32a from 'src/utils/fnv32a';
+import * as fnv32a from 'src/utils/fnv32a/fnv32a';
 import * as inject from '@inject';
 import { LOCAL_FEATURE } from 'generated/features';
 import * as remoteControl from '../remoteControl';

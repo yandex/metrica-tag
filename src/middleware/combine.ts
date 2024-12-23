@@ -1,6 +1,6 @@
-import { PolyPromise } from 'src/utils';
+import { PolyPromise } from 'src/utils/promise';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { iterForOf, iterNextCall, iterBreak } from 'src/utils/async';
+import { iterForOf, iterNextCall, iterBreak } from 'src/utils/async/iterator';
 import { Middleware, MiddlewareHandler } from './types';
 
 /**

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import * as chai from 'chai';
-import * as gs from 'src/storage/global';
+import * as gs from 'src/storage/global/getGlobal';
 
 import { expect } from 'chai';
 import * as closureStorageModule from '../closureStorage';

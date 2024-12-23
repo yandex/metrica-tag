@@ -1,7 +1,8 @@
 import { flags } from '@inject';
 import { POLYFILLS_FEATURE } from 'generated/features';
-import { bindThisForMethodTest, isNativeFunction } from '../function';
+import { isNativeFunction } from '../function/isNativeFunction/isNativeFunction';
 import { UNCATCHABLE_ERROR_PROPERTY } from './consts';
+import { bindThisForMethodTest } from '../function/bind/bind';
 
 export type LoggerError = Error & {
     [UNCATCHABLE_ERROR_PROPERTY]?: boolean;

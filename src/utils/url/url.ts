@@ -1,6 +1,6 @@
-import { getElemCreateFunction } from 'src/utils/dom';
-import { arrayJoin } from '../array';
-import { memo } from '../function';
+import { getElemCreateFunction } from 'src/utils/dom/dom';
+import { memo } from 'src/utils/function/memo';
+import { arrayJoin } from '../array/join';
 import { stringIncludes } from '../string';
 
 export type UrlInfo = {

@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
-import * as dataL from 'src/utils/dataLayerObserver';
-import type { DataLayerObserverObject } from 'src/utils/dataLayerObserver';
-import * as defer from 'src/utils/defer';
+import * as dataL from 'src/utils/dataLayerObserver/dataLayerObserver';
+import type { DataLayerObserverObject } from 'src/utils/dataLayerObserver/dataLayerObserver';
+import * as defer from 'src/utils/defer/defer';
 import { waitForDataLayer } from '../waitForDataLayer';
 
 describe('ecommerce', () => {

@@ -1,21 +1,19 @@
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { cFilter, includes, cForEach } from 'src/utils/array';
-import {
-    pipe,
-    firstArg,
-    memo,
-    asSideEffect,
-    bindArg,
-    secondArg,
-    bindArgs,
-} from 'src/utils/function';
-import { errorLogger } from 'src/utils/errorLogger';
+import { cForEach } from 'src/utils/array/map';
+import { includes } from 'src/utils/array/includes';
+import { cFilter } from 'src/utils/array/filter';
+import { pipe } from 'src/utils/function/pipe';
+import { errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { cKeys, mix } from 'src/utils/object';
-import { PolyPromise } from 'src/utils';
-import { setDefer, clearDefer } from 'src/utils/defer';
+import { PolyPromise } from 'src/utils/promise';
+import { setDefer, clearDefer } from 'src/utils/defer/defer';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
+import { firstArg, secondArg } from 'src/utils/function/identity';
+import { asSideEffect } from 'src/utils/function/curry';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
+import { memo } from 'src/utils/function/memo';
 import { counterIframeConnector } from './iframeConnector';
-import { parseDecimalInt } from '../number';
+import { parseDecimalInt } from '../number/number';
 import {
     IframeCollection,
     IframeInfo,

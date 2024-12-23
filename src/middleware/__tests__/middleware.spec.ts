@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as asyncModule from 'src/utils/async';
+import * as asyncModule from 'src/utils/async/iterator';
 import { HIT_PROVIDER } from 'src/providers';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { getProviderMiddlewares } from '..';

@@ -1,6 +1,6 @@
 import { mix } from 'src/utils/object';
-import { getGlobalStorage } from 'src/storage/global';
-import { cont } from 'src/utils/function';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import { cont } from 'src/utils/function/curry';
 import { StateManager } from './types';
 
 export const GLOBAL_STORAGE_KEY = 'dsjf';

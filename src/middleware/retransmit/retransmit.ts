@@ -4,11 +4,11 @@ import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 import { config, host } from 'src/config';
 import { MiddlewareGetter } from 'src/middleware/types';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { arrayJoin } from 'src/utils/array';
-import { browserInfo } from 'src/utils/browserInfo';
+import { arrayJoin } from 'src/utils/array/join';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { getPath, isNull } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
+import { getMs, TimeOne } from 'src/utils/time/time';
 import {
     getRetransmitLsState,
     LS_BRINFO,

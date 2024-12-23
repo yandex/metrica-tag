@@ -1,4 +1,4 @@
-import { cFind } from '../array';
+import { cFind } from '../array/find';
 import { select } from './select';
 
 export const getNonce = (ctx: Window) => {

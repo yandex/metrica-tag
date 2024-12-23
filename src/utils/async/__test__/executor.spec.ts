@@ -1,6 +1,7 @@
 import * as chai from 'chai';
-import { call, noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
+import { call } from 'src/utils/function/utils';
 import { iterForOf } from '../iterator';
 import { executeIterator, EXEC_TIMEOUT } from '../executor';
 import { taskFork } from '../task';

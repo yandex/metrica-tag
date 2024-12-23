@@ -6,17 +6,22 @@ import { MiddlewareGetter } from 'src/middleware/types';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import { cFilter, cForEach, head, indexOfWin } from 'src/utils/array';
-import { BrowserInfo } from 'src/utils/browserInfo';
-import { getCounterInstance } from 'src/utils/counter';
+import { head, indexOfWin } from 'src/utils/array/utils';
+import { cFilter } from 'src/utils/array/filter';
+import { cForEach } from 'src/utils/array/map';
+import { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import {
     CounterOptions,
     getCounterKey,
     Params,
 } from 'src/utils/counterOptions';
-import { constructArray, equal, memo, pipe } from 'src/utils/function';
+import { constructArray } from 'src/utils/function/construct';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
 import { stringify } from 'src/utils/json';
 import { setTurboInfo } from 'src/utils/turboParams';
+import { equal } from 'src/utils/function/curry';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {

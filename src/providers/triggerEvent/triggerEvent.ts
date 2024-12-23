@@ -1,8 +1,8 @@
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { createAndDispatchEvent } from 'src/utils/dom';
-import { runAsync } from 'src/utils/async';
-import { bindArgs } from 'src/utils/function';
+import { createAndDispatchEvent } from 'src/utils/dom/dom';
+import { runAsync } from 'src/utils/async/async';
+import { bindArgs } from 'src/utils/function/bind';
 
 /**
  * Triggers event yacounterXXXXXinited on counter initialization

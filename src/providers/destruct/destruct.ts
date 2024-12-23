@@ -1,7 +1,7 @@
-import { getGlobalStorage } from 'src/storage/global';
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { cForEach } from 'src/utils/array';
+import { cForEach } from 'src/utils/array/map';
 import type { AnyFunc } from 'src/utils/function/types';
 import { isFunction } from 'src/utils/object';
 import { DestructHandler } from './const';

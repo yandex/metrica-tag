@@ -1,4 +1,4 @@
-import { getRootElement, getDocumentScroll } from '../dom';
+import { getRootElement, getDocumentScroll } from '../dom/dom';
 
 export type TMouseButton = 0 | 1 | 2 | 3 | 4;
 

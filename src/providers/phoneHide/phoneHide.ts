@@ -1,17 +1,15 @@
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { CounterOptions } from 'src/utils/counterOptions';
-import {
-    CounterSettings,
-    COUNTER_SETTINGS_SETTINGS_KEY,
-    getCounterSettings,
-} from 'src/utils/counterSettings';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
 import { getPath } from 'src/utils/object';
 import { hidePhones } from 'src/utils/phones/phonesHide';
-import { isMobile } from 'src/utils/browser';
+import { isMobile } from 'src/utils/browser/browser';
 import { isBrokenPhones } from 'src/utils/phones/isBrokenPhones';
-import { getLocation } from 'src/utils/location';
+import { getLocation } from 'src/utils/location/location';
 import { stringIncludes } from 'src/utils/string';
-import { globalLocalStorage } from 'src/storage/localStorage';
+import { globalLocalStorage } from 'src/storage/localStorage/localStorage';
+import { CounterSettings } from 'src/utils/counterSettings/types';
+import { COUNTER_SETTINGS_SETTINGS_KEY } from 'src/utils/counterSettings/const';
 import { COUNTER_SETTINGS_HIDE_PHONES_KEY } from './const';
 
 const FORCE_HIDE_PHONES_KEY = 'hide_phones';

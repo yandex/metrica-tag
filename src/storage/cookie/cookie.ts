@@ -1,6 +1,8 @@
-import { arrayJoin, cForEach, cReduce } from 'src/utils/array';
-import { globalMemoWin, memo } from 'src/utils/function';
-import { getLocation } from 'src/utils/location';
+import { cReduce } from 'src/utils/array/reduce';
+import { arrayJoin } from 'src/utils/array/join';
+import { cForEach } from 'src/utils/array/map';
+import { globalMemoWin } from 'src/utils/function/globalMemo';
+import { getLocation } from 'src/utils/location/location';
 import { getSameSiteCookieInfo } from 'src/providers/sameSite';
 import { flags } from '@inject';
 import { SAME_SITE_FEATURE } from 'generated/features';
@@ -9,6 +11,7 @@ import { CookieGetter } from 'src/storage/cookie/types';
 import { trimText } from 'src/utils/string/remove';
 import { isNil } from 'src/utils/object';
 import { safeDecodeURIComponent } from 'src/utils/querystring';
+import { memo } from 'src/utils/function/memo';
 import { isCookieAllowed } from './isAllowed';
 
 export const parseCookie = (ctx: Window) => {

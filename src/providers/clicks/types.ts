@@ -2,8 +2,8 @@ import {
     CounterOptions,
     RawTrackLinkParams,
 } from 'src/utils/counterOptions/types';
-import { getGlobalStorage } from 'src/storage/global';
-import { counterLocalStorage } from 'src/storage/localStorage';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import { counterLocalStorage } from 'src/storage/localStorage/localStorage';
 import { getHid } from 'src/middleware/watchSyncFlags/brinfoFlags/hid';
 import { GetSenderType } from 'src/sender/types';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers';

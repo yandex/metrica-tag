@@ -1,7 +1,7 @@
-import { isArray } from 'src/utils/array';
+import { isArray } from 'src/utils/array/isArray';
 import { dataGTagFormatToEcommerceFormat } from 'src/utils/ecommerce';
 import { argsToArray } from 'src/utils/function/args';
-import { isNumber } from 'src/utils/number';
+import { isNumber } from 'src/utils/number/number';
 import { isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
 

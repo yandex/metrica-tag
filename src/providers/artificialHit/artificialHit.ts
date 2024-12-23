@@ -7,12 +7,14 @@ import {
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { getSender } from 'src/sender';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { browserInfo } from 'src/utils/browserInfo';
-import { getLocation } from 'src/utils/location';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
+import { getLocation } from 'src/utils/location/location';
 import { isObject, mix } from 'src/utils/object';
-import { memo, noop, constructObject } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
+import { constructObject } from 'src/utils/function/construct';
+import { noop } from 'src/utils/function/noop';
 import { ArtificialHitOptions, ArtificialHandler } from './type';
 import { METHOD_NAME_HIT, ARTIFICIAL_HIT_PROVIDER } from './const';
 import { PAGE_VIEW_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';

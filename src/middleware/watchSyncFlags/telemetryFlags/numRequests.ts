@@ -1,7 +1,9 @@
 import { DEFER_KEY } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { getCounterKey, CounterOptions } from 'src/utils/counterOptions';
-import { call, memo, pipe } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
+import { call } from 'src/utils/function/utils';
 
 const getNumRequestsIncrementor = memo((counterKey: string) => {
     let reqNum = 0;

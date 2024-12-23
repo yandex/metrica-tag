@@ -1,12 +1,12 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sender from 'src/sender';
-import * as globalConfig from 'src/storage/global';
-import * as events from 'src/utils/events';
+import * as globalConfig from 'src/storage/global/getGlobal';
+import * as events from 'src/utils/events/events';
 import type { EventSetter } from 'src/utils/events/types';
-import * as defer from 'src/utils/defer';
-import * as direct from 'src/utils/direct';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
+import * as defer from 'src/utils/defer/defer';
+import * as direct from 'src/utils/direct/direct';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
 import * as getCountersUtils from 'src/providers/getCounters/getCounters';
 import {
     WATCH_URL_PARAM,
@@ -19,7 +19,8 @@ import {
 } from 'src/api/watch';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
+import type { GlobalStorage } from 'src/storage/global/global';
 import { useTrackHash, HASH_CHECKS_INTERVAL } from '../trackHash';
 
 describe('track hash provider', () => {
@@ -37,7 +38,7 @@ describe('track hash provider', () => {
         sandbox.stub(globalConfig, 'getGlobalStorage').returns({
             setVal: sandbox.stub(),
             getVal: sandbox.stub().returns(lastRef),
-        } as unknown as globalConfig.GlobalStorage);
+        } as unknown as GlobalStorage);
         sandbox.stub(sender, 'getSender').returns(senderStub);
         sandbox
             .stub(errorLoggerUtils, 'errorLogger')

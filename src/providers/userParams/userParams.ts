@@ -1,10 +1,10 @@
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { errorLogger, ctxErrorLogger } from 'src/utils/errorLogger';
+import { errorLogger, ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
-import { getCounterInstance } from 'src/utils/counter';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { DebugConsole } from 'src/providers/debugConsole/debugConsole';
 import { isObject } from 'src/utils/object';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import { METHOD_NAME_USER_PARAMS, USER_PARAMS_KEY } from './const';
 import { UserParamsHandler } from './types';
 import {

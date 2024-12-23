@@ -1,10 +1,10 @@
 import { getUid, isRecovered } from 'src/utils/uid';
-import * as timeUtils from 'src/utils/time';
-import * as numberUtils from 'src/utils/number';
+import * as timeUtils from 'src/utils/time/time';
+import * as numberUtils from 'src/utils/number/random';
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as cookieStorage from 'src/storage/cookie';
-import * as localStorageStorage from 'src/storage/localStorage';
+import * as cookieStorage from 'src/storage/cookie/cookie';
+import * as localStorageStorage from 'src/storage/localStorage/localStorage';
 import { CounterOptions } from 'src/utils/counterOptions';
 
 describe('Uid', () => {

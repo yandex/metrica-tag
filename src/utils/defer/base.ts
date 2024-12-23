@@ -1,15 +1,6 @@
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
 import type { AnyFunc } from '../function/types';
 
-export const clearDefer = (ctx: Window, deferId: number) => {
-    const clearTimeout: Window['clearTimeout'] = getNativeFunction(
-        'clearTimeout',
-        ctx,
-    );
-    // eslint-disable-next-line ban/ban
-    return clearTimeout(deferId);
-};
-
 // Без errorLogger - для избежания циклических зависимостей в транспортах и callForeignCallback
 export const setDeferBase = (
     ctx: Window,

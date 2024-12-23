@@ -1,9 +1,13 @@
-import { cForEach } from 'src/utils/array';
+import { cForEach } from 'src/utils/array/map';
 import { mix, getPath } from 'src/utils/object';
-import { memo, bind, noop, curry2 } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 
-import { setEvent } from './setEvent';
+import { AnyFunc } from 'src/utils/function/types';
+import { noop } from 'src/utils/function/noop';
+import { curry2 } from 'src/utils/function/curry';
+import { bind } from 'src/utils/function/bind/bind';
 import type { EventOptions, EventElement, EventSetter } from './types';
+import { setEvent } from './setEvent';
 
 export const checkSupportsPassive = memo((ctx: Window) => {
     let opt: EventOptions;
@@ -46,7 +50,7 @@ export const opts = curry2(
     },
 );
 
-export const cEvent = memo((ctx: Window) => {
+export const cEvent = memo((ctx: Window): EventSetter => {
     const isSupportsPassive = checkSupportsPassive(ctx);
     const getOpt = opts(isSupportsPassive);
     const self = {} as EventSetter;
@@ -65,7 +69,7 @@ export const cEvent = memo((ctx: Window) => {
             T extends keyof M,
         >(
             elem: E,
-            names: T[] | readonly T[],
+            names: T[],
             fn: (this: E, ev: M[T]) => unknown,
             options?: EventOptions,
         ) {
@@ -74,7 +78,15 @@ export const cEvent = memo((ctx: Window) => {
                 setEvent(ctx, elem, name, fn, opt, false);
             }, names);
 
-            return bind(self.un, self, elem, names, fn, options);
+            // FIXME: VisualViewport breaks types
+            return bind(
+                self.un,
+                self,
+                elem as any,
+                names as any,
+                fn as AnyFunc,
+                options,
+            );
         },
         un<
             E extends EventElement,

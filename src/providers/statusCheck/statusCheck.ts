@@ -1,4 +1,4 @@
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 
 import {
     getResourceUrl,
@@ -6,8 +6,8 @@ import {
 } from 'src/providers/remoteControl/remoteControl';
 import { getStatusCheckSearchParams } from 'src/providers/statusCheck/urlSearchParams';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { setDefer } from 'src/utils/defer';
-import { bindArgs } from 'src/utils/function';
+import { setDefer } from 'src/utils/defer/defer';
+import { bindArgs } from 'src/utils/function/bind';
 import { DEFAULT_COUNTER_TYPE } from '../counterOptions';
 
 export const CHK_STATUS_KEY = 'cs';

@@ -1,5 +1,7 @@
 import { isUndefined, isNil } from 'src/utils/object';
-import { bindArg, curry2, firstArg } from 'src/utils/function';
+import { bindArg } from 'src/utils/function/bind';
+import { firstArg } from 'src/utils/function/identity';
+import { curry2 } from 'src/utils/function/curry';
 
 export type FlagData = Record<string, string | number | null>;
 

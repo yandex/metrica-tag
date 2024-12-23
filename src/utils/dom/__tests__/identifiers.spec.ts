@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import sinon from 'sinon';
-import * as hashUtils from 'src/utils/fnv32a';
+import * as hashUtils from 'src/utils/fnv32a/fnv32a';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import {
     CONTENT,

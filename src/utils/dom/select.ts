@@ -1,11 +1,9 @@
-import {
-    toArray,
-    flatMap,
-    cFilter,
-    cIndexOf,
-    arrayMerge,
-} from 'src/utils/array';
-import { bindArg } from 'src/utils/function';
+import { arrayMerge } from 'src/utils/array/merge';
+import { bindArg } from 'src/utils/function/bind';
+import { cFilter } from 'src/utils/array/filter';
+import { cIndexOf } from 'src/utils/array/indexOf';
+import { flatMap } from 'src/utils/array/map';
+import { toArray } from 'src/utils/array/utils';
 import { isQuerySelectorSupported } from './queySelect';
 
 export type Queryable = {

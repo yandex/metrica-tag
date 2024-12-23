@@ -1,4 +1,5 @@
-import { cReduce, includes } from 'src/utils/array';
+import { includes } from 'src/utils/array/includes';
+import { cReduce } from 'src/utils/array/reduce';
 import { ENABLED_COOKIE_KEY } from './const';
 import { CookieGetter } from './types';
 

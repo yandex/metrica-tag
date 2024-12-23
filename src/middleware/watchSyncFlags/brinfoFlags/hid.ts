@@ -1,5 +1,5 @@
-import { getGlobalStorage } from 'src/storage/global';
-import { getRandom } from 'src/utils/number';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import { getRandom } from 'src/utils/number/random';
 
 export const HID_NAME = 'hitId';
 export const getHid = (ctx: Window) => {

@@ -1,11 +1,11 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import type { TaskInterface } from 'src/utils/async';
-import * as browser from 'src/utils/browser';
+import type { TaskInterface } from 'src/utils/async/task';
+import * as browser from 'src/utils/browser/browser';
 import * as waitForBodyTask from 'src/utils/dom/waitForBody';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import * as counterSettings from 'src/utils/counterSettings';
-import type { CounterSettings } from 'src/utils/counterSettings';
+import * as counterSettings from 'src/utils/counterSettings/counterSettings';
+import type { CounterSettings } from 'src/utils/counterSettings/types';
 import * as siteStatisticsLayout from '../layout/siteStatisticsLayout';
 import { useSiteStatisticsProvider } from '../siteStatistics';
 

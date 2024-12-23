@@ -1,5 +1,5 @@
 import { getVersion } from '@inject';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { getPath } from 'src/utils/object/path';
 import { memo } from './memo';
 import type { AnyFunc } from './types';

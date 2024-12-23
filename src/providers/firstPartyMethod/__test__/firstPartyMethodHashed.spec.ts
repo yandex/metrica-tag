@@ -1,7 +1,7 @@
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
-import * as counterLib from 'src/utils/counter';
+import * as counterLib from 'src/utils/counter/getInstance';
 import { CounterObject } from 'src/utils/counter/type';
 import * as debugConsoleUtils from 'src/providers/debugConsole/debugConsole';
 import {

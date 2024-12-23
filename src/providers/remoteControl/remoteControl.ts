@@ -1,12 +1,6 @@
 import { parse as parseJson } from 'src/utils/json';
-import {
-    getButtonData,
-    getCachedTags,
-    getElemCreateFunction,
-    getRootElement,
-    insertScript,
-} from 'src/utils/dom';
-import { getGlobalStorage } from 'src/storage/global';
+import { getElemCreateFunction, getRootElement } from 'src/utils/dom/dom';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import {
     CLICK_TRACKING_FEATURE,
     LOCAL_FEATURE,
@@ -15,31 +9,40 @@ import {
     REMOTE_CONTROL_FEATURE,
     REMOTE_CONTROL_BLOCK_HELPERS_FEATURE,
 } from 'generated/features';
-import {
-    memo,
-    pipe,
-    bindArg,
-    bindThisForMethodTest,
-    bindArgs,
-    firstArg,
-    ctxBindArgs,
-    call,
-    curry2,
-} from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 import { getPath } from 'src/utils/object';
-import { cEvent } from 'src/utils/events';
+import { cEvent } from 'src/utils/events/events';
 import { flags } from '@inject';
-import { arrayJoin, cFilter, cForEach, cMap, includes } from 'src/utils/array';
-import { closestButton, selectButtons } from 'src/utils/dom/button';
+import { includes } from 'src/utils/array/includes';
+import { cFilter } from 'src/utils/array/filter';
+import { arrayJoin } from 'src/utils/array/join';
+import { cForEach, cMap } from 'src/utils/array/map';
+import {
+    closestButton,
+    getButtonData,
+    selectButtons,
+} from 'src/utils/dom/button';
 import { closestForm, getFormData, selectForms } from 'src/utils/dom/form';
 import { checkStatusFn } from 'src/providers/statusCheck/statusCheckFn';
-import { isNumber, parseDecimalInt } from 'src/utils/number';
+import { isNumber, parseDecimalInt } from 'src/utils/number/number';
 import { AnyFunc } from 'src/utils/function/types';
 import {
     getClosestTextContainer,
     getTextContainerData,
     selectTextContainer,
 } from 'src/utils/dom/block';
+import { insertScript } from 'src/utils/dom/insertScript';
+import { getCachedTags } from 'src/utils/dom/element';
+import { curry2 } from 'src/utils/function/curry';
+import { pipe } from 'src/utils/function/pipe';
+import { firstArg } from 'src/utils/function/identity';
+import {
+    bindArg,
+    bindArgs,
+    bindThisForMethodTest,
+} from 'src/utils/function/bind/bind';
+import { ctxBindArgs } from 'src/utils/function/bind/ctxBind';
+import { call } from 'src/utils/function/utils';
 
 /* eslint-disable camelcase */
 type ExtendedWindow = Window & {
@@ -61,10 +64,9 @@ const buildRemoteIframe = (ctx: ExtendedWindow, src: string) => {
     }
 
     type shadowRootMethodNames = 'createShadowRoot' | 'webkitCreateShadowRoot';
-    const iframeContainer = createElement('div') as HTMLDivElement &
-        {
-            [key in shadowRootMethodNames]?: () => ShadowRoot;
-        };
+    const iframeContainer = createElement('div') as HTMLDivElement & {
+        [key in shadowRootMethodNames]?: () => ShadowRoot;
+    };
     const root = getRootElement(ctx);
 
     if (!root) {

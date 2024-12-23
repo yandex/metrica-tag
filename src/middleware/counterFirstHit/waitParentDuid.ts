@@ -1,12 +1,14 @@
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { isIframe, isTP } from 'src/utils/browser';
-import { memo, constructObject, call } from 'src/utils/function';
-import { cForEach } from 'src/utils/array';
+import { isIframe, isTP } from 'src/utils/browser/browser';
+import { memo } from 'src/utils/function/memo';
+import { constructObject } from 'src/utils/function/construct';
+import { call } from 'src/utils/function/utils';
+import { cForEach } from 'src/utils/array/map';
 import {
     counterIframeConnector,
     INIT_MESSAGE_CHILD,
 } from 'src/utils/iframeConnector';
-import { setDefer } from 'src/utils/defer';
+import { setDefer } from 'src/utils/defer/defer';
 
 const WAIT_PARENT_FRAME_INIT_TIMEOUT = 3000;
 

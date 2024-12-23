@@ -1,7 +1,7 @@
 import { INSERT_SITE_STATISTICS_SCRIPT } from 'generated/features';
 import { flags } from '@inject';
 import { providersAsync } from 'src/providersEntrypoint';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import {
     STATISTICS_MODE_KEY,
     useSiteStatisticsProvider,

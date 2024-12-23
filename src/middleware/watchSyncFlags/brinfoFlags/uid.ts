@@ -1,7 +1,7 @@
 import { getUid } from 'src/utils/uid';
-import { memo } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { isIframe, isTP } from 'src/utils/browser';
+import { isIframe, isTP } from 'src/utils/browser/browser';
 import {
     counterIframeConnector,
     IFRAME_MESSAGE_DUID,

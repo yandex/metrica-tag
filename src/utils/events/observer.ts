@@ -1,13 +1,10 @@
-import { cIndexOf, ctxMapSwap } from 'src/utils/array';
-import {
-    pipe,
-    bindArg,
-    firstArg,
-    bindThisForMethod,
-    call,
-    curry2SwapArgs,
-    FirstArgOfType,
-} from 'src/utils/function';
+import { ctxMapSwap } from 'src/utils/array/map';
+import { cIndexOf } from 'src/utils/array/indexOf';
+import { pipe } from 'src/utils/function/pipe';
+import { bindArg, bindThisForMethod } from 'src/utils/function/bind';
+import { FirstArgOfType, firstArg } from 'src/utils/function/identity';
+import { curry2SwapArgs } from 'src/utils/function/curry';
+import { call } from 'src/utils/function/utils';
 
 export type Listener<T, U> = (data: T) => U;
 

@@ -1,6 +1,8 @@
 import { TITLE_BR_KEY } from 'src/api/watch';
 import { entries } from 'src/utils/object';
-import { cIndexOfWin, arrayJoin, dirtyReduce } from 'src/utils/array';
+import { arrayJoin } from 'src/utils/array/join';
+import { cIndexOfWin } from 'src/utils/array/indexOf';
+import { dirtyReduce } from 'src/utils/array/reduce';
 import {
     flagStorage,
     FlagStorage,

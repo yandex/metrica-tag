@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { PRERENDER_MW_BR_KEY } from 'src/api/watch';
-import * as eventUtils from 'src/utils/events';
-import { browserInfo } from 'src/utils/browserInfo';
+import * as eventUtils from 'src/utils/events/events';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { prerender } from '../prerender';
 

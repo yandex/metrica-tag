@@ -1,33 +1,33 @@
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
-import { cEvent } from 'src/utils/events';
-import {
-    bindArgs,
-    call,
-    callFirstArgument,
-    curry2SwapArgs,
-    memo,
-    noop,
-    pipe,
-    secondArg,
-} from 'src/utils/function';
-import { cForEach, cIndexOf } from 'src/utils/array';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
+import { cEvent } from 'src/utils/events/events';
+import { bindArgs } from 'src/utils/function/bind';
+import { cIndexOf } from 'src/utils/array/indexOf';
+import { cForEach } from 'src/utils/array/map';
 import { ctxPath, getPath, isNil } from 'src/utils/object';
-import { setDefer } from 'src/utils/defer';
+import { setDefer } from 'src/utils/defer/defer';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { useGoal } from 'src/providers/goal/goal';
-import { CounterSettings, getCounterSettings } from 'src/utils/counterSettings';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
 import { stringify } from 'src/utils/querystring';
 import { closestForm, getFormData } from 'src/utils/dom/form';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
-import { closest } from 'src/utils/dom';
+import { closest } from 'src/utils/dom/closest';
 import { ternary } from 'src/utils/condition';
 import { toZeroOrOne } from 'src/utils/boolean';
-import { METHOD_NAME_GOAL } from '../goal/const';
-import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
+import { AnyFunc } from 'src/utils/function/types';
+import { CounterSettings } from 'src/utils/counterSettings/types';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
+import { secondArg } from 'src/utils/function/identity';
+import { curry2SwapArgs } from 'src/utils/function/curry';
+import { noop } from 'src/utils/function/noop';
+import { callFirstArgument, call } from 'src/utils/function/utils';
 import {
     FORM_GOALS_INIT_CONSOLE_MESSAGE,
     FORM_GOAL_CONSOLE_MESSAGE,
 } from '../consoleRenderer/dictionary';
+import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
+import { METHOD_NAME_GOAL } from '../goal/const';
 
 const CLICK_DELAY = 300;
 
@@ -203,6 +203,9 @@ export const useSubmitTracking = ctxErrorLogger(
             ['id']: counterOptions.id,
         });
 
-        return bindArgs([callFirstArgument, unsubscribeMethodsList], cForEach);
+        return bindArgs(
+            [callFirstArgument, unsubscribeMethodsList],
+            cForEach<AnyFunc>,
+        );
     },
 );

@@ -17,35 +17,39 @@ import { COUNTER_STATE_CLICKMAP } from 'src/providers/getCounters/const';
 import { getSender } from 'src/sender';
 import { SenderInfo, UrlParams } from 'src/sender/SenderInfo';
 import { GetSenderType } from 'src/sender/types';
-import { getGlobalStorage } from 'src/storage/global';
-import { arrayJoin, cMap, cSome, includes } from 'src/utils/array';
-import { isBrokenFromCharCode } from 'src/utils/browser';
-import { browserInfo } from 'src/utils/browserInfo';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import { includes } from 'src/utils/array/includes';
+import { cSome } from 'src/utils/array/some';
+import { arrayJoin } from 'src/utils/array/join';
+import { cMap } from 'src/utils/array/map';
+import { isBrokenFromCharCode } from 'src/utils/browser/browser';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import {
     getElementPath,
     getElementSize,
     getElementXY,
-    getNodeName,
-    hasClass,
-} from 'src/utils/dom';
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
-import { cEvent } from 'src/utils/events';
-import {
-    bindArg,
-    call,
-    CallWithoutArguments,
-    curry2,
-    equal,
-    noop,
-    pipe,
-} from 'src/utils/function';
+} from 'src/utils/dom/element';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
+import { cEvent } from 'src/utils/events/events';
+import { bindArg } from 'src/utils/function/bind';
 import type { AnyFunc } from 'src/utils/function/types';
-import { getLocation } from 'src/utils/location';
-import { getMouseButton, getPosition, getTarget } from 'src/utils/mouseEvents';
-import { getRandom } from 'src/utils/number';
+import { getLocation } from 'src/utils/location/location';
+import {
+    getMouseButton,
+    getPosition,
+    getTarget,
+} from 'src/utils/mouseEvents/mouseEvents';
+import { getRandom } from 'src/utils/number/random';
 import { ctxPath, getPath, has, isUndefined } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
+import { getMs, TimeOne } from 'src/utils/time/time';
+import { getNodeName, hasClass } from 'src/utils/dom/dom';
+
+import { curry2, equal } from 'src/utils/function/curry';
+import { pipe } from 'src/utils/function/pipe';
+import { CallWithoutArguments, call } from 'src/utils/function/utils';
+import { noop } from 'src/utils/function/noop';
+import { ClickInfo } from './type';
 import {
     CLICKMAP_PROVIDER,
     CLICKMAP_RESOURCE,
@@ -55,8 +59,6 @@ import {
     TIMEOUT_CLICK,
     TIMEOUT_SAME_CLICKS,
 } from './const';
-
-import { ClickInfo } from './type';
 
 const isIgnoredElement = curry2(hasClass)(
     '(ym-disable-clickmap|ym-clickmap-ignore)',

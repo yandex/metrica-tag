@@ -6,9 +6,9 @@ import {
     TELEMETRY_QUERY_KEY,
 } from 'src/api/common';
 import { SENDER_TIME_BR_KEY } from 'src/api/watch';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { mix } from 'src/utils/object';
-import { TimeOne, getSec } from 'src/utils/time';
+import { TimeOne, getSec } from 'src/utils/time/time';
 import type { SenderInfo } from '../../SenderInfo';
 
 export const createWatchQuery = (

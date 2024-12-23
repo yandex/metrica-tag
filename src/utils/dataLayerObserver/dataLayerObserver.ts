@@ -1,10 +1,14 @@
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { ctxPath, getPath, isFunction } from 'src/utils/object';
-import { cForEach, cMap, includes } from 'src/utils/array';
-import { firstArg, noop, bindArg } from 'src/utils/function';
+import { includes } from 'src/utils/array/includes';
+import { cForEach, cMap } from 'src/utils/array/map';
+import { noop } from 'src/utils/function/noop';
 import { argsToArray } from 'src/utils/function/args';
-import { emitter, Emitter, observer, Observer } from '../events';
+import { firstArg } from 'src/utils/function/identity';
+import { bindArg } from 'src/utils/function/bind/bind';
+import { emitter, Emitter } from '../events/emitter';
 import { MessageData } from '../iframeConnector/types';
+import { Observer, observer } from '../events/observer';
 
 export const INNER_DATA_LAYER_KEY = 'dataLayer';
 export const INNER_DATA_LAYER_NAMESPACE = 'ymetrikaEvent';

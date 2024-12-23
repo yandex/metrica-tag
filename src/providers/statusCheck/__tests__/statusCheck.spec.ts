@@ -2,8 +2,8 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as remoteControlUtils from 'src/providers/remoteControl/remoteControl';
-import * as defer from 'src/utils/defer';
-import { parseDecimalInt } from 'src/utils/number';
+import * as defer from 'src/utils/defer/defer';
+import { parseDecimalInt } from 'src/utils/number/number';
 import {
     CHECK_URL_PARAM,
     LANG_URL_PARAM,

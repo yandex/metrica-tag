@@ -1,7 +1,7 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
 import { entries, mix, isFunction, getPath } from 'src/utils/object';
-import { PolyPromise } from 'src/utils';
-import { dirtyPipe, bindArgs, bindArg } from 'src/utils/function';
+import { PolyPromise } from 'src/utils/promise';
+import { bindArgs, bindArg } from 'src/utils/function/bind';
 import {
     InternalTransportOptions,
     CheckTransport,
@@ -10,9 +10,10 @@ import {
 import { createKnownError } from 'src/utils/errorLogger/knownError';
 import { stringify } from 'src/utils/querystring';
 import { parse as parseJSON } from 'src/utils/json';
-import { ctxMap } from 'src/utils/array';
+import { ctxMap } from 'src/utils/array/map';
 import { makeHttpError } from 'src/utils/errorLogger/createError';
 import { addQuery } from 'src/utils/url';
+import { dirtyPipe } from 'src/utils/function/pipe';
 import { WATCH_WMODE_JSON } from '../watchModes';
 
 const CYRILLIC_DOMAIN_REGEXP = /[^a-z0-9.:-]/;
@@ -23,8 +24,8 @@ const stateChange = (
     ctx: Window,
     xhr: XMLHttpRequest,
     err: Error,
-    needResult: boolean,
-    returnRawResponse: boolean,
+    needResult: boolean | undefined,
+    returnRawResponse: boolean | undefined,
     resolve: (s: TransportResponse) => void,
     reject: (s: string | Error) => void,
     r: unknown,

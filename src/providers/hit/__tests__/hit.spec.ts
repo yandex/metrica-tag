@@ -4,8 +4,8 @@ import * as sender from 'src/sender';
 import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
 import { CounterOptions } from 'src/utils/counterOptions';
 import * as DebugConsole from 'src/providers/debugConsole/debugConsole';
-import * as counterSettingsStorage from 'src/utils/counterSettings';
-import * as deferModule from 'src/utils/defer';
+import * as counterSettingsStorage from 'src/utils/counterSettings/counterSettings';
+import * as deferModule from 'src/utils/defer/defer';
 import { useRawHitProvider } from '../hit';
 
 describe('hit', () => {

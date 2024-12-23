@@ -1,8 +1,9 @@
 import { flags } from '@inject';
 import { POLYFILLS_ES6_FEATURE } from 'generated/features';
-import { curry2SwapArgs, equal, toNativeOrFalse } from '../function';
+import { curry2SwapArgs, equal } from '../function/curry';
 import { filterPoly } from './filter';
 import { Includes } from './types';
+import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 
 const nativeIncludes = toNativeOrFalse(Array.prototype.includes, 'includes');
 

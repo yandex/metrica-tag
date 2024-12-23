@@ -1,16 +1,20 @@
-import { getCounterInstance } from 'src/utils/counter';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { METHOD_NAME_CLICK_MAP } from 'src/providers/clickmapMethod/const';
-import { bindArg, bindArgs, cont, firstArg, pipe } from 'src/utils/function';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { METHOD_NAME_TRACK_LINKS } from 'src/providers/clicks/const';
-import { cMap, filterFalsy } from 'src/utils/array';
+import { filterFalsy } from 'src/utils/array/filter';
+import { cMap } from 'src/utils/array/map';
 import {
     EnableAllHandler,
     METHOD_NAME_ENABLE_ALL,
 } from 'src/providers/enableAll/const';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { getPath } from 'src/utils/object';
 import { METHOD_NAME_ACCURATE_TRACK_BOUNCE } from 'src/providers/notBounce/const';
+import { pipe } from 'src/utils/function/pipe';
+import { firstArg } from 'src/utils/function/identity';
+import { cont } from 'src/utils/function/curry';
 
 type ProviderResult = {
     [METHOD_NAME_ENABLE_ALL]: EnableAllHandler;

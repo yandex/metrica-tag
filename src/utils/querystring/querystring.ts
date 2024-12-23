@@ -1,7 +1,9 @@
 import { REQUEST_BODY_KEY } from 'src/api/watch';
 import { entries, isUndefined, isNil } from 'src/utils/object';
-import { pipe } from 'src/utils/function';
-import { ctxJoin, ctxReduce, ctxMap } from 'src/utils/array';
+import { pipe } from 'src/utils/function/pipe';
+import { ctxJoin } from 'src/utils/array/join';
+import { ctxMap } from 'src/utils/array/map';
+import { ctxReduce } from 'src/utils/array/reduce';
 import { safeEncodeURIComponent } from './safeEncodeURI';
 
 export const safeDecodeURIComponent = (encodedURIComponent: string) => {
@@ -67,7 +69,7 @@ export const stringify = (obj: Record<string, any> | undefined): string => {
                 out.push(`${key}=${safeEncodeURIComponent(val)}`);
             }
             return out;
-        }, [] as string[]),
+        }, []),
         ctxJoin('&'),
     )(obj);
 };

@@ -1,4 +1,4 @@
-import { isIE as isIEFn } from 'src/utils/browser';
+import { isIE as isIEFn } from 'src/utils/browser/browser';
 import { LOCAL_FEATURE } from 'generated/features';
 import { flags, argOptions, getVersion } from '@inject';
 import { Constructor } from 'src/types';

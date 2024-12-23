@@ -1,11 +1,11 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as events from 'src/utils/events';
-import * as defer from 'src/utils/defer';
-import * as numberUtils from 'src/utils/number';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
+import * as events from 'src/utils/events/events';
+import * as defer from 'src/utils/defer/defer';
+import * as numberUtils from 'src/utils/number/random';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
-import { runAsync } from '..';
+import { runAsync } from '../async';
 
 describe('Async test', () => {
     describe('runAsync', () => {

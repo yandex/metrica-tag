@@ -3,12 +3,12 @@ import {
     INTERNAL_PARAMS_KEY,
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
-import { cReduce } from 'src/utils/array';
-import { getCounterInstance } from 'src/utils/counter';
+import { cReduce } from 'src/utils/array/reduce';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { cKeys, entries, isObject, len } from 'src/utils/object';
 import { isString } from 'src/utils/string';
-import { isNumber } from 'src/utils/number';
+import { isNumber } from 'src/utils/number/number';
 import { FIRST_PARTY_HASHED_PARAMS_KEY } from './const';
 import type { FirstPartyInputData, FirstPartyOutputData } from './types';
 import {

@@ -1,4 +1,4 @@
-import { memo } from '../function';
+import { memo } from '../function/memo';
 import { EventElement, EventOptions } from './types';
 
 const addFunction = 'addEventListener';

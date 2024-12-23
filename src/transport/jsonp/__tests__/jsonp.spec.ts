@@ -1,13 +1,15 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { REQUEST_MODE_KEY } from 'src/api/watch';
-import * as numberUtils from 'src/utils/number';
+import * as numberUtils from 'src/utils/number/random';
 import * as deferBase from 'src/utils/defer/base';
-import * as domUtils from 'src/utils/dom';
+import * as defer from 'src/utils/defer/defer';
+import * as domUtils from 'src/utils/dom/dom';
+import * as injectScripts from 'src/utils/dom/insertScript';
 import * as knownErrorUtils from 'src/utils/errorLogger/knownError';
 import type { AnyFunc } from 'src/utils/function/types';
 import * as watchModes from 'src/transport/watchModes';
-import * as utils from 'src/utils';
+import * as utils from 'src/utils/promise';
 import { InternalTransportOptions, TransportFn } from 'src/transport/types';
 
 import { useJsonp, CALLBACK_PREFIX } from '../jsonp';
@@ -80,8 +82,8 @@ describe('JSONP', () => {
         removeNode = sandbox.stub(domUtils, 'removeNode');
         getRandom = sandbox.stub(numberUtils, 'getRandom');
         setDeferStub = sandbox.stub(deferBase, 'setDeferBase').returns(TID);
-        clearDeferStub = sandbox.stub(deferBase, 'clearDefer');
-        insertScript = sandbox.stub(domUtils, 'insertScript');
+        clearDeferStub = sandbox.stub(defer, 'clearDefer');
+        insertScript = sandbox.stub(injectScripts, 'insertScript');
         createFn = sandbox.stub(domUtils, 'getElemCreateFunction');
         createKnownStub = sandbox.stub(knownErrorUtils, 'createKnownError');
 

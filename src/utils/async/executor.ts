@@ -5,7 +5,7 @@ import {
     iterResume,
 } from './iterator';
 import { ForkInterface, task } from './task';
-import { setDefer } from '../defer';
+import { setDefer } from '../defer/defer';
 
 type TaskExecutionFunction = () => void;
 

@@ -1,9 +1,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as functionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
-import * as functionUtilsRoot from 'src/utils/function';
-import * as arrayUtils from 'src/utils/array';
-import { closest } from 'src/utils/dom';
+import * as arrayUtils from 'src/utils/array/indexOf';
+import { closest } from 'src/utils/dom/closest';
 
 describe('don / utils - closest', () => {
     const sandbox = sinon.createSandbox();
@@ -12,9 +11,6 @@ describe('don / utils - closest', () => {
     };
     beforeEach(() => {
         sandbox.stub(functionUtils, 'isNativeFunction').callsFake(nativeFake);
-        sandbox
-            .stub(functionUtilsRoot, 'isNativeFunction')
-            .callsFake(nativeFake);
         sandbox
             .stub(arrayUtils, 'cIndexOf')
             .returns((needle: any, haystack: ArrayLike<any>) =>

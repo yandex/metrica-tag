@@ -1,5 +1,5 @@
 import { InternalTransportOptions } from 'src/transport/types';
-import { getRandom } from 'src/utils/number';
+import { getRandom } from 'src/utils/number/random';
 import { dispatchDebuggerEvent } from './index';
 
 export const debugLogRequest = (

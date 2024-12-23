@@ -1,4 +1,4 @@
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { argsToArray } from 'src/utils/function/args';
 import {
     METHODS_TELEMETRY_KEYS_MAP,
@@ -6,7 +6,7 @@ import {
 } from './const';
 import type { Decorator } from '../types';
 
-export const telemetryCallCountDecorator: Decorator = (
+export const telemetryCallCountDecorator: Decorator<unknown> = (
     ctx,
     counterOptions,
     methodName,

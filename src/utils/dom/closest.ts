@@ -1,5 +1,6 @@
-import { isNativeFunction } from 'src/utils/function';
-import { toArray, cIndexOf } from 'src/utils/array';
+import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
+import { cIndexOf } from 'src/utils/array/indexOf';
+import { toArray } from 'src/utils/array/utils';
 import { getMatchesFunction } from './dom';
 import { isQuerySelectorSupported } from './queySelect';
 

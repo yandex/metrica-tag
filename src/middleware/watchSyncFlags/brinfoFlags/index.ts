@@ -29,28 +29,28 @@ import {
 } from 'src/api/watch';
 import { toOneOrNull } from 'src/utils/boolean';
 import { config } from 'src/config';
-import { counterLocalStorage } from 'src/storage/localStorage';
-import { arrayJoin } from 'src/utils/array';
+import { counterLocalStorage } from 'src/storage/localStorage/localStorage';
+import { arrayJoin } from 'src/utils/array/join';
 import {
     getJavaEnabled,
     getNavigatorLanguage,
     isIframe,
     isTopWindowAccessible,
     netType,
-} from 'src/utils/browser';
-import { getDocumentEncoding, getViewportSize } from 'src/utils/dom';
-import {
-    bindArg,
-    firstArg,
-    FirstArgOfType,
-    memo,
-    pipe,
-    secondArg,
-} from 'src/utils/function';
-import { isYandexDomain } from 'src/utils/location';
-import { getRandom } from 'src/utils/number';
+} from 'src/utils/browser/browser';
+import { getDocumentEncoding, getViewportSize } from 'src/utils/dom/dom';
+import { bindArg } from 'src/utils/function/bind';
+import { isYandexDomain } from 'src/utils/location/location';
+import { getRandom } from 'src/utils/number/random';
 import { ctxPath, getPath } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
+import { getMs, TimeOne } from 'src/utils/time/time';
+import {
+    FirstArgOfType,
+    firstArg,
+    secondArg,
+} from 'src/utils/function/identity';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
 import { isFalseURL } from './falseUrl';
 import { getHid } from './hid';
 import { getParentHid } from './parentHid';

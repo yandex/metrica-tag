@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { TITLE_BR_KEY } from 'src/api/watch';
 import { mix } from 'src/utils/object';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { pageTitle } from '../pageTitle';
 
 const titleMock = (title: string, setTitle = false) => {

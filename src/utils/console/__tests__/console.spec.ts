@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import * as fn from 'src/utils/function';
+import * as fn from 'src/utils/function/noop';
 import * as nf from 'src/utils/function/isNativeFunction/isNativeFn';
 import { createConsole } from '../console';
 

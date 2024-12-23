@@ -1,9 +1,9 @@
 import * as sinon from 'sinon';
-import * as eventUtils from 'src/utils/events';
+import * as eventUtils from 'src/utils/events/events';
 import type { EventSetter } from 'src/utils/events/types';
 import type { AnyFunc } from 'src/utils/function/types';
-import * as timeUtils from 'src/utils/time';
-import * as browserUtils from 'src/utils/browser';
+import * as timeUtils from 'src/utils/time/time';
+import * as browserUtils from 'src/utils/browser/browser';
 import { setUserTimeDefer } from '../userTimeDefer';
 
 type WindowWithTimeMocks = Window & {

@@ -1,11 +1,11 @@
 import ts from 'typescript';
 
-const markPureFunctions = <T extends ts.Node>(
+const markPureFunctions = (
     pureFunctions: string[],
     before: boolean,
-): ts.TransformerFactory<T> => {
+): ts.TransformerFactory<ts.SourceFile> => {
     return (context) => {
-        const visit: ts.Visitor = (node) => {
+        const visit: ts.Visitor<ts.Node, ts.Node> = (node) => {
             if (ts.isCallExpression(node) || ts.isNewExpression(node)) {
                 let hasPure;
                 if (before) {
@@ -37,7 +37,7 @@ const markPureFunctions = <T extends ts.Node>(
             return ts.visitEachChild(node, (child) => visit(child), context);
         };
 
-        return (node) => ts.visitNode(node, visit);
+        return (node) => ts.visitNode(node, visit, ts.isSourceFile);
     };
 };
 

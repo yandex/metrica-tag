@@ -1,5 +1,5 @@
-import { cont, curry2 } from '../function';
-import { cForEach } from '../array';
+import { cForEach } from '../array/map';
+import { cont, curry2 } from '../function/curry';
 
 export type ForkInterface<ResolveType, RejectType = unknown> = (
     reject: (a: RejectType) => void,
@@ -83,7 +83,7 @@ export const taskAll = <T>(tasks: TaskInterface<T>[]): TaskInterface<T[]> => {
     return task((reject, resolve) => {
         cForEach((taskItem, i) => {
             taskItem(
-                taskFork(reject, (result?) => {
+                taskFork(reject, (result) => {
                     try {
                         results[i] = result;
                         counter += 1;

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import * as def from 'src/utils/defer';
-import * as functionUtils from 'src/utils/function';
+import * as def from 'src/utils/defer/defer';
+import * as functionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import * as sinon from 'sinon';
 import {

@@ -4,10 +4,10 @@ import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import * as inject from '@inject';
 import * as sender from 'src/sender';
 import * as provider from 'src/providers/clickmap/clickmap';
-import * as cEvent from 'src/utils/events';
+import * as cEvent from 'src/utils/events/events';
 import type { EventElement } from 'src/utils/events/types';
 import type { AnyFunc } from 'src/utils/function/types';
-import * as mouseEvents from 'src/utils/mouseEvents';
+import * as mouseEvents from 'src/utils/mouseEvents/mouseEvents';
 
 import { SenderInfo } from 'src/sender/SenderInfo';
 
@@ -316,7 +316,7 @@ describe('clickmap.ts : ', () => {
                 .stub(sender, 'getSender')
                 .returns((senderInfo?: SenderInfo) => {
                     senderOpt = senderInfo!;
-                    return Promise.resolve({});
+                    return Promise.resolve();
                 });
 
             useCEventStub = sandbox.stub(cEvent, 'cEvent');

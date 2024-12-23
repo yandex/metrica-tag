@@ -2,25 +2,15 @@ import * as chai from 'chai';
 import * as native from 'src/utils/function/isNativeFunction/toNativeOrFalse';
 import * as sinon from 'sinon';
 import { valuesPoly } from 'src/utils/object';
-import {
-    exclude,
-    isArray,
-    getRange,
-    toArray,
-    cSome,
-    cFind,
-    flatMap,
-    includes,
-    joinPoly,
-    includesPoly,
-    reducePoly,
-    mapPoly,
-    somePoly,
-    findPoly,
-    flatMapPoly,
-} from '..';
 import { reversePoly } from '../reverse';
-import { isArrayPolyfill } from '../isArray';
+import { isArray, isArrayPolyfill } from '../isArray';
+import { joinPoly } from '../join';
+import { includes, includesPoly } from '../includes';
+import { reducePoly } from '../reduce';
+import { flatMap, flatMapPoly, mapPoly } from '../map';
+import { cSome, somePoly } from '../some';
+import { cFind, findPoly } from '../find';
+import { exclude, getRange, toArray } from '../utils';
 
 describe('Array utils', () => {
     const sandbox = sinon.createSandbox();

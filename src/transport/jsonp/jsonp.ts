@@ -1,13 +1,16 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
-import { getElemCreateFunction, removeNode, insertScript } from 'src/utils/dom';
-import { PolyPromise } from 'src/utils';
-import { getRandom } from 'src/utils/number';
+import { getElemCreateFunction, removeNode } from 'src/utils/dom/dom';
+import { PolyPromise } from 'src/utils/promise';
+import { getRandom } from 'src/utils/number/random';
 import { mix } from 'src/utils/object';
-import { setDeferBase, clearDefer } from 'src/utils/defer/base';
-import { bindArg, pipe, bindArgs } from 'src/utils/function';
+import { clearDefer } from 'src/utils/defer/defer';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
 import { createError } from 'src/utils/errorLogger/createError';
 
+import { insertScript } from 'src/utils/dom/insertScript';
+import { setDeferBase } from 'src/utils/defer/base';
+import { pipe } from 'src/utils/function/pipe';
 import {
     CheckTransport,
     InternalTransportOptions,

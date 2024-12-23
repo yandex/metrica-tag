@@ -9,11 +9,12 @@ import {
     ENABLE_ALL_METHOD_FEATURE,
 } from 'generated/features';
 import { entries, isObject, isUndefined, mix } from 'src/utils/object';
-import { cReduce, isArray } from 'src/utils/array';
+import { isArray } from 'src/utils/array/isArray';
+import { cReduce } from 'src/utils/array/reduce';
 import { flags } from '@inject';
 import { toBoolean } from 'src/utils/boolean';
 import type { CounterOption, CounterOptions } from 'src/utils/counterOptions';
-import { parseDecimalInt } from 'src/utils/number';
+import { parseDecimalInt } from 'src/utils/number/number';
 import { DEFAULT_ID, DEFAULT_COUNTER_TYPE } from './const';
 import type { OptionInitializerMap, OptionsKeysMaps } from './types';
 

@@ -10,15 +10,17 @@ import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { USER_ID_PARAM } from 'src/providers/setUserID/const';
 import { USER_PARAMS_KEY } from 'src/providers/userParams/const';
 import { getSender } from 'src/sender';
-import { cReduce, includes, isArray } from 'src/utils/array';
-import { browserInfo } from 'src/utils/browserInfo';
+import { isArray } from 'src/utils/array/isArray';
+import { includes } from 'src/utils/array/includes';
+import { cReduce } from 'src/utils/array/reduce';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { noop } from 'src/utils/function';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { noop } from 'src/utils/function/noop';
 import { argsToArray } from 'src/utils/function/args';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
 import { isCounterSilent } from 'src/utils/isCounterSilent';
-import { getLocation } from 'src/utils/location';
+import { getLocation } from 'src/utils/location/location';
 import {
     cKeys,
     genPath,

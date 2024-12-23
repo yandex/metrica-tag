@@ -1,7 +1,7 @@
 import { TITLE_BR_KEY } from 'src/api/watch';
 import type { MiddlewareGetter } from 'src/middleware/types';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import type { BrowserInfo } from 'src/utils/browserInfo';
+import type { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
 import { getPath } from 'src/utils/object';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction';
 import { config } from 'src/config';

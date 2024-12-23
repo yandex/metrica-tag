@@ -6,13 +6,14 @@ import {
     getCounterKey,
     Params,
 } from 'src/utils/counterOptions';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import * as storage from 'src/storage/global';
+import * as storage from 'src/storage/global/getGlobal';
 import * as config from 'src/config';
 import * as json from 'src/utils/json';
 import * as debug from 'src/utils/debugEvents';
-import { getRange } from 'src/utils/array';
+import { getRange } from 'src/utils/array/utils';
+import type { GlobalStorage } from 'src/storage/global/global';
 import { paramsMiddleware } from '../params';
 
 describe('params middleware', () => {
@@ -92,7 +93,7 @@ describe('params middleware', () => {
                     },
                 };
             },
-        } as unknown as storage.GlobalStorage);
+        } as unknown as GlobalStorage);
         const bigParams = Array(getRange(100)).reduce(
             (acc, x, i) => Object.assign(acc, { [i]: params }),
             {} as Params,

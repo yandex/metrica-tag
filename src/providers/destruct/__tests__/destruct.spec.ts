@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as globalStorage from 'src/storage/global';
+import * as globalStorage from 'src/storage/global/getGlobal';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { destruct } from '../destruct';
 

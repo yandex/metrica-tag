@@ -1,27 +1,28 @@
 import { ctxPath, getPath, mix } from 'src/utils/object';
-import { dataLayerObserver } from 'src/utils/dataLayerObserver';
+import { dataLayerObserver } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import {
     CounterOptions,
     getCounterKey,
     isRsyaCounter,
 } from 'src/utils/counterOptions';
-import { getCounterInstance } from 'src/utils/counter';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { CounterObject } from 'src/utils/counter/type';
 import { config } from 'src/config';
 import { yaNamespace } from 'src/const';
-import {
-    memo,
-    constructObject,
-    bindThisForMethod,
-    pipe,
-    curry2,
-} from 'src/utils/function';
-import { arrayMerge, cForEach, cReduce, toArray } from 'src/utils/array';
-import { parseDecimalInt } from 'src/utils/number';
+import { memo } from 'src/utils/function/memo';
+import { arrayMerge } from 'src/utils/array/merge';
+import { toArray } from 'src/utils/array/utils';
+import { cForEach } from 'src/utils/array/map';
+import { cReduce } from 'src/utils/array/reduce';
+import { parseDecimalInt } from 'src/utils/number/number';
 import { stringIndexOf } from 'src/utils/string';
-import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
-import { consoleLog } from '../debugConsole/debugConsole';
+import { constructObject } from 'src/utils/function/construct';
+import { bindThisForMethod } from 'src/utils/function/bind/bind';
+import { pipe } from 'src/utils/function/pipe';
+import { curry2 } from 'src/utils/function/curry';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
+import { consoleLog } from '../debugConsole/debugConsole';
+import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
 
 export const STACK_FN_NAME = 'ym';
 export const STACK_DATA_LAYER_NAME = 'a';

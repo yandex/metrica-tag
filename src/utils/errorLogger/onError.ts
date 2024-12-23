@@ -1,5 +1,8 @@
-import { cForEach } from '../array';
-import { call, ctxBindArgs, firstArg, pipe } from '../function';
+import { cForEach } from '../array/map';
+import { ctxBindArgs } from '../function/bind/ctxBind';
+import { firstArg } from '../function/identity';
+import { pipe } from '../function/pipe';
+import { call } from '../function/utils';
 
 export type OnErrorCallback = (
     namespace: string,

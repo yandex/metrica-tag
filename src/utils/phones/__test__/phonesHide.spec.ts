@@ -2,11 +2,11 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { hidePhones, HOVER_TIMEOUT } from 'src/utils/phones';
 import { CounterOptions } from 'src/utils/counterOptions';
-import * as counter from 'src/utils/counter';
-import * as defer from 'src/utils/defer';
+import * as counter from 'src/utils/counter/getInstance';
+import * as defer from 'src/utils/defer/defer';
 import type { EventSetter } from 'src/utils/events/types';
 import * as phonesDom from 'src/utils/phones/phonesDom';
-import * as eventUtils from 'src/utils/events';
+import * as eventUtils from 'src/utils/events/events';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import * as phonesHide from '../phonesHide';
 

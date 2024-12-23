@@ -1,7 +1,7 @@
 /* eslint no-bitwise: 0 */
 // в этом файле битовые операции нужны
 
-import { arrayJoin } from '../array';
+import { arrayJoin } from '../array/join';
 
 const Base64 = {
     abc: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',

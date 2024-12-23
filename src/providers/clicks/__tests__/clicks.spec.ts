@@ -9,18 +9,17 @@ import {
 } from 'src/api/watch';
 import { mix } from 'src/utils/object';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import * as locationUtils from 'src/utils/location';
-import * as domUtils from 'src/utils/dom';
+import * as locationUtils from 'src/utils/location/location';
+import * as domUtils from 'src/utils/dom/targetLink';
 import * as getCountersUtils from 'src/providers/getCounters/getCounters';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
 import * as debugConsoleUtils from 'src/providers/debugConsole/debugConsole';
 import * as senderUtils from 'src/sender';
 import * as hidUtils from 'src/middleware/watchSyncFlags/brinfoFlags/hid';
 import { syncPromise } from 'src/__tests__/utils/syncPromise';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import type { GetSenderType } from 'src/sender/types';
-import type { GlobalStorage } from 'src/storage/global';
-import type { LocalStorage } from 'src/storage/localStorage';
+import type { GlobalStorage } from 'src/storage/global/global';
+import type { LocalStorage } from 'src/storage/localStorage/localStorage';
 import { LINK_CLICK_CONSOLE_MESSAGE } from 'src/providers/consoleRenderer/dictionary';
 import {
     sendClickLink,
@@ -652,21 +651,13 @@ describe('clicks.ts', () => {
         };
 
         beforeEach(() => {
-            sandbox
-                .stub(errorLoggerUtils, 'errorLogger')
-                .callsFake(
-                    (...args: unknown[]) =>
-                        args[
-                            args.length - 1
-                        ] as typeof errorLoggerUtils.errorLogger,
-                );
             counterStateStub = sandbox.stub();
             sandbox
                 .stub(getCountersUtils, 'counterStateSetter')
                 .returns(counterStateStub);
             sandbox
                 .stub(senderUtils, 'getSender')
-                .returns((() => Promise.resolve({})) as ReturnType<
+                .returns((() => Promise.resolve()) as ReturnType<
                     typeof senderUtils.getSender
                 >);
             sandbox.stub(hidUtils, 'getHid').returns(1);

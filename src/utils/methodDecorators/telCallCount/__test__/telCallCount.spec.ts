@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as gs from 'src/storage/global';
-import type { GlobalStorage } from 'src/storage/global';
+import * as gs from 'src/storage/global/getGlobal';
+import type { GlobalStorage } from 'src/storage/global/global';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { telemetryCallCountDecorator } from '../telCallCount';
 import { METHODS_TELEMETRY_GLOBAL_STORAGE_KEY } from '../const';

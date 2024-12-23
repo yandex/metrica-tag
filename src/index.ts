@@ -10,24 +10,17 @@ import {
     getCounterKey,
     normalizeOriginalOptions,
 } from 'src/utils/counterOptions';
-import {
-    bindArgs,
-    firstArg,
-    pipe,
-    call,
-    ctxBindArgs,
-    curry2SwapArgs,
-} from 'src/utils/function';
+import { bindArgs, ctxBindArgs } from 'src/utils/function/bind';
 import type { AnyFunc } from 'src/utils/function/types';
 import { entries, isFunction, isObject } from 'src/utils/object';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { HIT_PARAMS_KEY, LAST_REFERRER_KEY } from 'src/storage/global/consts';
 import { useHitProvider } from 'src/providers/hit';
 import { callbackInit } from 'src/providers/callbackInit';
-import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter';
+import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
 import { CounterObject } from 'src/utils/counter/type';
 import { consoleLog } from 'src/providers/debugConsole/debugConsole';
-import { iterateTaskWithConstraints, runAsync } from 'src/utils/async';
+import { runAsync } from 'src/utils/async/async';
 import {
     TRACK_HASH_FEATURE,
     TELEMETRY_FEATURE,
@@ -51,8 +44,16 @@ import {
 } from 'src/providersEntrypoint';
 import { initImports } from 'generated/init';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
+import { createError } from 'src/utils/errorLogger/createError';
+import { iterateTaskWithConstraints } from 'src/utils/async/helpers';
+import { firstArg } from 'src/utils/function/identity';
+import { curry2SwapArgs } from 'src/utils/function/curry';
+import { call } from 'src/utils/function/utils';
+import { pipe } from 'src/utils/function/pipe';
+import { cForEach, cMap } from 'src/utils/array/map';
 import { METHOD_DESTRUCT } from './providers/destruct/const';
-import { createError, errorLogger } from './utils/errorLogger';
+import { errorLogger } from './utils/errorLogger/errorLogger';
 import { destruct } from './providers/destruct';
 import { selfReturnDecorator } from './utils/methodDecorators/selfReturn';
 import { errorsDecorator } from './utils/methodDecorators/errors';
@@ -60,12 +61,10 @@ import { decoratorPipe } from './utils/methodDecorators/decoratorPipe';
 import { destructingDecorator } from './utils/methodDecorators/destructing';
 
 import { throwKnownError } from './utils/errorLogger/knownError';
-import { cForEach, cMap } from './utils/array';
 import { throwFunction } from './utils/errorLogger/throwFunction';
 import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
-import { dispatchDebuggerEvent } from './utils/debugEvents';
 import { getCounterOptionsState } from './utils/counterOptions/counterOptionsStore';
 import { setTurboInfo } from './utils/turboParams/turboParams';
 
@@ -232,7 +231,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
                     ASYNC_PROVIDERS_MAX_EXEC_TIME,
                     'a.i',
                 ],
-                iterateTaskWithConstraints,
+                iterateTaskWithConstraints<ProviderFunction>,
             ),
         );
 

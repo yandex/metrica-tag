@@ -1,22 +1,15 @@
 import { getHid } from 'src/middleware/watchSyncFlags/brinfoFlags/hid';
-import { arrayJoin, cFilter, cForEach, cMap, isArray } from 'src/utils/array';
-import { isIframe, isTP } from 'src/utils/browser';
+import { isArray } from 'src/utils/array/isArray';
+import { cFilter } from 'src/utils/array/filter';
+import { arrayJoin } from 'src/utils/array/join';
+import { cForEach, cMap } from 'src/utils/array/map';
+import { isIframe, isTP } from 'src/utils/browser/browser';
 import { getUid } from 'src/utils/uid';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { setDefer } from 'src/utils/defer';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { cEvent, emitter, Emitter } from 'src/utils/events';
-import {
-    bindArg,
-    bindArgs,
-    firstArg,
-    getNativeFunction,
-    isNativeFunction,
-    memo,
-    noop,
-    pipe,
-    secondArg,
-} from 'src/utils/function';
+import { setDefer } from 'src/utils/defer/defer';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { cEvent } from 'src/utils/events/events';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { parse, stringify } from 'src/utils/json';
 import {
     cKeys,
@@ -27,10 +20,16 @@ import {
     isNull,
     mix,
 } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
-import { taskFork } from '../async';
+import { getMs, TimeOne } from 'src/utils/time/time';
+import { memo } from 'src/utils/function/memo';
+import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
+import { noop } from 'src/utils/function/noop';
+import { pipe } from 'src/utils/function/pipe';
+import { firstArg, secondArg } from 'src/utils/function/identity';
+import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
+import { taskFork } from '../async/task';
 import { waitForBodyTask } from '../dom/waitForBody';
-import { parseDecimalInt } from '../number';
+import { parseDecimalInt } from '../number/number';
 import {
     ConnectorState,
     CounterInfo,
@@ -58,6 +57,7 @@ import {
     OUT_DIRECTION,
     SPLITTER,
 } from './const';
+import { Emitter, emitter } from '../events/emitter';
 
 export const getIframeState = memo(
     (ctx: Window): ConnectorState => ({
@@ -70,16 +70,16 @@ export const getIframeState = memo(
 export const checkIframe = ctxPath('postMessage');
 export const genMessage =
     (ctx: Window, sigin: CounterInfo) =>
-    (metaList: string[], data: Record<string, any>): Message => {
+    (metaList: (string | number)[], data: Record<string, any>): Message => {
         const meta: MessageMeta = {
             date: TimeOne(ctx)(getMs),
             key: ctx.Math.random(),
             dir: OUT_DIRECTION,
         };
         if (metaList.length) {
-            meta.date = parseDecimalInt(metaList[0]);
-            meta.key = parseFloat(metaList[1]);
-            meta.dir = parseDecimalInt(metaList[2]) as 0 | 1;
+            meta.date = parseDecimalInt(metaList[0] as string);
+            meta.key = parseFloat(metaList[1] as string);
+            meta.dir = parseDecimalInt(metaList[2] as string) as 0 | 1;
         }
         mix(data, sigin);
         const out = {

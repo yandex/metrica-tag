@@ -1,8 +1,9 @@
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { memo, secondArg } from 'src/utils/function';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { memo } from 'src/utils/function/memo';
+import { secondArg } from 'src/utils/function/identity';
 import { DebugConsole } from 'src/providers/debugConsole/debugConsole';
 import { debugEnabled } from 'src/providers/debugConsole/debugEnabled';
-import { dataLayerObserver } from 'src/utils/dataLayerObserver';
+import { dataLayerObserver } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import { nonNativeFunctionsList } from './report';
 import { NON_NATIVE_FUNCTION_WARNING_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 

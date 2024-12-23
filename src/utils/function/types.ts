@@ -9,24 +9,59 @@ export type FuncRest<F extends AnyFunc, R = ReturnType<F>> = (
     ...args: ParamsTail<F>
 ) => R; // проверка для generic ф-ций
 
-export type Bind = <
+type FirstAsTuple<T extends any[]> = T extends [any, ...infer R]
+    ? T extends [...infer F, ...R]
+        ? F
+        : never
+    : never;
+
+export type FirstNArg<FN, Result extends [] = []> = FN extends (
+    ...args: infer Args
+) => any
+    ? Result | Args['length'] extends 0 | 1
+        ? never
+        : Args extends [any, ...infer Tail]
+        ?
+              | []
+              | FirstAsTuple<Args>
+              | [
+                    ...FirstAsTuple<Args>,
+                    ...FirstNArg<(...args: Tail) => ReturnType<FN>>,
+                ]
+        : any[]
+    : never;
+
+export type FirstArg<FN> = Extract<FirstNArg<FN>, [any]>;
+
+export type ReturnBindFunc<
     FN extends AnyFunc,
-    C extends any,
-    F extends any[],
-    V extends Parameters<FN>,
->(
+    Args extends FirstNArg<FN>,
+> = FN extends (...args: [...Args, ...infer T]) => ReturnType<FN>
+    ? (...args: T) => ReturnType<FN>
+    : never;
+
+export type Bind = <FN extends AnyFunc, C, Args extends FirstNArg<FN>>(
     f: FN,
     ctx: C,
-    ...bindArgs: F
-) => (...callArgs: Tuple.Diff<V, F>) => ReturnType<FN>;
+    ...bindArgs: Args
+) => ReturnBindFunc<FN, Args>;
 
-export type BindArg = {
-    <F extends AnyFunc>(firstArg: ParamsFirst<F>, fn: F): FuncRest<F>;
-    (firstArg: unknown): <F extends AnyFunc>(fn: F) => FuncRest<F>;
-};
+/**
+ * FIXME: should be like an example below
+ * export type BindArg = <
+    FN extends AnyFunc,
+    Arg extends Parameters<FN>[0]
+>(
+    bindArg: Arg,
+    f: FN,
+) => ReturnBindFunc<FN, [Arg]>
+ */
+export type BindArg = (bindArg: any, f: AnyFunc) => any;
 
-export type SliceArgs<F extends AnyFunc, L extends Partial<Parameters<F>>> =
-    SliceFrom<Parameters<F>, Any.Cast<L, any[]>>;
+export type SliceArgs<
+    F extends AnyFunc,
+    L extends Partial<Parameters<F>>,
+> = SliceFrom<Parameters<F>, Any.Cast<L, any[]>>;
 
 export type BindArgs = {
     <A extends Partial<Parameters<F>>, F extends AnyFunc>(args: A, fn: F): (
@@ -47,4 +82,9 @@ export type CallUserCallback = (
 export type BindThisForMethod = {
     <O, K extends keyof O = keyof O>(name: K, obj: O): O[K];
     <S extends string>(name: S): <O extends Record<S, any>>(obj: O) => O[S];
+};
+
+export type ObjectsWithMethods = Record<string, any>;
+export type MethodsOf<T> = {
+    [K in keyof T as T[K] extends AnyFunc ? K : never]: T[K];
 };

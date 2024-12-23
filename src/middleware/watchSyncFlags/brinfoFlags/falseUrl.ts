@@ -1,6 +1,6 @@
 import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import { getLocation } from 'src/utils/location';
+import { getLocation } from 'src/utils/location/location';
 import { getPath } from 'src/utils/object';
 import { CounterOptions } from 'src/utils/counterOptions';
 

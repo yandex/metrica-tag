@@ -1,15 +1,17 @@
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
-import { cEvent } from 'src/utils/events';
-import { bindArgs, pipe } from 'src/utils/function';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
+import { cEvent } from 'src/utils/events/events';
+import { bindArgs } from 'src/utils/function/bind';
+import { pipe } from 'src/utils/function/pipe';
 import { getPath, isNil } from 'src/utils/object';
 import { CounterOptions } from 'src/utils/counterOptions';
 import { destructingDecorator } from 'src/utils/methodDecorators/destructing';
-import { CounterSettings, getCounterSettings } from 'src/utils/counterSettings';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { useGoal } from 'src/providers/goal/goal';
 import { stringify } from 'src/utils/querystring';
 import { closestButton, getButtonData } from 'src/utils/dom/button';
 import { toZeroOrOne } from 'src/utils/boolean';
+import { CounterSettings } from 'src/utils/counterSettings/types';
 import { METHOD_NAME_GOAL } from '../goal/const';
 import { INTERNAL_PARAMS_KEY, IS_TRUSTED_EVENT_KEY } from '../params/const';
 import {

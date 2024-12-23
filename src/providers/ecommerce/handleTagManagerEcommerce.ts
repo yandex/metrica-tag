@@ -1,10 +1,13 @@
-import { cFilter, cReduce, ctxIncludes, isEmptyArray } from 'src/utils/array';
+import { ctxIncludes } from 'src/utils/array/includes';
+import { cFilter } from 'src/utils/array/filter';
+import { cReduce } from 'src/utils/array/reduce';
 import {
     dataGTagFormatToEcommerceFormat,
     ECOMMERCE_ALLOWED_EVENTS,
 } from 'src/utils/ecommerce';
 import { cKeys, getPath, isObject } from 'src/utils/object';
 import { isString } from 'src/utils/string';
+import { isEmptyArray } from 'src/utils/array/utils';
 
 /**
  * Handle direct pushes to datalayer with event name set as a separate property. E.g.:

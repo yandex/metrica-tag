@@ -1,7 +1,7 @@
 import { parse } from 'src/utils/querystring';
-import { memo } from 'src/utils/function';
-import { getLocation } from 'src/utils/location';
-import { parseDecimalInt } from 'src/utils/number';
+import { memo } from 'src/utils/function/memo';
+import { getLocation } from 'src/utils/location/location';
+import { parseDecimalInt } from 'src/utils/number/number';
 
 export const CHECK_URL_PARAM = '_ym_status-check';
 export const LANG_URL_PARAM = '_ym_lang';

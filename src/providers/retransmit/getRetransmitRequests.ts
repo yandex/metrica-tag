@@ -1,12 +1,13 @@
 import { flags } from '@inject';
 import { TELEMETRY_FEATURE } from 'generated/features';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/watch';
-import { dirtyReduce, cSome } from 'src/utils/array';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { cont } from 'src/utils/function';
-import { parseDecimalInt } from 'src/utils/number';
+import { dirtyReduce } from 'src/utils/array/reduce';
+import { cSome } from 'src/utils/array/some';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { cont } from 'src/utils/function/curry';
+import { parseDecimalInt } from 'src/utils/number/number';
 import { entries } from 'src/utils/object';
-import { TimeOne, getMs } from 'src/utils/time';
+import { TimeOne, getMs } from 'src/utils/time/time';
 import {
     RetransmitInfo,
     getRetransmitLsState,

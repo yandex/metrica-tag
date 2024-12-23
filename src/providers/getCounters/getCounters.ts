@@ -1,11 +1,13 @@
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { cKeys, mix } from 'src/utils/object';
-import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter';
-import { getGlobalStorage } from 'src/storage/global';
-import { pipe, bind, curry2, bindArgs } from 'src/utils/function';
-import { ctxMap } from 'src/utils/array';
+import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import { pipe } from 'src/utils/function/pipe';
+import { ctxMap } from 'src/utils/array/map';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { getVal, setVal, deleteVal } from 'src/storage/closureStorage';
+import { curry2 } from 'src/utils/function/curry';
+import { bind, bindArgs } from 'src/utils/function/bind/bind';
 import {
     GetCountersMethod,
     CounterInfo,

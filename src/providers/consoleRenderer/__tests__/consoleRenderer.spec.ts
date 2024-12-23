@@ -3,8 +3,8 @@ import * as chai from 'chai';
 import * as eventsUtils from 'src/utils/debugEvents';
 import { DebuggerEvent } from 'src/utils/debugEvents/types';
 import { useConsoleRendererRaw } from '../consoleRenderer';
-import * as observerUtils from '../../../utils/dataLayerObserver';
-import * as consoleUtils from '../../../utils/console';
+import * as observerUtils from '../../../utils/dataLayerObserver/dataLayerObserver';
+import * as consoleUtils from '../../../utils/console/console';
 import {
     CONSOLE_DICTIONARY,
     EMPTY_LINK_CONSOLE_MESSAGE,

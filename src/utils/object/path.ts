@@ -4,14 +4,16 @@ import { curry2SwapArgs } from '../function/curry';
 import { has } from './has';
 
 // TODO Add enumerable entities support (for instance arrayLikeObject[1])
-type GetPath<Value, Path extends string> =
-    Path extends `${infer Head}.${infer Tail}`
-        ? Head extends keyof Value
-            ? GetPath<Exclude<Value[Head], undefined>, Tail>
-            : null
-        : Path extends keyof Value
-        ? Exclude<Value[Path], undefined>
-        : null;
+type GetPath<
+    Value,
+    Path extends string,
+> = Path extends `${infer Head}.${infer Tail}`
+    ? Head extends keyof Value
+        ? GetPath<Exclude<Value[Head], undefined>, Tail>
+        : null
+    : Path extends keyof Value
+    ? Exclude<Value[Path], undefined>
+    : null;
 
 /**
  * ВНИМАНИЕ! Использовать только для нативных функций/объектов или внешних данных

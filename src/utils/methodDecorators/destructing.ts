@@ -1,8 +1,8 @@
-import { getCounterInstance } from 'src/utils/counter';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { argsToArray } from 'src/utils/function/args';
 import type { Decorator } from './types';
 
-export const destructingDecorator: Decorator<undefined> = (
+export const destructingDecorator: Decorator<unknown> = (
     ctx,
     counterOptions,
     methodName,

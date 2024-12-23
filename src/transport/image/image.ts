@@ -1,16 +1,18 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
 import { CheckTransport, InternalTransportOptions } from 'src/transport/types';
 import { mix } from 'src/utils/object';
-import { PolyPromise } from 'src/utils';
-import { clearDefer, setDeferBase } from 'src/utils/defer/base';
-import { bindArg, bindArgs, pipe } from 'src/utils/function';
-import { isSafari } from 'src/utils/browser';
+import { PolyPromise } from 'src/utils/promise';
+import { setDeferBase } from 'src/utils/defer/base';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
+import { isSafari } from 'src/utils/browser/browser';
 import {
     getElemCreateFunction,
     removeNode,
     getRootElement,
-} from 'src/utils/dom';
+} from 'src/utils/dom/dom';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
+import { clearDefer } from 'src/utils/defer/defer';
+import { pipe } from 'src/utils/function/pipe';
 import { getSrcUrl } from '../watchModes';
 
 const request = (

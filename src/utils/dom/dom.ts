@@ -1,16 +1,17 @@
-import {
-    pipe,
-    bindArg,
-    memo,
-    equal,
-    bindThisForMethodTest,
-} from 'src/utils/function';
+import { pipe } from 'src/utils/function/pipe';
 import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
 import { ctxPath, isNil, getPath, isFunction } from 'src/utils/object';
-import { toArray, cIndexOf, cFind, cSome } from 'src/utils/array';
+import { cSome } from 'src/utils/array/some';
+import { cIndexOf } from 'src/utils/array/indexOf';
+import { toArray } from 'src/utils/array/utils';
+import { cFind } from 'src/utils/array/find';
 import { isString, convertToString } from 'src/utils/string';
-import { isIE } from 'src/utils/browser';
+import { isIE } from 'src/utils/browser/browser';
+import { AnyFunc } from 'src/utils/function/types';
+import { memo } from 'src/utils/function/memo';
+import { equal } from 'src/utils/function/curry';
+import { bindArg, bindThisForMethodTest } from '../function/bind/bind';
 
 export const isTextNode = (node?: Node) => {
     if (isNil(node)) {
@@ -50,7 +51,10 @@ export const getElemCreateFunction = memo<
 >(pipe(ctxPath('document'), bindArg('createElement', getNativeFunction)));
 
 export const getElemCreateNSFunction = memo(
-    pipe(ctxPath('document'), bindArg('createElementNS', getNativeFunction)),
+    pipe(
+        ctxPath('document'),
+        bindArg('createElementNS', getNativeFunction),
+    ) as AnyFunc,
 );
 
 export const removeNode = (node: Node) => {
@@ -245,11 +249,13 @@ export const getBoundingClientRect = (
     try {
         return element.getBoundingClientRect && element.getBoundingClientRect();
     } catch (error) {
+        const getBoundingError = error as Record<string, number>;
         if (
-            typeof error === 'object' &&
-            error !== null &&
+            typeof getBoundingError === 'object' &&
+            getBoundingError !== null &&
             // eslint-disable-next-line no-bitwise
-            (error.number && error.number & 0xffff) === 16389
+            (getBoundingError.number && getBoundingError.number & 0xffff) ===
+                16389
         ) {
             return {
                 top: 0,
@@ -341,15 +347,17 @@ export const getNodeName = (node: HTMLElement | Element | null) => {
 type IsInputElementFn = (
     element: HTMLElement | Element,
 ) => element is HTMLInputElement;
-const equalInput: (arg?: string) => boolean =
-    equal<string | undefined>('INPUT');
+const equalInput: (arg?: string) => boolean = equal<string | undefined>(
+    'INPUT',
+);
 export const isInputElement = pipe(getNodeName, equalInput) as IsInputElementFn;
 
 type IsTextAreaElementFn = (
     element: HTMLElement | Element,
 ) => element is HTMLTextAreaElement;
-const equalTextarea: (arg?: string) => boolean =
-    equal<string | undefined>('TEXTAREA');
+const equalTextarea: (arg?: string) => boolean = equal<string | undefined>(
+    'TEXTAREA',
+);
 export const isTextAreaElement = pipe(
     getNodeName,
     equalTextarea,
@@ -358,8 +366,9 @@ export const isTextAreaElement = pipe(
 type IsSelectElementFn = (
     element: HTMLElement | Element,
 ) => element is HTMLSelectElement;
-const equalSelect: (arg?: string) => boolean =
-    equal<string | undefined>('SELECT');
+const equalSelect: (arg?: string) => boolean = equal<string | undefined>(
+    'SELECT',
+);
 export const isSelectElement = pipe(
     getNodeName,
     equalSelect,

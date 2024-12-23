@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as counter from 'src/utils/counter';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
+import * as counter from 'src/utils/counter/getInstance';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
 import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import { rawSetUserID as setUserID } from '../setUserID';
 
 describe('user params', () => {

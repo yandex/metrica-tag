@@ -1,24 +1,26 @@
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
-import { getCounterInstance } from 'src/utils/counter';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { bindArgs, callFirstArgument } from 'src/utils/function';
-import { DataLayerObserverObject } from 'src/utils/dataLayerObserver';
+import { bindArgs } from 'src/utils/function/bind';
+import { DataLayerObserverObject } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import {
     waitForDataLayer,
     ECOMMERCE_SETTINGS_SOURCE_FLAG,
 } from 'src/utils/ecommerce';
-import { cForEach } from 'src/utils/array';
+import { cForEach } from 'src/utils/array/map';
 import { getPath } from 'src/utils/object';
-import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
 import {
     INTERNAL_PARAMS_KEY,
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
-import { getCounterSettings } from 'src/utils/counterSettings';
+import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
 import { isString } from 'src/utils/string';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
+import { AnyFunc } from 'src/utils/function/types';
+import { callFirstArgument } from 'src/utils/function/utils';
 import {
     handleTagManagerEcommerce,
     handleEcommerce,
@@ -82,7 +84,7 @@ const observeEcommerce = (
         waitForDataLayer(ctx, dataLayerPath, onObserverStart),
         stopObserver,
     ];
-    return bindArgs([callFirstArgument, unsubscribeMethods], cForEach);
+    return bindArgs([callFirstArgument, unsubscribeMethods], cForEach<AnyFunc>);
 };
 
 export const ecommerce = ctxErrorLogger(

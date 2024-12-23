@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import * as chai from 'chai';
 import { TITLE_BR_KEY } from 'src/api/watch';
-import { browserInfo, setInSerialized } from '..';
+import { browserInfo, setInSerialized } from '../browserInfo';
 
 describe('BrowserInfo', () => {
     it('inits', () => {

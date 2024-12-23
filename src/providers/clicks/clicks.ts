@@ -5,22 +5,12 @@ import {
     IS_EXTERNAL_LINK_BR_KEY,
     IS_TRUSTED_EVENT_BR_KEY,
 } from 'src/api/watch';
-import { hasClass, getTargetLink } from 'src/utils/dom';
-import { getGlobalStorage } from 'src/storage/global';
+import { hasClass } from 'src/utils/dom/dom';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { escapeForRegExp, isString } from 'src/utils/string';
 import { trimText } from 'src/utils/string/remove';
 import { ctxPath, getPath } from 'src/utils/object';
-import {
-    noop,
-    bindArg,
-    pipe,
-    call,
-    bindThisForMethod,
-    firstArg,
-    bindArgs,
-    curry2,
-    CallWithoutArguments,
-} from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
 import {
     CounterOptions,
@@ -28,16 +18,17 @@ import {
     getCounterKey,
 } from 'src/utils/counterOptions';
 import { getSender } from 'src/sender';
-import { getLocation, isSameDomain } from 'src/utils/location';
+import { getLocation, isSameDomain } from 'src/utils/location/location';
 import { parseUrl } from 'src/utils/url';
-import { cMap, cForEach, arrayJoin } from 'src/utils/array';
+import { arrayJoin } from 'src/utils/array/join';
+import { cMap, cForEach } from 'src/utils/array/map';
 import { UNSUBSCRIBE_PROPERTY } from 'src/providers';
 
-import { counterLocalStorage } from 'src/storage/localStorage';
-import { cEvent } from 'src/utils/events';
-import { browserInfo } from 'src/utils/browserInfo';
+import { counterLocalStorage } from 'src/storage/localStorage/localStorage';
+import { cEvent } from 'src/utils/events/events';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { SenderInfo } from 'src/sender/SenderInfo';
-import { errorLogger } from 'src/utils/errorLogger';
+import { errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { getHid } from 'src/middleware/watchSyncFlags/brinfoFlags/hid';
 import {
     counterStateGetter,
@@ -52,6 +43,30 @@ import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { toZeroOrOne } from 'src/utils/boolean';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
+import { getTargetLink } from 'src/utils/dom/targetLink';
+import { curry2 } from 'src/utils/function/curry';
+import { pipe } from 'src/utils/function/pipe';
+import { firstArg } from 'src/utils/function/identity';
+import {
+    bindArg,
+    bindArgs,
+    bindThisForMethod,
+} from 'src/utils/function/bind/bind';
+import { CallWithoutArguments, call } from 'src/utils/function/utils';
+import {
+    EMPTY_LINK_CONSOLE_MESSAGE,
+    LINK_CLICK_CONSOLE_MESSAGE,
+} from '../consoleRenderer/dictionary';
+import { textFromLink } from './getTextFromLink';
+import type {
+    SendOptions,
+    ClickHandlerOptions,
+    ClickProviderParams,
+    UserOptions,
+    TrackLinks,
+    ExternalLinkClickHandler,
+    AddFileExtensionHandler,
+} from './types';
 import {
     INTERNAL_LINK_STORAGE_KEY,
     MAX_LEN_INTERNAL_LINK,
@@ -63,20 +78,6 @@ import {
     METHOD_NAME_TRACK_LINKS,
     LINK_CLICK_HIT_PROVIDER,
 } from './const';
-import type {
-    SendOptions,
-    ClickHandlerOptions,
-    ClickProviderParams,
-    UserOptions,
-    TrackLinks,
-    ExternalLinkClickHandler,
-    AddFileExtensionHandler,
-} from './types';
-import { textFromLink } from './getTextFromLink';
-import {
-    EMPTY_LINK_CONSOLE_MESSAGE,
-    LINK_CLICK_CONSOLE_MESSAGE,
-} from '../consoleRenderer/dictionary';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {

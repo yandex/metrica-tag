@@ -1,7 +1,7 @@
 import { IS_DESKTOP_BR_KEY } from 'src/api/watch';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { toZeroOrOne } from 'src/utils/boolean';
-import { errorLogger } from 'src/utils/errorLogger';
+import { errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { getPath, isUndefined } from 'src/utils/object';
 import { BRINFO_LOGGER_PREFIX } from '../const';
 

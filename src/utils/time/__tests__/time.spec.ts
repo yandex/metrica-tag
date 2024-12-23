@@ -1,4 +1,4 @@
-import * as eventUtils from 'src/utils/events';
+import * as eventUtils from 'src/utils/events/events';
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import {

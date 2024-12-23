@@ -1,11 +1,14 @@
 import { flags } from '@inject';
 import { POLYFILLS_ES6_FEATURE, POLYFILLS_FEATURE } from 'generated/features';
-import { mapPoly, reducePoly } from '../array';
-import { bindArg, pipe, toNativeOrFalse } from '../function';
+import { mapPoly } from '../array/map';
+import { bindArg } from '../function/bind';
 import { isUndefined } from './assertions';
 import { has } from './has';
 import { ctxPath } from './path';
 import { Entries, Keys } from './types';
+import { toNativeOrFalse } from '../function/isNativeFunction';
+import { pipe } from '../function/pipe';
+import { reducePoly } from '../array/reduce';
 
 export const { toString: cachedToString } = Object.prototype;
 
@@ -78,10 +81,10 @@ export const cKeys: Keys = flags[POLYFILLS_FEATURE]
 
 const nativeValues = toNativeOrFalse(Object.values, 'values');
 
-export const valuesPoly: typeof Object.values = pipe(
+export const valuesPoly = pipe(
     entriesPoly,
     bindArg(ctxPath('1'), mapPoly),
-);
+) as typeof Object.values;
 
 const callNativeOrPolyValues = nativeValues
     ? <T>(obj: Record<string, T>) => nativeValues(obj)

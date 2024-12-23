@@ -1,7 +1,8 @@
 import { flags } from '@inject';
 import { POLYFILLS_FEATURE } from 'generated/features';
-import { curry2, toNativeOrFalse } from '../function';
+import { curry2 } from '../function/curry';
 import { Join } from './types';
+import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 
 export const joinPoly: Join = (separator, array) => {
     let result = '';

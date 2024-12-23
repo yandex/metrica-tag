@@ -1,6 +1,6 @@
 import { getPath } from 'src/utils/object';
 import { walkTree } from 'src/utils/treeWalker';
-import { arrayJoin } from '../array';
+import { arrayJoin } from '../array/join';
 import { trimText } from '../string/remove';
 
 export const getNodeText = (ctx: Window, elem: Element | null) => {

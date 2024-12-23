@@ -1,4 +1,4 @@
-import { bind } from 'src/utils/function';
+import { bind } from 'src/utils/function/bind';
 import { getPath, isFunction } from 'src/utils/object';
 
 type PerformanceNow = typeof window.performance.now;

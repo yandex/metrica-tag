@@ -2,21 +2,20 @@ import {
     INTERNAL_PARAMS_KEY,
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
-import { PolyPromise } from 'src/utils';
-import { cReduce, includes } from 'src/utils/array';
-import { getCounterInstance } from 'src/utils/counter';
+import { PolyPromise } from 'src/utils/promise';
+import { includes } from 'src/utils/array/includes';
+import { cReduce } from 'src/utils/array/reduce';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import {
-    createError,
-    ctxErrorLogger,
-    errorLogger,
-} from 'src/utils/errorLogger';
+import { ctxErrorLogger, errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { memo, noop } from 'src/utils/function';
-import { isHttps } from 'src/utils/location';
+import { memo } from 'src/utils/function/memo';
+import { isHttps } from 'src/utils/location/location';
 import { cKeys, entries, getPath, isObject } from 'src/utils/object';
 import { isString, stringIndexOf } from 'src/utils/string';
-import { isNumber } from 'src/utils/number';
+import { isNumber } from 'src/utils/number/number';
+import { createError } from 'src/utils/errorLogger/createError';
+import { noop } from 'src/utils/function/noop';
 import { consoleLog } from '../debugConsole/debugConsole';
 import { FIRST_PARTY_PARAMS_KEY } from './const';
 import type {

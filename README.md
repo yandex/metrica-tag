@@ -93,7 +93,7 @@ For test coverage the following packages are used:
 `sinon` is used for stubbing functions within tests. In order to provide the best TypeScript experience make sure all stubs are assigned proper types, but do not include too much detail about stubbed function. Prefer the code style as follows:
 ```typescript
 import * as sinon from 'sinon';
-import defer from 'src/utils/defer';
+import defer from 'src/utils/defer/defer';
 
 describe('test', () => {
     const sandbox = sinon.createSandbox();

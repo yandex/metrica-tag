@@ -1,5 +1,5 @@
-import { curry2 } from 'src/utils/function';
-import { getGlobalStorage } from 'src/storage/global';
+import { curry2 } from 'src/utils/function/curry';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 
 export const getGSFlag = curry2((flagName: string, ctx: Window) => {
     const gs = getGlobalStorage(ctx);

@@ -1,10 +1,10 @@
 import Sinon, * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as random from 'src/utils/number/random';
+import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
 import * as onError from '../onError';
 import * as decorator from '../executionTimeErrorDecorator';
 import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from '../consts';
-import * as func from '../../function';
 
 const { executionTimeErrorDecorator, getMainThreadBlockingTime } = decorator;
 describe('executionTimeErrorDecorator', () => {

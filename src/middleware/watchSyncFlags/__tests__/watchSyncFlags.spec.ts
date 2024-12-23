@@ -17,15 +17,16 @@ import {
     SCREEN_SIZE_BR_KEY,
     NOINDEX_BR_KEY,
 } from 'src/api/watch';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { config } from 'src/config';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import * as timeFlags from 'src/middleware/watchSyncFlags/brinfoFlags/timeFlags';
-import * as timeUtils from 'src/utils/time';
-import * as globalStorage from 'src/storage/global';
-import * as random from 'src/utils/number';
-import * as localStorageStorage from 'src/storage/localStorage';
+import * as timeUtils from 'src/utils/time/time';
+import * as globalStorage from 'src/storage/global/getGlobal';
+import * as random from 'src/utils/number/random';
+import * as localStorageStorage from 'src/storage/localStorage/localStorage';
 import { SenderInfo } from 'src/sender/SenderInfo';
+import type { GlobalStorage } from 'src/storage/global/global';
 import { REQUEST_NUMBER_KEY, LS_ID_KEY } from '../const';
 import { BRINFO_FLAG_GETTERS } from '../brinfoFlags';
 import { watchSyncFlags } from '..';
@@ -73,7 +74,7 @@ describe('watchSyncFlags', () => {
         globalStorageStub.returns({
             getVal: globalGetValStub,
             setVal: globalSetValStub,
-        } as unknown as globalStorage.GlobalStorage);
+        } as unknown as GlobalStorage);
         getRandomStub = sandbox.stub(random, 'getRandom');
         getRandomStub.returns(randomNumber);
         timeOneStub = sandbox.stub(timeUtils, 'TimeOne');

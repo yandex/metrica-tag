@@ -1,7 +1,14 @@
 import { isFunction } from 'src/utils/object/assertions';
 import { POLYFILLS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
-import type { Bind, AnyFunc, ParamsFirst, FuncRest } from '../types';
+import type {
+    Bind,
+    AnyFunc,
+    BindArg,
+    FirstNArg,
+    ObjectsWithMethods,
+    MethodsOf,
+} from '../types';
 import { argsToArray } from '../args';
 import { toNativeOrFalse } from '../isNativeFunction/toNativeOrFalse';
 
@@ -35,7 +42,7 @@ export const callPoly = (
 
 const nativeBind = toNativeOrFalse(Function.prototype.bind, 'bind');
 
-export const bindPoly: Bind = function b() {
+export const bindPoly = function b() {
     // eslint-disable-next-line prefer-rest-params
     const bindArgs = argsToArray(arguments);
     const [fn, ctx, ...topArgs] = bindArgs;
@@ -58,7 +65,8 @@ export const bindPoly: Bind = function b() {
         }
         return callPoly(fn, args);
     };
-};
+    // FIXME: Get rid of type assertions
+} as Bind;
 
 const callBind = function bindDecorator(bindFunc: AnyFunc): Bind {
     return function bindFunction() {
@@ -74,31 +82,23 @@ export const bind: Bind = flags[POLYFILLS_FEATURE]
     ? callNativeOrPoly
     : callBind(Function.prototype.bind);
 
-export const bindArgs = (args: any[], fn: AnyFunc) => {
-    return bind(fn, null, ...args);
-};
+export const bindArgs = <FN extends AnyFunc, Args extends FirstNArg<FN>>(
+    args: Args,
+    fn: FN,
+) => bind(fn, null, ...args);
 
-export const bindArg = <Func extends AnyFunc, P extends ParamsFirst<Func>>(
-    arg: P,
-    fn: Func,
-): FuncRest<Func> => {
-    return bind(fn, null, arg) as any;
-};
-
-type ObjectsWithMethods = Record<string, any> | string | RegExp;
-type MethodsOf<T> = {
-    [K in keyof T]: T[K] extends AnyFunc ? T[K] : never;
-};
+export const bindArg: BindArg = (arg, fn) => bind(fn, null, arg);
 
 export const bindThisForMethod = <
     O extends ObjectsWithMethods,
     S extends MethodsOf<O>,
-    M extends keyof MethodsOf<S>,
+    M extends keyof MethodsOf<O>,
 >(
     name: M,
     obj: S,
 ) => {
-    return bind(obj[name], obj);
+    // FIXME Get rid of type assertions
+    return bind(obj[name] as AnyFunc, obj);
 };
 
 export const bindThisForMethodTest = (a: RegExp) =>

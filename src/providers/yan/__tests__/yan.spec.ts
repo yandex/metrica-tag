@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as dataLayer from 'src/utils/dataLayerObserver';
+import * as dataLayer from 'src/utils/dataLayerObserver/dataLayerObserver';
 import * as iframe from 'src/utils/iframeConnector/iframeSender';
-import * as counter from 'src/utils/counter';
+import * as counter from 'src/utils/counter/getInstance';
 import {
     MessageData,
     IFRAME_MESSAGE_TYPE,

@@ -1,5 +1,6 @@
 import * as sinon from 'sinon';
-import * as functionUtils from 'src/utils/function';
+import * as isNativeFunctionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
+import * as getNativeFunctionUtils from 'src/utils/function/isNativeFunction/getNativeFunction';
 import * as flags from '@inject';
 import {
     DEBUG_FEATURE,
@@ -36,8 +37,8 @@ describe('errorLogger', () => {
         any
     >;
     let isNativeFunctionStub: sinon.SinonStub<
-        Parameters<typeof functionUtils.isNativeFunction>,
-        ReturnType<typeof functionUtils.isNativeFunction>
+        Parameters<typeof isNativeFunctionUtils.isNativeFunction>,
+        ReturnType<typeof isNativeFunctionUtils.isNativeFunction>
     >;
     let runCallbacksStub: sinon.SinonStub<
         [namespace: string, error: string, scope: string, stack?: string],
@@ -51,10 +52,13 @@ describe('errorLogger', () => {
             [LOCAL_FEATURE]: true,
             [PREPROD_FEATURE]: true,
         });
-        isNativeFunctionStub = sandbox.stub(functionUtils, 'isNativeFunction');
+        isNativeFunctionStub = sandbox.stub(
+            isNativeFunctionUtils,
+            'isNativeFunction',
+        );
         isNativeFunctionStub.returns(true);
         getNativeFunctionStub = sandbox.stub(
-            functionUtils,
+            getNativeFunctionUtils,
             'getNativeFunction',
         );
         getNativeFunctionStub.returns(123);

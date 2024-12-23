@@ -5,25 +5,30 @@ import {
     ReplaceElement,
     ReplaceElementLink,
 } from 'src/utils/phones/const';
-import { getElemCreateFunction } from 'src/utils/dom';
-import { cForEach, cMap, cReduce, filterFalsy, toArray } from 'src/utils/array';
-import { getCounterInstance } from 'src/utils/counter';
+import { getElemCreateFunction } from 'src/utils/dom/dom';
+import { filterFalsy } from 'src/utils/array/filter';
+import { toArray } from 'src/utils/array/utils';
+import { cReduce } from 'src/utils/array/reduce';
+import { cMap, cForEach } from 'src/utils/array/map';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { METHOD_NAME_EXTERNAL_LINK_CLICK } from 'src/providers/clicks/const';
 import {
     bindArg,
     bindThisForMethod,
-    call,
     ctxBindThisForMethod,
-    firstArg,
-    pipe,
-} from 'src/utils/function';
+} from 'src/utils/function/bind';
 import { createPhoneDomReplacer } from 'src/utils/phones/phonesDom';
-import { cEvent, observer, throttleObserver } from 'src/utils/events';
+import { cEvent } from 'src/utils/events/events';
 import { removeSpaces, removeNonDigits } from 'src/utils/string/remove';
 import { genPath, mix } from 'src/utils/object';
-import { clearDefer, setDefer } from 'src/utils/defer';
+import { clearDefer, setDefer } from 'src/utils/defer/defer';
 import { noop } from 'src/utils/function/noop';
+import { call } from 'src/utils/function/utils';
+import { pipe } from 'src/utils/function/pipe';
+import { firstArg } from 'src/utils/function/identity';
 import { phoneSubscribeLoad, phoneSubscribeMutation } from './phonesSubscribe';
+import { observer } from '../events/observer';
+import { throttleObserver } from '../events/throttleObserver';
 
 const NON_SPACE_REGEXP = /\S/;
 const TAG = 'small';
@@ -96,7 +101,7 @@ export const transformPhone = (
         !(
             replaceElementType === 'text' &&
             textContent &&
-            createElement &&
+            createElement! &&
             parentNode
         )
     ) {

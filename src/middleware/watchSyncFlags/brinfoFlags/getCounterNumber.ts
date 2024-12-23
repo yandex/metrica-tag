@@ -1,6 +1,8 @@
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { getCounterKey } from 'src/utils/counterOptions';
-import { memo, pipe, secondArg } from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
+import { secondArg } from 'src/utils/function/identity';
+import { pipe } from 'src/utils/function/pipe';
 
 export const COUNTER_NO = 'counterNum';
 export const getCounterNumber = memo((ctx: Window) => {

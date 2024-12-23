@@ -1,4 +1,4 @@
-import { memo } from '../function';
+import { memo } from '../function/memo';
 import type { CounterOptions } from './types';
 
 export const getCounterKey = memo((opt: CounterOptions) => {

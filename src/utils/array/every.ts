@@ -2,7 +2,7 @@ import { flags } from '@inject';
 import { POLYFILLS_FEATURE } from 'generated/features';
 import { Every, EveryCallback } from './types';
 import { cReduce } from './reduce';
-import { toNativeOrFalse } from '../function';
+import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 
 const nativeEvery = toNativeOrFalse(Array.prototype.every, 'every');
 

@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
-import * as eventUtils from 'src/utils/events';
+import * as eventUtils from 'src/utils/events/events';
 import { AnyFunc } from 'src/utils/function/types';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import * as scriptUtils from '../insertScript';
 import { loadScript } from '../loadScript';
 

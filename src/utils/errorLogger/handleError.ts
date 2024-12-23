@@ -1,5 +1,5 @@
-import { cSome } from 'src/utils/array';
-import { getNativeFunction, bindArg } from 'src/utils/function';
+import { cSome } from 'src/utils/array/some';
+import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
 import {
     DEBUG_FEATURE,
     LOCAL_FEATURE,
@@ -8,6 +8,7 @@ import {
 } from 'generated/features';
 import { flags } from '@inject';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
+import { bindArg } from 'src/utils/function/bind/bind';
 import { isKnownError } from './knownError';
 import {
     TOO_LONG_ERROR_NAME,

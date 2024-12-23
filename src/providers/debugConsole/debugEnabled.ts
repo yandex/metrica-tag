@@ -1,6 +1,6 @@
-import { globalCookieStorage } from 'src/storage/cookie';
-import { memo } from 'src/utils/function';
-import { getLocation } from 'src/utils/location';
+import { globalCookieStorage } from 'src/storage/cookie/cookie';
+import { memo } from 'src/utils/function/memo';
+import { getLocation } from 'src/utils/location/location';
 import { stringIndexOf } from 'src/utils/string';
 import { DEBUG_CTX_FLAG, DEBUG_STORAGE_FLAG, DEBUG_URL_PARAM } from './const';
 

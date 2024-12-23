@@ -3,7 +3,7 @@ import {
     BUTTON_SELECTOR,
     closestButton,
     MAYBE_BUTTON_SELECTOR,
-} from 'src/utils/dom';
+} from 'src/utils/dom/button';
 import * as closestUtils from 'src/utils/dom/closest';
 import * as selectUtils from 'src/utils/dom/select';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';

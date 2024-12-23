@@ -1,4 +1,4 @@
-import { arrayJoin } from 'src/utils/array';
+import { arrayJoin } from 'src/utils/array/join';
 
 export const LINK_CLICK_HIT_PROVIDER = '2';
 

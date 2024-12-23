@@ -1,8 +1,10 @@
-import { createError } from '../errorLogger';
+import { createError } from '../errorLogger/createError';
 import { throwFunction } from '../errorLogger/throwFunction';
-import { bindArg, cont, curry2, firstArg } from '../function';
+import { bindArg } from '../function/bind';
+import { cont, curry2 } from '../function/curry';
+import { firstArg } from '../function/identity';
 import type { AnyFunc } from '../function/types';
-import { getMs, TimeOne } from '../time';
+import { getMs, TimeOne } from '../time/time';
 
 export type IterParams<T, R> = {
     itemList: T[];

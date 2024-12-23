@@ -1,10 +1,10 @@
-import { dataLayerObserver } from 'src/utils/dataLayerObserver';
+import { dataLayerObserver } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import { getConsole } from 'src/utils/console';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { cMap } from 'src/utils/array';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { cMap } from 'src/utils/array/map';
 import { has } from 'src/utils/object';
 import { isString } from 'src/utils/string';
-import { globalMemoWin } from 'src/utils/function';
+import { globalMemoWin } from 'src/utils/function/globalMemo';
 import { getEvents } from 'src/utils/debugEvents';
 import { CONSOLE_DICTIONARY, variableRegex } from './dictionary';
 

@@ -1,9 +1,9 @@
 import * as sinon from 'sinon';
 import { WATCH_URL_PARAM, PAGE_VIEW_BR_KEY } from 'src/api/watch';
-import { GlobalStorage } from 'src/storage/global';
+import type { GlobalStorage } from 'src/storage/global/global';
 import { CounterOptions } from 'src/utils/counterOptions';
-import { browserInfo } from 'src/utils/browserInfo';
-import * as storage from 'src/storage/global';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
+import * as storage from 'src/storage/global/getGlobal';
 import { counterFirstHit } from '../counterFirstHit';
 
 describe('wait for first hit', () => {

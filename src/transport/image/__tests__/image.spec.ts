@@ -1,9 +1,10 @@
 import * as chai from 'chai';
 import sinon from 'sinon';
-import * as domUtils from 'src/utils/dom';
-import * as browserUtils from 'src/utils/browser';
+import * as domUtils from 'src/utils/dom/dom';
+import * as browserUtils from 'src/utils/browser/browser';
 import * as knownErrorUtils from 'src/utils/errorLogger/knownError';
-import * as defer from 'src/utils/defer/base';
+import * as deferBase from 'src/utils/defer/base';
+import * as defer from 'src/utils/defer/defer';
 import { REQUEST_MODE_KEY } from 'src/api/common';
 import type { TransportFn } from 'src/transport/types';
 import * as wm from '../../watchModes';
@@ -37,7 +38,9 @@ describe('Image', () => {
         getCreateElementFunctionStub = sandbox
             .stub(domUtils, 'getElemCreateFunction')
             .returns(createElementFunctionStub);
-        setDeferStub = sandbox.stub(defer, 'setDeferBase').returns(timeoutId);
+        setDeferStub = sandbox
+            .stub(deferBase, 'setDeferBase')
+            .returns(timeoutId);
         clearDeferStub = sandbox.stub(defer, 'clearDefer');
         getSrcUrlStub = sandbox.stub(wm, 'getSrcUrl').returns(URL);
         removeNodeStub = sandbox.stub(domUtils, 'removeNode');

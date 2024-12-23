@@ -4,18 +4,19 @@ import {
     ARTIFICIAL_BR_KEY,
 } from 'src/api/watch';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { getSender } from 'src/sender';
-import { noop, bindThisForMethodTest } from 'src/utils/function';
+import { bindThisForMethodTest } from 'src/utils/function/bind/bind';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
-import { browserInfo } from 'src/utils/browserInfo';
-import { getLocation, Props } from 'src/utils/location';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
+import { getLocation, Props } from 'src/utils/location/location';
 import { parseUrl } from 'src/utils/url';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { isFunction } from 'src/utils/object';
 import { flags } from '@inject';
 import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
+import { noop } from 'src/utils/function/noop';
 import { getArtificialState } from '../artificialHit/artificialHit';
 import {
     GOAL_PROVIDER,

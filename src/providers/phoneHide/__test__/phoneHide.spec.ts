@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
-import * as browser from 'src/utils/browser';
-import * as counterSettingsUtil from 'src/utils/counterSettings';
-import type { CounterSettings } from 'src/utils/counterSettings';
+import * as browser from 'src/utils/browser/browser';
+import * as counterSettingsUtil from 'src/utils/counterSettings/counterSettings';
+import type { CounterSettings } from 'src/utils/counterSettings/types';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import * as hidePhonesUtils from 'src/utils/phones/phonesHide';
 import * as isBrokenPhones from 'src/utils/phones/isBrokenPhones';

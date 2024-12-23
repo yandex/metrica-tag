@@ -1,5 +1,5 @@
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { noop, memo, bindArg, bindArgs, secondArg } from 'src/utils/function';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { noop } from 'src/utils/function/noop';
 import {
     DEBUG_CONSOLE_FEATURE,
     DEBUG_EVENTS_FEATURE,
@@ -8,7 +8,10 @@ import { flags } from '@inject';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { isCounterKeySilent } from 'src/utils/isCounterSilent';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
-import { isArray } from 'src/utils/array';
+import { isArray } from 'src/utils/array/isArray';
+import { bindArg, bindArgs } from 'src/utils/function/bind/bind';
+import { secondArg } from 'src/utils/function/identity';
+import { memo } from 'src/utils/function/memo';
 
 /**
  * @param args console.log function arguments, string arguments could be template ids

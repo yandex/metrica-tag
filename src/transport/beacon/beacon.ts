@@ -1,10 +1,11 @@
 import { FORCE_URLENCODED_KEY } from 'src/api/common';
-import { PolyPromise } from 'src/utils';
-import { isAndroidWebView } from 'src/utils/browser';
+import { PolyPromise } from 'src/utils/promise';
+import { isAndroidWebView } from 'src/utils/browser/browser';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { bind, bindArgs, isNativeFunction } from 'src/utils/function';
+import { bind, bindArgs } from 'src/utils/function/bind';
 import { getPath, mix } from 'src/utils/object';
 import { stringify } from 'src/utils/querystring';
+import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
 import {
     CheckTransport,
     InternalTransportOptions,
@@ -22,7 +23,7 @@ export const request = (
         if (!getPath(ctx, 'navigator.onLine')) {
             return reject();
         }
-        const query = mix(options.rQuery, {
+        const query = mix(options.rQuery!, {
             [FORCE_URLENCODED_KEY]: 1,
         });
 

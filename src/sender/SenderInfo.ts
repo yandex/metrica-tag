@@ -1,4 +1,4 @@
-import { BrowserInfo } from 'src/utils/browserInfo';
+import { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
 import { TransportOptions, TransportResponse } from 'src/transport/types';
 import { WithRequiredPropertiesDeep } from 'src/utils/types';
 import { Telemetry } from 'src/utils/telemetry/telemetry';

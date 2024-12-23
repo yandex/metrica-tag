@@ -8,8 +8,12 @@ import {
 import { SENDER_WATCH } from 'src/sender/const';
 import type { SenderMap, Sender } from 'src/sender/types';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { cMap, head } from 'src/utils/array';
-import { pipe, ctxBindArgs, call, bindArg } from 'src/utils/function';
+import { head } from 'src/utils/array/utils';
+import { cMap } from 'src/utils/array/map';
+import { pipe } from 'src/utils/function/pipe';
+import { call } from 'src/utils/function/utils';
+import { ctxBindArgs } from 'src/utils/function/bind/ctxBind';
+import { bindArg } from 'src/utils/function/bind/bind';
 import { senderCollectInfo } from './senderCollectInfo';
 import { senderWatchInfo } from './senderWatchInfo';
 import { addMiddlewareFor } from './utils';

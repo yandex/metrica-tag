@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import { CounterOptions } from 'src/utils/counterOptions';
-import * as counterUtils from 'src/utils/counter';
+import * as counterUtils from 'src/utils/counter/getInstance';
 import { METHOD_NAME_TRACK_LINKS } from 'src/providers/clicks/const';
 import { useEnableAllProvider } from '../enableAll';
 import { METHOD_NAME_CLICK_MAP } from '../../clickmapMethod/const';

@@ -3,12 +3,12 @@ import {
     METHOD_NAME_PARAMS,
 } from 'src/providers/params/const';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { ctxErrorLogger } from 'src/utils/errorLogger';
-import { getCounterInstance } from 'src/utils/counter';
-import { isNumber } from 'src/utils/number';
+import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
+import { isNumber } from 'src/utils/number/number';
 import { genPath } from 'src/utils/object';
 import { isString } from 'src/utils/string';
-import { noop } from 'src/utils/function';
+import { noop } from 'src/utils/function/noop';
 import { AnyFunc } from 'src/utils/function/types';
 import {
     METHOD_NAME_SET_USER_ID,

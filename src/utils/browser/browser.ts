@@ -1,19 +1,23 @@
-import {
-    memo,
-    pipe,
-    notFn,
-    bindArg,
-    bind,
-    isNativeFunction,
-    bindThisForMethodTest,
-} from 'src/utils/function';
+import { memo } from 'src/utils/function/memo';
 import { isString, stringIncludes, stringIndexOf } from 'src/utils/string';
-import { cMap, cReduce, cSome, includes, indexOfWin } from 'src/utils/array';
+import { indexOfWin } from 'src/utils/array/utils';
+import { cMap } from 'src/utils/array/map';
+import { includes } from 'src/utils/array/includes';
+import { cSome } from 'src/utils/array/some';
+import { cReduce } from 'src/utils/array/reduce';
 import { ctxPath, getPath, isUndefined } from 'src/utils/object';
 import { isFF, isFFVersionRegExp } from 'src/utils/browser/firefox';
 import { MIN_EDGE_VERSION, MIN_FIREFOX_VERSION } from 'src/utils/browser/const';
+import {
+    bind,
+    bindArg,
+    bindThisForMethodTest,
+} from 'src/utils/function/bind/bind';
+import { pipe } from 'src/utils/function/pipe';
+import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
+import { notFn } from 'src/utils/function/identity';
+import { parseDecimalInt } from '../number/number';
 import { checkUserAgent, getAppleUAProps, getAgent } from './utils';
-import { parseDecimalInt } from '../number';
 
 export const isWebKit = memo(bindArg(/webkit/, checkUserAgent));
 export const isBrokenFromCharCode = memo(

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import * as brow from 'src/utils/browser';
-import * as loc from 'src/utils/location';
+import * as brow from 'src/utils/browser/browser';
+import * as loc from 'src/utils/location/location';
 import { getSameSiteCookieInfo } from '../sameSite';
 
 describe('provider / sameSite', () => {

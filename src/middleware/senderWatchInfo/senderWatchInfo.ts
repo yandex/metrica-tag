@@ -9,7 +9,7 @@ import {
 import type { MiddlewareGetter } from 'src/middleware/types';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import type { SenderInfo, UrlParams } from 'src/sender/SenderInfo';
-import { browserInfo } from 'src/utils/browserInfo';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { mix } from 'src/utils/object';
 import { WATCH_RESOURCE } from './const';
 

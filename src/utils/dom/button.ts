@@ -1,6 +1,8 @@
 import { closest } from 'src/utils/dom/closest';
 import { Queryable, select } from 'src/utils/dom/select';
-import { arrayJoin, cMap, filterFalsy } from 'src/utils/array';
+import { filterFalsy } from 'src/utils/array/filter';
+import { arrayJoin } from 'src/utils/array/join';
+import { cMap } from 'src/utils/array/map';
 import {
     CONTENT,
     getData,
@@ -11,7 +13,7 @@ import {
     TYPE,
 } from 'src/utils/dom/identifiers';
 import { getNodeName } from 'src/utils/dom/dom';
-import { bindArg } from '../function';
+import { bindArg } from '../function/bind';
 
 export const BUTTON_SELECTOR = `button,${arrayJoin(
     ',',

@@ -1,7 +1,10 @@
 import { CounterOptions } from 'src/utils/counterOptions';
-import { cEvent, hasPageTransitionEvents } from 'src/utils/events';
-import { call, memo, pipe, secondArg } from 'src/utils/function';
-import { cForEach } from 'src/utils/array';
+import { cEvent, hasPageTransitionEvents } from 'src/utils/events/events';
+import { call } from 'src/utils/function/utils';
+import { secondArg } from 'src/utils/function/identity';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
+import { cForEach } from 'src/utils/array/map';
 import { MiddlewareGetter } from '../types';
 
 let frozen = false;

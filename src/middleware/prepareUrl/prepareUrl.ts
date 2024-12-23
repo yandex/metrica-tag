@@ -1,10 +1,10 @@
 import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
-import { getLocation } from 'src/utils/location';
+import { getLocation } from 'src/utils/location/location';
 import { isString, stringIndexOf } from 'src/utils/string';
 import { trimRegexp } from 'src/utils/string/remove';
 import { config } from 'src/config';
 import { isUndefined } from 'src/utils/object';
-import { arrayJoin } from 'src/utils/array';
+import { arrayJoin } from 'src/utils/array/join';
 import { MiddlewareGetter } from '../types';
 
 const PROTOCOL_REGEXP = /^[a-z][\w.+-]+:/i;

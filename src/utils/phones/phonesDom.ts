@@ -1,23 +1,22 @@
-import {
-    cForEach,
-    toArray,
-    cMap,
-    cReduce,
-    cFilter,
-    isArray,
-    ctxReduce,
-    arrayJoin,
-    filterFalsy,
-    arrayMerge,
-    includes,
-} from 'src/utils/array';
+import { cForEach, cMap } from 'src/utils/array/map';
 import { waitForBodyTask } from 'src/utils/dom/waitForBody';
-import { memo, bindArg } from 'src/utils/function';
+import { bindArg } from 'src/utils/function/bind';
 import { getPath, isUndefined, cKeys } from 'src/utils/object';
-import { getMs, TimeOne } from 'src/utils/time';
-import { PolyPromise } from 'src/utils';
+import { getMs, TimeOne } from 'src/utils/time/time';
+import { PolyPromise } from 'src/utils/promise';
 import { walkTree } from 'src/utils/treeWalker';
 import { CounterOptions } from 'src/utils/counterOptions';
+import { memo } from 'src/utils/function/memo';
+import { arrayJoin } from 'src/utils/array/join';
+import { cReduce, ctxReduce } from 'src/utils/array/reduce';
+import { includes } from 'src/utils/array/includes';
+import { cFilter, filterFalsy } from 'src/utils/array/filter';
+import { arrayMerge } from 'src/utils/array/merge';
+import { toArray } from 'src/utils/array/utils';
+import { isArray } from 'src/utils/array/isArray';
+import { removeNonDigits } from '../string/remove';
+import { taskFork } from '../async/task';
+import { safeDecodeURI } from '../querystring';
 import {
     PhoneChangeMap,
     PhoneTuple,
@@ -27,9 +26,6 @@ import {
     ReplaceElementText,
     ANY_PHONE,
 } from './const';
-import { safeDecodeURI } from '../querystring';
-import { taskFork } from '../async';
-import { removeNonDigits } from '../string/remove';
 
 const phoneMask = memo((phone: string) =>
     arrayJoin('[^\\d<>]*', phone.split('')),

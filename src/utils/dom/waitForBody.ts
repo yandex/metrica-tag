@@ -1,7 +1,7 @@
-import { setDefer } from 'src/utils/defer';
+import { setDefer } from 'src/utils/defer/defer';
 import { getPath } from 'src/utils/object';
-import { task } from '../async';
-import { bindArg } from '../function';
+import { task } from '../async/task';
+import { bindArg } from '../function/bind';
 
 export const TIMEOUT_FOR_BODY = 100;
 export const waitForBodyTask = (

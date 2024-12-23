@@ -5,7 +5,8 @@ import { BRINFO_FLAG_GETTERS } from 'src/middleware/watchSyncFlags/brinfoFlags';
 import { FlagGettersHash } from 'src/middleware/watchSyncFlags/const';
 import { INTERNAL_PARAMS_KEY } from 'src/providers/params/const';
 import { toOneOrNull } from 'src/utils/boolean';
-import { pipe, secondArg } from 'src/utils/function';
+import { secondArg } from 'src/utils/function/identity';
+import { pipe } from 'src/utils/function/pipe';
 import { mix } from 'src/utils/object';
 import { getTurboPageId, isTurboPage } from 'src/utils/turboParams';
 

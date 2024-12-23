@@ -1,6 +1,7 @@
-import { cForEach, cMap, dirtyReduce } from 'src/utils/array';
+import { dirtyReduce } from 'src/utils/array/reduce';
+import { cForEach, cMap } from 'src/utils/array/map';
 import { cKeys } from 'src/utils/object';
-import { bindArg } from '../function';
+import { bindArg } from '../function/bind';
 import { isString, stringIndexOf } from '../string';
 import {
     ECOMMERCE_ACTION_FIELD,

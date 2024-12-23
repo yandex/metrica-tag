@@ -9,7 +9,7 @@ import {
     beforeHitProviders,
     staticMethodInitializers,
 } from 'src/providersEntrypoint';
-import { getGlobalStorage } from 'src/storage/global';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { StaticMethodInitializer } from 'src/types';
 import { GLOBAL_COUNTERS_METHOD_NAME, METHOD_NAME_COUNTERS } from './const';
 import { createCountersGetter, getCountersProvider } from './getCounters';

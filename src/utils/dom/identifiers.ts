@@ -1,4 +1,5 @@
-import { cReduce, cSome } from 'src/utils/array';
+import { cSome } from 'src/utils/array/some';
+import { cReduce } from 'src/utils/array/reduce';
 import { ctxPath, getPath } from 'src/utils/object';
 import {
     getElementCSSSelector,
@@ -16,8 +17,9 @@ import {
     REMOTE_CONTROL_FEATURE,
     SUBMIT_TRACKING_FEATURE,
 } from 'generated/features';
-import { equal, pipe } from 'src/utils/function';
-import { fnv32a } from 'src/utils/fnv32a';
+import { pipe } from 'src/utils/function/pipe';
+import { fnv32a } from 'src/utils/fnv32a/fnv32a';
+import { equal } from 'src/utils/function/curry';
 import type { Queryable } from './select';
 
 export const ID = 'i';

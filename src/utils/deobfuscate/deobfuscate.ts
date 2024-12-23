@@ -1,6 +1,6 @@
-import { pipe } from 'src/utils/function';
+import { pipe } from 'src/utils/function/pipe';
 import { cKeys } from 'src/utils/object';
-import { head } from '../array';
+import { head } from '../array/utils';
 
 export type ObfuscatedKey = { [key: string]: 1 };
 

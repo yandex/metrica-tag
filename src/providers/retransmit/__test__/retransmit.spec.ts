@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sender from 'src/sender';
-import * as timeUtils from 'src/utils/time';
-import * as browserInfo from 'src/utils/browserInfo';
-import * as settings from 'src/utils/counterSettings';
-import * as errorLoggerUtils from 'src/utils/errorLogger';
+import * as timeUtils from 'src/utils/time/time';
+import * as browserInfo from 'src/utils/browserInfo/browserInfo';
+import * as settings from 'src/utils/counterSettings/counterSettings';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { useRetransmitProvider } from '../retransmit';

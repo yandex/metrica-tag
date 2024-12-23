@@ -10,7 +10,7 @@ import {
     DEFAULT_COUNTER_TYPE,
     RSYA_COUNTER_TYPE,
 } from 'src/providers/counterOptions';
-import * as brInfoUtils from 'src/utils/browserInfo';
+import * as brInfoUtils from 'src/utils/browserInfo/browserInfo';
 import type { InternalSenderInfo } from 'src/sender/SenderInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { senderWatchInfo } from '../senderWatchInfo';
@@ -28,11 +28,10 @@ describe('sender middleware/watch', () => {
         Parameters<typeof brInfoUtils.browserInfo>,
         ReturnType<typeof brInfoUtils.browserInfo>
     >;
-    let getValStub =
-        sandbox.stub<
-            Parameters<brInfoUtils.BrowserInfo['getVal']>,
-            ReturnType<brInfoUtils.BrowserInfo['getVal']>
-        >();
+    let getValStub = sandbox.stub<
+        Parameters<brInfoUtils.BrowserInfo['getVal']>,
+        ReturnType<brInfoUtils.BrowserInfo['getVal']>
+    >();
 
     let browserInfoResult: brInfoUtils.BrowserInfo;
     const nextSpy = sandbox.spy(() => {});

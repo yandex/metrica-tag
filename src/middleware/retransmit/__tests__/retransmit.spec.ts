@@ -1,17 +1,18 @@
 import * as sinon from 'sinon';
 import { host } from 'src/config';
 import { WATCH_URL_PARAM, RETRANSMIT_BRINFO_KEY } from 'src/api/watch';
-import { browserInfo } from 'src/utils/browserInfo';
-import * as time from 'src/utils/time';
-import * as localStorage from 'src/storage/localStorage';
-import * as globalStorage from 'src/storage/global';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
+import * as time from 'src/utils/time/time';
+import * as localStorage from 'src/storage/localStorage/localStorage';
+import * as globalStorage from 'src/storage/global/getGlobal';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import type { LocalStorage } from 'src/storage/localStorage';
+import type { LocalStorage } from 'src/storage/localStorage/localStorage';
 import { telemetry } from 'src/utils/telemetry/telemetry';
 import * as inject from '@inject';
 import { TELEMETRY_FEATURE } from 'generated/features';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
+import type { GlobalStorage } from 'src/storage/global/global';
 import { retransmit } from '../retransmit';
 import * as state from '../state';
 
@@ -25,8 +26,10 @@ describe('retransmit middleware', () => {
         localStorage.LocalStorage
     >;
     let reqList: Record<string, state.RetransmitInfo> = {};
-    const localStorageSetValMock =
-        sandbox.stub<[name: string, val: unknown], LocalStorage>();
+    const localStorageSetValMock = sandbox.stub<
+        [name: string, val: unknown],
+        LocalStorage
+    >();
     const mockLocalStorage = {
         setVal: localStorageSetValMock,
     } as unknown as localStorage.LocalStorage;
@@ -40,7 +43,7 @@ describe('retransmit middleware', () => {
         sandbox.stub(state, 'getRetransmitLsState').value(() => reqList);
         sandbox.stub(globalStorage, 'getGlobalStorage').returns({
             getVal: sandbox.stub().returns(HID),
-        } as unknown as globalStorage.GlobalStorage);
+        } as unknown as GlobalStorage);
         localStorageStub = sandbox
             .stub(localStorage, 'globalLocalStorage')
             .returns(mockLocalStorage);
