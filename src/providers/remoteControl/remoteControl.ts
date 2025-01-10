@@ -167,7 +167,7 @@ const SPLITTER = '.';
 const AVAILABLE_FILES = ['form', 'button', 'status'];
 
 const BETA_URL = 'https://s3.mds.yandex.net/internal-metrika-betas';
-const URL = 'https://yastatic.net/s3/metrika';
+const MAIN_URL = 'https://yastatic.net/s3/metrika';
 
 export const getResourceUrl = (
     ctx: Window,
@@ -194,7 +194,7 @@ export const getResourceUrl = (
         return '';
     }
 
-    const baseUrl = beta ? BETA_URL : URL;
+    const baseUrl = beta ? BETA_URL : MAIN_URL;
     const version = validVersion ? `/${validVersion}` : '';
     const fileName = `${fileId}_${lang}.js`;
 

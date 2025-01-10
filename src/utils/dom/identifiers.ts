@@ -28,9 +28,9 @@ export const PATH = 'p';
 export const CONTENT = 'c';
 export const HREF = 'h';
 export const TYPE = 'ty';
-export const CSS = 'cs';
+export const CSS_KEY = 'cs';
 
-const IDENTIFIERS = [ID, NAME, HREF, PATH, CONTENT, TYPE, CSS] as const;
+const IDENTIFIERS = [ID, NAME, HREF, PATH, CONTENT, TYPE, CSS_KEY] as const;
 
 export type Identifier = typeof IDENTIFIERS[number];
 type GenericGetter = (ctx: Window, element: HTMLElement) => string | null;
@@ -97,7 +97,7 @@ if (
         flags[CLICK_TRACKING_FEATURE] ||
         flags[SUBMIT_TRACKING_FEATURE])
 ) {
-    GETTERS_MAP[CSS] = getElementCSSSelector;
+    GETTERS_MAP[CSS_KEY] = getElementCSSSelector;
 }
 
 if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {

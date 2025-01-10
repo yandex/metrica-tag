@@ -1,6 +1,6 @@
 import { bindArg } from '../function/bind';
 import { closest } from './closest';
-import { CSS, PATH, getData } from './identifiers';
+import { CSS_KEY, PATH, getData } from './identifiers';
 import { select } from './select';
 
 const BLOCK_SELECTOR =
@@ -12,4 +12,4 @@ export const getTextContainerData = (
     ctx: Window,
     form: HTMLElement,
     ignored?: HTMLElement,
-) => getData(ctx, form, [PATH, CSS], undefined, ignored);
+) => getData(ctx, form, [PATH, CSS_KEY], undefined, ignored);

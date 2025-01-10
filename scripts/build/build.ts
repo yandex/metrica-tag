@@ -51,6 +51,8 @@ const sourcemap =
         ? true // Option set but with no value
         : argOptions.sourcemap; // Option set to a value or not set
 
+const noUglify = argOptions['no-uglify'];
+
 const inputOptions: RollupOptions = {
     input: 'src/index.ts',
     treeshake: {
@@ -94,7 +96,7 @@ const inputOptions: RollupOptions = {
             },
         }),
         progress(),
-        argOptions['no-uglify']
+        noUglify
             ? ''
             : compiler({
                   compilation_level: 'ADVANCED',
@@ -119,10 +121,7 @@ const inputOptions: RollupOptions = {
 };
 const outputOptions: OutputOptions = {
     file: path,
-    format: 'iife',
-    freeze: false,
-    banner: 'try {',
-    footer: '} catch (e) { }',
+    format: noUglify ? 'iife' : 'esm',
     sourcemap,
 };
 
