@@ -87,6 +87,7 @@ export const bindArgs = <FN extends AnyFunc, Args extends FirstNArg<FN>>(
     fn: FN,
 ) => bind(fn, null, ...args);
 
+// @ts-expect-error -- FIXME
 export const bindArg: BindArg = (arg, fn) => bind(fn, null, arg);
 
 export const bindThisForMethod = <

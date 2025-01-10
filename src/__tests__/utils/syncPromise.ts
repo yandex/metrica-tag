@@ -1,5 +1,8 @@
+import type { TransportResponse } from 'src/transport/types';
+import type { AnyFunc } from 'src/utils/function/types';
+
 export const syncPromise = {
-    then(callback?: (...args: any[]) => any) {
+    then(callback?: AnyFunc) {
         if (callback) {
             callback();
         }
@@ -8,4 +11,4 @@ export const syncPromise = {
     catch() {
         return this;
     },
-} as Promise<void>;
+} as Promise<TransportResponse>;

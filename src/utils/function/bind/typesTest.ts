@@ -32,10 +32,14 @@ declare const bindArg: BindArg;
 
 const boundArg1 = bindArg(123, testFn);
 boundArg1('test', false);
+// @ts-expect-error
+boundArg1('test');
 const boundArg2 = bindArg('123', boundArg1);
 boundArg2(false);
 const boundArg3 = bindArg(false, boundArg2);
 boundArg3();
+// @ts-expect-error
+boundArg3(false);
 const boundArg4 = bindArg(undefined, boundArg3);
 boundArg4();
 

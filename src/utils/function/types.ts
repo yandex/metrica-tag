@@ -9,10 +9,8 @@ export type FuncRest<F extends AnyFunc, R = ReturnType<F>> = (
     ...args: ParamsTail<F>
 ) => R; // проверка для generic ф-ций
 
-type FirstAsTuple<T extends any[]> = T extends [any, ...infer R]
-    ? T extends [...infer F, ...R]
-        ? F
-        : never
+type FirstAsTuple<T extends any[]> = T extends [...infer H, ...infer R]
+    ? H
     : never;
 
 export type FirstNArg<FN, Result extends [] = []> = FN extends (
@@ -33,7 +31,7 @@ export type FirstNArg<FN, Result extends [] = []> = FN extends (
 
 export type FirstArg<FN> = Extract<FirstNArg<FN>, [any]>;
 
-export type ReturnBindFunc<
+export type ReturnBoundFunc<
     FN extends AnyFunc,
     Args extends FirstNArg<FN>,
 > = FN extends (...args: [...Args, ...infer T]) => ReturnType<FN>
@@ -44,19 +42,16 @@ export type Bind = <FN extends AnyFunc, C, Args extends FirstNArg<FN>>(
     f: FN,
     ctx: C,
     ...bindArgs: Args
-) => ReturnBindFunc<FN, Args>;
+) => ReturnBoundFunc<FN, Args>;
 
-/**
- * FIXME: should be like an example below
- * export type BindArg = <
-    FN extends AnyFunc,
-    Arg extends Parameters<FN>[0]
->(
+export type BindArg = <FN extends AnyFunc, Arg extends Parameters<FN>[0]>(
     bindArg: Arg,
     f: FN,
-) => ReturnBindFunc<FN, [Arg]>
- */
-export type BindArg = (bindArg: any, f: AnyFunc) => any;
+) => ReturnBoundFunc<
+    FN,
+    // @ts-expect-error - FIXME
+    [Arg]
+>;
 
 export type SliceArgs<
     F extends AnyFunc,

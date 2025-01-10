@@ -657,9 +657,7 @@ describe('clicks.ts', () => {
                 .returns(counterStateStub);
             sandbox
                 .stub(senderUtils, 'getSender')
-                .returns((() => Promise.resolve()) as ReturnType<
-                    typeof senderUtils.getSender
-                >);
+                .returns(() => Promise.resolve(''));
             sandbox.stub(hidUtils, 'getHid').returns(1);
         });
 
