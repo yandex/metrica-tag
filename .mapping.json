@@ -1,4 +1,5 @@
 {
+  ".":"metrika/frontend/watch/public",
   ".eslintrc.js":"metrika/frontend/watch/public/.eslintrc.js",
   ".gitattributes":"metrika/frontend/watch/public/.gitattributes",
   ".github/workflows/check-code.yml":"metrika/frontend/watch/public/.github/workflows/check-code.yml",
