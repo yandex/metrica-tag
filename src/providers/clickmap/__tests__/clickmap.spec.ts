@@ -1,20 +1,20 @@
-import * as chai from 'chai';
-import * as sinon from 'sinon';
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import * as inject from '@inject';
-import * as sender from 'src/sender';
+import * as chai from 'chai';
+import { SENDER_COLLECT_FEATURE } from 'generated/features';
+import * as sinon from 'sinon';
 import * as provider from 'src/providers/clickmap/clickmap';
+import * as sender from 'src/sender';
 import * as cEvent from 'src/utils/events/events';
 import type { EventElement } from 'src/utils/events/types';
 import type { AnyFunc } from 'src/utils/function/types';
 import * as mouseEvents from 'src/utils/mouseEvents/mouseEvents';
 
-import { SenderInfo } from 'src/sender/SenderInfo';
+import type { SenderInfo } from 'src/sender/SenderInfo';
 
-import { ClickInfo } from 'src/providers/clickmap/type';
-import * as getCountersUtils from 'src/providers/getCounters/getCounters';
-import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
+import type { ClickInfo } from 'src/providers/clickmap/type';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
+import * as getCountersUtils from 'src/providers/getCounters/getCounters';
 
 describe('clickmap.ts : ', () => {
     const { window } = new JSDOMWrapper();
@@ -314,9 +314,9 @@ describe('clickmap.ts : ', () => {
             useGetMouseButtonStub = sandbox.stub(mouseEvents, 'getMouseButton');
             sandbox
                 .stub(sender, 'getSender')
-                .returns((senderInfo?: SenderInfo) => {
-                    senderOpt = senderInfo!;
-                    return Promise.resolve();
+                .returns((senderInfo: SenderInfo) => {
+                    senderOpt = senderInfo;
+                    return Promise.resolve('');
                 });
 
             useCEventStub = sandbox.stub(cEvent, 'cEvent');

@@ -1,31 +1,30 @@
-import * as chai from 'chai';
-import * as sinon from 'sinon';
-import * as userTimeDefer from 'src/utils/userTimeDefer/userTimeDefer';
-import * as sender from 'src/sender';
 import * as flags from '@inject';
-import * as getCountersUtils from 'src/providers/getCounters/getCounters';
-import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
+import * as chai from 'chai';
+import {
+    ACCURATE_TRACK_BOUNCE_METHOD_FEATURE,
+    PREPROD_FEATURE,
+} from 'generated/features';
+import * as sinon from 'sinon';
 import {
     ARTIFICIAL_BR_KEY,
     NOT_BOUNCE_BR_KEY,
     NOT_BOUNCE_CLIENT_TIME_BR_KEY,
 } from 'src/api/watch';
-import type { CounterOptions } from 'src/utils/counterOptions';
-import type { CounterSettings } from 'src/utils/counterSettings/types';
-import type { SenderInfo } from 'src/sender/SenderInfo';
-import type { Provider } from 'src/providers/index';
-import type { RawCounterInfo } from 'src/providers/getCounters/types';
-import type { AnyFunc } from 'src/utils/function/types';
-import * as counterSettingsStore from 'src/utils/counterSettings/counterSettings';
-import * as time from 'src/utils/time/time';
 import { COUNTER_STATE_NOT_BOUNCE } from 'src/providers/getCounters/const';
+import * as getCountersUtils from 'src/providers/getCounters/getCounters';
+import * as sender from 'src/sender';
+import type { SenderInfo } from 'src/sender/SenderInfo';
+import type { TransportResponse } from 'src/transport/types';
+import type { CounterOptions } from 'src/utils/counterOptions';
+import * as counterSettingsStore from 'src/utils/counterSettings/counterSettings';
+import type { CounterSettings } from 'src/utils/counterSettings/types';
+import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
+import type { AnyFunc } from 'src/utils/function/types';
 import { getRandom } from 'src/utils/number/random';
-import {
-    ACCURATE_TRACK_BOUNCE_METHOD_FEATURE,
-    PREPROD_FEATURE,
-} from 'generated/features';
-import { useNotBounceProviderRaw } from '../notBounce';
+import * as time from 'src/utils/time/time';
+import * as userTimeDefer from 'src/utils/userTimeDefer/userTimeDefer';
 import { DEFAULT_NOT_BOUNCE_TIMEOUT } from '../const';
+import { useNotBounceProviderRaw } from '../notBounce';
 
 describe('notBounce', () => {
     const window = { Math } as Window;
@@ -33,19 +32,25 @@ describe('notBounce', () => {
     const timeouts: [number, AnyFunc][] = [];
     const sandbox = sinon.createSandbox();
 
-    let counterStateStub: sinon.SinonStub<[val: RawCounterInfo], void>;
+    let counterStateStub: sinon.SinonStub<
+        Parameters<ReturnType<typeof getCountersUtils.counterStateSetter>>,
+        ReturnType<ReturnType<typeof getCountersUtils.counterStateSetter>>
+    >;
     let setUserTimeDeferStub: sinon.SinonStub<
-        [ctx: Window, callback: (...args: any[]) => any, time: number],
-        () => void
+        Parameters<typeof userTimeDefer.setUserTimeDefer>,
+        ReturnType<typeof userTimeDefer.setUserTimeDefer>
     >;
     let getSenderStub: sinon.SinonStub<
-        [ctx: Window, provider: Provider, opt?: CounterOptions | undefined],
+        Parameters<typeof sender.getSender>,
         ReturnType<typeof sender.getSender>
     >;
-    let senderSpy: sinon.SinonSpy<[senderOpt: SenderInfo], Promise<void>>;
+    let senderSpy: sinon.SinonSpy<
+        [opt: SenderInfo],
+        Promise<TransportResponse>
+    >;
     let stateGetterStub: sinon.SinonStub<
-        [a: Window],
-        (b: string) => Partial<unknown>
+        Parameters<typeof getCountersUtils.counterStateGetter>,
+        ReturnType<typeof getCountersUtils.counterStateGetter>
     >;
 
     const getCounterOpt = (
@@ -64,7 +69,10 @@ describe('notBounce', () => {
         chai.expect(args.length).to.eq(1);
     };
 
-    let randomStub: any;
+    let randomStub: sinon.SinonStub<
+        Parameters<typeof Math.random>,
+        ReturnType<typeof Math.random>
+    >;
 
     beforeEach(() => {
         sandbox
@@ -96,8 +104,7 @@ describe('notBounce', () => {
 
         senderSpy = sinon.spy((senderOpt: SenderInfo) => {
             senderInfo = senderOpt;
-
-            return Promise.resolve();
+            return Promise.resolve('');
         });
         getSenderStub = sandbox.stub(sender, 'getSender');
         getSenderStub.returns(senderSpy);
