@@ -36,8 +36,8 @@ module.exports = {
     },
     ignorePatterns: [
         '/_build',
+        '/coverage',
         '/hooks',
-        '/test',
         'node_modules',
         '!.*', // Check the configs
     ],

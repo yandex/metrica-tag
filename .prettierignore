@@ -1,3 +1,2 @@
-_build/**
-test/**
-private/**
+_build
+coverage

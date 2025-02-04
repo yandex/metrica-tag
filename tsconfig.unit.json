@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
     "importHelpers": true,
     "paths": {
       "@inject": ["./src/inject/inject.test.ts"],
@@ -12,8 +11,10 @@
     "**/*.d.ts",
   ],
   "ts-node": {
-    "files": true,
-    "transpileOnly": true
-  },
-  "files": ["src/types.ts"],
+    "transpileOnly": true,
+    "swc": false,
+    "compilerOptions": {
+      "module": "node16",
+    },
+  }
 }
