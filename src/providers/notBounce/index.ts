@@ -1,10 +1,10 @@
 import { flags } from '@inject';
-import { NOT_BOUNCE_HIT_FEATURE, RETRANSMIT_FEATURE } from 'generated/features';
+import { NOT_BOUNCE_HIT_FEATURE } from 'generated/features';
 import { ProviderFunction } from 'src/types';
 import { addMiddlewareForProvider } from 'src/middleware';
 import { counterFirstHit } from 'src/middleware/counterFirstHit';
+import { prepareUrlMiddleware } from 'src/middleware/prepareUrl/prepareUrl';
 import { prerender } from 'src/middleware/prerender';
-import { retransmit } from 'src/middleware/retransmit';
 import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
@@ -41,14 +41,11 @@ export const initProvider = () => {
         addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, prerender, 1);
         addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, counterFirstHit, 2);
         addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, watchSyncFlags(), 3);
-        /*
-            In order to ensure resending of all new browserInfo flags
-            we need to keep the retransmit middleware as the last one in the list
-            of notBounceMiddlewares.
-        */
-        if (flags[RETRANSMIT_FEATURE]) {
-            addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, retransmit, 100);
-        }
+        addMiddlewareForProvider(
+            NOT_BOUNCE_HIT_PROVIDER,
+            prepareUrlMiddleware,
+            3,
+        );
         providerMap[NOT_BOUNCE_HIT_PROVIDER] = useSenderWatch;
         nameMap[NOT_BOUNCE_HIT_PROVIDER] = fullList;
         addCounterOptions({

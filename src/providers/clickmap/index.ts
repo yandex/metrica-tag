@@ -1,12 +1,11 @@
 import { flags } from '@inject';
-import { CLICK_MAP_FEATURE, RETRANSMIT_FEATURE } from 'generated/features';
+import { CLICK_MAP_FEATURE } from 'generated/features';
 import {
     BUILD_FLAGS_BR_KEY,
     BUILD_VERSION_BR_KEY,
     UID_BR_KEY,
 } from 'src/api/watch';
 import { addMiddlewareForProvider } from 'src/middleware';
-import { retransmit } from 'src/middleware/retransmit';
 import { watchSyncFlags } from 'src/middleware/watchSyncFlags';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
@@ -58,9 +57,6 @@ export const initProvider = () => {
             ]),
             1,
         );
-        if (flags[RETRANSMIT_FEATURE]) {
-            addMiddlewareForProvider(CLICKMAP_PROVIDER, retransmit, 2);
-        }
         addCounterOptions({
             clickmap: {
                 optKey: 'clickmap',

@@ -1,11 +1,18 @@
 import { flags } from '@inject';
-import { PARAMS_FEATURE, RETRANSMIT_FEATURE } from 'generated/features';
+import {
+    CLICK_MAP_FEATURE,
+    NOT_BOUNCE_HIT_FEATURE,
+    PARAMS_FEATURE,
+    RETRANSMIT_FEATURE,
+} from 'generated/features';
 import { addCommonMiddleware, addMiddlewareForProvider } from 'src/middleware';
 import {
     retransmit,
     retransmitProviderMiddleware,
 } from 'src/middleware/retransmit';
 import { providersAsync } from 'src/providersEntrypoint';
+import { CLICKMAP_PROVIDER } from 'src/providers/clickmap/const';
+import { NOT_BOUNCE_HIT_PROVIDER } from 'src/providers/notBounce/const';
 import { PARAMS_PROVIDER } from 'src/providers/params/const';
 import { providerMap } from 'src/sender';
 import {
@@ -57,9 +64,14 @@ export const initProvider = () => {
          * in order to keep the middleware at the end of the chain.
          */
         addCommonMiddleware(retransmit, 100);
-
         if (flags[PARAMS_FEATURE]) {
             addMiddlewareForProvider(PARAMS_PROVIDER, retransmit, 100);
+        }
+        if (flags[NOT_BOUNCE_HIT_FEATURE]) {
+            addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, retransmit, 100);
+        }
+        if (flags[CLICK_MAP_FEATURE]) {
+            addMiddlewareForProvider(CLICKMAP_PROVIDER, retransmit, 100);
         }
     }
 };
