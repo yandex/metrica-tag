@@ -1,12 +1,12 @@
 import { ctxPath, getPath, mix } from 'src/utils/object';
 import { dataLayerObserver } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import {
-    CounterOptions,
+    type CounterOptions,
     getCounterKey,
     isRsyaCounter,
 } from 'src/utils/counterOptions';
 import { getCounterInstance } from 'src/utils/counter/getInstance';
-import { CounterObject } from 'src/utils/counter/type';
+import type { CounterObject } from 'src/utils/counter/type';
 import { config } from 'src/config';
 import { yaNamespace } from 'src/const';
 import { memo } from 'src/utils/function/memo';
@@ -31,7 +31,7 @@ export type StackCall = [number | string, CounterMethods, ...any[]] & {
     /** Is call executed */
     executed?: boolean;
 };
-type StackProxyListener = (
+export type StackProxyListener = (
     /** Current window */
     ctx: Window,
     /** Counter options on initialization */
