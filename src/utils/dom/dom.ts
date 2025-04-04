@@ -74,7 +74,7 @@ export const preventDefault = (event: Event) => {
     }
 };
 
-export const getTarget = (event: Event): Element | null => {
+export const getTarget = (ctx: Window, event: Event): HTMLElement | null => {
     type documentAliases = 'ownerDocument' | 'documentElement';
     type ExtendedTarget =
         | (EventTarget & { [d in documentAliases]: Document })
@@ -90,7 +90,7 @@ export const getTarget = (event: Event): Element | null => {
             if (!target.ownerDocument && target.documentElement) {
                 // Походу на document попали, берём html
                 target = target.documentElement;
-            } else if (target.ownerDocument !== document) {
+            } else if (target.ownerDocument !== ctx.document) {
                 // Чужой iframe
                 target = null;
             }
@@ -99,7 +99,7 @@ export const getTarget = (event: Event): Element | null => {
         /* empty */
     }
 
-    return target as unknown as Element;
+    return target as unknown as HTMLElement;
 };
 
 export const getTagName = (tag: { nodeName: string }) => {

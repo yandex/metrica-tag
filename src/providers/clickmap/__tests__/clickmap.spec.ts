@@ -4,6 +4,7 @@ import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import * as sinon from 'sinon';
 import * as provider from 'src/providers/clickmap/clickmap';
 import * as sender from 'src/sender';
+import * as dom from 'src/utils/dom/dom';
 import * as cEvent from 'src/utils/events/events';
 import type { EventElement } from 'src/utils/events/types';
 import type { AnyFunc } from 'src/utils/function/types';
@@ -283,8 +284,8 @@ describe('clickmap.ts : ', () => {
             ReturnType<typeof cEvent.cEvent>
         >;
         let useGetTargetStub: sinon.SinonStub<
-            Parameters<typeof mouseEvents.getTarget>,
-            ReturnType<typeof mouseEvents.getTarget>
+            Parameters<typeof dom.getTarget>,
+            ReturnType<typeof dom.getTarget>
         >;
         let useGetPositionStub: sinon.SinonStub<
             Parameters<typeof mouseEvents.getPosition>,
@@ -309,7 +310,7 @@ describe('clickmap.ts : ', () => {
                 ...inject.flags,
                 [SENDER_COLLECT_FEATURE]: false,
             });
-            useGetTargetStub = sandbox.stub(mouseEvents, 'getTarget');
+            useGetTargetStub = sandbox.stub(dom, 'getTarget');
             useGetPositionStub = sandbox.stub(mouseEvents, 'getPosition');
             useGetMouseButtonStub = sandbox.stub(mouseEvents, 'getMouseButton');
             sandbox

@@ -28,27 +28,3 @@ export const getMouseButton = (event: MouseEvent & Event): TMouseButton => {
     }
     return which as TMouseButton;
 };
-
-export const getTarget = (
-    ctx: Window,
-    evt: MouseEvent & Event,
-): HTMLElement | null => {
-    let target = null;
-    try {
-        target = (evt.target || evt.srcElement) as Document;
-
-        if (target) {
-            if (!target.ownerDocument && target.documentElement) {
-                // На document попали, берём html
-                target = target.documentElement;
-            } else if (target.ownerDocument !== ctx.document) {
-                // Чужой iframe
-                target = null;
-            }
-        }
-    } catch (e) {
-        // empty
-    }
-
-    return target as HTMLElement;
-};

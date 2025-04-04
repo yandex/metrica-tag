@@ -35,15 +35,11 @@ import { cEvent } from 'src/utils/events/events';
 import { bindArg } from 'src/utils/function/bind';
 import type { AnyFunc } from 'src/utils/function/types';
 import { getLocation } from 'src/utils/location/location';
-import {
-    getMouseButton,
-    getPosition,
-    getTarget,
-} from 'src/utils/mouseEvents/mouseEvents';
+import { getMouseButton, getPosition } from 'src/utils/mouseEvents/mouseEvents';
 import { getRandom } from 'src/utils/number/random';
 import { ctxPath, getPath, has, isUndefined } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time/time';
-import { getNodeName, hasClass } from 'src/utils/dom/dom';
+import { getNodeName, getTarget, hasClass } from 'src/utils/dom/dom';
 
 import { curry2, equal } from 'src/utils/function/curry';
 import { pipe } from 'src/utils/function/pipe';
