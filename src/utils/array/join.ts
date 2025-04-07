@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { curry2 } from '../function/curry';
 import { Join } from './types';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
@@ -19,7 +18,7 @@ const callNativeOrPoly = nativeJoin
           nativeJoin.call(array, separator)
     : joinPoly;
 
-export const arrayJoin: Join = flags[POLYFILLS_FEATURE]
+export const arrayJoin: Join = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : <T>(separator: string, array: ArrayLike<T>) =>
           Array.prototype.join.call(array, separator);

@@ -1,4 +1,3 @@
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import type { InternalSenderInfo } from 'src/sender/SenderInfo';
 import type { TransportList } from 'src/transport';
@@ -64,18 +63,18 @@ const iterateTransports = (
     const fullUrl = `${url}${noRedirect ? '/1' : ''}`;
 
     let requestId = 0;
-    if (flags[DEBUG_EVENTS_FEATURE]) {
+    if (flags.DEBUG_EVENTS_FEATURE) {
         requestId = debugLogRequest(ctx, fullUrl, opt);
     }
     return transport(fullUrl, opt)
         .then((responseData) => {
-            if (flags[DEBUG_EVENTS_FEATURE]) {
+            if (flags.DEBUG_EVENTS_FEATURE) {
                 logRequestSuccess(ctx, requestId, responseData);
             }
             return { responseData, urlIndex };
         })
         .catch((exception) => {
-            if (flags[DEBUG_EVENTS_FEATURE]) {
+            if (flags.DEBUG_EVENTS_FEATURE) {
                 logRequestFailure(ctx, requestId, exception);
             }
             const lastTransport = transportIndex + 1 >= transports.length;

@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { PARAMS_FEATURE } from 'generated/features';
 import { addCommonMiddleware, providerMiddlewareList } from 'src/middleware';
 import { counterFirstHit } from 'src/middleware/counterFirstHit';
 import { paramsMiddleware } from 'src/middleware/params';
@@ -26,7 +25,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[PARAMS_FEATURE]) {
+    if (flags.PARAMS_FEATURE) {
         providerMap[PARAMS_PROVIDER] = useSenderWatch;
         providersSync.push(useParams);
         nameMap[PARAMS_PROVIDER] = fullList;

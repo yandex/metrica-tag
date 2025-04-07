@@ -1,8 +1,7 @@
 import { flags } from '@inject';
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import type { AnyFunc } from 'src/utils/function/types';
 
-export const CLICKMAP_RESOURCE = flags[SENDER_COLLECT_FEATURE]
+export const CLICKMAP_RESOURCE = flags.SENDER_COLLECT_FEATURE
     ? 'pclmap'
     : 'clmap';
 export const SENDER_CLICKMAP = 'cm';

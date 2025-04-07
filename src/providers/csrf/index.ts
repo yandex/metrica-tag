@@ -1,8 +1,3 @@
-import {
-    CSRF_TOKEN_FEATURE,
-    NOT_BOUNCE_HIT_FEATURE,
-    PARAMS_FEATURE,
-} from 'generated/features';
 import { flags } from '@inject';
 import { csrfMiddleware, CSRF_TOKEN_SETTINGS_KEY } from 'src/middleware/csrf';
 import {
@@ -24,18 +19,18 @@ declare module 'src/utils/counterSettings/types' {
  * Initialize the csrf middleware. No actual provider exists for the feature.
  */
 export const initProvider = () => {
-    if (flags[CSRF_TOKEN_FEATURE]) {
+    if (flags.CSRF_TOKEN_FEATURE) {
         addCommonMiddleware(csrfMiddleware, 20);
 
         const addCsrfMiddlewareForProvider = (provider: Provider) => {
             addMiddlewareForProvider(provider, csrfMiddleware, 20);
         };
 
-        if (flags[NOT_BOUNCE_HIT_FEATURE]) {
+        if (flags.NOT_BOUNCE_HIT_FEATURE) {
             addCsrfMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER);
         }
 
-        if (flags[PARAMS_FEATURE]) {
+        if (flags.PARAMS_FEATURE) {
             addCsrfMiddlewareForProvider(PARAMS_PROVIDER);
         }
     }

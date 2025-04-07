@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { TELEMETRY_FEATURE } from 'generated/features';
 import type { MiddlewareGetter } from 'src/middleware/types';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
@@ -34,7 +33,7 @@ export const watchSyncFlags =
                 let getter = BRINFO_FLAG_GETTERS[flag];
                 let loggerPrefix = BRINFO_LOGGER_PREFIX;
                 let storage = brInfo;
-                if (flags[TELEMETRY_FEATURE]) {
+                if (flags.TELEMETRY_FEATURE) {
                     if (!getter) {
                         getter = TELEMETRY_FLAG_GETTERS[flag];
                         loggerPrefix = 'tel';

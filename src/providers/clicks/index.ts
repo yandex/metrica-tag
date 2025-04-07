@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { EXTERNAL_LINK_FEATURE } from 'generated/features';
 import { commonMiddlewares, providerMiddlewareList } from 'src/middleware';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
@@ -21,7 +20,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[EXTERNAL_LINK_FEATURE]) {
+    if (flags.EXTERNAL_LINK_FEATURE) {
         providersSync.push(ctxErrorLogger('cl.p', useClicksProvider));
         providerMiddlewareList[LINK_CLICK_HIT_PROVIDER] = commonMiddlewares;
         providerMap[LINK_CLICK_HIT_PROVIDER] = useSenderWatch;

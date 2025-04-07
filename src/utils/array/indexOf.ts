@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { curry2SwapArgs } from '../function/curry';
 import { IndexOf } from './types';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
@@ -17,7 +16,7 @@ const indexOfPoly: IndexOf = (val, array) => {
 let indexMemo: IndexOf | null;
 
 export const cIndexOf = (ctx: Window) => {
-    if (flags[POLYFILLS_FEATURE]) {
+    if (flags.POLYFILLS_FEATURE) {
         if (indexMemo) {
             return indexMemo;
         }

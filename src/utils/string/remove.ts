@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { curry2 } from 'src/utils/function/curry';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 
@@ -12,7 +11,7 @@ const callNativeOrPoly = (inputString: string) =>
         : `${inputString}`.replace(trimRegexp, '');
 export const trimText = (text: string | null | undefined, length?: number) => {
     if (text) {
-        const result = flags[POLYFILLS_FEATURE]
+        const result = flags.POLYFILLS_FEATURE
             ? callNativeOrPoly(text)
             : String.prototype.trim.call(text);
         if (length && result.length > length) {

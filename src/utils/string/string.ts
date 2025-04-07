@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 import { StringIndexOf } from './types';
 
@@ -46,7 +45,7 @@ const callNativeOrPoly = nativeStringIndexOf
     : stringIndexOfPoly;
 
 export const stringIndexOf: StringIndexOf = (inputString, searchString) => {
-    return flags[POLYFILLS_FEATURE]
+    return flags.POLYFILLS_FEATURE
         ? callNativeOrPoly(inputString, searchString)
         : String.prototype.indexOf.call(inputString, searchString);
 };

@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
 
 const nativeReverse = toNativeOrFalse(Array.prototype.reverse, 'reverse');
@@ -16,6 +15,6 @@ const callNativeOrPoly = nativeReverse
     ? <T>(array: ArrayLike<T>) => nativeReverse.call(array)
     : reversePoly;
 
-export const cReverse: <T>(arr: T[]) => T[] = flags[POLYFILLS_FEATURE]
+export const cReverse: <T>(arr: T[]) => T[] = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : <T>(array: ArrayLike<T>) => Array.prototype.reverse.call(array);

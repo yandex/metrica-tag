@@ -1,13 +1,3 @@
-import {
-    ARTIFICIAL_HIT_FEATURE,
-    PARAMS_FEATURE,
-    SEND_TITLE_FEATURE,
-    TRIGGER_EVENT_FEATURE,
-    USER_PARAMS_FEATURE,
-    TRACK_HASH_FEATURE,
-    EXTERNAL_LINK_FEATURE,
-    ENABLE_ALL_METHOD_FEATURE,
-} from 'generated/features';
 import { entries, isObject, isUndefined, mix } from 'src/utils/object';
 import { isArray } from 'src/utils/array/isArray';
 import { cReduce } from 'src/utils/array/reduce';
@@ -52,41 +42,41 @@ export const normalizeOptionsMap: Record<string, (value: any) => unknown> = {
     ut: toBoolean,
 };
 
-if (flags[ARTIFICIAL_HIT_FEATURE]) {
+if (flags.ARTIFICIAL_HIT_FEATURE) {
     obfuscatedKeysMap.counterDefer = 'defer';
     normalizeOptionsMap.counterDefer = toBoolean;
 }
 
-if (flags[PARAMS_FEATURE]) {
+if (flags.PARAMS_FEATURE) {
     obfuscatedKeysMap.params = 'params';
     normalizeOptionsMap.params = (value) =>
         isObject(value) || isArray(value) ? value : null;
 }
 
-if (flags[USER_PARAMS_FEATURE]) {
+if (flags.USER_PARAMS_FEATURE) {
     obfuscatedKeysMap.userParams = 'userParams';
 }
 
-if (flags[TRIGGER_EVENT_FEATURE]) {
+if (flags.TRIGGER_EVENT_FEATURE) {
     obfuscatedKeysMap.triggerEvent = 'triggerEvent';
     normalizeOptionsMap.triggerEvent = toBoolean;
 }
 
-if (flags[SEND_TITLE_FEATURE]) {
+if (flags.SEND_TITLE_FEATURE) {
     obfuscatedKeysMap.sendTitle = 'sendTitle';
     normalizeOptionsMap.sendTitle = (value) => !!value || isUndefined(value);
 }
 
-if (flags[TRACK_HASH_FEATURE]) {
+if (flags.TRACK_HASH_FEATURE) {
     obfuscatedKeysMap.trackHash = 'trackHash';
     normalizeOptionsMap.trackHash = toBoolean;
 }
 
-if (flags[EXTERNAL_LINK_FEATURE]) {
+if (flags.EXTERNAL_LINK_FEATURE) {
     obfuscatedKeysMap.trackLinks = 'trackLinks';
 }
 
-if (flags[ENABLE_ALL_METHOD_FEATURE]) {
+if (flags.ENABLE_ALL_METHOD_FEATURE) {
     obfuscatedKeysMap.enableAll = 'enableAll';
 }
 

@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { GOAL_FEATURE } from 'generated/features';
 import { providersSync } from 'src/providersEntrypoint';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
 import { providerMap } from 'src/sender';
@@ -20,7 +19,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[GOAL_FEATURE]) {
+    if (flags.GOAL_FEATURE) {
         providersSync.push(useGoal);
         providerMap[GOAL_PROVIDER] = useSenderWatch;
         nameMap[GOAL_PROVIDER] = fullList;

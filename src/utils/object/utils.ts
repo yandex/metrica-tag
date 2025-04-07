@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_ES6_FEATURE, POLYFILLS_FEATURE } from 'generated/features';
 import { mapPoly } from '../array/map';
 import { bindArg } from '../function/bind';
 import { isUndefined } from './assertions';
@@ -67,7 +66,7 @@ const callNativeOrPolyEntries = nativeEntries
     ? callEntries(nativeEntries)
     : entriesPoly;
 
-export const entries: Entries = flags[POLYFILLS_ES6_FEATURE]
+export const entries: Entries = flags.POLYFILLS_ES6_FEATURE
     ? callNativeOrPolyEntries
     : callEntries(Object.entries);
 
@@ -75,7 +74,7 @@ const callNativeOrPolyKeys = nativeKeys
     ? (obj: Record<string, unknown>) => nativeKeys(obj)
     : keysPoly;
 
-export const cKeys: Keys = flags[POLYFILLS_FEATURE]
+export const cKeys: Keys = flags.POLYFILLS_FEATURE
     ? callNativeOrPolyKeys
     : (obj: Record<string, unknown>) => Object.keys(obj);
 
@@ -90,6 +89,6 @@ const callNativeOrPolyValues = nativeValues
     ? <T>(obj: Record<string, T>) => nativeValues(obj)
     : valuesPoly;
 
-export const cValues: typeof Object.values = flags[POLYFILLS_ES6_FEATURE]
+export const cValues: typeof Object.values = flags.POLYFILLS_ES6_FEATURE
     ? callNativeOrPolyValues
     : <T>(obj: Record<string, T>) => Object.values(obj);

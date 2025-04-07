@@ -5,7 +5,6 @@ import { globalMemoWin } from 'src/utils/function/globalMemo';
 import { getLocation } from 'src/utils/location/location';
 import { getSameSiteCookieInfo } from 'src/providers/sameSite';
 import { flags } from '@inject';
-import { SAME_SITE_FEATURE } from 'generated/features';
 import { ENABLED_COOKIE_KEY } from 'src/storage/cookie/const';
 import { CookieGetter } from 'src/storage/cookie/types';
 import { trimText } from 'src/utils/string/remove';
@@ -62,7 +61,7 @@ export const setCookie = (
 ) => {
     if (isCookieAllowed(ctx, getCookie, name)) {
         let cookie = `${name}=${encodeURIComponent(val)};`;
-        if (flags[SAME_SITE_FEATURE]) {
+        if (flags.SAME_SITE_FEATURE) {
             cookie += `${getSameSiteCookieInfo(ctx)}`;
         }
         if (minutes) {

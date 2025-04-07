@@ -1,9 +1,5 @@
 import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { noop } from 'src/utils/function/noop';
-import {
-    DEBUG_CONSOLE_FEATURE,
-    DEBUG_EVENTS_FEATURE,
-} from 'generated/features';
 import { flags } from '@inject';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { isCounterKeySilent } from 'src/utils/isCounterSilent';
@@ -68,7 +64,7 @@ const createEmptyConsole = (): ConsoleObject => ({
 const createDebugConsole = ctxErrorLogger(
     'dc.init',
     (ctx, counterKey: string) => {
-        if (flags[DEBUG_EVENTS_FEATURE] && flags[DEBUG_CONSOLE_FEATURE]) {
+        if (flags.DEBUG_EVENTS_FEATURE && flags.DEBUG_CONSOLE_FEATURE) {
             if (!isCounterKeySilent(counterKey)) {
                 return createDebuggerEventsConsole(ctx, counterKey);
             }

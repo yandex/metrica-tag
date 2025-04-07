@@ -1,5 +1,4 @@
 import { toNativeOrFalse } from 'src/utils/function/isNativeFunction';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import { Some, SomeCallback } from './types';
 
@@ -20,7 +19,7 @@ const callNativeOrPoly: Some = nativeSome
           nativeSome.call(array, fn)
     : somePoly;
 
-export const cSome: Some = flags[POLYFILLS_FEATURE]
+export const cSome: Some = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : <T>(fn: SomeCallback<T>, array: ArrayLike<T>) =>
           Array.prototype.some.call(array, fn);

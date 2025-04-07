@@ -1,6 +1,5 @@
 import { isFF } from 'src/utils/browser/firefox';
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import {
     ArrayMap,
     FlatMap,
@@ -55,7 +54,7 @@ const callNativeOrPolyMap =
               array && array.length > 0 ? nativeMap.call(array, fn) : []
         : mapPoly;
 
-export const baseMap: ArrayMap = flags[POLYFILLS_FEATURE]
+export const baseMap: ArrayMap = flags.POLYFILLS_FEATURE
     ? callNativeOrPolyMap
     : <T, U>(fn: MapCallback<T, U>, array: ArrayLike<T>) =>
           array && array.length > 0 ? Array.prototype.map.call(array, fn) : [];
@@ -83,7 +82,7 @@ const callNativeOrPolyFlatMap: FlatMap = nativeFlatMap
           (nativeFlatMap as (cb: FlatMapCallback<T, U>) => U[]).call(array, fn)
     : flatMapPoly;
 
-export const flatMap: FlatMap = flags[POLYFILLS_FEATURE]
+export const flatMap: FlatMap = flags.POLYFILLS_FEATURE
     ? callNativeOrPolyFlatMap
     : /**
        * NOTE: Currently flatMap is not very reliable

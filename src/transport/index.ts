@@ -1,7 +1,6 @@
 import { TransportFn } from 'src/transport/types';
 import { cReduce } from 'src/utils/array/reduce';
 import { Provider, ProvidersMap, HIT_PROVIDER } from 'src/providers';
-import { FETCH_FEATURE, JSONP_FEATURE } from 'generated/features';
 import { throwKnownError } from 'src/utils/errorLogger/knownError';
 import { flags } from '@inject';
 import { memo } from 'src/utils/function/memo';
@@ -58,10 +57,10 @@ export const fullList: TransportId[] = [
 ];
 
 const hitTransportList: TransportId[] = [XHR_TRANSPORT_ID];
-if (flags[FETCH_FEATURE]) {
+if (flags.FETCH_FEATURE) {
     hitTransportList.unshift(FETCH_TRANSPORT_ID);
 }
-if (flags[JSONP_FEATURE]) {
+if (flags.JSONP_FEATURE) {
     hitTransportList.push(JSONP_TRANSPORT_ID);
 }
 

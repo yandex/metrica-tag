@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { NOT_BOUNCE_HIT_FEATURE } from 'generated/features';
 import { ProviderFunction } from 'src/types';
 import { addMiddlewareForProvider } from 'src/middleware';
 import { counterFirstHit } from 'src/middleware/counterFirstHit';
@@ -36,7 +35,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[NOT_BOUNCE_HIT_FEATURE]) {
+    if (flags.NOT_BOUNCE_HIT_FEATURE) {
         providersSync.push(useNotBounceProvider as ProviderFunction);
         addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, prerender, 1);
         addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, counterFirstHit, 2);

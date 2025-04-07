@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { SET_USER_ID_FEATURE, USER_PARAMS_FEATURE } from 'generated/features';
 import {
     ARTIFICIAL_BR_KEY,
     PARAMS_BR_KEY,
@@ -122,7 +121,7 @@ export const rawParams = (
             let paramsToLog: Record<string, any> | string | undefined = params;
             let userId = '';
 
-            if (flags[SET_USER_ID_FEATURE]) {
+            if (flags.SET_USER_ID_FEATURE) {
                 userId = getPath(
                     params,
                     `${INTERNAL_PARAMS_KEY}.${USER_ID_PARAM}`,
@@ -133,7 +132,7 @@ export const rawParams = (
                 }
             }
 
-            if (flags[USER_PARAMS_FEATURE]) {
+            if (flags.USER_PARAMS_FEATURE) {
                 const isUser = includes(USER_PARAMS_KEY, cKeys(params));
                 if (isUser) {
                     logMessage = USER_PARAMS_CONSOLE_MESSAGE;

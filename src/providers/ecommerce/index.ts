@@ -1,4 +1,3 @@
-import { ECOMMERCE_FEATURE, PARAMS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import { providersSync } from 'src/providersEntrypoint';
 import { addCounterOptions } from 'src/providers/counterOptions';
@@ -33,7 +32,7 @@ declare module 'src/utils/counterSettings/types' {
 
 export const initProvider = () => {
     // NOTE: The ecommerce feature depends on params method
-    if (flags[ECOMMERCE_FEATURE] && flags[PARAMS_FEATURE]) {
+    if (flags.ECOMMERCE_FEATURE && flags.PARAMS_FEATURE) {
         providersSync.push(ecommerce);
         YM_LOG_WHITELIST_KEYS.push(ECOMMERCE_PARAMS_KEY);
         addCounterOptions({

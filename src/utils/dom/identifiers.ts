@@ -9,14 +9,6 @@ import { convertToString } from 'src/utils/string';
 import { trimText } from 'src/utils/string/remove';
 import { isInputElement } from 'src/utils/dom/dom';
 import { flags } from '@inject';
-import {
-    CLICK_TRACKING_FEATURE,
-    LOCAL_FEATURE,
-    PREPROD_FEATURE,
-    REMOTE_CONTROL_BLOCK_HELPERS_FEATURE,
-    REMOTE_CONTROL_FEATURE,
-    SUBMIT_TRACKING_FEATURE,
-} from 'generated/features';
 import { pipe } from 'src/utils/function/pipe';
 import { fnv32a } from 'src/utils/fnv32a/fnv32a';
 import { equal } from 'src/utils/function/curry';
@@ -50,9 +42,9 @@ const SIZE_LIMITS: Record<string, number> = {};
 const HASH: Partial<Record<Identifier, boolean>> = {};
 
 if (
-    flags[SUBMIT_TRACKING_FEATURE] ||
-    flags[PREPROD_FEATURE] ||
-    flags[LOCAL_FEATURE]
+    flags.SUBMIT_TRACKING_FEATURE ||
+    flags.PREPROD_FEATURE ||
+    flags.LOCAL_FEATURE
 ) {
     SIZE_LIMITS[PATH] = 500;
 }
@@ -63,12 +55,12 @@ export const getAttribute = (element: HTMLElement, name: string) => {
 
 const ATTRIBUTES_MAP: Partial<Record<Identifier, string>> = {};
 
-if (flags[SUBMIT_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
+if (flags.SUBMIT_TRACKING_FEATURE || flags.REMOTE_CONTROL_FEATURE) {
     ATTRIBUTES_MAP[ID] = 'id';
     ATTRIBUTES_MAP[NAME] = 'name';
 }
 
-if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
+if (flags.CLICK_TRACKING_FEATURE || flags.REMOTE_CONTROL_FEATURE) {
     ATTRIBUTES_MAP[HREF] = 'href';
     ATTRIBUTES_MAP[TYPE] = 'type';
 
@@ -84,23 +76,23 @@ export const GETTERS_MAP: Partial<
 > = {};
 
 if (
-    flags[SUBMIT_TRACKING_FEATURE] ||
-    flags[CLICK_TRACKING_FEATURE] ||
-    flags[REMOTE_CONTROL_FEATURE]
+    flags.SUBMIT_TRACKING_FEATURE ||
+    flags.CLICK_TRACKING_FEATURE ||
+    flags.REMOTE_CONTROL_FEATURE
 ) {
     GETTERS_MAP[PATH] = getElementPathCached;
 }
 
 if (
-    flags[REMOTE_CONTROL_BLOCK_HELPERS_FEATURE] &&
-    (flags[REMOTE_CONTROL_FEATURE] ||
-        flags[CLICK_TRACKING_FEATURE] ||
-        flags[SUBMIT_TRACKING_FEATURE])
+    flags.REMOTE_CONTROL_BLOCK_HELPERS_FEATURE &&
+    (flags.REMOTE_CONTROL_FEATURE ||
+        flags.CLICK_TRACKING_FEATURE ||
+        flags.SUBMIT_TRACKING_FEATURE)
 ) {
     GETTERS_MAP[CSS_KEY] = getElementCSSSelector;
 }
 
-if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
+if (flags.CLICK_TRACKING_FEATURE || flags.REMOTE_CONTROL_FEATURE) {
     GETTERS_MAP[CONTENT] = (ctx, element, selectFn) => {
         let result = trimText(getPath(element, 'textContent'));
         if (result && selectFn) {

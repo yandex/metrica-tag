@@ -1,11 +1,5 @@
 import { cSome } from 'src/utils/array/some';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction/getNativeFunction';
-import {
-    DEBUG_FEATURE,
-    LOCAL_FEATURE,
-    DEBUG_CONSOLE_FEATURE,
-    DEBUG_EVENTS_FEATURE,
-} from 'generated/features';
 import { flags } from '@inject';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { bindArg } from 'src/utils/function/bind/bind';
@@ -22,8 +16,8 @@ import { runOnErrorCallbacks } from './onError';
 import { stringIncludes } from '../string';
 
 export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
-    if (flags[DEBUG_FEATURE]) {
-        if (flags[DEBUG_EVENTS_FEATURE]) {
+    if (flags.DEBUG_FEATURE) {
+        if (flags.DEBUG_EVENTS_FEATURE) {
             dispatchDebuggerEvent(ctx, {
                 ['data']: {
                     ['scopeName']: scopeName,
@@ -42,8 +36,8 @@ export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
     }
 
     if (
-        flags[LOCAL_FEATURE] &&
-        flags[DEBUG_CONSOLE_FEATURE] &&
+        flags.LOCAL_FEATURE &&
+        flags.DEBUG_CONSOLE_FEATURE &&
         getPath(e, 'message') &&
         e.message !== TOO_LONG_ERROR_NAME &&
         !e[UNCATCHABLE_ERROR_PROPERTY]

@@ -1,12 +1,5 @@
 import { flags } from '@inject';
 import {
-    PREPROD_FEATURE,
-    CLICK_MAP_FEATURE,
-    TELEMETRY_FEATURE,
-    TELEMETRY_REQUEST_ENUMERATION_FEATURE,
-    SENDER_COLLECT_FEATURE,
-} from 'generated/features';
-import {
     MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE,
     METHODS_CALLED_TEL_KEY,
     REQUEST_NUMBER_TEL_KEY,
@@ -24,7 +17,7 @@ import { numRequestsTelemetry } from './numRequests';
 
 export const TELEMETRY_FLAG_GETTERS: FlagGettersHash = {};
 
-if (flags[TELEMETRY_FEATURE]) {
+if (flags.TELEMETRY_FEATURE) {
     TELEMETRY_FLAG_GETTERS[METHODS_CALLED_TEL_KEY] = (ctx: Window) => {
         const methodCallCounters: Record<string, number> = globalStorage(
             ctx,
@@ -43,7 +36,7 @@ if (flags[TELEMETRY_FEATURE]) {
         return null;
     };
 
-    if (flags[CLICK_MAP_FEATURE] && !flags[SENDER_COLLECT_FEATURE]) {
+    if (flags.CLICK_MAP_FEATURE && !flags.SENDER_COLLECT_FEATURE) {
         TELEMETRY_FLAG_GETTERS[CLMAP_CLICKS_TEL_KEY] = (ctx: Window) => {
             const { clicks, x, y } = getGlobalStorage(ctx).getVal<{
                 x: number;
@@ -60,12 +53,12 @@ if (flags[TELEMETRY_FEATURE]) {
         };
     }
 
-    if (flags[PREPROD_FEATURE]) {
+    if (flags.PREPROD_FEATURE) {
         TELEMETRY_FLAG_GETTERS[MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE] =
             getMainThreadBlockingTime;
     }
 
-    if (flags[TELEMETRY_REQUEST_ENUMERATION_FEATURE]) {
+    if (flags.TELEMETRY_REQUEST_ENUMERATION_FEATURE) {
         TELEMETRY_FLAG_GETTERS[REQUEST_NUMBER_TEL_KEY] = numRequestsTelemetry;
     }
 }

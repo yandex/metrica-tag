@@ -1,10 +1,4 @@
 import { flags } from '@inject';
-import {
-    CLICK_MAP_FEATURE,
-    NOT_BOUNCE_HIT_FEATURE,
-    PARAMS_FEATURE,
-    RETRANSMIT_FEATURE,
-} from 'generated/features';
 import { addCommonMiddleware, addMiddlewareForProvider } from 'src/middleware';
 import {
     retransmit,
@@ -42,7 +36,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[RETRANSMIT_FEATURE]) {
+    if (flags.RETRANSMIT_FEATURE) {
         /**
          * NOTE: Retransmit provider does not need any sender middlewares
          * since all initial data is set with the initial sender that created the request.
@@ -64,13 +58,13 @@ export const initProvider = () => {
          * in order to keep the middleware at the end of the chain.
          */
         addCommonMiddleware(retransmit, 100);
-        if (flags[PARAMS_FEATURE]) {
+        if (flags.PARAMS_FEATURE) {
             addMiddlewareForProvider(PARAMS_PROVIDER, retransmit, 100);
         }
-        if (flags[NOT_BOUNCE_HIT_FEATURE]) {
+        if (flags.NOT_BOUNCE_HIT_FEATURE) {
             addMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER, retransmit, 100);
         }
-        if (flags[CLICK_MAP_FEATURE]) {
+        if (flags.CLICK_MAP_FEATURE) {
             addMiddlewareForProvider(CLICKMAP_PROVIDER, retransmit, 100);
         }
     }

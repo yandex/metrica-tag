@@ -1,4 +1,3 @@
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 
 /**
@@ -13,7 +12,7 @@ export const COUNTER_ID_PARAM = 'tid';
  *
  * Value Type: string
  */
-export const URL_PARAM = flags[SENDER_COLLECT_FEATURE] ? 'dl' : 'page-url';
+export const URL_PARAM = flags.SENDER_COLLECT_FEATURE ? 'dl' : 'page-url';
 
 /**
  * BrowserInfo object serialized into a string
@@ -41,7 +40,7 @@ export const CSRF_TOKEN_URL_PARAM = 'hittoken';
  *
  * Value Type: number
  */
-export const REQUEST_MODE_KEY = flags[SENDER_COLLECT_FEATURE]
+export const REQUEST_MODE_KEY = flags.SENDER_COLLECT_FEATURE
     ? '_wmode'
     : 'wmode';
 
@@ -51,7 +50,7 @@ export const REQUEST_MODE_KEY = flags[SENDER_COLLECT_FEATURE]
  *
  * Value Type: 1
  */
-export const FORCE_URLENCODED_KEY = flags[SENDER_COLLECT_FEATURE]
+export const FORCE_URLENCODED_KEY = flags.SENDER_COLLECT_FEATURE
     ? '_fue'
     : 'force-urlencoded';
 

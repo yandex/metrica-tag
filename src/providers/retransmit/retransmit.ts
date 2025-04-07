@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { TELEMETRY_FEATURE } from 'generated/features';
 import type { RetransmitInfo } from 'src/middleware/retransmit';
 import { getSender } from 'src/sender';
 import type { SenderInfo } from 'src/sender/SenderInfo';
@@ -51,7 +50,7 @@ export const useRetransmitProvider = (
             },
         };
 
-        if (flags[TELEMETRY_FEATURE] && req.telemetry) {
+        if (flags.TELEMETRY_FEATURE && req.telemetry) {
             senderInfo.telemetry = telemetry(req.telemetry);
         }
 

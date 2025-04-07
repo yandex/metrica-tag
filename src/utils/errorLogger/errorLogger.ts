@@ -1,4 +1,3 @@
-import { PREPROD_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import { AnyFunc } from 'src/utils/function/types';
 import { handleError } from './handleError';
@@ -14,7 +13,7 @@ export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
 ): FN => {
     const defaultFn: any = throwFunction;
     let callFn = fn || defaultFn;
-    if (flags[PREPROD_FEATURE]) {
+    if (flags.PREPROD_FEATURE) {
         callFn = fn
             ? executionTimeErrorDecorator(callFn, scopeName, ctx, callContext)
             : callFn;

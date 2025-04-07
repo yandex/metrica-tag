@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { isNativeFunction } from '../function/isNativeFunction/isNativeFunction';
 import { UNCATCHABLE_ERROR_PROPERTY } from './consts';
 import { bindThisForMethodTest } from '../function/bind/bind';
@@ -39,7 +38,7 @@ type httpCtx = {
     responseText?: string;
 };
 
-export const createError = flags[POLYFILLS_FEATURE]
+export const createError = flags.POLYFILLS_FEATURE
     ? createErrorWin(window)
     : (message: string, uncatchable = false) => {
           const error = new Error(message) as LoggerError;

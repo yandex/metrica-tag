@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { getCounterInstance } from 'src/utils/counter/getInstance';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
 import { bindArgs } from 'src/utils/function/bind';
@@ -47,7 +46,7 @@ const handleEvent = (
         return;
     }
 
-    if (flags[DEBUG_EVENTS_FEATURE]) {
+    if (flags.DEBUG_EVENTS_FEATURE) {
         dispatchDebuggerEvent(ctx, {
             ['counterKey']: counterKey,
             ['name']: 'ecommerce',

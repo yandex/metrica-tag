@@ -1,9 +1,4 @@
 import { flags } from '@inject';
-import {
-    BEACON_TRANSPORT_FEATURE,
-    FETCH_FEATURE,
-    JSONP_FEATURE,
-} from 'generated/features';
 import { useBeacon } from './beacon';
 import { useJsonp } from './jsonp';
 import { useFetch } from './fetch';
@@ -41,21 +36,21 @@ export const TRANSPORTS_MAP: Partial<TransportMap> = {
     },
 };
 
-if (flags[FETCH_FEATURE]) {
+if (flags.FETCH_FEATURE) {
     TRANSPORTS_MAP[FETCH_TRANSPORT_ID] = {
         id: 1,
         check: useFetch,
     };
 }
 
-if (flags[BEACON_TRANSPORT_FEATURE]) {
+if (flags.BEACON_TRANSPORT_FEATURE) {
     TRANSPORTS_MAP[BEACON_TRANSPORT_ID] = {
         id: 0,
         check: useBeacon,
     };
 }
 
-if (flags[JSONP_FEATURE]) {
+if (flags.JSONP_FEATURE) {
     TRANSPORTS_MAP[JSONP_TRANSPORT_ID] = {
         id: 3,
         check: useJsonp,

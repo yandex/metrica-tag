@@ -40,7 +40,6 @@ import {
     getLoggerFn,
 } from 'src/providers/debugConsole/debugConsole';
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { toZeroOrOne } from 'src/utils/boolean';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { getTargetLink } from 'src/utils/dom/targetLink';
@@ -147,7 +146,7 @@ export const sendClickLink = (
         prefix = 'Ext link';
     }
 
-    if (flags[DEBUG_EVENTS_FEATURE]) {
+    if (flags.DEBUG_EVENTS_FEATURE) {
         dispatchDebuggerEvent(ctx, {
             ['counterKey']: getCounterKey(counterOptions),
             ['name']: 'event',

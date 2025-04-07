@@ -1,10 +1,5 @@
 import { flags } from '@inject';
 import {
-    ACCURATE_TRACK_BOUNCE_METHOD_FEATURE,
-    PREPROD_FEATURE,
-    TELEMETRY_FEATURE,
-} from 'generated/features';
-import {
     NOT_BOUNCE_TELEMETRY_EXP_BR_KEY,
     WATCH_URL_PARAM,
     ARTIFICIAL_BR_KEY,
@@ -64,7 +59,7 @@ const useNotBounceProviderRaw = (
 ): ProviderResult => {
     let isExperiment = false;
     let defaultTimeout = DEFAULT_NOT_BOUNCE_TIMEOUT;
-    if (flags[PREPROD_FEATURE]) {
+    if (flags.PREPROD_FEATURE) {
         const uid = getUid(ctx, counterOpt);
         isExperiment = parseDecimalInt(uid.substr(uid.length - 1) || '0') < 5;
         if (isExperiment) {
@@ -138,7 +133,7 @@ const useNotBounceProviderRaw = (
                     },
                 };
 
-                if (flags[PREPROD_FEATURE] && flags[TELEMETRY_FEATURE]) {
+                if (flags.PREPROD_FEATURE && flags.TELEMETRY_FEATURE) {
                     addTelemetryToSenderParams(
                         senderOpt,
                         NOT_BOUNCE_TELEMETRY_EXP_BR_KEY,
@@ -201,7 +196,7 @@ const useNotBounceProviderRaw = (
         [UNSUBSCRIBE_PROPERTY]: destroy!,
     };
 
-    if (flags[ACCURATE_TRACK_BOUNCE_METHOD_FEATURE]) {
+    if (flags.ACCURATE_TRACK_BOUNCE_METHOD_FEATURE) {
         providerResult[METHOD_NAME_ACCURATE_TRACK_BOUNCE] = accurateTrackBounce;
     }
 

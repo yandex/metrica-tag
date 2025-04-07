@@ -1,4 +1,3 @@
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 
 /**
@@ -27,14 +26,14 @@ export const BUILD_VERSION_BR_KEY = 'v';
  *
  * Value Type: string
  */
-export const UID_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'cid' : 'u';
+export const UID_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'cid' : 'u';
 
 /**
  * Timezone
  *
  * Value Type: number
  */
-export const TIMEZONE_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'tz' : 'z';
+export const TIMEZONE_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'tz' : 'z';
 
 /**
  * Timestamp
@@ -55,4 +54,4 @@ export const SECONDS_BR_KEY = 'et';
  *
  * Value Type: string
  */
-export const VIEWPORT_SIZE_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'vp' : 'w';
+export const VIEWPORT_SIZE_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'vp' : 'w';

@@ -1,7 +1,7 @@
-import { isUndefined, isNil } from 'src/utils/object';
 import { bindArg } from 'src/utils/function/bind';
-import { firstArg } from 'src/utils/function/identity';
 import { curry2 } from 'src/utils/function/curry';
+import { firstArg } from 'src/utils/function/identity';
+import { isNil, isUndefined } from 'src/utils/object';
 
 export type FlagData = Record<string, string | number | null>;
 
@@ -35,6 +35,6 @@ const storageFn = (
 
 export type FlagStorage = ReturnType<typeof storageFn>;
 
-export const flagStorage = curry2(storageFn) as any as (
+export const flagStorage = curry2(storageFn) as (
     serialize: (data: FlagData) => string,
 ) => (initialData?: FlagData | null) => FlagStorage;

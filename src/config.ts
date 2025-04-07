@@ -1,12 +1,11 @@
 import { isIE as isIEFn } from 'src/utils/browser/browser';
-import { LOCAL_FEATURE } from 'generated/features';
 import { flags, argOptions, getVersion } from '@inject';
 import { Constructor } from 'src/types';
 
 const constructorName: Constructor =
     argOptions.construct || `Metr${argOptions.version}`;
 
-const isTestBuild = flags[LOCAL_FEATURE] && typeof argOptions === 'object';
+const isTestBuild = flags.LOCAL_FEATURE && typeof argOptions === 'object';
 
 export const host = argOptions.host || 'localhost:3030';
 

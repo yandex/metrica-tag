@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { mix } from 'src/utils/object';
 import { CounterOptions, getCounterKey } from '../counterOptions';
@@ -29,7 +28,7 @@ export const setSettings = (
         rawSettings,
     );
 
-    if (flags[DEBUG_EVENTS_FEATURE]) {
+    if (flags.DEBUG_EVENTS_FEATURE) {
         dispatchDebuggerEvent(ctx, {
             ['counterKey']: counterKey,
             ['name']: 'counterSettings',

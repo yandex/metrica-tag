@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { bindArg } from 'src/utils/function/bind';
 import { toNativeOrFalse } from 'src/utils/function/isNativeFunction';
 import { Repeat } from './types';
@@ -20,7 +19,7 @@ const callNativeOrPoly = nativeRepeat
           nativeRepeat.call(inputString, count)
     : repeatPoly;
 
-export const repeat: Repeat = flags[POLYFILLS_FEATURE]
+export const repeat: Repeat = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : (inputString: string, count: number) =>
           String.prototype.repeat.call(inputString, count);

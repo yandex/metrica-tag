@@ -1,4 +1,3 @@
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import {
     Middleware,
@@ -18,7 +17,7 @@ import { senderCollectInfo } from './senderCollectInfo';
 import { senderWatchInfo } from './senderWatchInfo';
 import { addMiddlewareFor } from './utils';
 
-const hitSenderInfo = flags[SENDER_COLLECT_FEATURE]
+const hitSenderInfo = flags.SENDER_COLLECT_FEATURE
     ? senderCollectInfo
     : senderWatchInfo;
 

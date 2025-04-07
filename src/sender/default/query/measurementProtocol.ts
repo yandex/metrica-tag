@@ -1,4 +1,3 @@
-import { TELEMETRY_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import {
     TRANSPORT_ID_BR_KEY,
@@ -191,7 +190,7 @@ export const createMPQuery = (
         );
     }
 
-    if (flags[TELEMETRY_FEATURE]) {
+    if (flags.TELEMETRY_FEATURE) {
         const { telemetry } = senderInfo;
         if (telemetry) {
             mix(

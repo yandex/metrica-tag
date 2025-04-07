@@ -1,5 +1,4 @@
 import { isFunction } from 'src/utils/object/assertions';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import type {
     Bind,
@@ -78,7 +77,7 @@ const callBind = function bindDecorator(bindFunc: AnyFunc): Bind {
 };
 const callNativeOrPoly = nativeBind ? callBind(nativeBind) : bindPoly;
 
-export const bind: Bind = flags[POLYFILLS_FEATURE]
+export const bind: Bind = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : callBind(Function.prototype.bind);
 

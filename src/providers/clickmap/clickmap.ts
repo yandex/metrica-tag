@@ -1,4 +1,3 @@
-import { SENDER_COLLECT_FEATURE, TELEMETRY_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import {
     CLICKMAP_POINTER_PARAM,
@@ -129,7 +128,7 @@ const sendClick = (
     sender: GetSenderType<typeof CLICKMAP_PROVIDER>,
     counterOptions: CounterOptions,
 ) => {
-    const resource = flags[SENDER_COLLECT_FEATURE]
+    const resource = flags.SENDER_COLLECT_FEATURE
         ? CLICKMAP_RESOURCE
         : `${CLICKMAP_RESOURCE}/${counterOptions.id}`;
     const measurementProtocolParams = {
@@ -143,7 +142,7 @@ const sendClick = (
         [CLICKMAP_URL_PARAM]: url,
         [CLICKMAP_POINTER_PARAM]: pointerClick,
     };
-    const urlParams: UrlParams = flags[SENDER_COLLECT_FEATURE]
+    const urlParams: UrlParams = flags.SENDER_COLLECT_FEATURE
         ? measurementProtocolParams
         : watchApiParams;
     const senderInfo: SenderInfo = {
@@ -184,7 +183,7 @@ export const useClickMapProviderBase = (
                 return;
             }
 
-            if (flags[TELEMETRY_FEATURE]) {
+            if (flags.TELEMETRY_FEATURE) {
                 const globalStorage = getGlobalStorage(ctx);
                 const { clicks, x, y } = globalStorage.getVal(
                     GLOBAL_STORAGE_CLICKS_KEY,

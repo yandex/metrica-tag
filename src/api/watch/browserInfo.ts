@@ -1,4 +1,3 @@
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import { NOINDEX_PARAM } from './urlParams';
 
@@ -60,7 +59,7 @@ export const NOT_BOUNCE_CLIENT_TIME_BR_KEY = 'cl';
  *
  * Value Type: 1
  */
-export const IS_DOWNLOAD_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'dwl' : 'dl';
+export const IS_DOWNLOAD_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'dwl' : 'dl';
 
 /**
  * External link click event
@@ -88,7 +87,7 @@ export const NOINDEX_BR_KEY = NOINDEX_PARAM;
  *
  * Value Type: string
  */
-export const TITLE_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'dt' : 't';
+export const TITLE_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'dt' : 't';
 
 /**
  * A flag indicating prerender state being registered
@@ -123,7 +122,7 @@ export const FALSE_URL_BR_KEY = 'fu';
  *
  * Value Type: string
  */
-export const DOCUMENT_ENCODING_BR_KEY = flags[SENDER_COLLECT_FEATURE]
+export const DOCUMENT_ENCODING_BR_KEY = flags.SENDER_COLLECT_FEATURE
     ? 'de'
     : 'en';
 
@@ -132,7 +131,7 @@ export const DOCUMENT_ENCODING_BR_KEY = flags[SENDER_COLLECT_FEATURE]
  *
  * Value Type: string
  */
-export const BROWSER_LANGUAGE_BR_KEY = flags[SENDER_COLLECT_FEATURE]
+export const BROWSER_LANGUAGE_BR_KEY = flags.SENDER_COLLECT_FEATURE
     ? 'ul'
     : 'la';
 
@@ -176,7 +175,7 @@ export const COOKIES_ENABLED_BR_KEY = 'c';
  *
  * Value Type: number
  */
-export const RANDOM_NUMBER_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'z' : 'rn';
+export const RANDOM_NUMBER_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'z' : 'rn';
 
 /**
  * Random number in a sequence within a single page view
@@ -204,7 +203,7 @@ export const TURBO_PAGE_ID_BR_KEY = 'tpid';
  *
  * Value Type: string
  */
-export const SCREEN_SIZE_BR_KEY = flags[SENDER_COLLECT_FEATURE] ? 'sr' : 's';
+export const SCREEN_SIZE_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'sr' : 's';
 
 /**
  * Device pixel ratio
@@ -225,9 +224,7 @@ export const IS_IFRAME_BR_KEY = 'ifr';
  *
  * Value Type: 1
  */
-export const IS_JAVA_ENABLED_BR_KEY = flags[SENDER_COLLECT_FEATURE]
-    ? 'je'
-    : 'j';
+export const IS_JAVA_ENABLED_BR_KEY = flags.SENDER_COLLECT_FEATURE ? 'je' : 'j';
 
 /**
  * Is iframe context of the same origin as top window

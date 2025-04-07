@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { TELEMETRY_FEATURE } from 'generated/features';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
 import { config, host } from 'src/config';
 import { MiddlewareGetter } from 'src/middleware/types';
@@ -70,7 +69,7 @@ export const registerRequest = (
         [LS_HID]: getHid(ctx),
     };
 
-    if (flags[TELEMETRY_FEATURE] && telemetry) {
+    if (flags.TELEMETRY_FEATURE && telemetry) {
         reqList[retransmitIndex][LS_TELEMETRY] = telemetry.ctx();
     }
 

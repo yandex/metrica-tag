@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { TRACK_HASH_FEATURE } from 'generated/features';
 import { commonMiddlewares, providerMiddlewareList } from 'src/middleware';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
@@ -22,7 +21,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[TRACK_HASH_FEATURE]) {
+    if (flags.TRACK_HASH_FEATURE) {
         providersSync.push(useTrackHash);
         providerMiddlewareList[TRACK_HASH_PROVIDER] = commonMiddlewares;
         providerMap[TRACK_HASH_PROVIDER] = useSenderWatch;

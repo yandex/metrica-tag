@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { ARTIFICIAL_HIT_FEATURE } from 'generated/features';
 import { commonMiddlewares, providerMiddlewareList } from 'src/middleware';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
@@ -21,7 +20,7 @@ declare module 'src/sender/types' {
 }
 
 export const initProvider = () => {
-    if (flags[ARTIFICIAL_HIT_FEATURE]) {
+    if (flags.ARTIFICIAL_HIT_FEATURE) {
         providersSync.push(ctxErrorLogger('p.ar', artificialHitProvider));
         providerMap[ARTIFICIAL_HIT_PROVIDER] = useSenderWatch;
         providerMiddlewareList[ARTIFICIAL_HIT_PROVIDER] = commonMiddlewares;

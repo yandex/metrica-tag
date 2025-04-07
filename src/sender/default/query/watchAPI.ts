@@ -1,4 +1,3 @@
-import { TELEMETRY_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 import {
     TRANSPORT_ID_BR_KEY,
@@ -24,7 +23,7 @@ export const createWatchQuery = (
             .serialize();
     }
 
-    if (flags[TELEMETRY_FEATURE]) {
+    if (flags.TELEMETRY_FEATURE) {
         if (!query[TELEMETRY_QUERY_KEY]) {
             const { telemetry } = senderInfo;
             if (telemetry) {

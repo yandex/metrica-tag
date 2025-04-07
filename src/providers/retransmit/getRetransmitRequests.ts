@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { TELEMETRY_FEATURE } from 'generated/features';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/watch';
 import { dirtyReduce } from 'src/utils/array/reduce';
 import { cSome } from 'src/utils/array/some';
@@ -63,7 +62,7 @@ export const getRetransmitRequestsRaw = (ctx: Window): RetransmitInfo[] => {
                     counterType: req[LS_COUNTER_TYPE],
                 };
 
-                if (flags[TELEMETRY_FEATURE] && req[LS_TELEMETRY]) {
+                if (flags.TELEMETRY_FEATURE && req[LS_TELEMETRY]) {
                     parsedRequest.telemetry = req[LS_TELEMETRY];
                 }
 

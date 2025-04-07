@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { CLICKMAP_RESOURCE } from 'src/providers/clickmap/const';
 import { COLLECT_RESOURCE } from 'src/middleware/senderCollectInfo';
 import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
@@ -16,6 +15,6 @@ export const SENDER_RETRANSMIT = 'r';
  * NOTE: The restriction is necessary to prevent attempts to retransmit
  * requests of a format a counter does not support.
  */
-export const RETRANSMITTABLE_RESOURCE_CALLBACKS = flags[SENDER_COLLECT_FEATURE]
+export const RETRANSMITTABLE_RESOURCE_CALLBACKS = flags.SENDER_COLLECT_FEATURE
     ? [equal(COLLECT_RESOURCE)]
     : [startsWithString(WATCH_RESOURCE), startsWithString(CLICKMAP_RESOURCE)];

@@ -1,14 +1,6 @@
 import { parse as parseJson } from 'src/utils/json';
 import { getElemCreateFunction, getRootElement } from 'src/utils/dom/dom';
 import { getGlobalStorage } from 'src/storage/global/getGlobal';
-import {
-    CLICK_TRACKING_FEATURE,
-    LOCAL_FEATURE,
-    SUBMIT_TRACKING_FEATURE,
-    CHECK_STATUS_FEATURE,
-    REMOTE_CONTROL_FEATURE,
-    REMOTE_CONTROL_BLOCK_HELPERS_FEATURE,
-} from 'generated/features';
 import { memo } from 'src/utils/function/memo';
 import { getPath } from 'src/utils/object';
 import { cEvent } from 'src/utils/events/events';
@@ -213,10 +205,10 @@ export const setupUtilsAndLoadScript = (
     isBlockUtilsEnabled?: boolean,
 ) => {
     if (
-        flags[CLICK_TRACKING_FEATURE] ||
-        flags[SUBMIT_TRACKING_FEATURE] ||
-        flags[REMOTE_CONTROL_FEATURE] ||
-        flags[CHECK_STATUS_FEATURE]
+        flags.CLICK_TRACKING_FEATURE ||
+        flags.SUBMIT_TRACKING_FEATURE ||
+        flags.REMOTE_CONTROL_FEATURE ||
+        flags.CHECK_STATUS_FEATURE
     ) {
         const globalConfig = getGlobalStorage(ctx);
         const utils: Record<
@@ -225,7 +217,7 @@ export const setupUtilsAndLoadScript = (
         > = {};
 
         utils['getCachedTags'] = getCachedTags;
-        if (flags[SUBMIT_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
+        if (flags.SUBMIT_TRACKING_FEATURE || flags.REMOTE_CONTROL_FEATURE) {
             utils['form'] = {
                 [UTILS_CLOSEST_KEY]: bindArg(ctx, closestForm),
                 [UTILS_SELECT_KEY]: selectForms,
@@ -233,10 +225,10 @@ export const setupUtilsAndLoadScript = (
             };
         }
         if (
-            flags[REMOTE_CONTROL_BLOCK_HELPERS_FEATURE] &&
-            (flags[REMOTE_CONTROL_FEATURE] ||
-                flags[CLICK_TRACKING_FEATURE] ||
-                flags[SUBMIT_TRACKING_FEATURE]) &&
+            flags.REMOTE_CONTROL_BLOCK_HELPERS_FEATURE &&
+            (flags.REMOTE_CONTROL_FEATURE ||
+                flags.CLICK_TRACKING_FEATURE ||
+                flags.SUBMIT_TRACKING_FEATURE) &&
             isBlockUtilsEnabled
         ) {
             utils['block'] = {
@@ -245,14 +237,14 @@ export const setupUtilsAndLoadScript = (
                 [UTILS_GET_DATA_KEY]: bindArg(ctx, getTextContainerData),
             };
         }
-        if (flags[CLICK_TRACKING_FEATURE] || flags[REMOTE_CONTROL_FEATURE]) {
+        if (flags.CLICK_TRACKING_FEATURE || flags.REMOTE_CONTROL_FEATURE) {
             utils['button'] = {
                 [UTILS_CLOSEST_KEY]: bindArg(ctx, closestButton),
                 [UTILS_SELECT_KEY]: selectButtons,
                 [UTILS_GET_DATA_KEY]: bindArg(ctx, getButtonData),
             };
         }
-        if (flags[CHECK_STATUS_FEATURE]) {
+        if (flags.CHECK_STATUS_FEATURE) {
             utils['status'] = {
                 [UTILS_CHECK_STATUS_KEY]: bindArgs(
                     [ctx, parseDecimalInt(counterId)],
@@ -312,7 +304,7 @@ export const onMessage = (ctx: ExtendedWindow, event: MessageEvent) => {
 
     const isMetrikaOrigin = isAllowedOrigin(origin);
 
-    if (!flags[LOCAL_FEATURE] && !isMetrikaOrigin) {
+    if (!flags.LOCAL_FEATURE && !isMetrikaOrigin) {
         return;
     }
 

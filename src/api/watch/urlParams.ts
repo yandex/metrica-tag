@@ -1,4 +1,3 @@
-import { SENDER_COLLECT_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 
 export {
@@ -11,7 +10,7 @@ export {
  *
  * Value Type: string
  */
-export const WATCH_REFERER_PARAM = flags[SENDER_COLLECT_FEATURE]
+export const WATCH_REFERER_PARAM = flags.SENDER_COLLECT_FEATURE
     ? 'dr'
     : 'page-ref';
 
@@ -41,7 +40,7 @@ export const DEFER_KEY = 'nohit';
  *
  * Value Type: string
  */
-export const REQUEST_BODY_KEY = flags[SENDER_COLLECT_FEATURE]
+export const REQUEST_BODY_KEY = flags.SENDER_COLLECT_FEATURE
     ? '_pa'
     : 'site-info';
 

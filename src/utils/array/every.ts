@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { Every, EveryCallback } from './types';
 import { cReduce } from './reduce';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
@@ -21,7 +20,7 @@ const callNativeOrPoly: Every = nativeEvery
           nativeEvery.call(array, fn)
     : everyPoly;
 
-export const cEvery: Every = flags[POLYFILLS_FEATURE]
+export const cEvery: Every = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : <T>(fn: EveryCallback<T>, array: ArrayLike<T>) =>
           Array.prototype.every.call(array, fn);

@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { Filter, FilterCallback, nullable } from './types';
 import { curry2 } from '../function/curry';
 import { reducePoly } from './reduce';
@@ -26,7 +25,7 @@ const callNativeOrPoly: Filter = nativeFilter
           nativeFilter.call(array, predicate)
     : filterPoly;
 
-export const cFilter: Filter = flags[POLYFILLS_FEATURE]
+export const cFilter: Filter = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : <T>(predicate: FilterCallback<T>, array: ArrayLike<T>) =>
           Array.prototype.filter.call(array, predicate);

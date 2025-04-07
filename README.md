@@ -68,7 +68,7 @@ export const initProvider = () => {
     /* The code is wrapped by a feature flag.
        If the feature is not included into a build, the code is cut off by rollup.
        The resultant empty function is cut off as well */
-    if (flags[SOME_NEW_FEATURE]) {
+    if (flags.SOME_NEW_FEATURE) {
         // Required code
         providersSync.push(someNewProvider);
 

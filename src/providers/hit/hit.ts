@@ -13,11 +13,6 @@ import { setSettings } from 'src/utils/counterSettings/counterSettings';
 import type { TransportResponse } from 'src/transport/types';
 import { getLocation } from 'src/utils/location/location';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
-import {
-    ARTIFICIAL_HIT_FEATURE,
-    PARAMS_FEATURE,
-    USER_PARAMS_FEATURE,
-} from 'generated/features';
 import { flags } from '@inject';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { bindArgs } from 'src/utils/function/bind';
@@ -50,16 +45,16 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
         middlewareInfo: {},
     };
 
-    if (flags[PARAMS_FEATURE]) {
+    if (flags.PARAMS_FEATURE) {
         senderOpt.middlewareInfo!.params = counterOpt.params;
     }
 
-    if (flags[USER_PARAMS_FEATURE]) {
+    if (flags.USER_PARAMS_FEATURE) {
         senderOpt.middlewareInfo!.userParams = counterOpt.userParams;
     }
 
     if (
-        flags[ARTIFICIAL_HIT_FEATURE] &&
+        flags.ARTIFICIAL_HIT_FEATURE &&
         counterOpt.counterDefer &&
         senderOpt.urlParams
     ) {

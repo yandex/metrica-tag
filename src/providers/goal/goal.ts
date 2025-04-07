@@ -14,7 +14,6 @@ import { parseUrl } from 'src/utils/url';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { isFunction } from 'src/utils/object';
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE } from 'generated/features';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { noop } from 'src/utils/function/noop';
 import { getArtificialState } from '../artificialHit/artificialHit';
@@ -121,7 +120,7 @@ export const useGoal = ctxErrorLogger(
                     if (shouldLog) {
                         logGoals();
                     }
-                    if (flags[DEBUG_EVENTS_FEATURE]) {
+                    if (flags.DEBUG_EVENTS_FEATURE) {
                         dispatchDebuggerEvent(ctx, {
                             ['counterKey']: getCounterKey(counterOptions),
                             ['name']: 'event',

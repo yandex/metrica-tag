@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_FEATURE } from 'generated/features';
 import { Reduce, ReduceCallback } from './types';
 import { bindArgs } from '../function/bind/bind';
 import { toNativeOrFalse } from '../function/isNativeFunction/toNativeOrFalse';
@@ -29,7 +28,7 @@ const callNativeOrPoly = nativeReduce
           )
     : reducePoly;
 
-const baseReduce: Reduce = flags[POLYFILLS_FEATURE]
+const baseReduce: Reduce = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
     : <T, U>(fn: ReduceCallback<T, U>, first: U, array?: ArrayLike<T>) =>
           (

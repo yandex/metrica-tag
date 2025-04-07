@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { CLICK_MAP_FEATURE } from 'generated/features';
 import {
     BUILD_FLAGS_BR_KEY,
     BUILD_VERSION_BR_KEY,
@@ -43,7 +42,7 @@ declare module 'src/utils/counterOptions/types' {
 }
 
 export const initProvider = () => {
-    if (flags[CLICK_MAP_FEATURE]) {
+    if (flags.CLICK_MAP_FEATURE) {
         providersSync.push(useClickmapProvider);
         providerMap[CLICKMAP_PROVIDER] =
             useMiddlewareBasedSender(SENDER_CLICKMAP);

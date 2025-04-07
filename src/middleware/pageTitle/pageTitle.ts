@@ -6,7 +6,6 @@ import { getPath } from 'src/utils/object';
 import { getNativeFunction } from 'src/utils/function/isNativeFunction';
 import { config } from 'src/config';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { SEND_TITLE_FEATURE } from 'generated/features';
 import { flags } from '@inject';
 
 declare module 'src/sender/SenderInfo' {
@@ -22,7 +21,7 @@ export const setTitle = (
     senderParams: SenderInfo,
     counterOpts?: CounterOptions,
 ) => {
-    if (flags[SEND_TITLE_FEATURE] && counterOpts && !counterOpts.sendTitle) {
+    if (flags.SEND_TITLE_FEATURE && counterOpts && !counterOpts.sendTitle) {
         return;
     }
 

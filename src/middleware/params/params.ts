@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { DEBUG_EVENTS_FEATURE, TURBO_PARAMS_FEATURE } from 'generated/features';
 import { DEFER_KEY, PAGE_VIEW_BR_KEY, REQUEST_BODY_KEY } from 'src/api/watch';
 import { config } from 'src/config';
 import { MiddlewareGetter } from 'src/middleware/types';
@@ -43,7 +42,7 @@ const handleParams = (
     const { params } = senderParams.middlewareInfo || {};
     const { transportInfo = {} } = senderParams;
     if (params) {
-        if (flags[TURBO_PARAMS_FEATURE]) {
+        if (flags.TURBO_PARAMS_FEATURE) {
             setTurboInfo(counterOptions, params);
         }
 
@@ -58,7 +57,7 @@ const handleParams = (
             if (!paramsString || senderParams.urlParams[DEFER_KEY]) {
                 return;
             }
-            if (flags[DEBUG_EVENTS_FEATURE]) {
+            if (flags.DEBUG_EVENTS_FEATURE) {
                 dispatchDebuggerEvent(ctx, {
                     ['counterKey']: getCounterKey(counterOptions),
                     ['name']: 'params',

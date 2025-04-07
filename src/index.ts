@@ -22,13 +22,6 @@ import { CounterObject } from 'src/utils/counter/type';
 import { consoleLog } from 'src/providers/debugConsole/debugConsole';
 import { runAsync } from 'src/utils/async/async';
 import {
-    TRACK_HASH_FEATURE,
-    TELEMETRY_FEATURE,
-    STACK_PROXY_FEATURE,
-    DEBUG_EVENTS_FEATURE,
-    TURBO_PARAMS_FEATURE,
-} from 'generated/features';
-import {
     getOriginalOptions,
     optionsKeysMap,
 } from 'src/providers/counterOptions';
@@ -73,7 +66,7 @@ const globalConfig = getGlobalStorage(window);
 
 globalConfig.setSafe(HIT_PARAMS_KEY, {});
 
-if (flags[TRACK_HASH_FEATURE]) {
+if (flags.TRACK_HASH_FEATURE) {
     globalConfig.setSafe(LAST_REFERRER_KEY, window.location.href);
 }
 
@@ -103,7 +96,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         const counterOptions = normalizeOptions(counterData, optionsKeysMap);
         const state = getCounterOptionsState(counterOptions);
         state.rawOptions = counterData;
-        if (flags[TURBO_PARAMS_FEATURE]) {
+        if (flags.TURBO_PARAMS_FEATURE) {
             setTurboInfo(counterOptions, counterOptions.params || {});
         }
 
@@ -115,7 +108,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             selfReturnDecorator,
         ];
 
-        if (flags[TELEMETRY_FEATURE]) {
+        if (flags.TELEMETRY_FEATURE) {
             decorators.unshift(telemetryCallCountDecorator);
         }
 
@@ -236,7 +229,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
         );
 
         cForEach(callProvider, providersSync);
-        if (flags[DEBUG_EVENTS_FEATURE]) {
+        if (flags.DEBUG_EVENTS_FEATURE) {
             dispatchDebuggerEvent(ctx, {
                 ['counterKey']: getCounterKey(counterOptions),
                 ['name']: 'counter',
@@ -265,6 +258,6 @@ if (window[yaNamespace] && MetrikaCounter) {
 }
 
 // NOTE: stackProxy shall be called last in order to operate on completely initialized script.
-if (flags[STACK_PROXY_FEATURE]) {
+if (flags.STACK_PROXY_FEATURE) {
     stackProxy(window);
 }

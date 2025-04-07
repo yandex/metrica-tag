@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_ES6_FEATURE } from 'generated/features';
 import { toNativeOrFalse } from 'src/utils/function/isNativeFunction';
 import { FindCallback, Find } from './types';
 
@@ -19,7 +18,7 @@ const callNativeOrPoly: Find = nativeFind
           nativeFind.call(array, fn)
     : findPoly;
 
-export const cFind: Find = flags[POLYFILLS_ES6_FEATURE]
+export const cFind: Find = flags.POLYFILLS_ES6_FEATURE
     ? callNativeOrPoly
     : <T>(fn: FindCallback<T>, array: ArrayLike<T>) =>
           Array.prototype.find.call(array, fn);

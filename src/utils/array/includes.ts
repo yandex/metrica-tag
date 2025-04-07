@@ -1,5 +1,4 @@
 import { flags } from '@inject';
-import { POLYFILLS_ES6_FEATURE } from 'generated/features';
 import { curry2SwapArgs, equal } from '../function/curry';
 import { filterPoly } from './filter';
 import { Includes } from './types';
@@ -17,7 +16,7 @@ const callNativeOrPoly = nativeIncludes
           nativeIncludes.call(array, searchElement, fromIndex)
     : includesPoly;
 
-export const includes: Includes = flags[POLYFILLS_ES6_FEATURE]
+export const includes: Includes = flags.POLYFILLS_ES6_FEATURE
     ? callNativeOrPoly
     : <T>(searchElement: T, array: ArrayLike<T>, fromIndex?: number) =>
           Array.prototype.includes.call(array, searchElement, fromIndex);
