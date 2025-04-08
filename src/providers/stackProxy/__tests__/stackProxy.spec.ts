@@ -2,25 +2,33 @@ import * as chai from 'chai';
 import sinon from 'sinon';
 import { config } from 'src/config';
 import { yaNamespace } from 'src/const';
-import * as dlObserver from 'src/utils/dataLayerObserver/dataLayerObserver';
-import * as counterInstance from 'src/utils/counter/getInstance';
-import * as counterOptions from 'src/utils/counterOptions/getCounterKey';
-import { metrikaNamespace } from 'src/storage/global/global';
-import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
 import { METHOD_NAME_HIT } from 'src/providers/artificialHit/const';
-import {
-    stackProxy,
-    STACK_FN_NAME,
-    STACK_DATA_LAYER_NAME,
-    checkStack,
-    getCounterAndOptions,
-    handleCall,
-} from '../stackProxy';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
+import { metrikaNamespace } from 'src/storage/global/global';
+import * as counterInstance from 'src/utils/counter/getInstance';
+import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
+import type { CounterObject } from 'src/utils/counter/type';
+import type { CounterOptions } from 'src/utils/counterOptions';
+import * as counterOptions from 'src/utils/counterOptions/getCounterKey';
+import * as dlObserver from 'src/utils/dataLayerObserver/dataLayerObserver';
+import { STACK_DATA_LAYER_NAME, STACK_FN_NAME } from '../const';
+import { checkStack, handleCall, stackProxy } from '../stackProxy';
+import type { StaticMethods } from '../types';
 
 describe('stackProxy', () => {
-    let observerStub: sinon.SinonStub<any, any>;
-    let counterKeyStub: sinon.SinonStub<any, any>;
-    let getCounterInstanceStub: sinon.SinonStub<any, any>;
+    let observerStub: sinon.SinonStub<
+        Parameters<typeof dlObserver.dataLayerObserver>,
+        ReturnType<typeof dlObserver.dataLayerObserver>
+    >;
+    let counterKeyStub: sinon.SinonStub<
+        Parameters<typeof counterOptions.getCounterKey>,
+        ReturnType<typeof counterOptions.getCounterKey>
+    >;
+    let getCounterInstanceStub: sinon.SinonStub<
+        Parameters<typeof counterInstance.getCounterInstance>,
+        ReturnType<typeof counterInstance.getCounterInstance>
+    >;
+
     beforeEach(() => {
         observerStub = sinon.stub(dlObserver, 'dataLayerObserver');
         counterKeyStub = sinon.stub(counterOptions, 'getCounterKey');
@@ -29,14 +37,16 @@ describe('stackProxy', () => {
             'getCounterInstance',
         );
     });
+
     afterEach(() => {
         observerStub.restore();
         counterKeyStub.restore();
         getCounterInstanceStub.restore();
     });
+
     it('handle items in dataLayer', () => {
-        const constructorSpy = sinon.stub();
-        const counters: Record<string, 1> = {};
+        const constructorSpy = sinon.stub<[CounterOptions], CounterObject>();
+        const counters: Record<string, CounterObject> = {};
         const win = {
             [yaNamespace]: {
                 [config.constructorName]: constructorSpy,
@@ -44,112 +54,123 @@ describe('stackProxy', () => {
                     [COUNTERS_GLOBAL_KEY]: counters,
                 },
             },
-        } as any as Window;
-        constructorSpy.callsFake(({ id }: { id: number }) => {
-            counters[`${id}:0`] = 1;
-            return 1;
-        });
+        } as unknown as Window;
         const hitSpy = sinon.spy().named('hitSpy');
-        getCounterInstanceStub.callsFake(
-            (_: Window, { id }: { id: number }) => {
-                if (!counters[`${id}:0`]) {
-                    return 0;
-                }
-                return {
-                    hit: hitSpy,
-                };
-            },
-        );
+        constructorSpy.callsFake(({ id }) => {
+            const counter = {
+                hit: hitSpy,
+            };
+            counters[`${id}:0`] = counter;
+            return counter;
+        });
+        getCounterInstanceStub.callsFake((_, { id }) => {
+            if (!counters[`${id}:0`]) {
+                return undefined;
+            }
+            return counters[`${id}:0`];
+        });
         const testId = Math.floor(Math.random() * 100);
         handleCall(win)([testId, false as any]);
         sinon.assert.notCalled(getCounterInstanceStub);
+
+        // Premature hit before init
         handleCall(win)([testId, METHOD_NAME_HIT]);
         sinon.assert.notCalled(constructorSpy);
+
         handleCall(win)([testId, 'init']);
         sinon.assert.calledOnce(constructorSpy);
+
+        // Duplicate counter
         handleCall(win)([testId, 'init']);
         sinon.assert.calledOnce(constructorSpy);
-        const {
-            args: [counterInfo],
-        }: any = constructorSpy.getCall(0);
-        chai.expect(counterInfo.id).to.be.equal(testId);
-        chai.expect(counterInfo.counterType).to.be.equal('0');
+        sinon.assert.calledWith(constructorSpy.getCall(0), {
+            id: testId,
+            counterType: DEFAULT_COUNTER_TYPE,
+        });
+
         handleCall(win)([testId, METHOD_NAME_HIT]);
         sinon.assert.notCalled(hitSpy);
+
         checkStack(win, {
             id: testId,
-            counterType: '0',
+            counterType: DEFAULT_COUNTER_TYPE,
         });
-        chai.expect(hitSpy.getCalls().length).to.be.equal(2);
+        sinon.assert.calledTwice(hitSpy);
     });
-    it('parse counter options', () => {
-        const win = {} as any as Window;
-        const testId = Math.floor(Math.random() * 100);
-        getCounterAndOptions(win, testId);
-        let {
-            args: [cWin, counterInfo],
-        }: any = getCounterInstanceStub.getCall(0);
-        chai.expect(counterInfo.id).to.be.equal(testId);
-        chai.expect(cWin).to.be.equal(win);
-        getCounterAndOptions(win, `${testId}`);
-        ({
-            args: [cWin, counterInfo],
-        } = getCounterInstanceStub.getCall(1));
-        chai.expect(counterInfo.id).to.be.equal(testId);
-        const testCounterType = '1';
-        getCounterAndOptions(win, `${testId}:${testCounterType}`);
-        ({
-            args: [cWin, counterInfo],
-        } = getCounterInstanceStub.getCall(2));
-        chai.expect(counterInfo.id).to.be.equal(testId);
-        chai.expect(counterInfo.counterType).to.be.equal(testCounterType);
+
+    it('handles static methods', () => {
+        const staticMethodSpy = sinon.stub<unknown[], void>();
+        const staticMethodName = 'someStaticMethod' as StaticMethods;
+        const win = {
+            [yaNamespace]: {
+                [config.constructorName]: {
+                    [staticMethodName]: staticMethodSpy,
+                },
+            },
+        } as unknown as Window;
+        const args = [1, 'a', []];
+        handleCall(win)([staticMethodName, ...args]);
+        sinon.assert.calledOnceWithExactly(staticMethodSpy, ...args);
     });
+
     it('add counters info when it inited', () => {
         counterKeyStub.returns('1');
-        const win = {} as any as Window;
+        const win = {} as Window;
+
         checkStack(win, {
             id: 1,
             counterType: '0',
         });
-        chai.expect(counterKeyStub.calledOnce).to.be.ok;
+        sinon.assert.calledOnce(counterKeyStub);
+
         checkStack(win, {
             id: 1,
             counterType: '0',
         });
+        sinon.assert.calledTwice(counterKeyStub);
     });
+
     it('handle push', () => {
-        const dataLayer: any[] = [];
+        const dataLayer: unknown[] = [];
         const win = {
             [STACK_FN_NAME]: {
                 [STACK_DATA_LAYER_NAME]: dataLayer,
             },
-        } as any as Window;
-        stackProxy(win);
-        chai.expect(observerStub.calledWith(win, dataLayer)).to.be.ok;
-    });
-    it('checks callbacks after init', () => {
-        const dataLayer: any[] = [];
-        const win = {
-            [STACK_FN_NAME]: () => {},
-        } as any as Window;
+        } as unknown as Window;
         stackProxy(win);
         sinon.assert.calledWith(observerStub, win, dataLayer);
-        stackProxy({} as any as Window);
+    });
+
+    it('checks callbacks after init', () => {
+        const dataLayer: unknown[] = [];
+        const win = {
+            [STACK_FN_NAME]: () => {},
+        } as unknown as Window;
+
+        stackProxy(win);
+        sinon.assert.calledWith(observerStub, win, dataLayer);
+
+        stackProxy({} as Window);
         sinon.assert.calledOnce(observerStub);
         chai.expect(
-            (win as any)[STACK_FN_NAME][STACK_DATA_LAYER_NAME],
+            (win as unknown as Record<string, Record<string, unknown>>)[
+                STACK_FN_NAME
+            ][STACK_DATA_LAYER_NAME],
         ).to.be.deep.eq([]);
     });
+
     it('checks existing of callbacks', () => {
-        const dataLayer: any[] = [];
+        const dataLayer: unknown[] = [];
         const win = {
             [STACK_FN_NAME]: {
                 [STACK_DATA_LAYER_NAME]: dataLayer,
             },
-        } as any as Window;
+        } as unknown as Window;
+
         stackProxy(win);
-        chai.expect(observerStub.calledWith(win, dataLayer)).to.be.ok;
-        stackProxy({} as any as Window);
-        chai.expect(observerStub.calledOnce).to.be.ok;
+        sinon.assert.calledWith(observerStub, win, dataLayer);
+
+        stackProxy({} as Window);
+        sinon.assert.calledOnce(observerStub);
     });
 });

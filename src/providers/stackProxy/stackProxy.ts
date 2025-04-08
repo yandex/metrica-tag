@@ -1,46 +1,32 @@
-import { ctxPath, getPath, mix } from 'src/utils/object';
-import { dataLayerObserver } from 'src/utils/dataLayerObserver/dataLayerObserver';
-import {
-    type CounterOptions,
-    getCounterKey,
-    isRsyaCounter,
-} from 'src/utils/counterOptions';
-import { getCounterInstance } from 'src/utils/counter/getInstance';
-import type { CounterObject } from 'src/utils/counter/type';
 import { config } from 'src/config';
 import { yaNamespace } from 'src/const';
-import { memo } from 'src/utils/function/memo';
-import { arrayMerge } from 'src/utils/array/merge';
-import { toArray } from 'src/utils/array/utils';
+import {
+    DEFAULT_COUNTER_TYPE,
+    RSYA_COUNTER_TYPE,
+} from 'src/providers/counterOptions/const';
 import { cForEach } from 'src/utils/array/map';
-import { cReduce } from 'src/utils/array/reduce';
-import { parseDecimalInt } from 'src/utils/number/number';
-import { stringIndexOf } from 'src/utils/string';
-import { constructObject } from 'src/utils/function/construct';
+import { toArray } from 'src/utils/array/utils';
+import { getCounterInstance } from 'src/utils/counter/getInstance';
+import { getCounterKey, isRsyaCounter } from 'src/utils/counterOptions';
+import type { CounterOptions } from 'src/utils/counterOptions/types';
+import { dataLayerObserver } from 'src/utils/dataLayerObserver/dataLayerObserver';
 import { bindThisForMethod } from 'src/utils/function/bind/bind';
-import { pipe } from 'src/utils/function/pipe';
+import { constructObject } from 'src/utils/function/construct';
 import { curry2 } from 'src/utils/function/curry';
+import { memo } from 'src/utils/function/memo';
+import { pipe } from 'src/utils/function/pipe';
+import { parseDecimalInt } from 'src/utils/number/number';
+import { ctxPath, getPath, isFunction, mix } from 'src/utils/object';
+import { stringIndexOf } from 'src/utils/string';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 import { consoleLog } from '../debugConsole/debugConsole';
-import { DEFAULT_COUNTER_TYPE, RSYA_COUNTER_TYPE } from '../counterOptions';
-
-export const STACK_FN_NAME = 'ym';
-export const STACK_DATA_LAYER_NAME = 'a';
-type CounterMethods = keyof CounterObject | 'init';
-export type StackCall = [number | string, CounterMethods, ...any[]] & {
-    /** Is call executed */
-    executed?: boolean;
-};
-export type StackProxyListener = (
-    /** Current window */
-    ctx: Window,
-    /** Counter options on initialization */
-    counterOptions: CounterOptions,
-    /** Arguments */
-    args: any[],
-    /** Counter instance */
-    counter?: CounterObject,
-) => boolean | undefined;
+import { STACK_DATA_LAYER_NAME, STACK_FN_NAME } from './const';
+import type {
+    CounterMethods,
+    StackCall,
+    StackCallOnInstance,
+    StackProxyListener,
+} from './types';
 
 const stackProxyListeners: Record<string, StackProxyListener[]> = {};
 
@@ -68,40 +54,70 @@ const getCounterIdFromSrc = pipe(
     ctxPath('1'),
 );
 
-export const getCounterAndOptions = (
-    ctx: Window,
+export const getCounterOptions = (
     counterKey: string | number,
-) => {
+): CounterOptions | undefined => {
     const counterKeyStr = `${counterKey}`;
-    const counterOptions: CounterOptions = {
-        id: 1,
-        counterType: DEFAULT_COUNTER_TYPE,
-    };
     const urlCounterId = getCounterIdFromSrc(counterKeyStr);
     if (urlCounterId) {
-        counterOptions.id = urlCounterId;
-    } else if (stringIndexOf(counterKeyStr, ':') === -1) {
-        const counterId = parseDecimalInt(counterKeyStr);
-        counterOptions.id = counterId;
-    } else {
-        const [id, classInfo] = counterKeyStr.split(':');
-        counterOptions.id = parseDecimalInt(id);
-        counterOptions.counterType = isRsyaCounter(classInfo)
-            ? RSYA_COUNTER_TYPE
-            : DEFAULT_COUNTER_TYPE;
+        return {
+            id: urlCounterId,
+            counterType: DEFAULT_COUNTER_TYPE,
+        };
     }
-    return [getCounterInstance(ctx, counterOptions), counterOptions] as const;
+
+    if (stringIndexOf(counterKeyStr, ':') === -1) {
+        const counterId = parseDecimalInt(counterKeyStr);
+        if (!counterId) {
+            return undefined;
+        }
+        return {
+            id: counterId,
+            counterType: DEFAULT_COUNTER_TYPE,
+        };
+    }
+
+    const [id, classInfo] = counterKeyStr.split(':');
+    const counterId = parseDecimalInt(id);
+    if (!counterId) {
+        return undefined;
+    }
+    return {
+        id: counterId,
+        counterType: isRsyaCounter(classInfo)
+            ? RSYA_COUNTER_TYPE
+            : DEFAULT_COUNTER_TYPE,
+    };
 };
 
 export const handleCall = curry2((ctx: Window, item: StackCall) => {
+    const arrayItem = toArray(item) as StackCall;
+    const [counterKeyOrStaticMethod, ...rest] = arrayItem;
+
+    const counterOptions = getCounterOptions(counterKeyOrStaticMethod);
     const anyCtx = ctx as any;
-    const state = getProxyState(ctx);
-    const [counterKey, method, ...args] = toArray(item) as StackCall;
+    const MetrikaConstructor = anyCtx[yaNamespace][config.constructorName];
+    if (!counterOptions) {
+        // Maybe static method
+        const method = counterKeyOrStaticMethod;
+        if (!isFunction(MetrikaConstructor[method])) {
+            return;
+        }
+
+        MetrikaConstructor[method](...rest);
+        return;
+    }
+
+    // Instance methods
+    const counterKey = counterKeyOrStaticMethod;
+    const [, method, ...args] = arrayItem as StackCallOnInstance;
     if (!method) {
         return;
     }
-    const [counter, counterOptions] = getCounterAndOptions(ctx, counterKey);
+
+    const counter = getCounterInstance(ctx, counterOptions);
     const stateKey = getCounterKey(counterOptions);
+    const state = getProxyState(ctx);
     if (!state[stateKey]) {
         state[stateKey] = {};
     }
@@ -110,18 +126,14 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
         return;
     }
 
-    if (stackProxyListeners[method]) {
-        const exit = cReduce(
-            (needExit, listener) => {
-                return (
-                    needExit || !!listener(ctx, counterOptions, args, counter)
-                );
-            },
-            false,
-            stackProxyListeners[method],
-        );
-        if (exit) {
-            return;
+    const listeners = stackProxyListeners[method];
+    if (listeners) {
+        for (let index = 0; index < listeners.length; index += 1) {
+            const listener = listeners[index];
+            const needExit = !!listener(ctx, counterOptions, args, counter);
+            if (needExit) {
+                return;
+            }
         }
     }
 
@@ -139,9 +151,9 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
 
         const options = args[0];
         const counterGlobalName = `yaCounter${counterOptions.id}`;
-        anyCtx[counterGlobalName] = new anyCtx[yaNamespace][
-            config.constructorName
-        ](mix({}, options, counterOptions));
+        anyCtx[counterGlobalName] = new MetrikaConstructor(
+            mix({}, options, counterOptions),
+        );
     } else if (counter && counter[method] && counterInfo.inited) {
         (counter[method] as any)(...args);
         item.executed = true;
@@ -151,7 +163,7 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
             stackList = [];
             counterInfo.stackList = stackList;
         }
-        stackList.push(arrayMerge([counterKey, method], args));
+        stackList.push(arrayItem);
     }
 });
 
