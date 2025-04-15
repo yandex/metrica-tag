@@ -39,6 +39,7 @@ export const callPoly = (
     return result;
 };
 
+// eslint-disable-next-line no-restricted-properties
 const nativeBind = toNativeOrFalse(Function.prototype.bind, 'bind');
 
 export const bindPoly = function b() {
@@ -79,7 +80,8 @@ const callNativeOrPoly = nativeBind ? callBind(nativeBind) : bindPoly;
 
 export const bind: Bind = flags.POLYFILLS_FEATURE
     ? callNativeOrPoly
-    : callBind(Function.prototype.bind);
+    : // eslint-disable-next-line no-restricted-properties
+      callBind(Function.prototype.bind);
 
 export const bindArgs = <FN extends AnyFunc, Args extends FirstNArg<FN>>(
     args: Args,

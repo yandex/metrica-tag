@@ -4,6 +4,7 @@ import {
     removeNonDigits,
     trimText,
 } from 'src/utils/string/remove';
+import { startsWith } from 'src/utils/string/startsWith';
 import {
     MAX_TEL_LENGTH,
     MIN_TEL_LENGTH,
@@ -48,7 +49,7 @@ export const processPhoneNumber = (
     if (
         digits.length < PHONE_MIN_VALID_DIGIT_CNT ||
         digits.length > PHONE_MAX_VALID_DIGIT_CNT ||
-        phone.startsWith('+8')
+        startsWith(phone, '+8')
     ) {
         return trimText(origPhone);
     }
