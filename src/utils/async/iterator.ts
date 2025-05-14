@@ -35,7 +35,7 @@ export const iterResume = <T, R>(rawParams: IterParams<T, R>) => {
 };
 
 // итерируем дальше
-export const iterNext = <T, R>(rawParams: IterParams<T, R>) => {
+export const iterNext = <T, R>(rawParams: IterParams<T, R>): R => {
     const params = rawParams;
     if (iterIsEnd(params)) {
         throwFunction(createError('i'));
@@ -47,7 +47,7 @@ export const iterNext = <T, R>(rawParams: IterParams<T, R>) => {
 
 export const iterForEach = curry2(
     <T, R>(
-        handler: (item: R, iterFn: AnyFunc) => T,
+        handler: (item: R, iterFn: AnyFunc) => void,
         params: IterParams<T, R>,
     ) => {
         const allResult: R[] = [];
@@ -63,8 +63,11 @@ export const iterForEach = curry2(
     },
 );
 
-export const iterPop = (<T, R>(handler: (a: IterParams<T, R>) => R) =>
-    (params: IterParams<T, R>) => {
+export const iterPop = curry2(
+    <T, R>(
+        handler: (a: IterParams<T, R>) => void,
+        params: IterParams<T, R>,
+    ) => {
         let result: R | undefined;
         while (params.itemList.length) {
             if (iterIsEnd(params)) {
@@ -75,39 +78,36 @@ export const iterPop = (<T, R>(handler: (a: IterParams<T, R>) => R) =>
             handler(params);
         }
         return result;
-    }) as any as <T, R>(handler: (a: T) => R) => (a: IterParams<T, R>) => R[];
+    },
+);
 
-export const iterPopUntilMaxTime = (<T, R>(ctx: Window, maxTime: number) =>
-    (params: IterParams<T, R>) => {
+export const iterPopUntilMaxTime =
+    (ctx: Window, maxTime: number) =>
+    <T, R>(params: IterParams<T, R>) => {
         const timer = TimeOne(ctx);
         const startTime = timer(getMs);
-        return iterPop<T, void>((popParams) => {
+        return iterPop<T, R>((popParams) => {
             const time = timer(getMs) - startTime;
             if (time >= maxTime) {
-                iterStop(popParams as any);
+                iterStop(popParams);
             }
         })(params);
-    }) as any as (
-    ctx: Window,
-    maxTime: number,
-) => <T, R>(params: IterParams<T, R>) => T[];
+    };
 
-export const iterForEachUntilMaxTime = (<T, R>(ctx: Window, maxTime: number) =>
-    (params: IterParams<T, R>) => {
+export const iterForEachUntilMaxTime =
+    (ctx: Window, maxTime: number) =>
+    <T, R>(params: IterParams<T, R>) => {
         const timer = TimeOne(ctx);
         const startTime = timer(getMs);
-        return (iterForEach as any)(
-            (val: any, iterFn: (a: (b: IterParams<T, R>) => any) => any) => {
+        return iterForEach<T, R>(
+            (val: R, iterFn: (a: (b: IterParams<T, R>) => any) => any) => {
                 const time = timer(getMs) - startTime;
                 if (time >= maxTime) {
                     iterFn(iterStop);
                 }
             },
         )(params);
-    }) as (
-    ctx: Window,
-    maxTime: number,
-) => <T, R>(params: IterParams<T, R>) => T[];
+    };
 
 // Собственно в чём суть этого решения - это обычный обход по мидлварам с next,
 // единственная разница в том, что он написан так чтобы развернуть рекурсию,
@@ -150,7 +150,5 @@ export const iterForOf = <Item, Result>(
         stopIter: false,
         iterCursor: 0,
     };
-    return cont(iterParams) as any as <R>(
-        fn: (a: IterParams<Item, Result>) => R,
-    ) => R;
+    return cont(iterParams) as <R>(fn: (a: IterParams<Item, Result>) => R) => R;
 };

@@ -3,6 +3,7 @@ import {
     iterIsEnd,
     iterForEachUntilMaxTime,
     iterResume,
+    iterPopUntilMaxTime,
 } from './iterator';
 import { ForkInterface, task } from './task';
 import { setDefer } from '../defer/defer';
@@ -49,7 +50,9 @@ export const executeIterator = <T>(
     ctx: Window,
     iterFn: <R>(a: (b: IterParams<T, any>) => R) => R,
     maxTime = 1,
-    iterLoop = iterForEachUntilMaxTime,
+    iterLoop:
+        | typeof iterForEachUntilMaxTime
+        | typeof iterPopUntilMaxTime = iterForEachUntilMaxTime,
 ) => {
     sync = maxTime === Infinity;
 
