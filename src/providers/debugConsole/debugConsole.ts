@@ -107,7 +107,7 @@ export const getLoggerFn = (
     counterOptions: CounterOptions,
     message: string,
     variables?: Record<string, string | number>,
-    params?: Record<string, any> | string,
+    params?: Record<string, any> | string | null,
 ) =>
     bindArgs(
         [

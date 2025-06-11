@@ -9,16 +9,17 @@ import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
 import { USER_ID_PARAM } from 'src/providers/setUserID/const';
 import { USER_PARAMS_KEY } from 'src/providers/userParams/const';
 import { getSender } from 'src/sender';
-import { isArray } from 'src/utils/array/isArray';
 import { includes } from 'src/utils/array/includes';
+import { isArray } from 'src/utils/array/isArray';
 import { cReduce } from 'src/utils/array/reduce';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
-import { noop } from 'src/utils/function/noop';
 import { argsToArray } from 'src/utils/function/args';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
+import { noop } from 'src/utils/function/noop';
 import { isCounterSilent } from 'src/utils/isCounterSilent';
+import { stringify } from 'src/utils/json/json';
 import { getLocation } from 'src/utils/location/location';
 import {
     cKeys,
@@ -29,17 +30,17 @@ import {
     mix,
 } from 'src/utils/object';
 import {
-    INTERNAL_PARAMS_KEY,
-    METHOD_NAME_PARAMS,
-    ParamsHandler,
-    PARAMS_PROVIDER,
-    YM_LOG_WHITELIST_KEYS,
-} from './const';
-import {
     PARAMS_CONSOLE_MESSAGE,
     SET_UID_CONSOLE_MESSAGE,
     USER_PARAMS_CONSOLE_MESSAGE,
 } from '../consoleRenderer/dictionary';
+import {
+    INTERNAL_PARAMS_KEY,
+    METHOD_NAME_PARAMS,
+    PARAMS_PROVIDER,
+    ParamsHandler,
+    YM_LOG_WHITELIST_KEYS,
+} from './const';
 
 /**
  * Normalized session parameters
@@ -118,7 +119,8 @@ export const rawParams = (
             const logMessageVariables: Record<string, string | number> = {
                 ['id']: counterOptions['id'],
             };
-            let paramsToLog: Record<string, any> | string | undefined = params;
+            let paramsToLog: Record<string, any> | string | null | undefined =
+                params;
             let userId = '';
 
             if (flags.SET_USER_ID_FEATURE) {
@@ -162,7 +164,7 @@ export const rawParams = (
                 shouldLogParams = !!cKeys(paramsToLog).length;
             }
 
-            paramsToLog = !userId ? JSON.stringify(paramsToLog) : undefined;
+            paramsToLog = !userId ? stringify(ctx, paramsToLog) : undefined;
 
             const logParams = getLoggerFn(
                 ctx,
