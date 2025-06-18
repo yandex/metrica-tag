@@ -1,18 +1,19 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
 import { CheckTransport, InternalTransportOptions } from 'src/transport/types';
-import { mix } from 'src/utils/object';
-import { PolyPromise } from 'src/utils/promise';
-import { setDeferBase } from 'src/utils/defer/base';
-import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { isSafari } from 'src/utils/browser/browser';
+import type { CounterOptions } from 'src/utils/counterOptions';
+import { setDeferBase } from 'src/utils/defer/base';
+import { clearDefer } from 'src/utils/defer/defer';
 import {
     getElemCreateFunction,
-    removeNode,
     getRootElement,
+    removeNode,
 } from 'src/utils/dom/dom';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { clearDefer } from 'src/utils/defer/defer';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { pipe } from 'src/utils/function/pipe';
+import { mix } from 'src/utils/object';
+import { PolyPromise } from 'src/utils/promise';
 import { getSrcUrl } from '../watchModes';
 
 const request = (
@@ -51,7 +52,10 @@ const request = (
     });
 };
 
-const useImage: CheckTransport = (ctx: Window) => {
+const useImage: CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => {
     const createFn = getElemCreateFunction(ctx);
     if (createFn) {
         const reqFnCreate = bindArgs([ctx, createFn], request);

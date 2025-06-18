@@ -1,22 +1,23 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
-import { PolyPromise } from 'src/utils/promise';
-import { getPath, mix } from 'src/utils/object';
-import { setDeferBase } from 'src/utils/defer/base';
-import {
-    InternalTransportOptions,
+import type {
     CheckTransport,
+    InternalTransportOptions,
     TransportResponse,
 } from 'src/transport/types';
-import { bindArgs, bindArg } from 'src/utils/function/bind';
+import type { CounterOptions } from 'src/utils/counterOptions';
+import { setDeferBase } from 'src/utils/defer/base';
+import { makeHttpError } from 'src/utils/errorLogger/createError';
 import {
     createKnownError,
     throwKnownError,
 } from 'src/utils/errorLogger/knownError';
-import { stringify } from 'src/utils/querystring';
 import { throwFunction } from 'src/utils/errorLogger/throwFunction';
-import { makeHttpError } from 'src/utils/errorLogger/createError';
-import { addQuery } from 'src/utils/url';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { noop } from 'src/utils/function/noop';
+import { getPath, mix } from 'src/utils/object';
+import { PolyPromise } from 'src/utils/promise';
+import { stringify } from 'src/utils/querystring';
+import { addQuery } from 'src/utils/url';
 import { WATCH_WMODE_JSON } from '../watchModes';
 
 const request = (
@@ -85,7 +86,10 @@ const request = (
     });
 };
 
-const useFetch: CheckTransport = (ctx: Window) => {
+const useFetch: CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => {
     if (ctx.fetch) {
         const Abort = getPath(ctx, 'AbortController');
         const requestFn = bindArgs(

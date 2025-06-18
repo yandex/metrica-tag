@@ -1,4 +1,5 @@
-import { WithRequiredProperties } from 'src/utils/types';
+import type { WithRequiredProperties } from 'src/utils/types';
+import type { CounterOptions } from 'src/utils/counterOptions';
 
 /**
  * Use this type if transportOptions will be transferred to defaultSender
@@ -41,4 +42,7 @@ export type TransportFn = (
     options: InternalTransportOptions,
 ) => Promise<TransportResponse>;
 
-export type CheckTransport = (ctx: Window) => false | TransportFn;
+export type CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => false | TransportFn;

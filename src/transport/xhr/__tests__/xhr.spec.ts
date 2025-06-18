@@ -1,11 +1,13 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import type { TransportFn } from 'src/transport/types';
-import * as json from 'src/utils/json/json';
-import * as isKnownErrorUtils from 'src/utils/errorLogger/knownError';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import * as errorLogger from 'src/utils/errorLogger/handleError';
+import * as isKnownErrorUtils from 'src/utils/errorLogger/knownError';
 import * as nativeFunctionUtils from 'src/utils/function/isNativeFunction/isNativeFunction';
-import { useXHR, SEND_METHOD_NAME } from '..';
+import * as json from 'src/utils/json/json';
+import { SEND_METHOD_NAME, useXHR } from '..';
 
 class MockXHR {
     private static bad = false;
@@ -64,6 +66,7 @@ class MockXHR {
 }
 
 describe('XHR', () => {
+    const opt: CounterOptions = { id: 123, counterType: DEFAULT_COUNTER_TYPE };
     const sandbox = sinon.createSandbox();
     const resp = {
         test: 'hi',
@@ -86,7 +89,7 @@ describe('XHR', () => {
     });
 
     it('should check XHR in ctx', () => {
-        const checkResult = useXHR({} as unknown as Window);
+        const checkResult = useXHR({} as Window, opt);
         chai.expect(checkResult).to.be.not.ok;
     });
     it('should check XHR in ctx descriptor fail', () => {
@@ -101,14 +104,18 @@ describe('XHR', () => {
                     },
                 },
             ) as unknown as Window,
+            opt,
         );
         chai.expect(checkResult).to.be.not.ok;
     });
     it('should check creds', () => {
         const XHRmockM = function myF() {};
-        const checkResult = useXHR({
-            XMLHttpRequest: XHRmockM,
-        } as unknown as Window);
+        const checkResult = useXHR(
+            {
+                XMLHttpRequest: XHRmockM,
+            } as unknown as Window,
+            opt,
+        );
         chai.expect(checkResult).to.be.not.ok;
     });
     it('should check good opera conditions', () => {
@@ -117,15 +124,18 @@ describe('XHR', () => {
 
             public send() {}
         }
-        const checkResult = useXHR({
-            XMLHttpRequest: XHRmockM,
-            location: {
-                host: 'привет.рф:12',
-            },
-            opera: {
-                version: () => '13.12',
-            },
-        } as unknown as Window);
+        const checkResult = useXHR(
+            {
+                XMLHttpRequest: XHRmockM,
+                location: {
+                    host: 'привет.рф:12',
+                },
+                opera: {
+                    version: () => '13.12',
+                },
+            } as unknown as Window,
+            opt,
+        );
         chai.expect(checkResult).to.be.ok;
     });
     it('should check bad opera conditions', () => {
@@ -134,25 +144,31 @@ describe('XHR', () => {
 
             public send() {}
         }
-        const checkResult = useXHR({
-            XMLHttpRequest: XHRmockM,
-            location: {
-                host: 'привет.рф:12',
-            },
-            opera: {
-                version: () => '12.12',
-            },
-        } as unknown as Window);
+        const checkResult = useXHR(
+            {
+                XMLHttpRequest: XHRmockM,
+                location: {
+                    host: 'привет.рф:12',
+                },
+                opera: {
+                    version: () => '12.12',
+                },
+            } as unknown as Window,
+            opt,
+        );
         chai.expect(checkResult).to.be.not.ok;
     });
     it('should send bad request', () => {
         MockXHR.setBroken(true);
-        const request = useXHR({
-            location: {
-                host: 'local:10202',
-            },
-            XMLHttpRequest: MockXHR,
-        } as unknown as Window) as TransportFn;
+        const request = useXHR(
+            {
+                location: {
+                    host: 'local:10202',
+                },
+                XMLHttpRequest: MockXHR,
+            } as unknown as Window,
+            opt,
+        ) as TransportFn;
         const req = request('some', { debugStack: [] });
         MockXHR.getInstance().resolve();
         return req
@@ -165,12 +181,15 @@ describe('XHR', () => {
     });
     it('should send request', () => {
         MockXHR.setBroken(false);
-        const request = useXHR({
-            location: {
-                host: 'local:10202',
-            },
-            XMLHttpRequest: MockXHR,
-        } as unknown as Window) as TransportFn;
+        const request = useXHR(
+            {
+                location: {
+                    host: 'local:10202',
+                },
+                XMLHttpRequest: MockXHR,
+            } as unknown as Window,
+            opt,
+        ) as TransportFn;
         parseStub.returns(resp);
 
         const req = request('some', { debugStack: [] });
@@ -193,12 +212,15 @@ describe('XHR', () => {
     });
     it('should fail if no result with wmode', () => {
         MockXHR.setBroken(false);
-        const request = useXHR({
-            location: {
-                host: 'local:10202',
-            },
-            XMLHttpRequest: MockXHR,
-        } as unknown as Window) as TransportFn;
+        const request = useXHR(
+            {
+                location: {
+                    host: 'local:10202',
+                },
+                XMLHttpRequest: MockXHR,
+            } as unknown as Window,
+            opt,
+        ) as TransportFn;
         const debugStack = ['x', 'h', 'r'];
 
         parseStub.returns(null);
@@ -207,9 +229,13 @@ describe('XHR', () => {
             debugStack,
         });
         MockXHR.getInstance().resolve();
-        return requestPromise.catch(() => {
-            const [actualDebugStack] = createKnownErrorStub.getCall(0).args;
-            chai.expect(debugStack).to.deep.eq(actualDebugStack);
-        });
+        return requestPromise
+            .then(() => {
+                chai.assert.fail('Should not resolve');
+            })
+            .catch(() => {
+                const [actualDebugStack] = createKnownErrorStub.getCall(0).args;
+                chai.expect(debugStack).to.deep.eq(actualDebugStack);
+            });
     });
 });

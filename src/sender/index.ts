@@ -25,16 +25,14 @@ export const providerMap: Partial<NameMap> = {
 type GetSender = <P extends Provider>(
     ctx: Window,
     provider: P,
-    opt?: CounterOptions,
+    opt: CounterOptions,
 ) => GetSenderType<P>;
 
 export const getSender: GetSender = ctxErrorLogger(
     'g.sen',
     (ctx, provider, counterOpt) => {
-        const transports = getTransportList(ctx, provider);
-        const middleware = counterOpt
-            ? getProviderMiddlewares(ctx, provider, counterOpt)
-            : [];
+        const transports = getTransportList(ctx, counterOpt, provider);
+        const middleware = getProviderMiddlewares(ctx, provider, counterOpt);
         const sender = providerMap[provider];
         const senderFn = sender
             ? (sender(ctx, transports, middleware) as AnySender)

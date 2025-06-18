@@ -1,19 +1,20 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
-import { entries, mix, isFunction, getPath } from 'src/utils/object';
-import { PolyPromise } from 'src/utils/promise';
-import { bindArgs, bindArg } from 'src/utils/function/bind';
-import {
-    InternalTransportOptions,
+import type {
     CheckTransport,
+    InternalTransportOptions,
     TransportResponse,
 } from 'src/transport/types';
-import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { stringify } from 'src/utils/querystring';
-import { parse as parseJSON } from 'src/utils/json';
 import { ctxMap } from 'src/utils/array/map';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import { makeHttpError } from 'src/utils/errorLogger/createError';
-import { addQuery } from 'src/utils/url';
+import { createKnownError } from 'src/utils/errorLogger/knownError';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { dirtyPipe } from 'src/utils/function/pipe';
+import { parse as parseJSON } from 'src/utils/json';
+import { entries, getPath, isFunction, mix } from 'src/utils/object';
+import { PolyPromise } from 'src/utils/promise';
+import { stringify } from 'src/utils/querystring';
+import { addQuery } from 'src/utils/url';
 import { WATCH_WMODE_JSON } from '../watchModes';
 
 const CYRILLIC_DOMAIN_REGEXP = /[^a-z0-9.:-]/;
@@ -132,7 +133,10 @@ const isOperaXHR = (ctx: Window) => {
     return false;
 };
 
-const useXHR: CheckTransport = (ctx: Window) => {
+const useXHR: CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => {
     if (!getPath(ctx, 'XMLHttpRequest')) {
         return false;
     }

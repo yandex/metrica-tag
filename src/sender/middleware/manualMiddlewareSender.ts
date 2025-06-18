@@ -15,7 +15,12 @@ export const useManualMiddlewareSender = (
     transportIds?: TransportId[],
     middlewareList?: MiddlewareWeightTuple[],
 ) => {
-    const transports = getTransportList(ctx, provider, transportIds);
+    const transports = getTransportList(
+        ctx,
+        counterOpt,
+        provider,
+        transportIds,
+    );
     const middlewares = getProviderMiddlewares(
         ctx,
         middlewareList || provider,

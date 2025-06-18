@@ -1,20 +1,22 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { REQUEST_MODE_KEY } from 'src/api/watch';
-import * as numberUtils from 'src/utils/number/random';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
+import { InternalTransportOptions, TransportFn } from 'src/transport/types';
+import * as watchModes from 'src/transport/watchModes';
+import type { CounterOptions } from 'src/utils/counterOptions/types';
 import * as deferBase from 'src/utils/defer/base';
 import * as defer from 'src/utils/defer/defer';
 import * as domUtils from 'src/utils/dom/dom';
 import * as injectScripts from 'src/utils/dom/insertScript';
 import * as knownErrorUtils from 'src/utils/errorLogger/knownError';
 import type { AnyFunc } from 'src/utils/function/types';
-import * as watchModes from 'src/transport/watchModes';
+import * as numberUtils from 'src/utils/number/random';
 import * as utils from 'src/utils/promise';
-import { InternalTransportOptions, TransportFn } from 'src/transport/types';
-
-import { useJsonp, CALLBACK_PREFIX } from '../jsonp';
+import { CALLBACK_PREFIX, useJsonp } from '../jsonp';
 
 describe('JSONP', () => {
+    const opt: CounterOptions = { id: 123, counterType: DEFAULT_COUNTER_TYPE };
     const TID = parseInt(Math.random().toString().slice(3), 10);
     const RANDOM = 42;
     const CALLBACK_KEY = `${CALLBACK_PREFIX}${RANDOM}`;
@@ -45,7 +47,7 @@ describe('JSONP', () => {
 
             insertScript.returns(scriptStub);
 
-            const result = useJsonp(win);
+            const result = useJsonp(win, opt);
 
             if (!result) {
                 chai.expect.fail('wrong type');
@@ -75,7 +77,7 @@ describe('JSONP', () => {
     };
 
     beforeEach(() => {
-        win = {} as any as Window;
+        win = {} as Window;
         sandbox.stub(utils, 'PolyPromise').callsFake((callback) => {
             promiseCallback = callback;
         });
@@ -96,13 +98,13 @@ describe('JSONP', () => {
     });
     it('calls getElemCreateFunction when check', () => {
         createFn.returns(null);
-        const result = useJsonp(win);
+        const result = useJsonp(win, opt);
         sinon.assert.calledOnce(createFn);
         chai.expect(result).to.be.not.ok;
     });
     it('create callback before script loading', () => {
         const scriptStub = {};
-        const result = useJsonp(win);
+        const result = useJsonp(win, opt);
         const transportOpt: InternalTransportOptions = {
             wmode: true,
             debugStack: [],
@@ -117,7 +119,7 @@ describe('JSONP', () => {
         result(testUrl, transportOpt);
     });
     it('return function after check', () => {
-        const result = useJsonp(win);
+        const result = useJsonp(win, opt);
         const transportOpt: InternalTransportOptions = {
             wmode: false,
             timeOut: 0,
@@ -144,7 +146,7 @@ describe('JSONP', () => {
         insertScript.returns(scriptStub);
         const resolve = sinon.stub();
         const reject = sinon.stub();
-        const result = useJsonp(win) as Exclude<
+        const result = useJsonp(win, opt) as Exclude<
             ReturnType<typeof useJsonp>,
             false
         >;
@@ -175,7 +177,7 @@ describe('JSONP', () => {
         insertScript.returns(scriptStub);
         removeNode.throws(error);
 
-        const result = useJsonp(win) as TransportFn;
+        const result = useJsonp(win, opt) as TransportFn;
         chai.assert(resolve.notCalled);
         chai.assert(reject.notCalled);
 
@@ -194,7 +196,7 @@ describe('JSONP', () => {
         const reject = sinon.stub();
         insertScript.returns(scriptStub);
 
-        const result = useJsonp(win) as TransportFn;
+        const result = useJsonp(win, opt) as TransportFn;
         result(testUrl, transportOpt);
         promiseCallback!(resolve, reject);
         const [deferCtx, deferCallback, deferTimeout] =

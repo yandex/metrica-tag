@@ -7,11 +7,17 @@ import * as deferBase from 'src/utils/defer/base';
 import * as defer from 'src/utils/defer/defer';
 import { REQUEST_MODE_KEY } from 'src/api/common';
 import type { TransportFn } from 'src/transport/types';
+import type { CounterOptions } from 'src/utils/counterOptions/types';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
 import * as wm from '../../watchModes';
 import { useImage } from '../image';
 
 describe('Image', () => {
-    const ctx: any = {};
+    const ctx = {} as Window;
+    const opt: CounterOptions = {
+        id: 123,
+        counterType: DEFAULT_COUNTER_TYPE,
+    };
     const URL = 'http://example.com';
     const timeoutId = 123;
     const debugStack = [1, 2, 3];
@@ -59,7 +65,7 @@ describe('Image', () => {
             },
         };
         createElementFunctionStub.returns(fakeImage);
-        const request = useImage(ctx) as TransportFn;
+        const request = useImage(ctx, opt) as TransportFn;
 
         const requestPromise = request(senderUrl, options);
         const [url, opts, q] = getSrcUrlStub.getCall(0).args;
@@ -89,7 +95,7 @@ describe('Image', () => {
 
     it('should fail if create element function is broken', () => {
         getCreateElementFunctionStub.returns(null);
-        chai.assert(!useImage(ctx));
+        chai.assert(!useImage(ctx, opt));
     });
 
     it('should resolve if onload is called', () => {

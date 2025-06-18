@@ -1,26 +1,30 @@
-import * as sinon from 'sinon';
 import * as chai from 'chai';
-import * as providers from 'src/sender';
-import * as loc from 'src/utils/location/location';
+import * as sinon from 'sinon';
+import { syncPromise } from 'src/__tests__/utils/syncPromise';
+import { WATCH_REFERER_PARAM, WATCH_URL_PARAM } from 'src/api/watch';
 import * as art from 'src/providers/artificialHit/artificialHit';
-import * as url from 'src/utils/url/url';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import * as dConsole from 'src/providers/debugConsole/debugConsole';
-import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
+import { GOAL_PROVIDER, METHOD_NAME_GOAL } from 'src/providers/goal/const';
+import * as sender from 'src/sender';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { GOAL_PROVIDER, METHOD_NAME_GOAL } from 'src/providers/goal/const';
+import * as loc from 'src/utils/location/location';
 import { PolyPromise } from 'src/utils/promise';
-import { syncPromise } from 'src/__tests__/utils/syncPromise';
+import * as url from 'src/utils/url/url';
 import { useGoal } from '../goal';
 
 describe('goal', () => {
     const counterOptions: CounterOptions = {
         id: 1929,
-        counterType: '0',
+        counterType: DEFAULT_COUNTER_TYPE,
     };
     const sandbox = sinon.createSandbox();
     let winInfo: Window;
-    let senderStub: any;
+    let senderStub: sinon.SinonStub<
+        Parameters<typeof sender.getSender>,
+        ReturnType<typeof sender.getSender>
+    >;
     let locationStub: any;
     let parseUrlStub: any;
     let artificial: any;
@@ -32,16 +36,16 @@ describe('goal', () => {
     const testHref = 'testHref';
 
     beforeEach(() => {
-        winInfo = {} as any;
+        winInfo = {} as Window;
         sandbox.stub(dConsole, 'getLoggerFn').returns(() => {
             // nothing
         });
-        senderStub = sandbox.stub(providers, 'getSender');
+        senderStub = sandbox.stub(sender, 'getSender');
         locationStub = sandbox.stub(loc, 'getLocation');
         locationStub.withArgs(winInfo).returns({
             hostname: testHost,
             href: testHref,
-        } as any);
+        } as Location);
         parseUrlStub = sandbox.stub(url, 'parseUrl');
     });
     afterEach(() => {
@@ -52,7 +56,7 @@ describe('goal', () => {
         const artificialPath = 'artificialPath';
         const artificialUrl = `http://${artificialDomain}/${artificialPath}/`;
         const promise = PolyPromise.resolve({});
-        artificial = sinon.stub(art, 'getArtificialState');
+        artificial = sandbox.stub(art, 'getArtificialState');
         artificial.withArgs(counterOptions).returns({
             url: artificialUrl,
             ref: '',
@@ -64,7 +68,6 @@ describe('goal', () => {
                 chai.expect(paramsInfo[WATCH_URL_PARAM]).to.be.equal(
                     `goal://${artificialDomain}/${goalName}`,
                 );
-                artificial.restore();
                 return promise;
             });
         parseUrlStub.returns({ hostname: artificialDomain });
@@ -101,7 +104,7 @@ describe('goal', () => {
                 chai.expect(
                     senderParams!.urlParams![WATCH_REFERER_PARAM],
                 ).to.be.equal(testHref);
-                return Promise.resolve();
+                return Promise.resolve('');
             });
         const goalSender = useGoal(winInfo, counterOptions)[METHOD_NAME_GOAL];
         goalSender(
@@ -125,7 +128,7 @@ describe('goal', () => {
                 chai.expect(
                     senderParams!.urlParams![WATCH_REFERER_PARAM],
                 ).to.be.equal(testHref);
-                return Promise.resolve();
+                return Promise.resolve('');
             });
         const goalSender = useGoal(winInfo, counterOptions, 'form')[
             METHOD_NAME_GOAL

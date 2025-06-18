@@ -1,22 +1,23 @@
 import { REQUEST_MODE_KEY } from 'src/api/common';
+import type { CounterOptions } from 'src/utils/counterOptions';
+import { clearDefer } from 'src/utils/defer/defer';
 import { getElemCreateFunction, removeNode } from 'src/utils/dom/dom';
-import { PolyPromise } from 'src/utils/promise';
+import { createError } from 'src/utils/errorLogger/createError';
+import { createKnownError } from 'src/utils/errorLogger/knownError';
+import { bindArg, bindArgs } from 'src/utils/function/bind';
 import { getRandom } from 'src/utils/number/random';
 import { mix } from 'src/utils/object';
-import { clearDefer } from 'src/utils/defer/defer';
-import { bindArg, bindArgs } from 'src/utils/function/bind';
-import { createKnownError } from 'src/utils/errorLogger/knownError';
-import { createError } from 'src/utils/errorLogger/createError';
+import { PolyPromise } from 'src/utils/promise';
 
-import { insertScript } from 'src/utils/dom/insertScript';
 import { setDeferBase } from 'src/utils/defer/base';
+import { insertScript } from 'src/utils/dom/insertScript';
 import { pipe } from 'src/utils/function/pipe';
-import {
+import type {
     CheckTransport,
     InternalTransportOptions,
     TransportResponse,
 } from '../types';
-import { getSrcUrl, WATCH_WMODE_JSONP } from '../watchModes';
+import { WATCH_WMODE_JSONP, getSrcUrl } from '../watchModes';
 
 const DEFAULT_TIMEOUT = 10000;
 const WATCH_JSONP_CALLBACK = 'callback';
@@ -85,12 +86,15 @@ const request = (
     });
 };
 
-export const useJsonp: CheckTransport = (ctx: Window) => {
+export const useJsonp: CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => {
     const createElemFunction = getElemCreateFunction(ctx);
     if (!createElemFunction) {
         return false;
     }
-    return bindArg(ctx, request) as any as (
+    return bindArg(ctx, request) as (
         senderUrl: string,
         opt: InternalTransportOptions,
     ) => Promise<TransportResponse>;

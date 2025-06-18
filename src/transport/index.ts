@@ -1,10 +1,10 @@
+import { flags } from '@inject';
+import { HIT_PROVIDER, Provider, ProvidersMap } from 'src/providers';
 import { TransportFn } from 'src/transport/types';
 import { cReduce } from 'src/utils/array/reduce';
-import { Provider, ProvidersMap, HIT_PROVIDER } from 'src/providers';
+import { CounterOptions } from 'src/utils/counterOptions';
 import { throwKnownError } from 'src/utils/errorLogger/knownError';
-import { flags } from '@inject';
 import { memo } from 'src/utils/function/memo';
-import { secondArg } from 'src/utils/function/identity';
 import {
     BEACON_TRANSPORT_ID,
     FETCH_TRANSPORT_ID,
@@ -93,6 +93,7 @@ export const EMPTY_TRANSPORT_LIST = 'et';
 export const getTransportList = memo(
     (
         ctx: Window,
+        counterOptions: CounterOptions,
         provider?: Provider,
         manuallySetTransports?: TransportId[],
     ) => {
@@ -107,7 +108,7 @@ export const getTransportList = memo(
 
         const result = cReduce<TransportInfo, TransportList>(
             (list, { check, id }) => {
-                const checkResult = check(ctx);
+                const checkResult = check(ctx, counterOptions);
                 if (checkResult) {
                     list.push([id, checkResult]);
                 }
@@ -124,5 +125,5 @@ export const getTransportList = memo(
 
         return result;
     },
-    secondArg,
+    (ctx, opt, provider) => provider,
 );

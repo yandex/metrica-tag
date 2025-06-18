@@ -1,12 +1,13 @@
 import { FORCE_URLENCODED_KEY } from 'src/api/common';
-import { PolyPromise } from 'src/utils/promise';
 import { isAndroidWebView } from 'src/utils/browser/browser';
+import type { CounterOptions } from 'src/utils/counterOptions';
 import { createKnownError } from 'src/utils/errorLogger/knownError';
 import { bind, bindArgs } from 'src/utils/function/bind';
-import { getPath, mix } from 'src/utils/object';
-import { stringify } from 'src/utils/querystring';
 import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
-import {
+import { getPath, mix } from 'src/utils/object';
+import { PolyPromise } from 'src/utils/promise';
+import { stringify } from 'src/utils/querystring';
+import type {
     CheckTransport,
     InternalTransportOptions,
     TransportFn,
@@ -53,7 +54,10 @@ export const request = (
     });
 };
 
-export const useBeaconRaw: CheckTransport = (ctx: Window) => {
+export const useBeaconRaw: CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => {
     const sender = getPath(ctx, 'navigator.sendBeacon');
     if (sender && isNativeFunction('sendBeacon', sender)) {
         return bindArgs(
@@ -64,6 +68,15 @@ export const useBeaconRaw: CheckTransport = (ctx: Window) => {
     return false;
 };
 
-export const useBeacon: CheckTransport = (ctx: Window) => {
-    return !isAndroidWebView(ctx) && useBeaconRaw(ctx);
+export const useBeacon: CheckTransport = (
+    ctx: Window,
+    counterOptions: CounterOptions,
+) => {
+    // If Android WebView, don't use beacon transport
+    if (isAndroidWebView(ctx)) {
+        return false;
+    }
+
+    // Pass counterOptions to useBeaconRaw
+    return useBeaconRaw(ctx, counterOptions);
 };

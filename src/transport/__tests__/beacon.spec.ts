@@ -1,10 +1,13 @@
+import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
-import { expect, assert } from 'chai';
 import { FORCE_URLENCODED_KEY } from 'src/api/common';
-import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
+import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
 import * as bro from 'src/utils/browser/browser';
+import type { CounterOptions } from 'src/utils/counterOptions/types';
 import { isKnownError } from 'src/utils/errorLogger/knownError';
+import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
 import { request, useBeacon } from '../beacon';
+import type { InternalTransportOptions } from '../types';
 
 describe('beacon transport', () => {
     let isNativeStub: sinon.SinonStub<any, any>;
@@ -15,13 +18,17 @@ describe('beacon transport', () => {
         navigator: {
             sendBeacon: () => {},
         },
-    } as any;
+    } as unknown as Window;
+    const opt: CounterOptions = {
+        id: 123,
+        counterType: DEFAULT_COUNTER_TYPE,
+    };
     const testUrl = 'testUrl';
     const transportOpt = {
         rQuery: { a: 1 },
         rBody: 'testBody',
-    };
-    const anyRequest = request as any;
+    } as unknown as InternalTransportOptions;
+    const anyRequest = request;
     beforeEach(() => {
         isNativeStub = sandbox.stub(func, 'isNativeFunction');
         isAndroidStub = sandbox.stub(bro, 'isAndroidWebView');
@@ -32,33 +39,33 @@ describe('beacon transport', () => {
             navigator: {
                 sendBeacon: beaconStub,
             },
-        } as any;
+        } as unknown as Window;
     });
     afterEach(() => {
         sandbox.reset();
         sandbox.restore();
     });
     it('checks availability in ctx', () => {
-        const result = useBeacon({} as any);
+        const result = useBeacon({} as Window, opt);
         sinon.assert.notCalled(isNativeStub);
         expect(result).to.be.false;
     });
     it('false if no beacon', () => {
-        const result = useBeacon({} as any);
+        const result = useBeacon({} as Window, opt);
         isAndroidStub.returns(false);
         sinon.assert.notCalled(isNativeStub);
         expect(result).to.be.false;
     });
     it('checks native', () => {
         isAndroidStub.returns(false);
-        const result = useBeacon(ctx);
+        const result = useBeacon(ctx, opt);
         sinon.assert.calledOnce(isNativeStub);
         expect(result).to.be.false;
     });
     it('checks android web view', () => {
         isNativeStub.returns(true);
         isAndroidStub.returns(false);
-        const result = useBeacon(ctx);
+        const result = useBeacon(ctx, opt);
         expect(result).to.be.a('function');
     });
     it('checks onLine before request', (done) => {
@@ -69,7 +76,7 @@ describe('beacon transport', () => {
         });
     });
     it('reject request is sender return false', (done) => {
-        ctx.navigator.onLine = true;
+        Object.assign(ctx.navigator, { onLine: true });
         beaconStub.returns(false);
         const result = anyRequest(ctx, beaconStub, testUrl, transportOpt);
         result.catch(() => {
@@ -82,17 +89,17 @@ describe('beacon transport', () => {
     });
 
     it('resolve request is sender return true', (done) => {
-        ctx.navigator.onLine = true;
+        Object.assign(ctx.navigator, { onLine: true });
         beaconStub.returns(true);
         const result = anyRequest(ctx, beaconStub, testUrl, transportOpt);
-        result.then((res: string) => {
+        result.then((res) => {
             sinon.assert.calledOnce(beaconStub);
             expect(res).to.be.eq('');
             done();
         });
     });
     it('rejects if query is too long', () => {
-        ctx.navigator.onLine = true;
+        Object.assign(ctx.navigator, { onLine: true });
         let rBody = '';
         for (let i = 0; i < 2000; i += 1) {
             rBody += '1';
@@ -100,8 +107,8 @@ describe('beacon transport', () => {
         const opts = {
             rQuery: {},
             rBody,
-        };
-        anyRequest(ctx, beaconStub, testUrl, opts).catch((e: any) => {
+        } as InternalTransportOptions;
+        anyRequest(ctx, beaconStub, testUrl, opts).catch((e) => {
             sinon.assert.notCalled(beaconStub);
             const errorMessage = e.message;
             assert(
