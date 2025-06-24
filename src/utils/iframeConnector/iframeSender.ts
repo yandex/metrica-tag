@@ -105,32 +105,22 @@ export const resend = (
 
 export const iframeSender = (ctx: Window, options: CounterOptions) => {
     const iframeConnectorData = counterIframeConnector(ctx, options);
-
-    const buffer: {
-        children: BufferItem[];
-        parent: BufferItem[];
-    } = {
-        children: [],
-        parent: [],
-    };
-
     if (!iframeConnectorData) {
         return null;
     }
+
+    const children: BufferItem[] = [];
+    const parents: BufferItem[] = [];
     const sendToManyFn = bindArgs(
         [ctx, iframeConnectorData.sendToFrame],
         sendToMany,
-    ) as (
-        dict: IframeCollection,
-        item: BufferItem,
-        data: MessageData,
-    ) => Promise<MessageData>;
+    );
     const resendFn = bindArg(sendToManyFn, resend);
 
     iframeConnectorData.emitter
         .on([INIT_MESSAGE_PARENT], ([, message]) => {
             resendFn(
-                buffer.children,
+                children,
                 iframeConnectorData.children[
                     message[IFRAME_MESSAGE_COUNTER_ID]!
                 ],
@@ -138,7 +128,7 @@ export const iframeSender = (ctx: Window, options: CounterOptions) => {
         })
         .on([INIT_MESSAGE], ([, message]) => {
             resendFn(
-                buffer.parent,
+                parents,
                 iframeConnectorData.parents[
                     message[IFRAME_MESSAGE_COUNTER_ID]!
                 ],
@@ -146,30 +136,31 @@ export const iframeSender = (ctx: Window, options: CounterOptions) => {
         });
     return {
         emitter: iframeConnectorData.emitter,
-        sendToIframe: (iframeCtx: Window, frameData: MessageData) => {
-            return new PolyPromise((resolve, reject) => {
-                iframeConnectorData.sendToFrame(
-                    iframeCtx,
-                    frameData,
-                    (e, data) => {
-                        resolve([e, data]);
-                    },
-                );
-                setDefer(
-                    ctx,
-                    bindArg(createKnownError(), reject),
-                    SEND_TIMEOUT + 100,
-                    'is.o',
-                );
-            });
-        },
+        sendToIframe: (iframeCtx: Window, frameData: MessageData) =>
+            new PolyPromise<[e: MessageEvent, data: Record<string, unknown>]>(
+                (resolve, reject) => {
+                    iframeConnectorData.sendToFrame(
+                        iframeCtx,
+                        frameData,
+                        (e, data) => {
+                            resolve([e, data]);
+                        },
+                    );
+                    setDefer(
+                        ctx,
+                        bindArg(createKnownError(), reject),
+                        SEND_TIMEOUT + 100,
+                        'is.o',
+                    );
+                },
+            ),
         sendToChildren: (data: MessageData): Promise<MessageData> => {
             const newItem: BufferItem = {
                 sendedTo: [],
                 tryTo: [],
                 data,
             };
-            buffer.children.push(newItem);
+            children.push(newItem);
             return sendToManyFn(iframeConnectorData.children, newItem, data);
         },
         sendToParents: (data: MessageData): Promise<MessageData> => {
@@ -178,7 +169,7 @@ export const iframeSender = (ctx: Window, options: CounterOptions) => {
                 tryTo: [],
                 data,
             };
-            buffer.parent.push(newItem);
+            parents.push(newItem);
             return sendToManyFn(iframeConnectorData.parents, newItem, data);
         },
     };
