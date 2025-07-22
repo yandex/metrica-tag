@@ -5,6 +5,11 @@ import { METHOD_NAME_HIT } from './const';
  */
 export type ArtificialHitOptions = {
     /** Page referrer */
+    referrer?: string;
+    /**
+     * Alternative to `referrer` option.
+     * In case if both options are provided, it will be overwritten.
+     */
     referer?: string;
     /** The function that will be called after sending the hit */
     callback?: (...args: any[]) => any;
@@ -25,7 +30,7 @@ export type ArtificialHandler<T = any> = (
     /** Page title */
     title?: string | ArtificialHitOptions,
     /** Page referrer */
-    referer?: string,
+    referrer?: string,
     /** Visit parameters to be sent with a hit */
     params?: Record<string, any>,
     /** The function that will be called after sending the hit */

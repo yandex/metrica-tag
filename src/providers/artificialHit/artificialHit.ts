@@ -20,6 +20,7 @@ import { METHOD_NAME_HIT, ARTIFICIAL_HIT_PROVIDER } from './const';
 import { PAGE_VIEW_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 const ARTIFICIAL_TITLE_KEY = 'title';
+const ARTIFICIAL_REFERRER_KEY = 'referrer';
 const ARTIFICIAL_REF_KEY = 'referer';
 const ARTIFICIAL_PARAMS_KEY = 'params';
 const ARTIFICIAL_CALLBACK_KEY = 'callback';
@@ -42,7 +43,7 @@ export const getArtificialState = memo(
 
 const argsToOptions = (
     title?: string | ArtificialHitOptions,
-    referer?: string,
+    referrer?: string,
     params?: Record<string, any>,
     callback?: (...args: any[]) => any,
     ctx?: any,
@@ -51,7 +52,8 @@ const argsToOptions = (
         const options = title as ArtificialHitOptions;
         return {
             title: options[ARTIFICIAL_TITLE_KEY],
-            referer: options[ARTIFICIAL_REF_KEY],
+            referrer:
+                options[ARTIFICIAL_REFERRER_KEY] || options[ARTIFICIAL_REF_KEY],
             params: options[ARTIFICIAL_PARAMS_KEY],
             callback: options[ARTIFICIAL_CALLBACK_KEY],
             ctx: options[ARTIFICIAL_CTX_KEY],
@@ -59,7 +61,7 @@ const argsToOptions = (
     }
     return {
         title,
-        referer,
+        referrer,
         params,
         callback,
         ctx,
@@ -81,7 +83,7 @@ export const artificialHitProvider = (
         [METHOD_NAME_HIT]: (
             url?: string,
             title?: string | ArtificialHitOptions,
-            referer?: string,
+            referrer?: string,
             params?: Record<string, any>,
             callback?: (...args: any[]) => any,
             fnCtx?: any,
@@ -95,7 +97,7 @@ export const artificialHitProvider = (
             };
             const options = argsToOptions(
                 title,
-                referer,
+                referrer,
                 params,
                 callback,
                 fnCtx,
@@ -109,7 +111,7 @@ export const artificialHitProvider = (
             }
 
             const pageRef =
-                options.referer || state.ref || ctx.document.referrer;
+                options.referrer || state.ref || ctx.document.referrer;
 
             const logHit = getLoggerFn(
                 ctx,

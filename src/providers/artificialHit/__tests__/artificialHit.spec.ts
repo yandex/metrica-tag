@@ -11,12 +11,14 @@ import {
     ARTIFICIAL_BR_KEY,
 } from 'src/api/watch';
 import { syncPromise } from 'src/__tests__/utils/syncPromise';
+import { CounterOptions } from 'src/utils/counterOptions';
 import { artificialHitProvider } from '../artificialHit';
 import { METHOD_NAME_HIT } from '../const';
 
 describe('providers / artificial hit', () => {
     const sandbox = sinon.createSandbox();
     const senderStub = sandbox.stub().returns(syncPromise);
+    const counterOptions = { id: 123 } as CounterOptions;
     let logSpy: sinon.SinonSpy;
     let getSenderStub: sinon.SinonStub<any, any>;
     let errorLoggerStub: sinon.SinonStub<any, any>;
@@ -49,7 +51,6 @@ describe('providers / artificial hit', () => {
     });
 
     it('sends artificial hit and ignores artificial hit if url is not changed', () => {
-        const counterOptions: any = { id: 123 };
         const ctx = {};
         const params = {
             a: 1,
@@ -98,7 +99,6 @@ describe('providers / artificial hit', () => {
     it('sends artificial hit when called with no arguments', () => {
         const url = 'http://example.com';
         const referrer = 'reff';
-        const counterOptions: any = { id: 123 };
         const ctx = {
             location: {
                 href: url,
@@ -114,6 +114,36 @@ describe('providers / artificial hit', () => {
         makeArtificialHit[METHOD_NAME_HIT]();
         sinon.assert.calledOnce(logSpy);
         sinon.assert.calledWithExactly(
+            senderStub,
+            {
+                middlewareInfo: {
+                    params: undefined,
+                    title: undefined,
+                },
+                urlParams: {
+                    [WATCH_URL_PARAM]: url,
+                    [WATCH_REFERER_PARAM]: referrer,
+                },
+                brInfo: {
+                    [PAGE_VIEW_BR_KEY]: 1,
+                    [ARTIFICIAL_BR_KEY]: 1,
+                },
+            },
+            counterOptions,
+        );
+    });
+
+    it('if both referrer and referer is specified, ignores referer, uses referrer in hit', () => {
+        const url = 'http://example.com';
+        const ctx = {} as Window;
+        const referrer = 'referrer';
+        const referer = 'referer';
+        const makeArtificialHit = artificialHitProvider(ctx, counterOptions);
+        makeArtificialHit[METHOD_NAME_HIT](url, {
+            referrer,
+            referer,
+        });
+        sinon.assert.calledOnceWithExactly(
             senderStub,
             {
                 middlewareInfo: {
