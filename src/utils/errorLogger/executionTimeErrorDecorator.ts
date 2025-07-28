@@ -4,25 +4,35 @@ import { isNativeFunction } from '../function/isNativeFunction/isNativeFunction'
 import { throwFunction } from './throwFunction';
 import { runOnErrorCallbacks } from './onError';
 
-// Эта логика нужна чтобы не кидать одно и то же исключение о превышении
-// времени выполнения в нескольких скоупах сразу
+/**
+ * Tracks the current nesting level of decorated function calls
+ */
 let currentLevel = 0;
+/**
+ * Tracks the nesting level at which an execution time error was last thrown
+ */
 let executionTimeExceededOnLevel = 0;
 
+/**
+ * Threshold in milliseconds for considering a function execution as blocking the main thread
+ */
 const MAIN_THREAD_BLOCKING_THRESHOLD = 50;
 
+/**
+ * Accumulates the total time the main thread has been blocked by function executions
+ */
 let totalMainThreadBlocking = 0;
 export const getMainThreadBlockingTime = () => {
     return Math.min(totalMainThreadBlocking, 100000);
 };
 
 export const executionTimeErrorDecorator = <
-    FN extends (...args: any) => ReturnType<FN>,
+    FN extends (...args: unknown[]) => ReturnType<FN>,
 >(
     fn: FN,
     scopeName: string,
     ctx: Window,
-    callContext?: any,
+    callContext?: unknown,
 ) => {
     return function executionTimeErrorDecorated() {
         currentLevel += 1;
@@ -37,7 +47,10 @@ export const executionTimeErrorDecorator = <
             result = fn.apply(callContext || null, arguments as any);
             const endTime = hasPerformance ? perf!.now() : 0;
             const execTime = endTime - startTime;
-
+            /*
+                Check if we can throw execution time errors at this nesting level
+                This prevents throwing errors in nested calls when an error was already thrown at a higher level
+            */
             const canThrowExecTimeErrors =
                 currentLevel > executionTimeExceededOnLevel;
             if (
@@ -45,8 +58,13 @@ export const executionTimeErrorDecorator = <
                 canThrowExecTimeErrors
             ) {
                 executionTimeExceededOnLevel = currentLevel;
-                if (hasPerformance && !(endTime % 1000)) {
-                    runOnErrorCallbacks('perf', TOO_LONG_ERROR_NAME, scopeName);
+                if (hasPerformance) {
+                    runOnErrorCallbacks(
+                        'perf',
+                        TOO_LONG_ERROR_NAME,
+                        scopeName,
+                        `${execTime}`,
+                    );
                 }
             }
 
@@ -61,8 +79,12 @@ export const executionTimeErrorDecorator = <
         }
 
         currentLevel -= 1;
+        /*
+            Reset executionTimeExceededOnLevel when exiting a level where an error was thrown
+            This allows throwing exceptions in different subtrees of the call hierarchy
+        */
         if (currentLevel < executionTimeExceededOnLevel) {
-            // Для того чтобы в разных поддеревьях можно было бросать эксепшены
+            // Reset the execution time exceeded level to allow throwing exceptions in different subtrees
             executionTimeExceededOnLevel = currentLevel;
         }
 
@@ -71,5 +93,5 @@ export const executionTimeErrorDecorator = <
         }
 
         return result;
-    } as any;
+    } as FN;
 };

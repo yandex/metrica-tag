@@ -1,6 +1,5 @@
-import Sinon, * as sinon from 'sinon';
+import * as sinon from 'sinon';
 import * as chai from 'chai';
-import * as random from 'src/utils/number/random';
 import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
 import * as onError from '../onError';
 import * as decorator from '../executionTimeErrorDecorator';
@@ -8,18 +7,20 @@ import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from '../consts';
 
 const { executionTimeErrorDecorator, getMainThreadBlockingTime } = decorator;
 describe('executionTimeErrorDecorator', () => {
-    const ctx = {
+    let ctx = {
         location: {
             href: 'http://example.com',
         },
-        performance: {
-            now: sinon.stub(),
-        },
-    } as any;
-    const callCtx = {} as any;
+    } as Window;
+    const callCtx = {};
     const sandbox = sinon.createSandbox();
-    let runOnErrorCallbacks: Sinon.SinonStub<
-        [namespace: string, error: string, scope: string, stack?: string]
+    let performanceStub: sinon.SinonStub<
+        Parameters<typeof window.performance.now>,
+        ReturnType<typeof window.performance.now>
+    >;
+    let runOnErrorCallbacks: sinon.SinonStub<
+        Parameters<typeof onError.runOnErrorCallbacks>,
+        ReturnType<typeof onError.runOnErrorCallbacks>
     >;
 
     const arg1 = 'a';
@@ -27,9 +28,20 @@ describe('executionTimeErrorDecorator', () => {
     const arg3 = 'c';
 
     beforeEach(() => {
+        performanceStub = sandbox
+            .stub<
+                Parameters<typeof window.performance.now>,
+                ReturnType<typeof window.performance.now>
+            >()
+            .returns(0);
+        ctx = {
+            ...ctx,
+            performance: {
+                now: performanceStub,
+            } as unknown as Performance,
+        };
         sandbox.stub(func, 'isNativeFunction').returns(true);
         runOnErrorCallbacks = sandbox.stub(onError, 'runOnErrorCallbacks');
-        sandbox.stub(random, 'getRandom').returns(1);
     });
 
     afterEach(() => {
@@ -37,14 +49,13 @@ describe('executionTimeErrorDecorator', () => {
     });
 
     it('throws errors if callback function does the same', () => {
-        ctx.performance.now.returns(0);
+        performanceStub.returns(0);
         const error = new Error('I am an error');
         const cb = sinon.stub().throws(error);
         const decorated = executionTimeErrorDecorator(cb, 'some', ctx, callCtx);
         chai.expect(() => decorated(arg1, arg2, arg3)).throws(error);
-        chai.assert(cb.called);
-        chai.expect(cb.getCall(0).args).to.deep.equal([arg1, arg2, arg3]);
-        chai.assert(cb.getCall(0).calledOn(callCtx));
+        sinon.assert.calledOnceWithExactly(cb, arg1, arg2, arg3);
+        sinon.assert.calledOn(cb, callCtx);
         sinon.assert.notCalled(runOnErrorCallbacks);
     });
 
@@ -55,12 +66,13 @@ describe('executionTimeErrorDecorator', () => {
 
         let timesCalled = 0;
         let accumulatedTime = 0;
-        ctx.performance.now.callsFake(() => {
+        const resultTime = TOO_LONG_FUNCTION_EXECUTION * 100;
+        performanceStub.callsFake(() => {
             timesCalled += 1;
 
             // Грубо говоря коллбэк номер 2 выполнялся больше секунды
             if (timesCalled === 5) {
-                accumulatedTime = TOO_LONG_FUNCTION_EXECUTION * 100;
+                accumulatedTime = resultTime;
             }
 
             return accumulatedTime;
@@ -93,6 +105,7 @@ describe('executionTimeErrorDecorator', () => {
             'perf',
             TOO_LONG_ERROR_NAME,
             ns2,
+            `${resultTime}`,
         );
         chai.expect(getMainThreadBlockingTime()).to.equal(
             TOO_LONG_FUNCTION_EXECUTION * 100,
@@ -101,7 +114,7 @@ describe('executionTimeErrorDecorator', () => {
 
     it("doesn't report OK timeout", () => {
         let timesCalled = 0;
-        ctx.performance.now.callsFake(() => {
+        performanceStub.callsFake(() => {
             timesCalled += 1;
             return timesCalled * (TOO_LONG_FUNCTION_EXECUTION / 2) - 1;
         });
@@ -109,7 +122,7 @@ describe('executionTimeErrorDecorator', () => {
         const decorated = executionTimeErrorDecorator(cb, 'some', ctx, callCtx);
         decorated(arg1, arg2, arg3);
         sinon.assert.calledOnceWithExactly(cb, arg1, arg2, arg3);
-        chai.assert(cb.getCall(0).calledOn(callCtx));
+        sinon.assert.calledOn(cb, callCtx);
         sinon.assert.notCalled(runOnErrorCallbacks);
     });
 });
