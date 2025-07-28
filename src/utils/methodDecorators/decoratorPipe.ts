@@ -21,8 +21,10 @@ export function decoratorPipe<
     }
     const fnList = cMap(
         (decorator): ((fn: CounterMethod) => AnyFunc) =>
-            // FIXME: fix decorator arguments
-            bindArgs([ctx, counterOptions, methodName] as any, decorator),
+            bindArgs(
+                [ctx, counterOptions, methodName],
+                decorator as Decorator<R>,
+            ),
         decorators,
     );
     return pipe(...fnList)(method);
