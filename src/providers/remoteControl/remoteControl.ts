@@ -109,7 +109,7 @@ const buildRemoteIframe = (ctx: ExtendedWindow, src: string) => {
 
 const webvisorRegex = /^http:\/\/([\w\-.]+\.)?webvisor\.com\/?$/;
 const metrikaRegex =
-    /^https:\/\/([\w\-.]+\.)?metri[kc]a\.yandex\.(ru|by|kz|com|com\.tr)\/?$/;
+    /^https:\/\/([\w\-.]+\.)?metri[kc]a\.yandex\.(ru|by|uz|kz|com|com\.tr)\/?$/;
 export const isAllowedOrigin = (origin: string) =>
     webvisorRegex.test(origin) || metrikaRegex.test(origin);
 

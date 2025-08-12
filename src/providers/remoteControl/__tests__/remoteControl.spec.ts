@@ -74,6 +74,10 @@ describe('isAllowedOrigin', () => {
         'https://test.metrika.yandex.ru',
         'https://metrika.yandex.ru',
         'https://metrica.yandex.com',
+        'https://metrika.yandex.uz',
+        'https://metrika.yandex.by',
+        'https://metrika.yandex.kz',
+        'https://metrika.yandex.com.tr',
     ];
     const shouldNotMatch = [
         'https://webvisor.com',
@@ -81,6 +85,7 @@ describe('isAllowedOrigin', () => {
         'https://sub.domain.webvisor.com',
         'http://webvisor.com/path/to/smth',
         'http://metrika.yandex.ru',
+        'https://metrika.yandex.uz.uz',
     ];
 
     it('shouldMatch', () => {
