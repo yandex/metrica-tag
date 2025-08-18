@@ -58,7 +58,7 @@ export const executionTimeErrorDecorator = <
                 canThrowExecTimeErrors
             ) {
                 executionTimeExceededOnLevel = currentLevel;
-                if (hasPerformance) {
+                if (hasPerformance && !(endTime % 100)) {
                     runOnErrorCallbacks(
                         'perf',
                         TOO_LONG_ERROR_NAME,
