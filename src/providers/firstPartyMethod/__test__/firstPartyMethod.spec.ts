@@ -93,6 +93,7 @@ describe('first party data', () => {
     });
 
     afterEach(() => {
+        encodeStub.resetHistory();
         // последовательность важна! restore очищает все стабы из песочницы
         sandbox.reset();
         sandbox.restore();
@@ -213,8 +214,8 @@ describe('first party data', () => {
         });
 
         it('keep only digits', async () => {
-            const initialPhone = ' (123) 456-789 00 ';
-            const processedPhone = '712345678900';
+            const initialPhone = ' (123) 456-7890';
+            const processedPhone = '71234567890';
             const testObj = { phone_number: initialPhone };
             const fullData = await encodeRecursive(windowSpy, testObj);
             chai.expect(fullData).to.be.lengthOf(1);
