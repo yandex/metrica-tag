@@ -32,11 +32,10 @@ describe('dom / utils - loadScript', () => {
     });
 
     it('Loads script only once and calls onLoadCb after script is loaded and load event fired', () => {
-        const scriptName = 'working-script.js';
+        const scriptName = 'working-script.js?var=222&b=p';
 
         const onLoad1 = sinon.stub();
         loadScript(ctx, scriptName, onLoad1);
-        const [, , onLoadCallback] = onEvent.getCall(0).args;
         sinon.assert.calledWithExactly(
             onEvent,
             fakeScript,
@@ -45,7 +44,7 @@ describe('dom / utils - loadScript', () => {
         );
         sinon.assert.notCalled(onLoad1);
 
-        onLoadCallback();
+        onEvent.firstCall.yield();
         sinon.assert.calledOnce(onLoad1);
 
         const onLoad2 = sinon.stub();
@@ -62,7 +61,6 @@ describe('dom / utils - loadScript', () => {
 
         const onError1 = sinon.stub();
         loadScript(ctx, scriptName, noop, onError1);
-        const [, , onErrorCallback] = onEvent.getCall(1).args;
         sinon.assert.calledWithExactly(
             onEvent,
             fakeScript,
@@ -71,12 +69,37 @@ describe('dom / utils - loadScript', () => {
         );
         sinon.assert.notCalled(onError1);
 
-        onErrorCallback();
+        onEvent.secondCall.yield();
         sinon.assert.calledOnce(onError1);
 
         const onError2 = sinon.stub();
         loadScript(ctx, scriptName, noop, onError2);
         sinon.assert.calledOnce(onError2);
+        sinon.assert.calledTwice(onEvent);
+        sinon.assert.calledOnceWithExactly(insertScript, ctx, {
+            src: scriptName,
+        });
+    });
+
+    it('Loads the same script with different url params', () => {
+        const scriptName = 'working-script.js?var=223&b=be';
+
+        const onLoad1 = sinon.stub();
+        loadScript(ctx, scriptName, onLoad1);
+        sinon.assert.calledWithExactly(
+            onEvent,
+            fakeScript,
+            ['load'],
+            sinon.match.func,
+        );
+        sinon.assert.notCalled(onLoad1);
+
+        onEvent.firstCall.yield();
+        sinon.assert.calledOnce(onLoad1);
+
+        const onLoad2 = sinon.stub();
+        loadScript(ctx, scriptName, onLoad2, noop);
+        sinon.assert.calledOnce(onLoad2);
         sinon.assert.calledTwice(onEvent);
         sinon.assert.calledOnceWithExactly(insertScript, ctx, {
             src: scriptName,
