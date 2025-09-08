@@ -169,7 +169,7 @@ export const hidePhones = (
         pipe(
             firstArg,
             bindThisForMethod('concat', ['']),
-            ctxBindThisForMethod('reverse'),
+            ctxBindThisForMethod('reverse') as () => PhoneTuple,
             call,
         ),
         cleanPhones,

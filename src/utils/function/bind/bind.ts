@@ -98,9 +98,9 @@ export const bindThisForMethod = <
 >(
     name: M,
     obj: S,
-) => {
+): S[M] => {
     // FIXME Get rid of type assertions
-    return bind(obj[name] as AnyFunc, obj);
+    return bind(obj[name] as AnyFunc, obj) as S[M];
 };
 
 export const bindThisForMethodTest = (a: RegExp) =>
