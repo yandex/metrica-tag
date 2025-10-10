@@ -1,16 +1,15 @@
 import { COUNTER_ID_PARAM } from 'src/api/common';
 import {
-    WATCH_URL_PARAM,
-    WATCH_ENCODING_PARAM,
-    WATCH_CLASS_PARAM,
-    TRACK_HASH_BR_KEY,
     PAGE_VIEW_BR_KEY,
-    ARTIFICIAL_BR_KEY,
+    TRACK_HASH_BR_KEY,
+    WATCH_CLASS_PARAM,
+    WATCH_ENCODING_PARAM,
+    WATCH_URL_PARAM,
 } from 'src/api/watch';
 import type { MiddlewareGetter } from 'src/middleware/types';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';
 import type { SenderInfo, UrlParams } from 'src/sender/SenderInfo';
-import { TransportOptions } from 'src/transport/types';
+import type { TransportOptions } from 'src/transport/types';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { mix } from 'src/utils/object';
 import { COLLECT_RESOURCE } from './const';
@@ -39,7 +38,6 @@ export const senderCollectInfo: MiddlewareGetter = (ctx, counterOptions) => ({
             transportInfo: mix(transportInfo, {
                 wmode:
                     !!brInfo.getVal(PAGE_VIEW_BR_KEY) &&
-                    !brInfo.getVal(ARTIFICIAL_BR_KEY) &&
                     !brInfo.getVal(TRACK_HASH_BR_KEY),
             } as TransportOptions),
             urlParams: mix(cSenderInfo.urlParams || {}, collectUrlParams),

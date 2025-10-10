@@ -3,7 +3,7 @@ import { commonMiddlewares, providerMiddlewareList } from 'src/middleware';
 import { providersSync } from 'src/providersEntrypoint';
 import { providerMap } from 'src/sender';
 import { SenderWatch, useSenderWatch } from 'src/sender/watch';
-import { fullList, nameMap } from 'src/transport';
+import { hitTransports, nameMap } from 'src/transport';
 import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { artificialHitProvider } from './artificialHit';
 import { ARTIFICIAL_HIT_PROVIDER } from './const';
@@ -24,6 +24,6 @@ export const initProvider = () => {
         providersSync.push(ctxErrorLogger('p.ar', artificialHitProvider));
         providerMap[ARTIFICIAL_HIT_PROVIDER] = useSenderWatch;
         providerMiddlewareList[ARTIFICIAL_HIT_PROVIDER] = commonMiddlewares;
-        nameMap[ARTIFICIAL_HIT_PROVIDER] = fullList;
+        nameMap[ARTIFICIAL_HIT_PROVIDER] = hitTransports;
     }
 };
