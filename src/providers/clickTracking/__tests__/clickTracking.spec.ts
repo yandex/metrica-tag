@@ -54,7 +54,6 @@ describe('clickTracking', () => {
 
     it('subscribe event', () => {
         const counterSettings = {
-            userData: {},
             settings: {
                 pcs: '',
                 ['button_goals']: 1,

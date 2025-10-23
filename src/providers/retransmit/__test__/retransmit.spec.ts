@@ -82,12 +82,7 @@ describe('provider / retransmit', () => {
         timeStub.returns(() => 0);
         getCoutnerSettingsStub = sandbox.stub(settings, 'getCounterSettings');
         getCoutnerSettingsStub.callsFake((_, fn) =>
-            Promise.resolve(
-                fn({
-                    settings: { pcs: '', eu: false },
-                    userData: {},
-                }),
-            ),
+            Promise.resolve(fn({ settings: { pcs: '', eu: false } })),
         );
         retransmitRequestsStub = sandbox.stub(
             getRetransmitRequests,
