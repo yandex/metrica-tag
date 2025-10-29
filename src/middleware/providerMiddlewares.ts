@@ -20,11 +20,16 @@ import { prepareUrlMiddleware } from './prepareUrl';
 import { addMiddlewareFor, addMiddlewareToTheList } from './utils';
 
 export const commonMiddlewares: MiddlewareWeightTuple[] = [
+    // This one should be always first
+    // and shouldn't get into the params middlewares list.
+    [prepareUrlMiddleware, -100],
     [prerender, 1],
     [counterFirstHit, 2],
     [watchSyncFlags(), 3],
     [pageTitle, 4],
 ];
+
+export const hitMiddlewares = commonMiddlewares.slice();
 
 /**
  * This is a list of middlewares that are always executed irrespectively of the provider
@@ -43,7 +48,7 @@ export const addCommonMiddleware = bindArg(
 export const providerMiddlewareList: Partial<
     ProvidersMap<MiddlewareWeightTuple[]>
 > = {
-    [HIT_PROVIDER]: commonMiddlewares,
+    [HIT_PROVIDER]: hitMiddlewares,
 };
 
 export const addMiddlewareForProvider: (
@@ -51,10 +56,6 @@ export const addMiddlewareForProvider: (
     middleware?: MiddlewareGetter,
     weight?: number,
 ) => void = bindArg(providerMiddlewareList, addMiddlewareFor);
-
-// This should be always first
-// And it shouldn't get into the params middlewares list
-addCommonMiddleware(prepareUrlMiddleware, -100);
 
 /**
  * Gets middlewares of specified provider

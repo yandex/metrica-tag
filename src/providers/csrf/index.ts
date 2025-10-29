@@ -1,12 +1,13 @@
 import { flags } from '@inject';
-import { csrfMiddleware, CSRF_TOKEN_SETTINGS_KEY } from 'src/middleware/csrf';
+import { CSRF_TOKEN_SETTINGS_KEY, csrfMiddleware } from 'src/middleware/csrf';
 import {
     addCommonMiddleware,
     addMiddlewareForProvider,
 } from 'src/middleware/providerMiddlewares';
-import { Provider } from 'src/providers/index';
+import { HIT_PROVIDER } from 'src/providers';
 import { NOT_BOUNCE_HIT_PROVIDER } from 'src/providers/notBounce/const';
-import { PARAMS_PROVIDER } from 'src/providers/params/const';
+import { ARTIFICIAL_HIT_PROVIDER } from '../artificialHit/const';
+import { PARAMS_PROVIDER } from '../params/const';
 
 declare module 'src/utils/counterSettings/types' {
     interface CounterSettingsParams {
@@ -21,17 +22,25 @@ declare module 'src/utils/counterSettings/types' {
 export const initProvider = () => {
     if (flags.CSRF_TOKEN_FEATURE) {
         addCommonMiddleware(csrfMiddleware, 20);
-
-        const addCsrfMiddlewareForProvider = (provider: Provider) => {
-            addMiddlewareForProvider(provider, csrfMiddleware, 20);
-        };
+        addMiddlewareForProvider(HIT_PROVIDER, csrfMiddleware, 20);
+        if (flags.ARTIFICIAL_HIT_FEATURE) {
+            addMiddlewareForProvider(
+                ARTIFICIAL_HIT_PROVIDER,
+                csrfMiddleware,
+                20,
+            );
+        }
 
         if (flags.NOT_BOUNCE_HIT_FEATURE) {
-            addCsrfMiddlewareForProvider(NOT_BOUNCE_HIT_PROVIDER);
+            addMiddlewareForProvider(
+                NOT_BOUNCE_HIT_PROVIDER,
+                csrfMiddleware,
+                20,
+            );
         }
 
         if (flags.PARAMS_FEATURE) {
-            addCsrfMiddlewareForProvider(PARAMS_PROVIDER);
+            addMiddlewareForProvider(PARAMS_PROVIDER, csrfMiddleware, 20);
         }
     }
 };

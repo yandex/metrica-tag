@@ -1,5 +1,10 @@
 [
   {
+    "code": "ARTIFICIAL_HIT_FEATURE",
+    "desc": "Enables method hit that sends artificial hit to back end, and constructor option defer, that defers init",
+    "path": "artificialHit"
+  },
+  {
     "code": "FIRST_PARTY_METHOD_FEATURE",
     "desc": "Enables method firstPartyMethodParams that sends first party data to the back end",
     "path": "firstPartyMethod"
@@ -31,11 +36,6 @@
     "code": "YAN_FEATURE",
     "path": "yan",
     "desc": "Listens for the yandex advertisement events and sends them as params (including iframe ones)"
-  },
-  {
-    "code": "ARTIFICIAL_HIT_FEATURE",
-    "desc": "Enables method hit that sends artificial hit to back end, and constructor option defer, that defers init",
-    "path": "artificialHit"
   },
   {
     "code": "GOAL_FEATURE",
