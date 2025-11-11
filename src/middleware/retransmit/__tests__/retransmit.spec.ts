@@ -1,4 +1,5 @@
 import * as sinon from 'sinon';
+import { expect } from 'chai';
 import { host } from 'src/config';
 import { WATCH_URL_PARAM, RETRANSMIT_BRINFO_KEY } from 'src/api/watch';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
@@ -15,6 +16,8 @@ import { WATCH_RESOURCE } from 'src/middleware/senderWatchInfo';
 import type { GlobalStorage } from 'src/storage/global/global';
 import { retransmit } from '../retransmit';
 import * as state from '../state';
+import type { RetransmitInfo } from '../state';
+import * as retransmitRequests from '../../../providers/retransmit/sendRetransmitRequests';
 
 describe('retransmit middleware', () => {
     const now = 1123112;
@@ -25,7 +28,6 @@ describe('retransmit middleware', () => {
         Parameters<typeof localStorage.globalLocalStorage>,
         localStorage.LocalStorage
     >;
-    let reqList: Record<string, state.RetransmitInfo> = {};
     const localStorageSetValMock = sandbox.stub<
         [name: string, val: unknown],
         LocalStorage
@@ -34,13 +36,60 @@ describe('retransmit middleware', () => {
         setVal: localStorageSetValMock,
     } as unknown as localStorage.LocalStorage;
 
+    let addStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['add']>,
+        ReturnType<state.RetransmitState['add']>
+    >;
+    let deleteStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['delete']>,
+        ReturnType<state.RetransmitState['delete']>
+    >;
+    let lengthStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['length']>,
+        ReturnType<state.RetransmitState['length']>
+    >;
+    let clearStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['clear']>,
+        ReturnType<state.RetransmitState['clear']>
+    >;
+    let sendRetransmitRequestsStub: sinon.SinonStub<
+        Parameters<typeof retransmitRequests.sendRetransmitRequests>,
+        ReturnType<typeof retransmitRequests.sendRetransmitRequests>
+    >;
+
     beforeEach(() => {
         sandbox.stub(inject, 'flags').value({
             ...inject.flags,
             [TELEMETRY_FEATURE]: true,
         });
         sandbox.stub(time, 'TimeOne').returns(<R>() => now as unknown as R);
-        sandbox.stub(state, 'getRetransmitLsState').value(() => reqList);
+        addStub = sandbox.stub();
+        deleteStub = sandbox.stub();
+        lengthStub = sandbox
+            .stub<
+                Parameters<state.RetransmitState['length']>,
+                ReturnType<state.RetransmitState['length']>
+            >()
+            .returns(0);
+        clearStub = sandbox
+            .stub<
+                Parameters<state.RetransmitState['clear']>,
+                ReturnType<state.RetransmitState['clear']>
+            >()
+            .returns([]);
+        sendRetransmitRequestsStub = sandbox.stub();
+        sandbox.stub(state, 'getRetransmitState').returns({
+            add: addStub,
+            delete: deleteStub,
+            length: lengthStub,
+            clear: clearStub,
+            updateRetry: sandbox.stub(),
+            getNotExpired: sandbox.stub(),
+            clearExpired: sandbox.stub(),
+        });
+        sandbox
+            .stub(retransmitRequests, 'sendRetransmitRequests')
+            .value(sendRetransmitRequestsStub);
         sandbox.stub(globalStorage, 'getGlobalStorage').returns({
             getVal: sandbox.stub().returns(HID),
         } as unknown as GlobalStorage);
@@ -50,7 +99,6 @@ describe('retransmit middleware', () => {
     });
 
     afterEach(() => {
-        reqList = {};
         sandbox.restore();
         localStorageSetValMock.resetHistory();
     });
@@ -102,31 +150,33 @@ describe('retransmit middleware', () => {
             counterType: '0',
         };
         const next = sandbox.stub();
+        const retransmitIndex = 1;
+
+        addStub.returns(retransmitIndex);
 
         const middleware = retransmit(ctx, counterOptions);
         middleware.beforeRequest!(senderParams, next);
-        sinon.assert.calledOnceWithExactly(
-            localStorageSetValMock,
-            state.RETRANSMIT_KEY,
-            {
-                '1': {
-                    counterType: '0',
-                    counterId: 1234,
-                    protocol: 'http:',
-                    host,
-                    resource: WATCH_RESOURCE,
-                    postParams: undefined,
-                    params: {
-                        [WATCH_URL_PARAM]: 'url',
-                    },
-                    time: now,
-                    browserInfo: {
-                        [RETRANSMIT_BRINFO_KEY]: 1,
-                    },
-                    telemetry: {},
-                    ghid: HID,
-                } as Partial<state.RetransmitInfo>,
+
+        sinon.assert.calledOnceWithExactly(addStub, {
+            counterType: '0',
+            counterId: 1234,
+            protocol: 'http:',
+            host,
+            resource: WATCH_RESOURCE,
+            postParams: undefined,
+            params: {
+                [WATCH_URL_PARAM]: 'url',
             },
+            time: now,
+            browserInfo: {
+                [RETRANSMIT_BRINFO_KEY]: 1,
+            },
+            ghid: HID,
+            telemetry: {},
+        });
+
+        expect(senderParams.middlewareInfo!.retransmitIndex).to.equal(
+            retransmitIndex,
         );
 
         sinon.assert.calledOnce(next);
@@ -134,12 +184,48 @@ describe('retransmit middleware', () => {
 
         middleware.afterRequest!(senderParams, next);
 
-        sinon.assert.calledTwice(localStorageSetValMock);
-        sinon.assert.calledWith(
-            localStorageSetValMock.getCall(1),
-            state.RETRANSMIT_KEY,
-            {},
-        );
+        sinon.assert.calledOnce(deleteStub);
+        sinon.assert.calledWith(deleteStub, retransmitIndex);
         sinon.assert.calledOnce(next);
+    });
+
+    it('should call useRetransmitRequests when MAX_REQUESTS is reached', () => {
+        const retransmitIndex = 1;
+        const ctx = {
+            Array,
+        } as Window;
+        const senderParams = {
+            urlInfo: {
+                resource: WATCH_RESOURCE,
+            },
+            urlParams: {
+                [WATCH_URL_PARAM]: 'url',
+            },
+            brInfo: browserInfo({}),
+            telemetry: telemetry({}),
+            middlewareInfo: {
+                retransmitIndex,
+            },
+        } as SenderInfo;
+        const counterOptions: CounterOptions = {
+            id: 1234,
+            counterType: '0',
+        };
+        const next = sandbox.stub();
+
+        addStub.returns(retransmitIndex);
+        lengthStub.returns(100); // MAX_REQUESTS is 100
+        clearStub.returns([{} as RetransmitInfo]);
+
+        const middleware = retransmit(ctx, counterOptions);
+        middleware.afterRequest!(senderParams, next);
+
+        sinon.assert.calledOnce(clearStub);
+        sinon.assert.calledOnceWithExactly(
+            sendRetransmitRequestsStub,
+            ctx,
+            counterOptions,
+            [{} as RetransmitInfo],
+        );
     });
 });

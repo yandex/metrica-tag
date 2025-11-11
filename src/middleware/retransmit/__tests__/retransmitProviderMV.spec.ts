@@ -14,26 +14,78 @@ import type { SenderInfo } from 'src/sender/SenderInfo';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import type { GlobalStorage } from 'src/storage/global/global';
 import * as state from '../state';
-import { retransmitProviderMiddleware } from '../retransmit';
+import { retransmitProviderMiddleware } from '../retransmitProviderMiddleware';
 
 describe('retransmitProviderMiddleware', () => {
     const now = 1123112;
     const HID = 123123123113;
     const sandbox = sinon.createSandbox();
 
-    let reqList: Record<string, state.RetransmitInfo> = {};
     const localStorageSetValMock = sandbox.stub();
     const mockLocalStorage = {
         setVal: localStorageSetValMock,
     } as unknown as localStorage.LocalStorage;
 
+    let addStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['add']>,
+        ReturnType<state.RetransmitState['add']>
+    >;
+    let deleteStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['delete']>,
+        ReturnType<state.RetransmitState['delete']>
+    >;
+    let lengthStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['length']>,
+        ReturnType<state.RetransmitState['length']>
+    >;
+    let clearStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['clear']>,
+        ReturnType<state.RetransmitState['clear']>
+    >;
+    let updateRetryStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['updateRetry']>,
+        ReturnType<state.RetransmitState['updateRetry']>
+    >;
+    let getExpiredStub: sinon.SinonStub<
+        Parameters<state.RetransmitState['getNotExpired']>,
+        ReturnType<state.RetransmitState['getNotExpired']>
+    >;
+
     beforeEach(() => {
-        reqList = {};
         sandbox.stub(inject, 'flags').value({
             ...inject.flags,
             [TELEMETRY_FEATURE]: true,
         });
-        sandbox.stub(state, 'getRetransmitLsState').value(() => reqList);
+        addStub = sandbox.stub();
+        deleteStub = sandbox.stub();
+        lengthStub = sandbox
+            .stub<
+                Parameters<state.RetransmitState['length']>,
+                ReturnType<state.RetransmitState['length']>
+            >()
+            .returns(0);
+        clearStub = sandbox
+            .stub<
+                Parameters<state.RetransmitState['clear']>,
+                ReturnType<state.RetransmitState['clear']>
+            >()
+            .returns([]);
+        updateRetryStub = sandbox.stub();
+        getExpiredStub = sandbox
+            .stub<
+                Parameters<state.RetransmitState['getNotExpired']>,
+                ReturnType<state.RetransmitState['getNotExpired']>
+            >()
+            .returns([]);
+        sandbox.stub(state, 'getRetransmitState').returns({
+            add: addStub,
+            delete: deleteStub,
+            length: lengthStub,
+            clear: clearStub,
+            updateRetry: updateRetryStub,
+            getNotExpired: getExpiredStub,
+            clearExpired: sandbox.stub(),
+        });
         sandbox
             .stub(time, 'TimeOne')
             .returns(<R>(fn: (a: any) => R) => now as unknown as R);
@@ -46,7 +98,6 @@ describe('retransmitProviderMiddleware', () => {
     });
 
     afterEach(() => {
-        reqList = {};
         sandbox.restore();
         localStorageSetValMock.resetHistory();
     });
@@ -56,30 +107,41 @@ describe('retransmitProviderMiddleware', () => {
             Array,
         } as Window;
         const counterOptions = {} as CounterOptions;
+        const retransmitIndex = 4;
         const brInfoState: state.RetransmitInfo['browserInfo'] = {
             [RETRANSMIT_BRINFO_KEY]: 1,
         };
         const senderParams: SenderInfo = {
             brInfo: browserInfo(brInfoState),
             middlewareInfo: {
-                retransmitIndex: 4,
+                retransmitIndex,
             },
         };
-        reqList = {
-            '4': {
-                protocol: 'http:',
-                host,
-                resource: CLICKMAP_RESOURCE,
-                time: now,
-                params: {
-                    [CLICKMAP_POINTER_PARAM]: '4',
-                },
-                browserInfo: {
-                    [RETRANSMIT_BRINFO_KEY]: 1,
-                },
-                ghid: HID,
-            } as unknown as state.RetransmitInfo,
+        const retransmitInfo: state.RetransmitInfo = {
+            protocol: 'http:',
+            host,
+            resource: CLICKMAP_RESOURCE,
+            time: now,
+            params: {
+                [CLICKMAP_POINTER_PARAM]: '4',
+            },
+            browserInfo: {
+                [RETRANSMIT_BRINFO_KEY]: 1,
+            },
+            ghid: HID,
+            counterId: 123,
+            counterType: '0',
+            postParams: undefined,
         };
+
+        getExpiredStub.returns([retransmitInfo]);
+
+        updateRetryStub.callsFake((index, retryCount) => {
+            if (index === retransmitIndex) {
+                retransmitInfo.browserInfo[RETRANSMIT_BRINFO_KEY] = retryCount;
+            }
+        });
+
         const next = sinon.stub();
         const middleware = retransmitProviderMiddleware(ctx, counterOptions);
 
@@ -89,33 +151,12 @@ describe('retransmitProviderMiddleware', () => {
         chai.expect(
             senderParams.brInfo!.getVal(RETRANSMIT_BRINFO_KEY),
         ).to.equal(2);
-        sinon.assert.calledOnce(localStorageSetValMock);
-        let [lsKey, newLsState] = localStorageSetValMock.getCall(0).args;
-        chai.expect(lsKey).to.equal(state.RETRANSMIT_KEY);
-        chai.expect(newLsState).to.deep.equal({
-            '4': {
-                protocol: 'http:',
-                host,
-                resource: CLICKMAP_RESOURCE,
-                time: now,
-                params: {
-                    [CLICKMAP_POINTER_PARAM]: '4',
-                },
-                browserInfo: {
-                    [RETRANSMIT_BRINFO_KEY]: 2,
-                },
-                ghid: HID,
-            },
-        });
+        sinon.assert.calledOnceWithExactly(updateRetryStub, retransmitIndex, 2);
 
         next.resetHistory();
-        localStorageSetValMock.resetHistory();
 
         middleware.afterRequest!(senderParams, next);
         sinon.assert.calledOnce(next);
-        sinon.assert.calledOnce(localStorageSetValMock);
-        [lsKey, newLsState] = localStorageSetValMock.getCall(0).args;
-        chai.expect(lsKey).to.equal(state.RETRANSMIT_KEY);
-        chai.expect(newLsState).to.deep.equal({});
+        sinon.assert.calledOnceWithExactly(deleteStub, retransmitIndex);
     });
 });

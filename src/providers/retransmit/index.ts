@@ -1,9 +1,6 @@
 import { flags } from '@inject';
 import { addCommonMiddleware, addMiddlewareForProvider } from 'src/middleware';
-import {
-    retransmit,
-    retransmitProviderMiddleware,
-} from 'src/middleware/retransmit';
+import { retransmit } from 'src/middleware/retransmit/retransmit';
 import { HIT_PROVIDER } from 'src/providers';
 import { ARTIFICIAL_HIT_PROVIDER } from 'src/providers/artificialHit/const';
 import { CLICKMAP_PROVIDER } from 'src/providers/clickmap/const';
@@ -17,6 +14,7 @@ import {
 } from 'src/sender/middleware';
 import { nameMap, withoutBeacon } from 'src/transport';
 import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
+import { retransmitProviderMiddleware } from 'src/middleware/retransmit/retransmitProviderMiddleware';
 import { RETRANSMIT_PROVIDER, SENDER_RETRANSMIT } from './const';
 import { useRetransmitProvider } from './retransmit';
 
