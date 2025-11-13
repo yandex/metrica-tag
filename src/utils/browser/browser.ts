@@ -1,8 +1,6 @@
 import { memo } from 'src/utils/function/memo';
 import { isString, stringIncludes, stringIndexOf } from 'src/utils/string';
 import { indexOfWin } from 'src/utils/array/utils';
-import { cMap } from 'src/utils/array/map';
-import { includes } from 'src/utils/array/includes';
 import { cSome } from 'src/utils/array/some';
 import { cReduce } from 'src/utils/array/reduce';
 import { ctxPath, getPath, isUndefined } from 'src/utils/object';
@@ -18,6 +16,13 @@ import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFu
 import { notFn } from 'src/utils/function/identity';
 import { parseDecimalInt } from '../number/number';
 import { checkUserAgent, getAppleUAProps, getAgent } from './utils';
+
+declare global {
+    interface Document {
+        readonly webkitVisibilityState: DocumentVisibilityState | 'prerender';
+        readonly prerendering: boolean;
+    }
+}
 
 export const isWebKit = memo(bindArg(/webkit/, checkUserAgent));
 export const isBrokenFromCharCode = memo(
@@ -211,14 +216,11 @@ export const isNotificationAllowed = (ctx: Window) => {
     return null;
 };
 
-export const isPrerender = (ctx: Window) =>
-    includes(
-        'prerender',
-        cMap(bindArg(getPath(ctx, 'document'), getPath), [
-            'webkitVisibilityState',
-            'visibilityState',
-        ]),
-    );
+export const isPrerender = (ctx: Window): boolean =>
+    getPath(ctx, 'document.prerendering')! ||
+    getPath(ctx, 'document.webkitVisibilityState') === 'prerender' ||
+    // @ts-expect-error -- DOM lib does not include prerender state as it's deprecated. We use it anyway.
+    getPath(ctx, 'document.visibilityState') === 'prerender';
 
 export const isITP = memo((ctx: Window) => {
     const agent = getAgent(ctx) || '';

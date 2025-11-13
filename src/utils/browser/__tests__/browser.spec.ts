@@ -278,22 +278,32 @@ describe('browser Utils', () => {
         chai.expect(getPlatform(ctx)).to.be.equal(platform);
     });
     it('checks isPrerender', () => {
-        chai.expect(
-            isPrerender({ document: { visibilityState: 'visible' } } as any),
-        ).to.be.equal(false);
-        chai.expect(
-            isPrerender({
+        chai.assert(
+            isPrerender({ document: { prerendering: true } } as Window),
+        );
+        chai.assert(
+            !isPrerender({
+                document: { visibilityState: 'visible' },
+            } as Window),
+        );
+        chai.assert(
+            !isPrerender({
                 document: { webkitVisibilityState: 'visible' },
-            } as any),
-        ).to.be.equal(false);
-        chai.expect(
-            isPrerender({ document: { visibilityState: 'prerender' } } as any),
-        ).to.be.equal(true);
-        chai.expect(
+            } as Window),
+        );
+        chai.assert(
+            !isPrerender({ document: { prerendering: false } } as Window),
+        );
+        chai.assert(
+            isPrerender({
+                document: { visibilityState: 'prerender' },
+            } as unknown as Window),
+        );
+        chai.assert(
             isPrerender({
                 document: { webkitVisibilityState: 'prerender' },
-            } as any),
-        ).to.be.equal(true);
+            } as Window),
+        );
     });
     it('check isITPSafari', () => {
         chai.expect(

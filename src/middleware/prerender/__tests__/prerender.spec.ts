@@ -24,6 +24,19 @@ describe('Prerender', () => {
         eventsStub.restore();
     });
 
+    it('pass if not prerendering', () => {
+        const next = sinon.spy();
+        const ctx = { document: { prerendering: false } } as Window;
+        const counterOptions: CounterOptions = {
+            id: 1,
+            counterType: '1',
+        };
+        const middleware = prerender(ctx, counterOptions);
+
+        middleware.beforeRequest!({ brInfo: browserInfo() }, next);
+        sinon.assert.calledOnce(next);
+    });
+
     it('pass if visibilitystate null', () => {
         const next = sinon.spy();
         const ctx = {
@@ -35,13 +48,8 @@ describe('Prerender', () => {
         };
         const middleware = prerender(ctx, counterOptions);
 
-        middleware.beforeRequest!(
-            {
-                brInfo: browserInfo(),
-            },
-            next,
-        );
-        chai.expect(next.called).to.be.ok;
+        middleware.beforeRequest!({ brInfo: browserInfo() }, next);
+        sinon.assert.calledOnce(next);
     });
 
     it('do nothing if empty brInfo just pass', () => {
@@ -53,12 +61,12 @@ describe('Prerender', () => {
         const middleware = prerender(win, counterOptions);
 
         middleware.beforeRequest!({}, next);
-        chai.expect(next.called).to.be.ok;
+        sinon.assert.calledOnce(next);
     });
 
     it('waits for visibility state not prerender', () => {
         const next = sinon.spy();
-        const ctx = { document: { visibilityState: 'prerender' } } as any;
+        const ctx = { document: { prerendering: true } } as Window;
         const senderParams = {
             brInfo: browserInfo({}),
         };
@@ -67,25 +75,33 @@ describe('Prerender', () => {
             counterType: '1',
         });
         middleware.beforeRequest!(senderParams, next);
-        // eslint-disable-next-line prefer-const
-        let [target, events, callback] = onSpy.getCall(0).args;
-        chai.expect(target).to.eq(ctx.document);
-        chai.expect(events).to.be.deep.equal([
-            'webkitvisibilitychange',
-            'visibilitychange',
-        ]);
-        chai.expect(next.called).to.be.not.ok;
-        ctx.document.visibilityState = 'rendered';
+        sinon.assert.calledOnceWithExactly(
+            onSpy,
+            ctx.document,
+            [
+                'webkitvisibilitychange',
+                'visibilitychange',
+                'prerenderingchange',
+            ],
+            sinon.match.func,
+        );
+        sinon.assert.notCalled(next);
+        // @ts-expect-error -- mutating readonly property to simulate transition
+        ctx.document.prerendering = false;
 
-        callback({});
-        chai.expect(next.called).to.be.ok;
-        [target, events] = unSpy.getCall(0).args;
-        chai.expect(target).to.eq(ctx.document);
-        chai.expect(events).to.be.deep.equal([
-            'webkitvisibilitychange',
-            'visibilitychange',
-        ]);
-        chai.expect(next.called).to.be.ok;
+        onSpy.firstCall.yield({});
+        sinon.assert.calledOnce(next);
+        sinon.assert.calledOnceWithExactly(
+            unSpy,
+            ctx.document,
+            [
+                'webkitvisibilitychange',
+                'visibilitychange',
+                'prerenderingchange',
+            ],
+            sinon.match.func,
+        );
+        sinon.assert.calledOnce(next);
         chai.expect(
             senderParams.brInfo.getVal(PRERENDER_MW_BR_KEY),
         ).to.be.equal('1');
