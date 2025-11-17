@@ -1,13 +1,16 @@
 import { cEvent } from '../events/events';
-import { insertScript } from './insertScript';
+import { ScriptOptions, insertScript } from './insertScript';
 import { globalMemoWin } from '../function/globalMemo';
 import { constructObject } from '../function/construct';
+import { mix } from '../object';
 
 export type InsertScriptStates = Record<string, InsertScriptState>;
 export type InsertScriptState = {
     script: HTMLScriptElement | undefined;
     state: ScriptState;
 };
+export type InsertScriptOptions = Omit<ScriptOptions, 'src'>;
+
 export const INSERT_SCRIPT_GS_KEY = 'giss';
 
 // eslint-disable-next-line no-shadow
@@ -24,11 +27,15 @@ const getInsertScriptState = globalMemoWin(
 
 // didn't simply use memo because it has side effects therefore it isn't deleted by rollup as the result of tree-shaking
 // FIXME: find a way to make memo tree-shakable
-const insertScriptOnce = (ctx: Window, src: string) => {
+const insertScriptOnce = (
+    ctx: Window,
+    src: string,
+    options: InsertScriptOptions = {},
+) => {
     const scriptState = getInsertScriptState(ctx);
     if (!scriptState[src]) {
         scriptState[src] = {
-            script: insertScript(ctx, { src }),
+            script: insertScript(ctx, mix(options, { src })),
             state: ScriptState.Pending,
         };
     }
@@ -44,8 +51,9 @@ export const loadScript = (
     src: string,
     onLoadCb: () => void,
     onErrorCb?: () => void,
+    options: InsertScriptOptions = {},
 ) => {
-    const scriptLoadState = insertScriptOnce(ctx, src);
+    const scriptLoadState = insertScriptOnce(ctx, src, options);
     const { script, state } = scriptLoadState;
     const onError = () => {
         scriptLoadState.state = ScriptState.Error;

@@ -1,3 +1,4 @@
+import { mix } from '../object';
 import { getElemCreateFunction } from './dom';
 
 export type ScriptOptions = {
@@ -5,6 +6,7 @@ export type ScriptOptions = {
     type?: string;
     charset?: string;
     async?: boolean;
+    dataAttributes?: Record<string, string>;
 };
 
 export const insertScript = (
@@ -21,6 +23,11 @@ export const insertScript = (
     scriptTag.type = options.type || 'text/javascript';
     scriptTag.charset = options.charset || 'utf-8';
     scriptTag.async = options.async || true;
+
+    if (options.dataAttributes) {
+        mix(scriptTag.dataset, options.dataAttributes);
+    }
+
     try {
         let head = doc.getElementsByTagName('head')[0];
         // fix for Opera
