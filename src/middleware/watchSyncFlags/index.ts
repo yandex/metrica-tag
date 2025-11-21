@@ -19,38 +19,39 @@ const getDefaultFlags = memo(() =>
 /**
  * Constructs a middleware that fills in brInfo and telemetry
  */
-export const watchSyncFlags =
-    (inputFlags?: string[]): MiddlewareGetter =>
-    (ctx: Window, opt: CounterOptions) => ({
-        beforeRequest: (senderParams: SenderInfo, next: () => void) => {
-            const { brInfo, urlParams } = senderParams;
-            if (!brInfo || !urlParams) {
-                next();
-                return;
-            }
+export const watchSyncFlags = (inputFlags?: string[]): MiddlewareGetter =>
+    function watchSyncFlagsMiddleware(ctx: Window, opt: CounterOptions) {
+        return {
+            beforeRequest: (senderParams: SenderInfo, next: () => void) => {
+                const { brInfo, urlParams } = senderParams;
+                if (!brInfo || !urlParams) {
+                    next();
+                    return;
+                }
 
-            cForEach((flag: string) => {
-                let getter = BRINFO_FLAG_GETTERS[flag];
-                let loggerPrefix = BRINFO_LOGGER_PREFIX;
-                let storage = brInfo;
-                if (flags.TELEMETRY_FEATURE) {
-                    if (!getter) {
-                        getter = TELEMETRY_FLAG_GETTERS[flag];
-                        loggerPrefix = 'tel';
-                        storage = addTelemetryToSenderParams(senderParams);
+                cForEach((flag: string) => {
+                    let getter = BRINFO_FLAG_GETTERS[flag];
+                    let loggerPrefix = BRINFO_LOGGER_PREFIX;
+                    let storage = brInfo;
+                    if (flags.TELEMETRY_FEATURE) {
+                        if (!getter) {
+                            getter = TELEMETRY_FLAG_GETTERS[flag];
+                            loggerPrefix = 'tel';
+                            storage = addTelemetryToSenderParams(senderParams);
+                        }
                     }
-                }
 
-                if (getter) {
-                    const flagValue = ctxErrorLogger(
-                        `${loggerPrefix}:${flag}`,
-                        getter,
-                        null,
-                    )(ctx, opt, senderParams);
-                    storage.setOrNot(flag, flagValue);
-                }
-            }, inputFlags || getDefaultFlags());
+                    if (getter) {
+                        const flagValue = ctxErrorLogger(
+                            `${loggerPrefix}:${flag}`,
+                            getter,
+                            null,
+                        )(ctx, opt, senderParams);
+                        storage.setOrNot(flag, flagValue);
+                    }
+                }, inputFlags || getDefaultFlags());
 
-            next();
-        },
-    });
+                next();
+            },
+        };
+    };
