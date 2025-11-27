@@ -19,6 +19,11 @@ describe('providers / artificial hit', () => {
     const sandbox = sinon.createSandbox();
     const senderStub = sandbox.stub().returns(syncPromise);
     const counterOptions = { id: 123 } as CounterOptions;
+    const ctx = {
+        document: {
+            referrer: '',
+        },
+    } as Window;
     let logSpy: sinon.SinonSpy;
     let getSenderStub: sinon.SinonStub<any, any>;
     let errorLoggerStub: sinon.SinonStub<any, any>;
@@ -36,7 +41,7 @@ describe('providers / artificial hit', () => {
 
         errorLoggerStub = sandbox.stub(errorLogger, 'errorLogger');
 
-        errorLoggerStub.callsFake((ctx, scopeName, fn) => {
+        errorLoggerStub.callsFake((_, __, fn) => {
             return (...args: any[]) => {
                 if (fn) {
                     fn(...args);
@@ -51,7 +56,6 @@ describe('providers / artificial hit', () => {
     });
 
     it('sends artificial hit and ignores artificial hit if url is not changed', () => {
-        const ctx = {};
         const params = {
             a: 1,
             b: 1,
@@ -99,16 +103,16 @@ describe('providers / artificial hit', () => {
     it('sends artificial hit when called with no arguments', () => {
         const url = 'http://example.com';
         const referrer = 'reff';
-        const ctx = {
+        const ctxWithLocationAndReferrer = {
             location: {
                 href: url,
             },
             document: {
                 referrer,
             },
-        };
+        } as Window;
         const makeArtificialHit = artificialHitProvider(
-            ctx as any,
+            ctxWithLocationAndReferrer,
             counterOptions,
         );
         makeArtificialHit[METHOD_NAME_HIT]();
@@ -135,7 +139,6 @@ describe('providers / artificial hit', () => {
 
     it('if both referrer and referer is specified, ignores referer, uses referrer in hit', () => {
         const url = 'http://example.com';
-        const ctx = {} as Window;
         const referrer = 'referrer';
         const referer = 'referer';
         const makeArtificialHit = artificialHitProvider(ctx, counterOptions);

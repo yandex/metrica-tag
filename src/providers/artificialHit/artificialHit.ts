@@ -9,7 +9,7 @@ import { getSender } from 'src/sender';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { getLocation } from 'src/utils/location/location';
-import { isObject, mix } from 'src/utils/object';
+import { isObject, isUndefined, mix } from 'src/utils/object';
 import { memo } from 'src/utils/function/memo';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
 import { getLoggerFn } from 'src/providers/debugConsole/debugConsole';
@@ -103,15 +103,28 @@ export const artificialHitProvider = (
                 fnCtx,
             );
             const state = getArtificialState(counterOpt);
-            const pageUrl = url || getLocation(ctx).href;
+
+            const { href } = getLocation(ctx);
+            const firstArtificialHitUrl = counterOpt.counterDefer
+                ? // If the counter uses counterDefer option, the first hit won't be counted, so it needs to send forceUrl or original href
+                  // in case url is not provided as a parameter
+                  counterOpt.forceUrl || href
+                : href;
+            const fallbackUrl = isUndefined(state.url)
+                ? firstArtificialHitUrl
+                : href;
+            const pageUrl = url || fallbackUrl;
 
             if (state.url !== pageUrl) {
                 state.ref = state.url;
                 state.url = url;
             }
+            const firstArtificialHitReferrer = counterOpt.counterDefer
+                ? counterOpt.forceReferrer || ctx.document.referrer
+                : ctx.document.referrer;
 
             const pageRef =
-                options.referrer || state.ref || ctx.document.referrer;
+                options.referrer || state.ref || firstArtificialHitReferrer;
 
             const logHit = getLoggerFn(
                 ctx,
