@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as defer from 'src/utils/defer/defer';
 import { noop } from 'src/utils/function/noop';
@@ -7,7 +6,10 @@ import { waitForBodyTask, TIMEOUT_FOR_BODY } from '../waitForBody';
 
 describe('waitForBody', () => {
     const sandbox = sinon.createSandbox();
-    let setDeferStub: sinon.SinonStub<any, any>;
+    let setDeferStub: sinon.SinonStub<
+        Parameters<typeof defer.setDefer>,
+        ReturnType<typeof defer.setDefer>
+    >;
 
     beforeEach(() => {
         setDeferStub = sandbox.stub(defer, 'setDefer');
@@ -18,36 +20,45 @@ describe('waitForBody', () => {
     });
 
     it('waits for body', (done) => {
-        const ctx: any = {
+        const ctx = {
             document: {},
-        };
+        } as Window;
         waitForBodyTask(ctx)(taskFork(noop, done));
 
-        const [deferCtx, callback, timeout] = setDeferStub.getCall(0).args;
-        chai.expect(timeout).to.equal(TIMEOUT_FOR_BODY);
-        chai.expect(deferCtx).to.equal(ctx);
-
-        ctx.document.body = {};
-        callback();
+        sinon.assert.calledOnceWithExactly(
+            setDeferStub,
+            ctx,
+            sinon.match.func,
+            TIMEOUT_FOR_BODY,
+        );
+        ctx.document.body = {} as HTMLElement;
+        setDeferStub.yield();
     });
 
     it('waits for body for the iframe', (done) => {
-        const ctx = {} as any;
-        const targetIframe: any = {
+        const ctx = {} as Window;
+        const src = 'https://example.com';
+        const targetIframe = {
             nodeType: 1,
-        };
+            contentWindow: {
+                document: {
+                    body: {},
+                },
+            },
+            src,
+            contentDocument: {
+                URL: src,
+            },
+        } as HTMLIFrameElement;
 
         waitForBodyTask(ctx, targetIframe)(taskFork(noop, done));
 
-        const [deferCtx, callback, timeout] = setDeferStub.getCall(0).args;
-        chai.expect(timeout).to.equal(TIMEOUT_FOR_BODY);
-        chai.expect(deferCtx).to.equal(ctx);
-
-        targetIframe.contentWindow = {
-            document: {
-                body: {},
-            },
-        };
-        callback();
+        sinon.assert.calledOnceWithExactly(
+            setDeferStub,
+            ctx,
+            sinon.match.func,
+            TIMEOUT_FOR_BODY,
+        );
+        setDeferStub.yield();
     });
 });
