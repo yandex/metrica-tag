@@ -19,14 +19,14 @@ export type FirstNArg<FN, Result extends [] = []> = FN extends (
     ? Result | Args['length'] extends 0 | 1
         ? never
         : Args extends [any, ...infer Tail]
-        ?
-              | []
-              | FirstAsTuple<Args>
-              | [
-                    ...FirstAsTuple<Args>,
-                    ...FirstNArg<(...args: Tail) => ReturnType<FN>>,
-                ]
-        : any[]
+          ?
+                | []
+                | FirstAsTuple<Args>
+                | [
+                      ...FirstAsTuple<Args>,
+                      ...FirstNArg<(...args: Tail) => ReturnType<FN>>,
+                  ]
+          : any[]
     : never;
 
 export type FirstArg<FN> = Extract<FirstNArg<FN>, [any]>;
@@ -59,12 +59,13 @@ export type SliceArgs<
 > = SliceFrom<Parameters<F>, Any.Cast<L, any[]>>;
 
 export type BindArgs = {
-    <A extends Partial<Parameters<F>>, F extends AnyFunc>(args: A, fn: F): (
-        ...ar: SliceArgs<F, A>
-    ) => ReturnType<F>;
-    <A extends Partial<Parameters<F>>, F extends AnyFunc>(args: A): (
+    <A extends Partial<Parameters<F>>, F extends AnyFunc>(
+        args: A,
         fn: F,
-    ) => (...ar: SliceArgs<F, A>) => ReturnType<F>;
+    ): (...ar: SliceArgs<F, A>) => ReturnType<F>;
+    <A extends Partial<Parameters<F>>, F extends AnyFunc>(
+        args: A,
+    ): (fn: F) => (...ar: SliceArgs<F, A>) => ReturnType<F>;
 };
 
 export type CallUserCallback = (

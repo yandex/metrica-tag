@@ -16,7 +16,7 @@ const props = [
     'search',
 ] as const;
 
-type PropsList = typeof props[number];
+type PropsList = (typeof props)[number];
 
 export type Props = {
     [prop in PropsList]: string;

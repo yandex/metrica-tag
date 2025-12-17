@@ -12,8 +12,8 @@ type GetPath<
         ? GetPath<Exclude<Value[Head], undefined>, Tail>
         : null
     : Path extends keyof Value
-    ? Exclude<Value[Path], undefined>
-    : null;
+      ? Exclude<Value[Path], undefined>
+      : null;
 
 /**
  * ВНИМАНИЕ! Использовать только для нативных функций/объектов или внешних данных

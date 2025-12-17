@@ -26,7 +26,7 @@ describe('CHECK_STATUS_FEATURE', () => {
             location: {
                 search: inputSearchParams,
             },
-        } as Window);
+        }) as Window;
 
     describe('langForCheck', () => {
         it(`returns the value of "${LANG_URL_PARAM}" search parameter as defined in location`, () => {

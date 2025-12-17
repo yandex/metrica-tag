@@ -21,12 +21,12 @@ export const setEvent = <
     M extends E extends Window
         ? WindowEventMap
         : E extends Document
-        ? DocumentEventMap
-        : E extends HTMLElement
-        ? HTMLElementEventMap
-        : E extends VisualViewport
-        ? VisualViewportEventMap
-        : never,
+          ? DocumentEventMap
+          : E extends HTMLElement
+            ? HTMLElementEventMap
+            : E extends VisualViewport
+              ? VisualViewportEventMap
+              : never,
     T extends keyof M,
 >(
     ctx: Window,

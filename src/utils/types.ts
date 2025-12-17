@@ -28,12 +28,8 @@ export type WithRequiredPropertiesDeep<
  * Если ключ K принадлежит к интерфейсу I, вернуть I[K],
  * если нет - вернуть Else
  */
-export type IsKeyOfObj<K extends string, I, Else = never> = I extends Record<
-    K,
-    any
->
-    ? I[K]
-    : Else;
+export type IsKeyOfObj<K extends string, I, Else = never> =
+    I extends Record<K, any> ? I[K] : Else;
 
 /**
  * Тоже самое что l1.slice(l2.length)

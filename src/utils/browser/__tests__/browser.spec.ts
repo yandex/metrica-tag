@@ -41,26 +41,26 @@ describe('browser Utils', () => {
                 },
             },
             InstallTrigger: true,
-        } as any);
+        }) as any;
     const androidWin = () =>
         ({
             navigator: {
                 userAgent: 'android mobile',
                 platform: 'android',
             },
-        } as any);
+        }) as any;
     const webkitWin = () =>
         ({
             navigator: {
                 userAgent: 'WebKit',
             },
-        } as any);
+        }) as any;
     const geckoWin = () =>
         ({
             navigator: {
                 userAgent: 'Gecko',
             },
-        } as any);
+        }) as any;
 
     it('check sameSite browser', () => {
         const result = isSameSiteBrowser({} as any);

@@ -18,12 +18,15 @@ export const parseCookie = (ctx: Window) => {
         const { cookie } = ctx.document;
         if (!isNil(cookie)) {
             const result: Record<string, string> = {};
-            cForEach((part) => {
-                const [name, value] = part.split('=');
-                result[trimText(name)] = trimText(
-                    safeDecodeURIComponent(value),
-                );
-            }, (cookie || '').split(';'));
+            cForEach(
+                (part) => {
+                    const [name, value] = part.split('=');
+                    result[trimText(name)] = trimText(
+                        safeDecodeURIComponent(value),
+                    );
+                },
+                (cookie || '').split(';'),
+            );
 
             return result;
         }

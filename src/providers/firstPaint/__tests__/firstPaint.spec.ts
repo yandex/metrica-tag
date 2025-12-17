@@ -30,7 +30,7 @@ describe('first paint', () => {
         ({
             id: Math.floor(Math.random() * 1000),
             counterType: '0',
-        } as CounterOptions);
+        }) as CounterOptions;
 
     const winWithEntries = {
         performance: {

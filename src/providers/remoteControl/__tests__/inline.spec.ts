@@ -55,7 +55,7 @@ describe('remoteControl / inline', () => {
         insertScriptStub = sandbox.stub(domUtils, 'insertScript');
 
         setValSpy = sandbox.spy(
-            (name: string, value: unknown) => ({} as GlobalStorage),
+            (name: string, value: unknown) => ({}) as GlobalStorage,
         );
         sandbox.stub(globalUtils, 'getGlobalStorage').returns({
             setVal: setValSpy,
@@ -83,7 +83,7 @@ describe('remoteControl / inline', () => {
                 appVersion: '1.2.3',
                 fileId,
             }),
-        } as MessageEvent<string>);
+        }) as MessageEvent<string>;
 
     const checkUtils = (entityKey: string) => {
         const setValSpyCall = setValSpy.getCall(1);

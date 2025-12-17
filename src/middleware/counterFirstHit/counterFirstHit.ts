@@ -21,7 +21,7 @@ const getFirstHitState = memo(
         ({
             firstHitBrinfo: null,
             hitsQueue: [],
-        } as FirstHitState),
+        }) as FirstHitState,
     getCounterKey,
 );
 

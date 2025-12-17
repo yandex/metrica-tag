@@ -130,9 +130,8 @@ const processEvents = (
                 artificialEventKey === NOT_BOUNCE_BR_KEY &&
                 brInfoFlags[NOT_BOUNCE_CLIENT_TIME_BR_KEY]
             ) {
-                result[
-                    EVENT_VALUE_KEY
-                ] = `${brInfoFlags[NOT_BOUNCE_CLIENT_TIME_BR_KEY]}`;
+                result[EVENT_VALUE_KEY] =
+                    `${brInfoFlags[NOT_BOUNCE_CLIENT_TIME_BR_KEY]}`;
             }
         } else if (urlParams) {
             result[HIT_TYPE_KEY] = HIT_TYPE_EVENT;

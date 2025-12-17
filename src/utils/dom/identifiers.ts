@@ -24,7 +24,7 @@ export const CSS_KEY = 'cs';
 
 const IDENTIFIERS = [ID, NAME, HREF, PATH, CONTENT, TYPE, CSS_KEY] as const;
 
-export type Identifier = typeof IDENTIFIERS[number];
+export type Identifier = (typeof IDENTIFIERS)[number];
 type GenericGetter = (ctx: Window, element: HTMLElement) => string | null;
 type ContentGetter = (
     ctx: Window,

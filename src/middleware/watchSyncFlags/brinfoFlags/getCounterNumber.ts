@@ -5,11 +5,14 @@ import { secondArg } from 'src/utils/function/identity';
 import { pipe } from 'src/utils/function/pipe';
 
 export const COUNTER_NO = 'counterNum';
-export const getCounterNumber = memo((ctx: Window) => {
-    const name = COUNTER_NO;
-    const storage = getGlobalStorage(ctx);
-    const privCn = storage.getVal<number>(name, 0);
-    const newCn = privCn + 1;
-    storage.setVal(name, newCn);
-    return newCn;
-}, pipe(secondArg, getCounterKey));
+export const getCounterNumber = memo(
+    (ctx: Window) => {
+        const name = COUNTER_NO;
+        const storage = getGlobalStorage(ctx);
+        const privCn = storage.getVal<number>(name, 0);
+        const newCn = privCn + 1;
+        storage.setVal(name, newCn);
+        return newCn;
+    },
+    pipe(secondArg, getCounterKey),
+);
