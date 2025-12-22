@@ -1,8 +1,8 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import commandLineArgs from 'command-line-args';
-import { spawnAsPromised } from './utils/proc';
 import { readAsJSON } from './utils/fs';
+import { spawnAsPromised } from './utils/proc';
 
 type FeatureTypeRaw = {
     code: string;
@@ -126,10 +126,10 @@ const run = async () => {
             generateFeaturesCode(allFeatures),
         ),
     ]);
-    await spawnAsPromised(`prettier --write ${GEN_DIR}/*.ts`, {
-        shell: true,
-        console: true,
-    });
+    await spawnAsPromised(
+        `prettier --write "${GEN_DIR}/*.ts" --ignore-path ""`,
+        { shell: true, console: true },
+    );
 };
 
 run();
