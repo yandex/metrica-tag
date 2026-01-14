@@ -20,7 +20,7 @@ import { ctxPath, getPath, isFunction, mix } from 'src/utils/object';
 import { stringIndexOf } from 'src/utils/string';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 import { consoleLog } from '../debugConsole/debugConsole';
-import { STACK_DATA_LAYER_NAME, STACK_FN_NAME } from './const';
+import { EXECUTED_PROP, STACK_DATA_LAYER_NAME, STACK_FN_NAME } from './const';
 import type {
     CounterMethods,
     StackCall,
@@ -122,7 +122,7 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
         state[stateKey] = {};
     }
     const counterInfo = state[stateKey];
-    if (item.executed) {
+    if (item[EXECUTED_PROP]) {
         return;
     }
 
@@ -138,7 +138,7 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
     }
 
     if (method === 'init') {
-        item.executed = true;
+        item[EXECUTED_PROP] = true;
         if (counter) {
             consoleLog(
                 ctx,
@@ -156,7 +156,7 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
         );
     } else if (counter && counter[method] && counterInfo.inited) {
         (counter[method] as any)(...args);
-        item.executed = true;
+        item[EXECUTED_PROP] = true;
     } else {
         let { stackList } = counterInfo;
         if (!stackList) {
