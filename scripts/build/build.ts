@@ -78,9 +78,7 @@ const inputOptions: RollupOptions = {
             preferBuiltins: false,
             dedupe: ['promise-polyfill'],
             browser: true,
-            customResolveOptions: {
-                moduleDirectory: ['node_modules'],
-            },
+            moduleDirectories: ['node_modules'],
         }),
         commonjs({
             include: ['node_modules/**'],
