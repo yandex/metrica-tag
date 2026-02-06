@@ -7,7 +7,7 @@ const options = commandLineArgs([
     { name: 'typecheck', type: String },
     { name: 'code', type: Boolean },
     { name: 'prettier', type: Boolean },
-    { name: 'files', type: String },
+    { name: 'files', type: String, multiple: true },
 ]);
 
 const processCommand = (command: string) => {
@@ -20,6 +20,7 @@ function main() {
     const shouldRunAll =
         (options.fix && optionsCount === 1) || optionsCount === 0;
     const { typecheck, prettier, code, fix, files } = options;
+    const joinedFiles = files?.join(' ');
 
     if (typecheck !== undefined || shouldRunAll) {
         const project = options.typecheck || 'tsconfig.json';
@@ -29,14 +30,14 @@ function main() {
 
     if (prettier || shouldRunAll) {
         const prettierOptions = fix ? '--write --list-different' : '--check';
-        const pattern = files || '"./**/*.{ts,js,tsx}"';
+        const pattern = joinedFiles || '"./**/*.{ts,js,tsx}"';
         const prettierCommand = `prettier ${prettierOptions} ${pattern}`;
         processCommand(prettierCommand);
     }
 
     if (code || shouldRunAll) {
         const eslintOptions = ['--cache', ...(fix ? ['--fix'] : [])].join(' ');
-        const pattern = files || '.';
+        const pattern = joinedFiles || '.';
         const eslintCommand = `eslint ${eslintOptions} ${pattern}`;
         processCommand(eslintCommand);
     }

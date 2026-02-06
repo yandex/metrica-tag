@@ -127,8 +127,9 @@ const run = async () => {
         ),
     ]);
     await spawnAsPromised(
-        `prettier --write "${GEN_DIR}/*.ts" --ignore-path ""`,
-        { shell: true, console: true },
+        'prettier',
+        ['--write', `${GEN_DIR}/*.ts`, '--ignore-path', ''],
+        { console: true },
     );
 };
 

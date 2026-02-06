@@ -1,18 +1,17 @@
 import os from 'os';
 import path from 'path';
-import { ProcessOptions, spawnAsPromised } from './utils/proc';
+import { spawnAsPromised } from './utils/proc';
 
 export const getIndexedFiles = async (
     extensions: string[],
-): Promise<string> => {
-    const opt: ProcessOptions = { shell: true };
-    const root = await spawnAsPromised('git rev-parse --show-toplevel', opt);
+): Promise<string[]> => {
+    const root = await spawnAsPromised('git', ['rev-parse', '--show-toplevel']);
     /**
      * git status data in form `XY PATH`,
      * where `X` shows the status of the index
      * and `Y` shows the status of the working tree.
      */
-    const status = await spawnAsPromised('git status --short', opt);
+    const status = await spawnAsPromised('git', ['status', '--short']);
     const files = status
         .split(os.EOL)
         .filter((fileInfo) => {
@@ -26,14 +25,12 @@ export const getIndexedFiles = async (
         .filter((filePath) =>
             extensions.includes(filePath.split('.').pop() || ''),
         )
-        .map((filePath) => path.join(process.cwd(), root, filePath))
-        .join(' ');
+        .map((filePath) => path.join(process.cwd(), root, filePath));
 };
 
 (async function precommitHook() {
     try {
         const opts = {
-            shell: true,
             console: { stdout: true, stderr: false },
         } as const;
 
@@ -41,10 +38,21 @@ export const getIndexedFiles = async (
 
         if (files) {
             await spawnAsPromised(
-                `npm run lint -- --fix --typecheck --code --prettier --files "${files}"`,
+                'npm',
+                [
+                    'run',
+                    'lint',
+                    '--',
+                    '--fix',
+                    '--typecheck',
+                    '--code',
+                    '--prettier',
+                    '--files',
+                    ...files,
+                ],
                 opts,
             );
-            await spawnAsPromised(`git add -v ${files}`, opts);
+            await spawnAsPromised('git', ['add', '-v', ...files], opts);
         }
     } catch (e) {
         process.exitCode = 1;

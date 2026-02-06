@@ -113,7 +113,7 @@ export function processCommands(
 
         if (typeof command === 'string') {
             message = command;
-            command = [command, { shell: true, stdio: 'inherit' }];
+            command = [command, { stdio: 'inherit' }];
         } else {
             const processArgs = command[1] instanceof Array ? command[1] : [];
             message = `${command[0]} ${processArgs.join(' ')}`;
