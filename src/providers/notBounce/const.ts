@@ -1,5 +1,4 @@
 export const DEFAULT_NOT_BOUNCE_TIMEOUT = 15000;
-export const EXPERIMENTAL_NOT_BOUNCE_TIMEOUT = 10000;
 export const METHOD_NAME_NOT_BOUNCE = 'notBounce';
 export const LAST_NOT_BOUNCE_LS_KEY = 'lastHit';
 export const APPROXIMATE_VISIT_DURATION = 30 * 60000;

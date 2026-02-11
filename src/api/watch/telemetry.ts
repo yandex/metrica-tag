@@ -4,13 +4,6 @@ export {
 } from '../common/telemetry';
 
 /**
- * A flag indicating whether notBounce hit was send with experimental timeout
- *
- * Value Type: 0 | 1
- */
-export const NOT_BOUNCE_TELEMETRY_EXP_BR_KEY = 'nbe';
-
-/**
  * Debugging info for clickmaps
  *
  * Value Type: string

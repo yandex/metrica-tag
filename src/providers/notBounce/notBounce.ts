@@ -1,6 +1,5 @@
 import { flags } from '@inject';
 import {
-    NOT_BOUNCE_TELEMETRY_EXP_BR_KEY,
     WATCH_URL_PARAM,
     ARTIFICIAL_BR_KEY,
     NOT_BOUNCE_BR_KEY,
@@ -26,8 +25,6 @@ import { ctxPath } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time/time';
 import { isSameDomainInUrls } from 'src/utils/url';
 import { setUserTimeDefer } from 'src/utils/userTimeDefer';
-import { addTelemetryToSenderParams } from 'src/utils/telemetry/telemetry';
-import { getUid } from 'src/utils/uid';
 import { parseDecimalInt } from 'src/utils/number/number';
 import { pipe } from 'src/utils/function/pipe';
 import { CallWithoutArguments, call } from 'src/utils/function/utils';
@@ -39,7 +36,6 @@ import {
     DEFAULT_NOT_BOUNCE_TIMEOUT,
     LAST_NOT_BOUNCE_LS_KEY,
     NotBounceHandler,
-    EXPERIMENTAL_NOT_BOUNCE_TIMEOUT,
     METHOD_NAME_ACCURATE_TRACK_BOUNCE,
     METHOD_NAME_NOT_BOUNCE,
     NOT_BOUNCE_HIT_PROVIDER,
@@ -57,16 +53,6 @@ const useNotBounceProviderRaw = (
     ctx: Window,
     counterOpt: CounterOptions,
 ): ProviderResult => {
-    let isExperiment = false;
-    let defaultTimeout = DEFAULT_NOT_BOUNCE_TIMEOUT;
-    if (flags.PREPROD_FEATURE) {
-        const uid = getUid(ctx, counterOpt);
-        isExperiment = parseDecimalInt(uid.substr(uid.length - 1) || '0') < 5;
-        if (isExperiment) {
-            defaultTimeout = EXPERIMENTAL_NOT_BOUNCE_TIMEOUT;
-        }
-    }
-
     const sender = getSender(ctx, NOT_BOUNCE_HIT_PROVIDER, counterOpt);
     const counterKey = getCounterKey(counterOpt);
     const counterLS = counterLocalStorage(ctx, counterOpt.id);
@@ -133,14 +119,6 @@ const useNotBounceProviderRaw = (
                     },
                 };
 
-                if (flags.PREPROD_FEATURE && flags.TELEMETRY_FEATURE) {
-                    addTelemetryToSenderParams(
-                        senderOpt,
-                        NOT_BOUNCE_TELEMETRY_EXP_BR_KEY,
-                        isExperiment ? 1 : 0,
-                    );
-                }
-
                 const { warn } = DebugConsole(ctx, getCounterKey(counterOpt));
 
                 if (!options['callback'] && options['ctx']) {
@@ -176,7 +154,7 @@ const useNotBounceProviderRaw = (
         }
 
         const notBounceTimeout =
-            typeof time === 'number' ? time : defaultTimeout;
+            typeof time === 'number' ? time : DEFAULT_NOT_BOUNCE_TIMEOUT;
 
         destroy = setUserTimeDefer(
             ctx,
