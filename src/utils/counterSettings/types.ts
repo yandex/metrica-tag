@@ -30,10 +30,6 @@ export type Substitution = {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CounterSettingsParams {}
 
-export interface RawCounterSettings {
+export interface CounterSettings {
     [COUNTER_SETTINGS_SETTINGS_KEY]: CounterSettingsParams;
 }
-
-export type CounterSettings = RawCounterSettings & {
-    firstHitClientTime: number;
-};

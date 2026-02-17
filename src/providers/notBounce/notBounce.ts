@@ -16,7 +16,6 @@ import { getSender } from 'src/sender';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { counterLocalStorage } from 'src/storage/localStorage/localStorage';
 import { CounterOptions, getCounterKey } from 'src/utils/counterOptions';
-import { getCounterSettings } from 'src/utils/counterSettings/counterSettings';
 import { ctxErrorLogger } from 'src/utils/errorLogger/errorLogger';
 import { bindArg } from 'src/utils/function/bind';
 import { finallyCallUserCallback } from 'src/utils/function/finallyCallUserCallback';
@@ -25,10 +24,11 @@ import { ctxPath } from 'src/utils/object';
 import { getMs, TimeOne } from 'src/utils/time/time';
 import { isSameDomainInUrls } from 'src/utils/url';
 import { setUserTimeDefer } from 'src/utils/userTimeDefer';
-import { parseDecimalInt } from 'src/utils/number/number';
+import { isNumber, parseDecimalInt } from 'src/utils/number/number';
 import { pipe } from 'src/utils/function/pipe';
 import { CallWithoutArguments, call } from 'src/utils/function/utils';
 import { noop } from 'src/utils/function/noop';
+import { counterTimingStore } from 'src/utils/counterTimings';
 import { getArtificialState } from '../artificialHit/artificialHit';
 import {
     AccurateTrackBounceHandler,
@@ -64,15 +64,8 @@ const useNotBounceProviderRaw = (
         { [COUNTER_STATE_NOT_BOUNCE]: true },
         counterStateSetter(ctx, counterKey),
     );
-    const timer = TimeOne(ctx);
-    const startTime = timer(getMs);
     let notBounceHitSent = false;
-    let firstHitClientOffset = 0;
     let destroy: (() => void) | undefined;
-
-    getCounterSettings(counterOpt, (options) => {
-        firstHitClientOffset = options.firstHitClientTime - startTime;
-    });
 
     const makeNotBounceHit =
         (force: boolean) =>
@@ -90,7 +83,7 @@ const useNotBounceProviderRaw = (
                     destroy();
                 }
 
-                const notBounceClientStamp = timer(getMs);
+                const notBounceClientStamp = TimeOne(ctx)(getMs);
                 const previousNotBounceClientStamp =
                     parseDecimalInt(
                         counterLS.getVal(LAST_NOT_BOUNCE_LS_KEY) as string,
@@ -101,9 +94,15 @@ const useNotBounceProviderRaw = (
                 const isInControlGroup = Math.random() < 0.1;
                 counterLS.setVal(LAST_NOT_BOUNCE_LS_KEY, notBounceClientStamp);
 
+                const { initTime, firstHitClientTime } =
+                    counterTimingStore(counterKey);
                 const brInfo = browserInfo({
                     [NOT_BOUNCE_BR_KEY]: 1,
-                    [NOT_BOUNCE_CLIENT_TIME_BR_KEY]: firstHitClientOffset,
+                    [NOT_BOUNCE_CLIENT_TIME_BR_KEY]:
+                        isNumber(ctx, firstHitClientTime) &&
+                        isNumber(ctx, initTime)
+                            ? firstHitClientTime - initTime
+                            : 0,
                     [ARTIFICIAL_BR_KEY]: 1,
                 });
                 const artificialState = getArtificialState(counterOpt);

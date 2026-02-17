@@ -393,6 +393,8 @@
   "src/utils/counterSettings/const.ts":"metrika/frontend/watch/public/src/utils/counterSettings/const.ts",
   "src/utils/counterSettings/counterSettings.ts":"metrika/frontend/watch/public/src/utils/counterSettings/counterSettings.ts",
   "src/utils/counterSettings/types.ts":"metrika/frontend/watch/public/src/utils/counterSettings/types.ts",
+  "src/utils/counterTimings/index.ts":"metrika/frontend/watch/public/src/utils/counterTimings/index.ts",
+  "src/utils/counterTimings/types.ts":"metrika/frontend/watch/public/src/utils/counterTimings/types.ts",
   "src/utils/dataLayerObserver/__tests__/dataLayerObserver.spec.ts":"metrika/frontend/watch/public/src/utils/dataLayerObserver/__tests__/dataLayerObserver.spec.ts",
   "src/utils/dataLayerObserver/dataLayerObserver.ts":"metrika/frontend/watch/public/src/utils/dataLayerObserver/dataLayerObserver.ts",
   "src/utils/debugEvents/debugRequest.ts":"metrika/frontend/watch/public/src/utils/debugEvents/debugRequest.ts",

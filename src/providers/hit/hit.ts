@@ -17,7 +17,7 @@ import { flags } from '@inject';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { bindArgs } from 'src/utils/function/bind';
 import { runAsync } from 'src/utils/async/async';
-import { RawCounterSettings } from 'src/utils/counterSettings/types';
+import { CounterSettings } from 'src/utils/counterSettings/types';
 import { HIT_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
 
 /**
@@ -89,7 +89,7 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
                         ctx,
                         counterOpt,
                         // FIXME: wrong TransportResponse type involves this casting
-                        hitParams as unknown as RawCounterSettings,
+                        hitParams as unknown as CounterSettings,
                     ],
                     setSettings,
                 ),

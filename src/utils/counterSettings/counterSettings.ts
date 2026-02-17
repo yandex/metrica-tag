@@ -1,10 +1,11 @@
 import { flags } from '@inject';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { mix } from 'src/utils/object';
-import { CounterOptions, getCounterKey } from '../counterOptions';
-import { getMs, Time } from '../time/time';
-import { CounterSettings, RawCounterSettings } from './types';
+import { type CounterOptions, getCounterKey } from '../counterOptions';
+import { getMs, TimeOne } from '../time/time';
+import type { CounterSettings } from './types';
 import { AsyncMapFn, getAsync, setAsync } from '../asyncMap';
+import { counterTimingStore } from '../counterTimings';
 
 export const setSettingsRaw = (
     counterKey: string,
@@ -17,16 +18,11 @@ export const setSettingsRaw = (
 export const setSettings = (
     ctx: Window,
     counterOptions: CounterOptions,
-    rawSettings: RawCounterSettings,
+    rawSettings: CounterSettings,
 ) => {
     const counterKey = getCounterKey(counterOptions);
-    const time = Time(ctx);
-    const settings = mix(
-        {
-            firstHitClientTime: time(getMs),
-        },
-        rawSettings,
-    );
+    counterTimingStore(counterKey).firstHitClientTime = TimeOne(ctx)(getMs);
+    const settings = mix({}, rawSettings);
 
     if (flags.DEBUG_EVENTS_FEATURE) {
         dispatchDebuggerEvent(ctx, {

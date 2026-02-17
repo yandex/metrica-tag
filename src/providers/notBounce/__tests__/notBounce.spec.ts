@@ -17,6 +17,7 @@ import type { SenderInfo } from 'src/sender/SenderInfo';
 import type { TransportResponse } from 'src/transport/types';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import * as counterSettingsStore from 'src/utils/counterSettings/counterSettings';
+import * as counterTimingStore from 'src/utils/counterTimings';
 import type { CounterSettings } from 'src/utils/counterSettings/types';
 import * as errorLoggerUtils from 'src/utils/errorLogger/errorLogger';
 import type { AnyFunc } from 'src/utils/function/types';
@@ -27,7 +28,8 @@ import { DEFAULT_NOT_BOUNCE_TIMEOUT } from '../const';
 import { useNotBounceProviderRaw } from '../notBounce';
 
 describe('notBounce', () => {
-    const window = { Math } as Window;
+    // eslint-disable-next-line no-restricted-globals
+    const window = { Math, isFinite, isNaN } as Window;
     let senderInfo: SenderInfo | undefined;
     const timeouts: [number, AnyFunc][] = [];
     const sandbox = sinon.createSandbox();
@@ -77,11 +79,13 @@ describe('notBounce', () => {
     beforeEach(() => {
         sandbox
             .stub(counterSettingsStore, 'getCounterSettings')
-            .callsFake((opts, cb) => {
-                cb({ firstHitClientTime: 100 } as CounterSettings);
-
-                return Promise.resolve();
-            });
+            .callsFake((opts, cb) =>
+                Promise.resolve(cb({} as CounterSettings)),
+            );
+        sandbox.stub(counterTimingStore, 'counterTimingStore').returns({
+            initTime: 0,
+            firstHitClientTime: 100,
+        });
 
         sandbox.stub(flags, 'flags').value({
             [PREPROD_FEATURE]: false,

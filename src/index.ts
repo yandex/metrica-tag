@@ -1,64 +1,66 @@
+import { flags } from '@inject';
+import { initImports } from 'generated/init';
 import { config } from 'src/config';
-import {
-    ProviderFunction,
-    ProviderResult,
-    ProviderResultPromised,
-    MetrikaCounterConstructor,
-} from 'src/types';
-import {
-    normalizeOptions,
-    getCounterKey,
-    normalizeOriginalOptions,
-} from 'src/utils/counterOptions';
-import { bindArgs, ctxBindArgs } from 'src/utils/function/bind';
-import type { AnyFunc } from 'src/utils/function/types';
-import { entries, isFunction, isObject } from 'src/utils/object';
-import { getGlobalStorage } from 'src/storage/global/getGlobal';
-import { HIT_PARAMS_KEY, LAST_REFERRER_KEY } from 'src/storage/global/consts';
-import { useHitProvider } from 'src/providers/hit';
 import { callbackInit } from 'src/providers/callbackInit';
-import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
-import { CounterObject } from 'src/utils/counter/type';
-import { consoleLog } from 'src/providers/debugConsole/debugConsole';
-import { runAsync } from 'src/utils/async/async';
 import {
     getOriginalOptions,
     optionsKeysMap,
 } from 'src/providers/counterOptions';
-import { flags } from '@inject';
-import { telemetryCallCountDecorator } from 'src/utils/methodDecorators/telCallCount';
+import { consoleLog } from 'src/providers/debugConsole/debugConsole';
+import { useHitProvider } from 'src/providers/hit';
+import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
 import {
-    prioritizedProviders,
     beforeHitProviders,
-    providersSync,
+    prioritizedProviders,
     providersAsync,
+    providersSync,
     staticMethodInitializers,
     windowProviderInitializers,
 } from 'src/providersEntrypoint';
-import { initImports } from 'generated/init';
-import { UNSUBSCRIBE_PROPERTY } from 'src/providers/index';
+import { HIT_PARAMS_KEY, LAST_REFERRER_KEY } from 'src/storage/global/consts';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
+import {
+    MetrikaCounterConstructor,
+    ProviderFunction,
+    ProviderResult,
+    ProviderResultPromised,
+} from 'src/types';
+import { cForEach, cMap } from 'src/utils/array/map';
+import { runAsync } from 'src/utils/async/async';
+import { iterateTaskWithConstraints } from 'src/utils/async/helpers';
+import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
+import { CounterObject } from 'src/utils/counter/type';
+import {
+    getCounterKey,
+    normalizeOptions,
+    normalizeOriginalOptions,
+} from 'src/utils/counterOptions';
 import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { createError } from 'src/utils/errorLogger/createError';
-import { iterateTaskWithConstraints } from 'src/utils/async/helpers';
-import { firstArg } from 'src/utils/function/identity';
+import { bindArgs, ctxBindArgs } from 'src/utils/function/bind';
 import { curry2SwapArgs } from 'src/utils/function/curry';
-import { call } from 'src/utils/function/utils';
+import { firstArg } from 'src/utils/function/identity';
 import { pipe } from 'src/utils/function/pipe';
-import { cForEach, cMap } from 'src/utils/array/map';
+import type { AnyFunc } from 'src/utils/function/types';
+import { call } from 'src/utils/function/utils';
+import { telemetryCallCountDecorator } from 'src/utils/methodDecorators/telCallCount';
+import { entries, isFunction, isObject } from 'src/utils/object';
+import { destruct } from './providers/destruct';
 import { METHOD_DESTRUCT } from './providers/destruct/const';
 import { errorLogger } from './utils/errorLogger/errorLogger';
-import { destruct } from './providers/destruct';
-import { selfReturnDecorator } from './utils/methodDecorators/selfReturn';
-import { errorsDecorator } from './utils/methodDecorators/errors';
 import { decoratorPipe } from './utils/methodDecorators/decoratorPipe';
 import { destructingDecorator } from './utils/methodDecorators/destructing';
+import { errorsDecorator } from './utils/methodDecorators/errors';
+import { selfReturnDecorator } from './utils/methodDecorators/selfReturn';
 
+import { ASYNC_PROVIDERS_MAX_EXEC_TIME, yaNamespace } from './const';
+import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
+import { stackProxy } from './providers/stackProxy/stackProxy';
+import { getCounterOptionsState } from './utils/counterOptions/counterOptionsStore';
+import { counterTimingStore } from './utils/counterTimings';
 import { throwKnownError } from './utils/errorLogger/knownError';
 import { throwFunction } from './utils/errorLogger/throwFunction';
-import { yaNamespace, ASYNC_PROVIDERS_MAX_EXEC_TIME } from './const';
-import { stackProxy } from './providers/stackProxy/stackProxy';
-import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
-import { getCounterOptionsState } from './utils/counterOptions/counterOptionsStore';
+import { TimeOne, getMs } from './utils/time/time';
 import { setTurboInfo } from './utils/turboParams/turboParams';
 
 type CounterMethod = keyof CounterObject;
@@ -194,6 +196,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             return counters[counterKey];
         }
 
+        counterTimingStore(counterKey).initTime = TimeOne(ctx)(getMs);
         counters[counterKey] = this;
         globalConfig.setVal(COUNTERS_GLOBAL_KEY, counters);
         globalConfig.setSafe('counter', this);
