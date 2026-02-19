@@ -155,11 +155,6 @@
     "desc": "Enables method setUserID"
   },
   {
-    "code": "INSERT_SITE_STATISTICS_SCRIPT",
-    "path": "siteStatistics",
-    "desc": "Inserts iframe with site statistics for site owners"
-  },
-  {
     "code": "USER_PARAMS_FEATURE",
     "path": "userParams",
     "desc": "Enables userParams method and userParams constructor option"
