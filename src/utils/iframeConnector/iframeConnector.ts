@@ -58,6 +58,7 @@ import {
     SPLITTER,
 } from './const';
 import { Emitter, emitter } from '../events/emitter';
+import { getSafeRandom } from '../number/random';
 
 export const getIframeState = memo(
     (ctx: Window): ConnectorState => ({
@@ -73,7 +74,7 @@ export const genMessage =
     (metaList: (string | number)[], data: Record<string, any>): Message => {
         const meta: MessageMeta = {
             date: TimeOne(ctx)(getMs),
-            key: ctx.Math.random(),
+            key: getSafeRandom(ctx),
             dir: OUT_DIRECTION,
         };
         if (metaList.length) {

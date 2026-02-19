@@ -1,3 +1,4 @@
+import { toNativeOrFalse } from '../function/isNativeFunction';
 import { isUndefined } from '../object';
 
 export const RND_MAX = 1073741824;
@@ -22,4 +23,18 @@ export const getRandom = (ctx: Window, rawMin?: number, rawMax?: number) => {
         max = rawMax!;
     }
     return ctx.Math.floor(ctx.Math.random() * (max - min)) + min;
+};
+
+export const getSafeRandom = (ctx: Window) => {
+    const nativeGetRandomValues =
+        ctx.crypto &&
+        toNativeOrFalse(ctx.crypto.getRandomValues, 'getRandomValues');
+
+    if (nativeGetRandomValues) {
+        const array = new Uint32Array(1);
+        nativeGetRandomValues.call(ctx.crypto, array);
+        return array[0] / 0x100000000; // 2^32
+    }
+
+    return ctx.Math.random();
 };
