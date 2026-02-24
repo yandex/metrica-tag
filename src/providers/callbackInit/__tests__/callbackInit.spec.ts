@@ -34,6 +34,7 @@ describe('callbackInit', () => {
         chai.expect(winInfo[many]).to.be.equal(undefined);
     });
     it('recursive callback', () => {
+        // eslint-disable-next-line prefer-const
         let callbacks;
         const fn = () => {
             callbacks.push(fn);

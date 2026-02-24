@@ -46,6 +46,7 @@ const request = (
             },
             opt.rQuery,
         );
+        // eslint-disable-next-line prefer-const
         let script: HTMLScriptElement | undefined;
         const cleanCallback = bindArgs([ctxAny, callbackName], delCallback);
         const callback = (data: TransportResponse) => {

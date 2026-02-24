@@ -49,6 +49,6 @@ export const setEvent = <
             anyEl[fn](name, handler);
         }
     } else {
-        anyEl[fn](`on${name}`, handler);
+        anyEl[fn](`on${name as string}`, handler);
     }
 };

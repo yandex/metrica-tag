@@ -116,7 +116,7 @@ describe('userTimeDefer', () => {
                 fn: (this: E, ev: M[T]) => any,
             ) {
                 names.forEach((name) => {
-                    eventsHash[name] = fn;
+                    eventsHash[name as string] = fn;
                 });
                 return () => {};
             },

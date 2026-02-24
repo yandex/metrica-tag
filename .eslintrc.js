@@ -1,8 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-const airbnbBase = require('eslint-config-airbnb-base/rules/best-practices');
 const {
     bannedFunctions,
     bannedProperties,
+    defaultRestrictedProperties,
 } = require('./eslintBannedFunctions');
 
 /**
@@ -10,7 +9,7 @@ const {
  */
 module.exports = {
     root: true,
-    extends: ['airbnb-base', 'prettier'],
+    extends: ['prettier', 'plugin:import/recommended'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         project: './tsconfig.eslint.json',
@@ -32,6 +31,131 @@ module.exports = {
         },
     },
     rules: {
+        'accessor-pairs': 'off',
+        'array-callback-return': ['error', { allowImplicit: true }],
+        'block-scoped-var': 'error',
+        complexity: ['off', 20],
+        'consistent-return': 'error',
+        curly: ['error', 'multi-line'], // multiline
+        'default-case': ['error', { commentPattern: '^no default$' }],
+        'default-case-last': 'error',
+        'default-param-last': 'error',
+        'dot-location': ['error', 'property'],
+        eqeqeq: ['error', 'always', { null: 'ignore' }],
+        'grouped-accessor-pairs': 'error',
+        'guard-for-in': 'error',
+        'max-classes-per-file': ['error', 1],
+        'no-alert': 'warn',
+        'no-caller': 'error',
+        'no-case-declarations': 'error',
+        'no-constructor-return': 'error',
+        'no-div-regex': 'off',
+        'no-else-return': ['error', { allowElseIf: false }],
+        'no-empty-pattern': 'error',
+        'no-eq-null': 'off',
+        'no-eval': 'error',
+        'no-extend-native': 'error',
+        'no-extra-bind': 'error',
+        'no-extra-label': 'error',
+        'no-fallthrough': 'error',
+        'no-floating-decimal': 'error',
+        'no-global-assign': ['error', { exceptions: [] }],
+        'no-native-reassign': 'off',
+        'no-implicit-coercion': [
+            'off',
+            {
+                boolean: false,
+                number: true,
+                string: true,
+                allow: [],
+            },
+        ],
+        'no-implicit-globals': 'off',
+        'no-implied-eval': 'error',
+        'no-invalid-this': 'off',
+        'no-iterator': 'error',
+        'no-labels': ['error', { allowLoop: false, allowSwitch: false }],
+        'no-lone-blocks': 'error',
+        'no-loop-func': 'error',
+        'no-magic-numbers': [
+            'off',
+            {
+                ignore: [],
+                ignoreArrayIndexes: true,
+                enforceConst: true,
+                detectObjects: false,
+            },
+        ],
+        'no-multi-spaces': [
+            'error',
+            {
+                ignoreEOLComments: false,
+            },
+        ],
+        'no-multi-str': 'error',
+        'no-new': 'error',
+        'no-new-func': 'error',
+        'no-new-wrappers': 'error',
+        'no-nonoctal-decimal-escape': 'error',
+        'no-octal': 'error',
+        'no-octal-escape': 'error',
+        'no-param-reassign': [
+            'error',
+            {
+                props: true,
+                ignorePropertyModificationsFor: [
+                    'acc', // for reduce accumulators
+                    'accumulator', // for reduce accumulators
+                    'e', // for e.returnvalue
+                    'ctx', // for Koa routing
+                    'context', // for Koa routing
+                ],
+            },
+        ],
+        'no-proto': 'error',
+        'no-redeclare': 'error',
+        'no-restricted-properties': defaultRestrictedProperties,
+        'no-return-assign': ['error', 'always'],
+        'no-return-await': 'error',
+        'no-script-url': 'error',
+        'no-self-assign': [
+            'error',
+            {
+                props: true,
+            },
+        ],
+        'no-self-compare': 'error',
+        'no-sequences': 'error',
+        'no-throw-literal': 'error',
+        'no-unmodified-loop-condition': 'off',
+        'no-unused-expressions': [
+            'error',
+            {
+                allowShortCircuit: false,
+                allowTernary: false,
+                allowTaggedTemplates: false,
+            },
+        ],
+        'no-unused-labels': 'error',
+        'no-useless-call': 'off',
+        'no-useless-catch': 'error',
+        'no-useless-concat': 'error',
+        'no-useless-escape': 'error',
+        'no-useless-return': 'error',
+        'no-void': 'error',
+        'no-warning-comments': [
+            'off',
+            { terms: ['todo', 'fixme', 'xxx'], location: 'start' },
+        ],
+        'no-with': 'error',
+        'prefer-promise-reject-errors': ['error', { allowEmptyReject: true }],
+        'prefer-named-capture-group': 'off',
+        radix: 'error',
+        'require-await': 'off',
+        'require-unicode-regexp': 'off',
+        'vars-on-top': 'error',
+        'wrap-iife': ['error', 'outside', { functionPrototypeMethods: false }],
+        yoda: 'error',
         'no-empty': ['error', { allowEmptyCatch: true }],
     },
     ignorePatterns: [
@@ -45,7 +169,6 @@ module.exports = {
         {
             files: ['*.ts'],
             extends: [
-                'airbnb-base',
                 'plugin:@typescript-eslint/recommended',
                 'prettier',
                 'prettier/@typescript-eslint',
@@ -62,9 +185,7 @@ module.exports = {
                 'n/no-process-env': 'error',
                 'ban/ban': bannedFunctions,
                 'no-restricted-properties':
-                    airbnbBase.rules['no-restricted-properties'].concat(
-                        bannedProperties,
-                    ),
+                    defaultRestrictedProperties.concat(bannedProperties),
                 '@typescript-eslint/prefer-interface': 'off',
                 semi: 'error',
                 curly: 'error',
@@ -88,7 +209,6 @@ module.exports = {
                         tsx: 'never',
                     },
                 ],
-                'no-empty-function': 'off',
                 '@typescript-eslint/no-empty-function': 'off',
                 '@typescript-eslint/no-this-alias': [
                     'error',
@@ -131,9 +251,9 @@ module.exports = {
             },
             rules: {
                 'import/no-extraneous-dependencies': 'off',
+                'import/no-named-as-default-member': 'off',
                 'ban/ban': 'off',
-                'no-restricted-properties':
-                    airbnbBase.rules['no-restricted-properties'],
+                'no-restricted-properties': defaultRestrictedProperties,
                 'no-unused-expressions': 'off',
                 'no-only-tests/no-only-tests': [
                     'error',
@@ -148,8 +268,7 @@ module.exports = {
             files: './scripts/**/*',
             rules: {
                 'ban/ban': 'off',
-                'no-restricted-properties':
-                    airbnbBase.rules['no-restricted-properties'],
+                'no-restricted-properties': defaultRestrictedProperties,
                 'n/no-process-env': 'off',
                 'no-console': 'off',
                 'no-await-in-loop': 'off',
@@ -170,8 +289,7 @@ module.exports = {
                 './src/utils/array/*.ts',
             ],
             rules: {
-                'no-restricted-properties':
-                    airbnbBase.rules['no-restricted-properties'],
+                'no-restricted-properties': defaultRestrictedProperties,
             },
         },
     ],

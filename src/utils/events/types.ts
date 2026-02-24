@@ -1,44 +1,44 @@
 declare global {
     interface Window {
         attachEvent?<M extends WindowEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
         detachEvent?<M extends WindowEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
     }
 
     interface Document {
         attachEvent?<M extends DocumentEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
         detachEvent?<M extends DocumentEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
     }
 
     interface HTMLElement {
         attachEvent?<M extends HTMLElementEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
         detachEvent?<M extends DocumentEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
     }
 
     interface VisualViewport {
         attachEvent?<M extends VisualViewportEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
         detachEvent?<M extends DocumentEventMap>(
-            event: `on${keyof M}`,
+            event: `on${Exclude<keyof M, symbol>}`,
             cb: (this: Window, ev: M[keyof M]) => unknown,
         ): void;
     }
