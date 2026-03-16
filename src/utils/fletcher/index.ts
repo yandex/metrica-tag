@@ -2,7 +2,7 @@
 /**
  * Вычисляет чексумму данных по алгоритму Флетчера.
  */
-export function fletcher(data: number[] | string) {
+export function fletcher(data: number[] | Uint8Array | string) {
     let { length } = data;
     let i = 0;
     let sum1 = 0xff;
