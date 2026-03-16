@@ -17,7 +17,6 @@ import { METHOD_DESTRUCT } from 'src/providers/destruct/const';
 import { METHOD_NAME_SET_USER_ID } from 'src/providers/setUserID/const';
 import { METHOD_NAME_GET_CLIENT_ID } from 'src/providers/getClientID/const';
 import { METHOD_NAME_CLICK_MAP } from 'src/providers/clickmapMethod/const';
-import { METHOD_NAME_ENABLE_ALL } from 'src/providers/enableAll/const';
 
 export const METHODS_TELEMETRY_KEYS_MAP: Record<string, string> = {
     [METHOD_NAME_HIT]: 'h',
@@ -35,7 +34,6 @@ export const METHODS_TELEMETRY_KEYS_MAP: Record<string, string> = {
     [METHOD_NAME_SET_USER_ID]: 'ui',
     [METHOD_NAME_GET_CLIENT_ID]: 'ci',
     [METHOD_NAME_CLICK_MAP]: 'cm',
-    [METHOD_NAME_ENABLE_ALL]: 'ea',
 };
 
 export const METHODS_TELEMETRY_GLOBAL_STORAGE_KEY = 'mt';

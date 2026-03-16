@@ -76,7 +76,6 @@ describe('getCounters feature', () => {
             counterType,
             id: counterId,
             clickmap: true,
-            enableAll: true,
             trackHash: true,
         };
         const setValStub = sandbox.stub(closureStorageModule, 'setVal');

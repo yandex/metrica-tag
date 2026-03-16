@@ -173,11 +173,6 @@
     "desc": "Enables internal errors console messages"
   },
   {
-    "code": "ENABLE_ALL_METHOD_FEATURE",
-    "path": "enableAll",
-    "desc": "Enables method enableAll, that enables or disables clicks and link tracking"
-  },
-  {
     "code": "SENDER_COLLECT_FEATURE",
     "disabled": true,
     "desc": "Enables use of Measurement Protocol for hits data. Data is sent to the /pcollect/ back end url"

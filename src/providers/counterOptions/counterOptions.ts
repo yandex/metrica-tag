@@ -76,10 +76,6 @@ if (flags.EXTERNAL_LINK_FEATURE) {
     obfuscatedKeysMap.trackLinks = 'trackLinks';
 }
 
-if (flags.ENABLE_ALL_METHOD_FEATURE) {
-    obfuscatedKeysMap.enableAll = 'enableAll';
-}
-
 /**
  * Normalization functions bound to params
  */

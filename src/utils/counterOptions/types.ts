@@ -49,8 +49,6 @@ export interface CounterOptions {
     directCampaign?: number;
     /** Allow the clicks provider to track clicks */
     trackLinks?: RawTrackLinkParams;
-    /** Enable trackLinks + clickmap + notBounce */
-    enableAll?: boolean;
 }
 
 export type CounterOption = keyof CounterOptions;
