@@ -367,6 +367,8 @@
   "src/utils/browser/utils.ts":"metrika/frontend/watch/public/src/utils/browser/utils.ts",
   "src/utils/browserInfo/__tests__/browserInfo.spec.ts":"metrika/frontend/watch/public/src/utils/browserInfo/__tests__/browserInfo.spec.ts",
   "src/utils/browserInfo/browserInfo.ts":"metrika/frontend/watch/public/src/utils/browserInfo/browserInfo.ts",
+  "src/utils/buffer/__tests__/buffer.spec.ts":"metrika/frontend/watch/public/src/utils/buffer/__tests__/buffer.spec.ts",
+  "src/utils/buffer/buffer.ts":"metrika/frontend/watch/public/src/utils/buffer/buffer.ts",
   "src/utils/condition/__tests__/condition.spec.ts":"metrika/frontend/watch/public/src/utils/condition/__tests__/condition.spec.ts",
   "src/utils/condition/condition.ts":"metrika/frontend/watch/public/src/utils/condition/condition.ts",
   "src/utils/condition/index.ts":"metrika/frontend/watch/public/src/utils/condition/index.ts",
