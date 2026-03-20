@@ -239,7 +239,6 @@ export const getElementsByClassName = (
 ) => {
     const classes = isArray(classNames) ? classNames : [classNames];
 
-    // eslint-disable-next-line no-param-reassign
     node = node || document;
 
     if (node.querySelectorAll) {

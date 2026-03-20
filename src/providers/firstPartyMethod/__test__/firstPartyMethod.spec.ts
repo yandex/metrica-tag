@@ -78,10 +78,9 @@ describe('first party data', () => {
                     digest: digestStub,
                 },
             },
-            /* eslint-disable no-restricted-globals */
+
             isFinite,
             isNaN,
-            /* eslint-enable no-restricted-globals */
         } as unknown as Window;
         isHttpsStub = sandbox.stub(loc, 'isHttps').returns(true);
         getCounterInstanceStub = sandbox

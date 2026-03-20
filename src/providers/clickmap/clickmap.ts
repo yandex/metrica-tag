@@ -72,7 +72,6 @@ export const isCurrentClickTracked = (
 
     const nodeName = getNodeName(click.element);
 
-    // eslint-disable-next-line ban/ban
     if (filter && !filter(click.element, nodeName)) {
         return false;
     }

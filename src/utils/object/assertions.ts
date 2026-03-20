@@ -30,7 +30,6 @@ export const is = (v1: any, v2: any) => {
     return v1 === v2;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export const isObject = <T extends Record<string, any> = object>(
     object: any,
 ): object is T => {

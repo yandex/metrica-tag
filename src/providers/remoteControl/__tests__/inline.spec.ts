@@ -38,10 +38,9 @@ describe('remoteControl / inline', () => {
 
     const windowStub = {
         JSON,
-        /* eslint-disable no-restricted-globals */
+
         isFinite,
         isNaN,
-        /* eslint-enable no-restricted-globals */
     } as unknown as Window;
 
     beforeEach(() => {

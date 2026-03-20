@@ -9,10 +9,9 @@ import { rawSetUserID as setUserID } from '../setUserID';
 
 describe('user params', () => {
     const windowStub = {
-        /* eslint-disable no-restricted-globals */
         isFinite,
         isNaN,
-        /* eslint-enable no-restricted-globals */
+
         console: {
             error: () => {},
         },

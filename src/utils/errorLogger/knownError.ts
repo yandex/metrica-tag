@@ -24,7 +24,6 @@ export const createKnownError = (moreInfo?: Message | Message[]) => {
 };
 
 export const throwKnownError = function throwKnownError() {
-    // eslint-disable-next-line prefer-rest-params
     const args = argsToArray(arguments);
     return throwFunction(createKnownError(args));
 } as (...a: Parameters<typeof createKnownError>) => never;

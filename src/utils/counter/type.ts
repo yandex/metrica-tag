@@ -4,5 +4,5 @@
  * To see an example of this see src/providers/params/const.ts
  * This approach is meant to make providers more self-contained and code overall more modular.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CounterObject {}

@@ -42,7 +42,6 @@ export const handleError = (ctx: Window, scopeName: string, e: LoggerError) => {
         e.message !== TOO_LONG_ERROR_NAME &&
         !e[UNCATCHABLE_ERROR_PROPERTY]
     ) {
-        // eslint-disable-next-line no-console
         console.error(e);
     }
 

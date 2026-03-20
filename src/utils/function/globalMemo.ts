@@ -36,7 +36,6 @@ export const globalMemoWin = <R, T extends Variadic = Variadic>(
     global?: boolean,
 ): ctxFunction<T, R> => {
     return function globalMemoWrapper() {
-        // eslint-disable-next-line prefer-rest-params
         const ctx = arguments[0];
 
         const storage = getGlobalStorage(ctx);
@@ -50,8 +49,6 @@ export const globalMemoWin = <R, T extends Variadic = Variadic>(
             storage.setVal(gsKey, memoStorage);
         }
 
-        // eslint-disable-next-line prefer-rest-params
-        // eslint-disable-next-line prefer-spread
         // @ts-expect-error -- argumentas object is not a pure Array, which is ok.
         return wrappedFunction.apply(null, arguments);
     };

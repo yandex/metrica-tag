@@ -4,12 +4,11 @@ import { curry2 } from '../function/curry';
 import { has } from './has';
 
 export const assignPoly: typeof Object.assign = function assignPoly() {
-    // eslint-disable-next-line prefer-rest-params
     const assignArgs = argsToArray(arguments);
     const [dst, ...args] = assignArgs;
     while (args.length) {
         const obj = args.shift();
-        // eslint-disable-next-line no-restricted-syntax
+
         for (const key in obj) {
             if (has(obj, key)) {
                 dst[key] = obj[key];

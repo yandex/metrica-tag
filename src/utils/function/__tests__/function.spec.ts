@@ -112,11 +112,10 @@ describe('utils/function', () => {
         const spy = sinon.spy();
         const otherSpy = sinon.spy();
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const testFunction = (ctx: Window) => {
             spy();
         };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         const otherTestFunction = (ctx: Window) => {
             otherSpy();
         };

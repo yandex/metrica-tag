@@ -43,7 +43,7 @@ export const executionTimeErrorDecorator = <
 
         try {
             const startTime = hasPerformance ? perf!.now() : 0;
-            // eslint-disable-next-line prefer-rest-params, prefer-spread
+
             result = fn.apply(callContext || null, arguments as any);
             const endTime = hasPerformance ? perf!.now() : 0;
             const execTime = endTime - startTime;

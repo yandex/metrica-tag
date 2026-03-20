@@ -14,8 +14,6 @@ const safeBase64replacement: Record<string, string> = {
     '=': '_',
 };
 
-/* eslint-disable no-bitwise */
-/* eslint-disable no-plusplus */
 export const replaceBase64 = (str: string, safe = false): string => {
     if (!str) {
         return '';
@@ -163,5 +161,3 @@ export const encodeUtf8 = (str: string): number[] => {
 
     return result;
 };
-/* eslint-enable no-plusplus */
-/* eslint-enable no-bitwise */

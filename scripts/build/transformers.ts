@@ -1,18 +1,32 @@
-import ts from 'typescript';
+import {
+    CustomTransformers,
+    Identifier,
+    isCallExpression,
+    isNewExpression,
+    isSourceFile,
+    setSyntheticLeadingComments,
+    SourceFile,
+    SyntaxKind,
+    TransformerFactory,
+    visitEachChild,
+    visitNode,
+    type Node,
+    type Visitor,
+} from 'typescript';
 
 const markPureFunctions = (
     pureFunctions: string[],
     before: boolean,
-): ts.TransformerFactory<ts.SourceFile> => {
+): TransformerFactory<SourceFile> => {
     return (context) => {
-        const visit: ts.Visitor<ts.Node, ts.Node> = (node) => {
-            if (ts.isCallExpression(node) || ts.isNewExpression(node)) {
+        const visit: Visitor<Node, Node> = (node) => {
+            if (isCallExpression(node) || isNewExpression(node)) {
                 let hasPure;
                 if (before) {
                     const functionName = node.expression.getText().trim();
                     hasPure = pureFunctions.includes(functionName);
                 } else {
-                    const identifier = node.expression as ts.Identifier;
+                    const identifier = node.expression as Identifier;
                     const helperName = (identifier.escapedText as string) || '';
                     // pos < 0 - нет позиции в изначальном файле - был добавлен после
                     hasPure =
@@ -22,22 +36,22 @@ const markPureFunctions = (
                 }
 
                 if (hasPure) {
-                    ts.setSyntheticLeadingComments(node, [
+                    setSyntheticLeadingComments(node, [
                         {
                             pos: -1,
                             end: -1,
                             hasTrailingNewLine: false,
                             text: ' @__PURE__ ',
-                            kind: ts.SyntaxKind.MultiLineCommentTrivia,
+                            kind: SyntaxKind.MultiLineCommentTrivia,
                         },
                     ]);
                 }
             }
 
-            return ts.visitEachChild(node, (child) => visit(child), context);
+            return visitEachChild(node, (child) => visit(child), context);
         };
 
-        return (node) => ts.visitNode(node, visit, ts.isSourceFile);
+        return (node) => visitNode(node, visit, isSourceFile);
     };
 };
 
@@ -81,7 +95,7 @@ const pureFunctions = [
 
 const pureTsHelpers = ['___spreadArrays'];
 
-export const pureFunctionMarker = (): ts.CustomTransformers => {
+export const pureFunctionMarker = (): CustomTransformers => {
     return {
         before: [markPureFunctions(pureFunctions, true)],
         after: [markPureFunctions(pureTsHelpers, false)],

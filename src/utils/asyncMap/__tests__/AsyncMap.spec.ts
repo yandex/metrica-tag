@@ -16,12 +16,10 @@ describe('AsyncMap', () => {
 
     it('Instantiates with params', async () => {
         for (let i = 0; i < keys.length; i += 1) {
-            // eslint-disable-next-line no-await-in-loop
             storage(setAsync(keys[i], defaultValues[keys[i]]));
         }
 
         for (let i = 0; i < keys.length; i += 1) {
-            // eslint-disable-next-line no-await-in-loop
             const result = await storage(getAsync(keys[i]));
             chai.expect(result).to.equal(i + 1);
         }

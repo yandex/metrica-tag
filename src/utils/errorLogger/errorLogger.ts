@@ -22,7 +22,6 @@ export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
     return function logger() {
         let result: any = defaultReturn;
         try {
-            // eslint-disable-next-line prefer-rest-params, prefer-spread
             result = callFn!.apply(callContext || null, arguments);
         } catch (e) {
             handleError(ctx, scopeName, e as Error);
@@ -38,11 +37,10 @@ export const ctxErrorLogger = <FN extends AnyFunc>(
     defaultReturn?: any,
 ): FN => {
     return function a(this: any) {
-        // eslint-disable-next-line prefer-rest-params, prefer-spread
         const ctx: Window = arguments[0];
         return errorLogger(ctx, scope, fn, defaultReturn).apply(
             this,
-            // eslint-disable-next-line prefer-rest-params, prefer-spread
+
             arguments as any,
         );
     } as any;

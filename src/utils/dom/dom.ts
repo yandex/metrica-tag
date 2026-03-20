@@ -253,7 +253,6 @@ export const getBoundingClientRect = (
         if (
             typeof getBoundingError === 'object' &&
             getBoundingError !== null &&
-            // eslint-disable-next-line no-bitwise
             (getBoundingError.number && getBoundingError.number & 0xffff) ===
                 16389
         ) {

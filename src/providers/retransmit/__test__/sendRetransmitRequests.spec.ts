@@ -329,10 +329,10 @@ describe('sendRetransmitRequests', () => {
             { ...mockRequests[0], retransmitIndex: 3 },
         ];
 
-        const deferredPromises: Array<{
+        const deferredPromises: {
             resolve: (value?: any) => void;
             reject: (reason?: unknown) => void;
-        }> = [];
+        }[] = [];
         mockSender.callsFake(() => {
             return new Promise((resolve, reject) => {
                 deferredPromises.push({ resolve, reject });

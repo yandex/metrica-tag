@@ -69,7 +69,6 @@ export const dataLayerObserver = <T, U>(
     const newArray = array;
     const oldPush = array.push;
     newArray.push = function a(): number {
-        // eslint-disable-next-line prefer-rest-params
         const arg = argsToArray(arguments);
         const [item] = arg;
         if (triggerBeforePush) {

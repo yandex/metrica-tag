@@ -60,7 +60,7 @@ export const dataGTagFormatToEcommerceFormat = (
         gtagItemsField = ECOMMERCE_ITEMS,
     } = mapping;
     const ecommerceData = data[UA_EVENT_PURCHASE] || data;
-    const items: Array<Record<string, string>> = ecommerceData[gtagItemsField];
+    const items: Record<string, string>[] = ecommerceData[gtagItemsField];
 
     if (!items) {
         return undefined;

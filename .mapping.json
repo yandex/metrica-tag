@@ -1,6 +1,5 @@
 {
   ".":"metrika/frontend/watch/public",
-  ".eslintrc.js":"metrika/frontend/watch/public/.eslintrc.js",
   ".gitattributes":"metrika/frontend/watch/public/.gitattributes",
   ".github/workflows/check-code.yml":"metrika/frontend/watch/public/.github/workflows/check-code.yml",
   ".gitignore":"metrika/frontend/watch/public/.gitignore",
@@ -15,6 +14,7 @@
   "README.md":"metrika/frontend/watch/public/README.md",
   "SECURITY.md":"metrika/frontend/watch/public/SECURITY.md",
   "closure-compiler.js":"metrika/frontend/watch/public/closure-compiler.js",
+  "eslint.config.js":"metrika/frontend/watch/public/eslint.config.js",
   "eslintBannedFunctions.js":"metrika/frontend/watch/public/eslintBannedFunctions.js",
   "features.json":"metrika/frontend/watch/public/features.json",
   "hooks/pre-commit":"metrika/frontend/watch/public/hooks/pre-commit",
@@ -573,7 +573,6 @@
   "src/utils/userTimeDefer/__tests__/userTimeDefer.spec.ts":"metrika/frontend/watch/public/src/utils/userTimeDefer/__tests__/userTimeDefer.spec.ts",
   "src/utils/userTimeDefer/index.ts":"metrika/frontend/watch/public/src/utils/userTimeDefer/index.ts",
   "src/utils/userTimeDefer/userTimeDefer.ts":"metrika/frontend/watch/public/src/utils/userTimeDefer/userTimeDefer.ts",
-  "tsconfig.eslint.json":"metrika/frontend/watch/public/tsconfig.eslint.json",
   "tsconfig.json":"metrika/frontend/watch/public/tsconfig.json",
   "tsconfig.rollup.json":"metrika/frontend/watch/public/tsconfig.rollup.json",
   "tsconfig.unit.json":"metrika/frontend/watch/public/tsconfig.unit.json",

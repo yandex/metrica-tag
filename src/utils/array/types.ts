@@ -34,9 +34,10 @@ export type FlatMapCallback<T, U> = (
     index: number,
     array?: ArrayLike<T>,
 ) => U | U[];
-export interface FlatMap {
-    <T, U>(fn: FlatMapCallback<T, U>, array: ArrayLike<T>): U[];
-}
+export type FlatMap = <T, U>(
+    fn: FlatMapCallback<T, U>,
+    array: ArrayLike<T>,
+) => U[];
 
 export type IndexOf = <T>(searchElement: T, array: ArrayLike<T>) => number;
 export type Join = <T>(separator: string, array: ArrayLike<T>) => string;

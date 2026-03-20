@@ -1,3 +1,4 @@
+/* global module */
 const defaultRestrictedProperties = [
     'error',
     {

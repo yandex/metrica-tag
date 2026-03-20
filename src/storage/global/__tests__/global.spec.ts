@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 import * as chai from 'chai';
 import { yaNamespace } from 'src/const';
 import { GlobalStorage, globalStorage, metrikaNamespace } from '../global';
@@ -13,7 +12,7 @@ describe('GlobalStorage', () => {
         inStorage = storage as Window;
         gs = globalStorage(inStorage);
     });
-    /* eslint-disable  no-underscore-dangle */
+
     it('should create Ya namespace', () => {
         chai.expect(storage).to.have.property(yaNamespace);
         chai.expect(storage[yaNamespace]).to.have.property(metrikaNamespace);

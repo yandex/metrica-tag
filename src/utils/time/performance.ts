@@ -24,7 +24,7 @@ export const getMsDate = (ctx: Window) => {
 
 export const getMsFromPerformance = (ctx: Window, info?: PerformanceInfo) => {
     const [ns, now] = info || performanceInfo(ctx);
-    // eslint-disable-next-line no-restricted-globals
+
     if (!isNaN(ns) && isFunction(now)) {
         return Math.round(now() + ns);
     }

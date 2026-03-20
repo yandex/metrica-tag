@@ -15,7 +15,6 @@ export const telemetryCallCountDecorator: Decorator<unknown> = (
     const methodKey = METHODS_TELEMETRY_KEYS_MAP[methodName];
     if (methodKey) {
         return function telemetry() {
-            // eslint-disable-next-line prefer-rest-params
             const fnArgs = argsToArray(arguments);
             const result = fn(...fnArgs);
             const globalStorage = getGlobalStorage(ctx);

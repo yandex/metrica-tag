@@ -82,7 +82,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
 ) {
     return errorLogger(window, 'c.i', () => {
         const ctx = window;
-        // eslint-disable-next-line no-restricted-globals
+
         if (!ctx || (isNaN(counterId) && !counterId)) {
             // Браузер из ада, или настройки пустые
             throwKnownError();
@@ -102,7 +102,7 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             setTurboInfo(counterOptions, counterOptions.params || {});
         }
 
-        const unsubscribeMethods: Array<() => void | null | undefined> = [];
+        const unsubscribeMethods: (() => void | null | undefined)[] = [];
 
         const decorators = [
             errorsDecorator,

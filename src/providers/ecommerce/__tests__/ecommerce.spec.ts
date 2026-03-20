@@ -201,7 +201,6 @@ describe('ecommerce', () => {
                 }
             });
             const {
-                /* eslint-disable camelcase */
                 item_category,
                 item_category2,
                 item_category3,
@@ -212,7 +211,6 @@ describe('ecommerce', () => {
                 item_category2,
                 item_category3,
                 item_category4,
-                /* eslint-enable camelcase */
             ]
                 .filter(Boolean)
                 .join('/');

@@ -267,7 +267,7 @@ export const handleInputMessage = (
         const callback = state.pending[arrayJoin(SPLITTER, [dateInfo, key])];
         if (callback) {
             const cbArgs: Parameters<MessageHandler> = [event];
-            // eslint-disable-next-line prefer-spread
+
             callback.apply(
                 null,
                 cbArgs.concat(message) as Parameters<MessageHandler>,

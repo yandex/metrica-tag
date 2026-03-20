@@ -100,7 +100,6 @@ export const rawParams = (
 ): { [METHOD_NAME_PARAMS]: ParamsHandler } => {
     return {
         [METHOD_NAME_PARAMS]: function a() {
-            // eslint-disable-next-line prefer-rest-params
             const args = argsToArray(arguments);
 
             const info = argsToParams(args);

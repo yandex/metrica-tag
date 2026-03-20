@@ -16,7 +16,7 @@ export const setInSerialized = (
     flag: string,
     val: string | number,
 ): string => {
-    const deserialized: Array<string | number> = str.split(BR_INFO_DELIMITER);
+    const deserialized: (string | number)[] = str.split(BR_INFO_DELIMITER);
     const key = cIndexOfWin(flag, deserialized);
     const valueKey = key + 1;
 

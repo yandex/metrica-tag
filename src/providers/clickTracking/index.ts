@@ -5,7 +5,7 @@ import { useClickTracking } from './clickTracking';
 declare module 'src/utils/counterSettings/types' {
     interface CounterSettingsParams {
         /** button goals enabled */
-        // eslint-disable-next-line camelcase
+
         button_goals?: number;
     }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { COUNTER_SETTINGS_SETTINGS_KEY } from './const';
 
 export type ConditionRef = {
@@ -27,7 +26,7 @@ export type Substitution = {
 /**
  * Counter settings as received from backend on the first hit.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface CounterSettingsParams {}
 
 export interface CounterSettings {

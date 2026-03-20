@@ -58,7 +58,6 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
         counterOpt.counterDefer &&
         senderOpt.urlParams
     ) {
-        // eslint-disable-next-line dot-notation
         senderOpt.urlParams[DEFER_KEY] = '1';
     }
 

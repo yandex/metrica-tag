@@ -36,7 +36,6 @@ import {
 import { ctxBindArgs } from 'src/utils/function/bind/ctxBind';
 import { call } from 'src/utils/function/utils';
 
-/* eslint-disable camelcase */
 type ExtendedWindow = Window & {
     _ym__remoteIframeEl?: HTMLIFrameElement;
     _ym__remoteIframeContainer?: HTMLIFrameElement;
@@ -44,7 +43,6 @@ type ExtendedWindow = Window & {
     _ym__inpageMode?: string;
     _ym__initMessage?: string;
 };
-/* eslint-enable camelcase */
 
 export const REMOTE_CONTROL = 'i'; // key for the global config
 
@@ -83,7 +81,6 @@ const buildRemoteIframe = (ctx: ExtendedWindow, src: string) => {
         insertScript(iframeEl.contentWindow as Window, { src });
     };
 
-    // eslint-disable-next-line camelcase,no-underscore-dangle
     ctx['_ym__remoteIframeEl'] = iframeEl;
 
     root.appendChild(iframeContainer);
@@ -282,11 +279,10 @@ export const handleMessage = memo(
             message['resource'] &&
             isAllowedResource(message['resource'])
         ) {
-            /* eslint-disable no-underscore-dangle,camelcase */
             ctx['_ym__postMessageEvent'] = event;
             ctx['_ym__inpageMode'] = message['inpageMode'];
             ctx['_ym__initMessage'] = message['initMessage'];
-            /* eslint-enable no-underscore-dangle,camelcase */
+
             buildRemoteIframe(ctx, message['resource']);
         }
     },

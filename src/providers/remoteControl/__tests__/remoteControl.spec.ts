@@ -107,7 +107,6 @@ describe('isAllowedOrigin', () => {
 });
 
 describe('getResourceUrl', () => {
-    // eslint-disable-next-line no-restricted-globals
     const ctx = { isFinite, isNaN } as Window;
     it('Only allowed langs', () => {
         ['ru', 'en', 'tr'].forEach((lang) => {

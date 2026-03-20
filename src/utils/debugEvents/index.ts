@@ -25,7 +25,6 @@ export const dispatchDebuggerEvent = (ctx: Window, event: DebuggerEvent) => {
         return;
     }
 
-    // eslint-disable-next-line prefer-destructuring
     const counterKey = event['counterKey'];
 
     if (counterKey) {

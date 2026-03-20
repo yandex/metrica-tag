@@ -144,7 +144,6 @@ describe('object', () => {
     });
 
     it('isPrimitive', () => {
-        // eslint-disable-next-line no-restricted-globals
         const win = { isNaN, isFinite } as unknown as Window;
 
         assert.isTrue(isPrimitive(win, null));
@@ -176,7 +175,6 @@ describe('object', () => {
     });
 
     it('isPlainObject', () => {
-        // eslint-disable-next-line no-restricted-globals
         const win = { isNaN, isFinite } as unknown as Window;
 
         assert.isTrue(isPlainObject(win, {}));
@@ -228,12 +226,11 @@ describe('object', () => {
         } as any;
         Object.defineProperty(testObject, 'firstChild', {
             get() {
-                // eslint-disable-next-line no-underscore-dangle
                 return this._firstChild;
             },
             set(val) {
                 this.changed = true;
-                // eslint-disable-next-line no-underscore-dangle
+
                 this._firstChild = val;
             },
         });

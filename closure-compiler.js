@@ -1,4 +1,3 @@
-/* eslint-disable */
 const ym = {};
 Object.prototype.onClick;
 Object.prototype.onInput;

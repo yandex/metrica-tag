@@ -89,7 +89,6 @@ export const consoleLog = (
     args: unknown | unknown[],
     variables?: Record<string, string | number>,
 ) => {
-    // eslint-disable-next-line prefer-rest-params
     const consoleObj = DebugConsole(ctx, counterKey);
     consoleObj.log(args, variables);
 };

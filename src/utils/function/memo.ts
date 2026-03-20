@@ -27,7 +27,6 @@ export const memo = <FN extends AnyFunc, K = Parameters<FN>[0]>(
     }
     // @ts-expect-error
     return function memoized() {
-        // eslint-disable-next-line prefer-rest-params
         const fnArgs = argsToArray(arguments) as Parameters<FN>;
         const key = keyFn(...fnArgs);
         const keyIndex = cIndexOfWin(key, keyStorage);

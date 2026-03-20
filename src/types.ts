@@ -46,8 +46,9 @@ declare global {
         new (format: 'gzip' | 'deflate'): GenericTransformStream;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface yaNamespaceStorage {}
+    interface yaNamespaceStorage {
+        [key: string]: unknown;
+    }
 
     type yaNamespaceMetrikaCounter = {
         [construct in Constructor]: MetrikaCounter;

@@ -17,10 +17,9 @@ declare global {
 }
 
 export const globalStorage = (ctx: Window): GlobalStorage => {
-    /* eslint-disable no-multi-assign */
     const yan = (ctx[yaNamespace] = ctx[yaNamespace] || {});
     const metrika = (yan[metrikaNamespace] = yan[metrikaNamespace] || {});
-    /* eslint-enable no-multi-assign */
+
     const storage: Record<string, any> = metrika;
 
     return {

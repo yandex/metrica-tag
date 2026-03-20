@@ -43,14 +43,11 @@ export const callPoly = (
 const nativeBind = toNativeOrFalse(Function.prototype.bind, 'bind');
 
 export const bindPoly = function b() {
-    // eslint-disable-next-line prefer-rest-params
     const bindArgs = argsToArray(arguments);
     const [fn, ctx, ...topArgs] = bindArgs;
     return function a() {
-        // eslint-disable-next-line prefer-rest-params
         const args = [...topArgs, ...argsToArray(arguments)];
         if (Function.prototype.call) {
-            // eslint-disable-next-line
             return Function.prototype.call.apply(fn, [ctx, ...args]);
         }
         if (ctx) {
@@ -70,7 +67,6 @@ export const bindPoly = function b() {
 
 const callBind = function bindDecorator(bindFunc: AnyFunc): Bind {
     return function bindFunction() {
-        // eslint-disable-next-line prefer-rest-params
         const bindArgs = argsToArray(arguments);
         const [fn, ctx, ...args] = bindArgs;
         return bindFunc.apply(fn, [ctx].concat(args));

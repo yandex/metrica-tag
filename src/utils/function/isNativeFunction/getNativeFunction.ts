@@ -9,7 +9,6 @@ export const getNativeFunction = (functionName: string, owner: any) => {
     try {
         if (fn && fn.apply) {
             return function nativeFunction() {
-                // eslint-disable-next-line prefer-rest-params
                 return fn.apply(owner, arguments);
             };
         }

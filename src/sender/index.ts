@@ -39,7 +39,6 @@ export const getSender: GetSender = ctxErrorLogger(
             : (useSenderWatch(ctx, transports, middleware) as AnySender);
 
         return function c() {
-            // eslint-disable-next-line prefer-rest-params
             const [rawSenderOpt, ...rest] = argsToArray(arguments) as [
                 SenderInfo,
                 ...any[],

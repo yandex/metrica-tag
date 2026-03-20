@@ -28,7 +28,6 @@ import { DEFAULT_NOT_BOUNCE_TIMEOUT } from '../const';
 import { useNotBounceProviderRaw } from '../notBounce';
 
 describe('notBounce', () => {
-    // eslint-disable-next-line no-restricted-globals
     const window = { Math, isFinite, isNaN } as Window;
     let senderInfo: SenderInfo | undefined;
     const timeouts: [number, AnyFunc][] = [];

@@ -14,7 +14,6 @@ export const destructingDecorator: Decorator<unknown> = (
             return undefined;
         }
 
-        // eslint-disable-next-line prefer-rest-params
         const fnArgs = argsToArray(arguments);
         return fn(...fnArgs);
     };

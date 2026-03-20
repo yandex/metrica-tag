@@ -11,7 +11,6 @@ export const selfReturnDecorator: Decorator<CounterObject | undefined, true> = (
     fn,
 ) => {
     return function selfReturn() {
-        // eslint-disable-next-line prefer-rest-params
         const fnArgs = argsToArray(arguments);
         const result = fn(...fnArgs);
         if (isUndefined(result)) {

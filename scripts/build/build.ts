@@ -5,6 +5,7 @@ import typescript from 'rollup-plugin-typescript2';
 import compiler from '@ampproject/rollup-plugin-closure-compiler';
 import progress from 'rollup-plugin-progress';
 import commonjs from '@rollup/plugin-commonjs';
+// eslint-disable-next-line import/no-named-as-default
 import visualizer from 'rollup-plugin-visualizer';
 import resolve from '@rollup/plugin-node-resolve';
 import commandLineArgs from 'command-line-args';

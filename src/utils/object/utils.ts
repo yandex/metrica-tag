@@ -27,7 +27,7 @@ const nativeKeys = toNativeOrFalse(Object.keys, 'keys');
 export const keysPoly = (obj: Record<string, any>) => {
     const out = [];
     let key: string;
-    // eslint-disable-next-line no-restricted-syntax
+
     for (key in obj) {
         if (has(obj, key)) {
             out.push(key);

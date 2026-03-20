@@ -13,7 +13,6 @@ export type InsertScriptOptions = Omit<ScriptOptions, 'src'>;
 
 export const INSERT_SCRIPT_GS_KEY = 'giss';
 
-// eslint-disable-next-line no-shadow
 export const enum ScriptState {
     Pending = 0,
     Loaded = 1,

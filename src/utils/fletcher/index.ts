@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 /**
  * Вычисляет чексумму данных по алгоритму Флетчера.
  */
@@ -24,7 +23,6 @@ export function fletcher(data: number[] | Uint8Array | string) {
             }
             sum1 += ch;
             sum2 += sum1;
-            // eslint-disable-next-line no-cond-assign
         } while ((tlen -= 1));
         sum1 = (sum1 & 0xff) + (sum1 >> 8);
         sum2 = (sum2 & 0xff) + (sum2 >> 8);

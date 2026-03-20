@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { AnyFunc } from './types';
 import { bindArgs } from './bind';
 import { handleError } from '../errorLogger/handleError';

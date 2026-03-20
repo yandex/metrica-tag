@@ -9,7 +9,6 @@ export const wrapLogFunction = (
     func: LogFn,
 ) => {
     return function l() {
-        // eslint-disable-next-line prefer-rest-params
         const args = argsToArray(arguments);
         dispatchDebuggerEvent(ctx, {
             ['counterKey']: counterKey,

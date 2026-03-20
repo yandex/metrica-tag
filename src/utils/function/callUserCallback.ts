@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { setDeferBase } from 'src/utils/defer/base';
 import { AnyFunc, CallUserCallback } from './types';
 import { argsToArray } from './args';
@@ -17,7 +16,6 @@ export const callUserCallback: CallUserCallback = function z(
 ) {
     try {
         if (isFunction(callback)) {
-            // eslint-disable-next-line prefer-rest-params
             const [, , , ...args] = argsToArray(arguments);
             callback.apply(isNil(userContext) ? null : userContext, args);
         }
