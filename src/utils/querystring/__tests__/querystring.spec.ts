@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* global mocha */
 import * as chai from 'chai';
 import { stringify, parse } from '..';
 

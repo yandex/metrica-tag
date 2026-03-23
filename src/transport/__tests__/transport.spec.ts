@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* global mocha */
 import * as chai from 'chai';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions';

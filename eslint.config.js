@@ -1,4 +1,4 @@
-/* global require, module */
+/* global require, module, __dirname */
 const { defineConfig, globalIgnores } = require('eslint/config');
 
 const ban = require('eslint-plugin-ban');
@@ -31,6 +31,7 @@ module.exports = defineConfig([
                 projectService: {
                     allowDefaultProject: ['*.js'],
                 },
+                tsconfigRootDir: __dirname,
             },
 
             globals: {
@@ -276,6 +277,9 @@ module.exports = defineConfig([
                 ...globals.browser,
                 env: 'readonly',
             },
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
         },
 
         rules: {
@@ -355,6 +359,12 @@ module.exports = defineConfig([
         name: 'tag/generated',
         files: ['generated/**/*'],
 
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
+        },
+
         rules: {
             camelcase: 'off',
             '@typescript-eslint/no-use-before-define': 'off',
@@ -372,6 +382,9 @@ module.exports = defineConfig([
             globals: {
                 ...globals.browser,
                 ...globals.mocha,
+            },
+            parserOptions: {
+                tsconfigRootDir: __dirname,
             },
         },
 
@@ -402,6 +415,9 @@ module.exports = defineConfig([
             globals: {
                 ...globals.node,
             },
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
         },
 
         rules: {
@@ -417,6 +433,12 @@ module.exports = defineConfig([
         name: 'tag/inject',
         files: ['src/inject/*.ts', 'src/version.ts'],
 
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
+        },
+
         rules: {
             'n/no-process-env': 'off',
         },
@@ -428,6 +450,12 @@ module.exports = defineConfig([
             './src/utils/object/*.ts',
             './src/utils/array/*.ts',
         ],
+
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: __dirname,
+            },
+        },
 
         rules: {
             'no-restricted-properties': defaultRestrictedProperties,

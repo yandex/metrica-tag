@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* global mocha */
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { flagStorage } from '../flagsStorage';

@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* global mocha */
 import * as chai from 'chai';
 import { TITLE_BR_KEY } from 'src/api/watch';
 import { browserInfo, setInSerialized } from '../browserInfo';

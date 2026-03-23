@@ -1,3 +1,3 @@
-/* eslint-env mocha */
+/* global mocha */
 
 describe('json', () => {});

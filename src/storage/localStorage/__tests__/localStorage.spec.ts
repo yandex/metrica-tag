@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* global mocha */
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import * as chai from 'chai';
 import { localStorage } from '../localStorage';
