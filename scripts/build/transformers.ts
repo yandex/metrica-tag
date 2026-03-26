@@ -1,21 +1,22 @@
 import {
-    CustomTransformers,
-    Identifier,
+    type CustomTransformers,
+    type Identifier,
     isCallExpression,
     isNewExpression,
     isSourceFile,
     setSyntheticLeadingComments,
-    SourceFile,
+    type SourceFile,
     SyntaxKind,
-    TransformerFactory,
+    type TransformerFactory,
     visitEachChild,
     visitNode,
     type Node,
     type Visitor,
 } from 'typescript';
+import { pureFunctions } from './utils';
 
 const markPureFunctions = (
-    pureFunctions: string[],
+    fns: string[],
     before: boolean,
 ): TransformerFactory<SourceFile> => {
     return (context) => {
@@ -24,7 +25,7 @@ const markPureFunctions = (
                 let hasPure;
                 if (before) {
                     const functionName = node.expression.getText().trim();
-                    hasPure = pureFunctions.includes(functionName);
+                    hasPure = fns.includes(functionName);
                 } else {
                     const identifier = node.expression as Identifier;
                     const helperName = (identifier.escapedText as string) || '';
@@ -32,7 +33,7 @@ const markPureFunctions = (
                     hasPure =
                         identifier.pos < 0 &&
                         helperName &&
-                        pureFunctions.includes(helperName);
+                        fns.includes(helperName);
                 }
 
                 if (hasPure) {
@@ -54,44 +55,6 @@ const markPureFunctions = (
         return (node) => visitNode(node, visit, isSourceFile);
     };
 };
-
-const pureFunctions = [
-    'arrayJoin',
-    'AsyncMap',
-    'bindArg',
-    'bindArgs',
-    'bindThisForMethod',
-    'bindThisForMethodTest',
-    'cFilter',
-    'cFind',
-    'cMap',
-    'Construct',
-    'convertToString',
-    'cReduce',
-    'cSome',
-    'ctxErrorLogger',
-    'ctxFilter',
-    'ctxIncludes',
-    'ctxIndexOf',
-    'ctxJoin',
-    'ctxMap',
-    'ctxPath',
-    'curry2',
-    'equal',
-    'entries',
-    'firstArg',
-    'flatMap',
-    'getFieldList',
-    'getNativeFunction',
-    'isLengthCorrect',
-    'isNativeFunction',
-    'memo',
-    'noop',
-    'pipe',
-    'toNativeOrFalse',
-    'useLegacyEcommerce',
-    'watchSyncFlags',
-];
 
 const pureTsHelpers = ['___spreadArrays'];
 

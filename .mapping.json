@@ -20,7 +20,7 @@
   "hooks/pre-commit":"metrika/frontend/watch/public/hooks/pre-commit",
   "package-lock.json":"metrika/frontend/watch/public/package-lock.json",
   "package.json":"metrika/frontend/watch/public/package.json",
-  "scripts/build/build.ts":"metrika/frontend/watch/public/scripts/build/build.ts",
+  "rolldown.config.mjs":"metrika/frontend/watch/public/rolldown.config.mjs",
   "scripts/build/transformers.ts":"metrika/frontend/watch/public/scripts/build/transformers.ts",
   "scripts/build/utils.ts":"metrika/frontend/watch/public/scripts/build/utils.ts",
   "scripts/genFeatures.ts":"metrika/frontend/watch/public/scripts/genFeatures.ts",
@@ -576,6 +576,5 @@
   "tsconfig.json":"metrika/frontend/watch/public/tsconfig.json",
   "tsconfig.rollup.json":"metrika/frontend/watch/public/tsconfig.rollup.json",
   "tsconfig.unit.json":"metrika/frontend/watch/public/tsconfig.unit.json",
-  "types/@ampproject/rollup-plugin-closure-compiler.d.ts":"metrika/frontend/watch/public/types/@ampproject/rollup-plugin-closure-compiler.d.ts",
-  "types/rollup-plugin-visualizer/rollup-plugin-visualizer.d.ts":"metrika/frontend/watch/public/types/rollup-plugin-visualizer/rollup-plugin-visualizer.d.ts"
+  "types/@ampproject/rollup-plugin-closure-compiler.d.ts":"metrika/frontend/watch/public/types/@ampproject/rollup-plugin-closure-compiler.d.ts"
 }
