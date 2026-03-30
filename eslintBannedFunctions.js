@@ -71,6 +71,11 @@ const bannedFunctions = [
         name: 'Promise',
         message: 'use PolyPromise from utils',
     },
+    // Map
+    {
+        name: 'Map',
+        message: 'use PolyMap from src/utils/map',
+    },
 ];
 const bannedProperties = [
     // String

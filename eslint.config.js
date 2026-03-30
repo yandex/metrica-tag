@@ -447,6 +447,7 @@ module.exports = defineConfig([
         files: [
             './src/utils/string/*.ts',
             './src/utils/promise/*.ts',
+            './src/utils/map/*.ts',
             './src/utils/object/*.ts',
             './src/utils/array/*.ts',
         ],
