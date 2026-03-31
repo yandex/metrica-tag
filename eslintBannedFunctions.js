@@ -76,6 +76,11 @@ const bannedFunctions = [
         name: 'Map',
         message: 'use PolyMap from src/utils/map',
     },
+    // Set
+    {
+        name: 'Set',
+        message: 'use PolySet from from src/utils/set',
+    },
 ];
 const bannedProperties = [
     // String

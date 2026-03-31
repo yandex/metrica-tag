@@ -7,6 +7,9 @@ import { cFilter } from './filter';
 import { ctxIncludes } from './includes';
 import { isArray } from './isArray';
 import { ctxPath } from '../object/path';
+import { PolySetInterface } from '../set/types';
+import { isFunction } from '../object';
+import { convertSetToArray } from '../set/polyfill';
 
 export const getRange = (n: number) => {
     if (n < 0) {
@@ -21,21 +24,41 @@ export const getRange = (n: number) => {
     return result;
 };
 
-export const toArray = <R = any>(smth: any): R[] => {
+export const toArray = <Item>(
+    smth:
+        | Item[]
+        | ArrayLike<Item>
+        | Iterable<Item>
+        | PolySetInterface<Item>
+        | NodeList
+        | HTMLCollection,
+): Item[] => {
     if (!smth) {
         return [];
     }
 
-    if (isArray<R>(smth)) {
+    if (isArray<Item>(smth)) {
         return smth;
     }
 
     if (arrayFrom) {
-        return arrayFrom(smth);
+        return arrayFrom(smth as ArrayLike<Item>);
     }
 
-    if (typeof smth.length === 'number' && smth.length >= 0) {
+    if (
+        typeof (smth as Item[]).length === 'number' &&
+        (smth as Item[]).length >= 0
+    ) {
         return arrayFromPoly(smth);
+    }
+
+    // Convert Set
+    if (
+        typeof (smth as PolySetInterface<Item>).size === 'number' &&
+        (smth as PolySetInterface<Item>).size >= 0 &&
+        isFunction((smth as PolySetInterface<Item>).add)
+    ) {
+        return convertSetToArray(smth as PolySetInterface<Item>);
     }
 
     return [];

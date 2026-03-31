@@ -259,7 +259,10 @@ export const getElementsByClassName = (
 
     const nodes = node.getElementsByTagName('*');
     const someClassRegexp = `(${arrayJoin('|', classes)})`;
-    return cFilter(bindArg(someClassRegexp, hasClass), toArray(nodes));
+    return cFilter(
+        bindArg(someClassRegexp, hasClass),
+        toArray(nodes) as HTMLElement[],
+    );
 };
 
 /**

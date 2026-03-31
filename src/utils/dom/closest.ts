@@ -1,6 +1,6 @@
 import { isNativeFunction } from 'src/utils/function/isNativeFunction/isNativeFunction';
-import { cIndexOf } from 'src/utils/array/indexOf';
 import { toArray } from 'src/utils/array/utils';
+import { PolySet } from 'src/utils/set';
 import { getMatchesFunction } from './dom';
 import { isQuerySelectorSupported } from './queySelect';
 
@@ -36,18 +36,17 @@ export const closest = (selector: string, ctx: Window, el: HTMLElement) => {
         return cursor;
     }
     if (isQuerySelectorSupported(ctx)) {
-        const matches = toArray(
-            (ctx.document || (ctx as any).ownerDocument).querySelectorAll(
-                selector,
+        // Using without toArray is prohibited due to absence of symbol.iterator in NodeList in old browsers (e.g. IE11)
+        const matches = new PolySet(
+            toArray(
+                (ctx.document || (ctx as any).ownerDocument).querySelectorAll(
+                    selector,
+                ),
             ),
         );
         let cursor = el;
 
-        while (
-            cursor &&
-            cursor.nodeType === 1 &&
-            cIndexOf(ctx)(cursor, matches) === -1
-        ) {
+        while (cursor && cursor.nodeType === 1 && !matches.has(cursor)) {
             cursor = cursor.parentElement || (cursor.parentNode as HTMLElement);
         }
 

@@ -450,6 +450,7 @@ module.exports = defineConfig([
             './src/utils/map/*.ts',
             './src/utils/object/*.ts',
             './src/utils/array/*.ts',
+            './src/utils/set/*.ts',
         ],
 
         languageOptions: {

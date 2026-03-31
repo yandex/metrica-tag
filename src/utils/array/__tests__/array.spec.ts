@@ -11,6 +11,7 @@ import { flatMap, flatMapPoly, mapPoly } from '../map';
 import { cSome, somePoly } from '../some';
 import { cFind, findPoly } from '../find';
 import { exclude, getRange, toArray } from '../utils';
+import { PolySet } from 'src/utils/set';
 
 describe('Array utils', () => {
     const sandbox = sinon.createSandbox();
@@ -160,7 +161,8 @@ describe('Array utils', () => {
             'a',
             'b',
         ]);
-        chai.expect(toArray(null)).to.deep.equal([]);
+        chai.expect(toArray(null as unknown as unknown[])).to.deep.equal([]);
+        chai.expect(toArray(new PolySet([1, 2]))).to.deep.equal([1, 2]);
     });
 
     it('cSome', () => {
