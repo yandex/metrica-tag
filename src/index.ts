@@ -44,7 +44,7 @@ import { pipe } from 'src/utils/function/pipe';
 import type { AnyFunc } from 'src/utils/function/types';
 import { call } from 'src/utils/function/utils';
 import { telemetryCallCountDecorator } from 'src/utils/methodDecorators/telCallCount';
-import { entries, isFunction, isObject } from 'src/utils/object';
+import { entries, getPath, isFunction, isObject } from 'src/utils/object';
 import { destruct } from './providers/destruct';
 import { METHOD_DESTRUCT } from './providers/destruct/const';
 import { errorLogger } from './utils/errorLogger/errorLogger';
@@ -62,6 +62,11 @@ import { throwKnownError } from './utils/errorLogger/knownError';
 import { throwFunction } from './utils/errorLogger/throwFunction';
 import { TimeOne, getMs } from './utils/time/time';
 import { setTurboInfo } from './utils/turboParams/turboParams';
+import { isNumber } from './utils/number/number';
+import {
+    STACK_FN_NAME,
+    STACK_TIMESTAMP_NAME,
+} from './providers/stackProxy/const';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -196,7 +201,15 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             return counters[counterKey];
         }
 
-        counterTimingStore(counterKey).initTime = TimeOne(ctx)(getMs);
+        const timings = counterTimingStore(counterKey);
+        const insertTime = getPath(
+            ctx,
+            `${STACK_FN_NAME}.${STACK_TIMESTAMP_NAME}`,
+        );
+        if (isNumber(ctx, insertTime)) {
+            timings.insertTime = insertTime;
+        }
+        timings.initTime = TimeOne(ctx)(getMs);
         counters[counterKey] = this;
         globalConfig.setVal(COUNTERS_GLOBAL_KEY, counters);
         globalConfig.setSafe('counter', this);

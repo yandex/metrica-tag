@@ -3,8 +3,9 @@ import {
     WATCH_REFERER_PARAM,
     DEFER_KEY,
     PAGE_VIEW_BR_KEY,
+    LOAD_TIME_TEL_KEY,
 } from 'src/api/watch';
-import type { CounterOptions } from 'src/utils/counterOptions';
+import { getCounterKey, type CounterOptions } from 'src/utils/counterOptions';
 import { getSender } from 'src/sender';
 import type { SenderInfo } from 'src/sender/SenderInfo';
 import { HIT_PROVIDER } from 'src/providers';
@@ -19,6 +20,9 @@ import { bindArgs } from 'src/utils/function/bind';
 import { runAsync } from 'src/utils/async/async';
 import { CounterSettings } from 'src/utils/counterSettings/types';
 import { HIT_CONSOLE_MESSAGE } from '../consoleRenderer/dictionary';
+import { counterTimingStore } from 'src/utils/counterTimings';
+import { telemetry } from 'src/utils/telemetry/telemetry';
+import { isNumber } from 'src/utils/number/number';
 
 /**
  * Automatically send page view event. A basic provider enabled by default and not tied to any feature flag
@@ -44,6 +48,18 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
         },
         middlewareInfo: {},
     };
+
+    if (flags.TELEMETRY_FEATURE) {
+        const { initTime, insertTime } = counterTimingStore(
+            getCounterKey(counterOpt),
+        );
+        senderOpt.telemetry = telemetry({
+            [LOAD_TIME_TEL_KEY]:
+                isNumber(ctx, insertTime) && isNumber(ctx, initTime)
+                    ? initTime - insertTime
+                    : null,
+        });
+    }
 
     if (flags.PARAMS_FEATURE) {
         senderOpt.middlewareInfo!.params = counterOpt.params;

@@ -185,16 +185,12 @@ export const checkStack = (ctx: Window, counterOptions: CounterOptions) => {
     cForEach(onStack, stackList);
 };
 
-type StackFn = {
-    [STACK_DATA_LAYER_NAME]: StackCall[];
-};
-
 /**
  * Handles ym(counterId, 'functionName', ...params) calls and proxies them to counter instance
  * @param ctx - Current window
  */
 export const stackProxy = (ctx: Window) => {
-    const fn = getPath(ctx, STACK_FN_NAME) as StackFn | null;
+    const fn = getPath(ctx, STACK_FN_NAME);
     if (!fn) {
         return;
     }

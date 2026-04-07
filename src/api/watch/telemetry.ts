@@ -44,3 +44,10 @@ export const REQUEST_NUMBER_TEL_KEY = 'rqnt';
  * Value Type: number
  */
 export const MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE = 'mtb';
+
+/**
+ * The time since metrica installed on page and counter first hit.
+ *
+ * Value Type: number
+ */
+export const LOAD_TIME_TEL_KEY = 'clt';

@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sender from 'src/sender';
 import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
@@ -7,6 +6,8 @@ import * as DebugConsole from 'src/providers/debugConsole/debugConsole';
 import * as counterSettingsStorage from 'src/utils/counterSettings/counterSettings';
 import * as deferModule from 'src/utils/defer/defer';
 import { useRawHitProvider } from '../hit';
+import { CounterSettings } from 'src/utils/counterSettings/types';
+import { TransportResponse } from 'src/transport/types';
 
 describe('hit', () => {
     const locationHref = 'test';
@@ -18,12 +19,26 @@ describe('hit', () => {
     const counterSettings = {
         a: 1,
         b: 2,
-    };
-    const senderMock = sinon.stub().returns(Promise.resolve(counterSettings));
+    } as unknown as CounterSettings;
+    const senderMock = sinon
+        .stub<
+            Parameters<ReturnType<typeof sender.getSender>>,
+            ReturnType<ReturnType<typeof sender.getSender>>
+        >()
+        .resolves(counterSettings as unknown as TransportResponse);
     const sandbox = sinon.createSandbox();
-    let getSenderMock: any;
-    let provideSettingsStub: sinon.SinonStub<any, any>;
-    let counterSettingsStorageStub: sinon.SinonStub<any, any>;
+    let getSenderMock: sinon.SinonStub<
+        Parameters<typeof sender.getSender>,
+        ReturnType<typeof sender.getSender>
+    >;
+    let provideSettingsStub: sinon.SinonStub<
+        Parameters<typeof counterSettingsStorage.setSettings>,
+        ReturnType<typeof counterSettingsStorage.setSettings>
+    >;
+    let counterSettingsStorageStub: sinon.SinonStub<
+        Parameters<typeof counterSettingsStorage.getCounterSettings>,
+        ReturnType<typeof counterSettingsStorage.getCounterSettings>
+    >;
 
     beforeEach(() => {
         getSenderMock = sandbox.stub(sender, 'getSender');
@@ -41,8 +56,8 @@ describe('hit', () => {
             counterSettingsStorage,
             'getCounterSettings',
         );
-        counterSettingsStorageStub.callsFake((_, _1, fn) =>
-            Promise.resolve(fn()),
+        counterSettingsStorageStub.callsFake((_, fn) =>
+            Promise.resolve(fn(counterSettings)),
         );
     });
 
@@ -50,7 +65,7 @@ describe('hit', () => {
         sandbox.restore();
     });
 
-    it('sends hits and ads counter settings into the storage', () => {
+    it('sends hits and ads counter settings into the storage', async () => {
         const winInfo = {
             location: {
                 href: locationHref,
@@ -61,23 +76,26 @@ describe('hit', () => {
                 referrer: testReferer,
             },
             JSON,
-        };
+            isFinite,
+        } as Window;
 
-        return useRawHitProvider(winInfo as any as Window, counterOpt).then(
-            () => {
-                const [senderOpt, counterOptions] = senderMock.getCall(0).args;
-                const { urlParams } = senderOpt;
-                chai.expect(counterOptions).to.equal(counterOpt);
-                chai.expect(urlParams[WATCH_URL_PARAM]).to.equal(locationHref);
-                chai.expect(urlParams[WATCH_REFERER_PARAM]).to.equal(
-                    testReferer,
-                );
+        await useRawHitProvider(winInfo, counterOpt);
 
-                const [, counterOptM, counterSettingsM] =
-                    provideSettingsStub.getCall(0).args;
-                chai.expect(counterOptM).to.equal(counterOptions);
-                chai.expect(counterSettingsM).to.deep.equal(counterSettingsM);
-            },
+        sinon.assert.calledOnceWithExactly(
+            senderMock,
+            sinon.match({
+                urlParams: {
+                    [WATCH_URL_PARAM]: locationHref,
+                    [WATCH_REFERER_PARAM]: testReferer,
+                },
+            }),
+            counterOpt,
+        );
+        sinon.assert.calledOnceWithExactly(
+            provideSettingsStub,
+            winInfo,
+            counterOpt,
+            counterSettings,
         );
     });
 });
