@@ -21,7 +21,7 @@ import {
     isIOS,
     isAndroidWebView,
 } from '../browser';
-import { isFF, isGecko } from '../firefox';
+import { isFF, isGecko, getFFVersion } from '../firefox';
 
 describe('browser Utils', () => {
     const win = (obj: any = {}) => {
@@ -350,6 +350,41 @@ describe('browser Utils', () => {
             ),
             'should return true for iphone',
         ).to.be.true;
+    });
+
+    it('isFFVersion', () => {
+        chai.assert(
+            getFFVersion(win('Something')) === 0,
+            'false for something that not looks like Firefox',
+        );
+        chai.assert(
+            getFFVersion(ffWin()) === 123,
+            'true if Firefox and version >= requested one',
+        );
+        chai.expect(
+            getFFVersion(ffWin()),
+            'false if Firefox and version < requested one',
+        ).to.be.lt(200);
+    });
+
+    it('returns Firefox version for Windows UA', () => {
+        const ctx = win({
+            navigator: {
+                userAgent:
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:147.0) Gecko/20100101 Firefox/147.0',
+            },
+        });
+        chai.expect(getFFVersion(ctx)).to.eq(147);
+    });
+
+    it('returns Firefox version for macOS UA', () => {
+        const ctx = win({
+            navigator: {
+                userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:148.0) Gecko/20100101 Firefox/148.0',
+            },
+        });
+        chai.expect(getFFVersion(ctx)).to.eq(148);
     });
 
     it('check isIOS', () => {

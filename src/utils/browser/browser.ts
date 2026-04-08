@@ -4,7 +4,7 @@ import { indexOfWin } from 'src/utils/array/utils';
 import { cSome } from 'src/utils/array/some';
 import { cReduce } from 'src/utils/array/reduce';
 import { ctxPath, getPath, isUndefined } from 'src/utils/object';
-import { isFF, isFFVersionRegExp } from 'src/utils/browser/firefox';
+import { getFFVersion } from 'src/utils/browser/firefox';
 import { MIN_EDGE_VERSION, MIN_FIREFOX_VERSION } from 'src/utils/browser/const';
 import {
     bind,
@@ -254,22 +254,11 @@ export const isEdgeMinVersion = (ctx: Window, minVersion: number) => {
     return false;
 };
 
-export const isFFVersion = (ctx: Window, minVersion: number) => {
-    if (isFF(ctx) && minVersion) {
-        const agent = getAgent(ctx);
-        const version = agent.match(isFFVersionRegExp);
-        if (version && version.length) {
-            return +version[1] >= minVersion;
-        }
-    }
-    return false;
-};
-
 // All tracking protection browsers: intellectual TP, enhanced TP, etc
 export const isTP = memo((ctx: Window) => {
     return (
         isITP(ctx) ||
-        isFFVersion(ctx, MIN_FIREFOX_VERSION) ||
+        getFFVersion(ctx) >= MIN_FIREFOX_VERSION ||
         isEdgeMinVersion(ctx, MIN_EDGE_VERSION)
     );
 });
