@@ -54,7 +54,7 @@ describe('Async test', () => {
                 postMessage,
             } as unknown as Window;
 
-            runAsync(ctx, () => {});
+            runAsync(ctx, () => {}, 'test');
             sinon.assert.callCount(postMessage, 1);
             sinon.assert.calledWith(
                 postMessage,
@@ -67,8 +67,8 @@ describe('Async test', () => {
                 postMessage,
             } as unknown as Window;
 
-            runAsync(ctx, () => {});
-            runAsync(ctx, () => {});
+            runAsync(ctx, () => {}, 'test');
+            runAsync(ctx, () => {}, 'test');
 
             chai.expect(postMessage.firstCall.args[0]).to.not.be.equal(
                 postMessage.secondCall.args[0],
@@ -78,13 +78,13 @@ describe('Async test', () => {
             const stub = sandbox.stub(defer, 'setDefer');
             const ctx = {} as unknown as Window;
             const cb = () => {};
-            runAsync(ctx, cb);
+            runAsync(ctx, cb, 'test');
 
             sinon.assert.calledWith(stub, ctx, cb, 0, sinon.match.any);
         });
         it('subscribes on message event', () => {
             const { window } = new JSDOMWrapper();
-            runAsync(window, () => {});
+            runAsync(window, () => {}, 'test');
             sinon.assert.callCount(eventHandlerOn, 1);
             const [target, evts, cb] = eventHandlerOn.getCall(0).args;
             chai.assert(typeof cb === 'function');
@@ -95,7 +95,7 @@ describe('Async test', () => {
             const ctx = {
                 postMessage,
             } as unknown as Window;
-            runAsync(ctx, () => {});
+            runAsync(ctx, () => {}, 'test');
 
             // вручную вызываем onMessage с нужным сообщением
             eventHandlerOn.firstCall.args[2]({
@@ -107,9 +107,13 @@ describe('Async test', () => {
             const ctx = {
                 postMessage,
             } as unknown as Window;
-            runAsync(ctx, () => {
-                throw new Error('hey');
-            });
+            runAsync(
+                ctx,
+                () => {
+                    throw new Error('hey');
+                },
+                'test',
+            );
 
             eventHandlerOn.firstCall.args[2]({
                 data: postMessage.firstCall.args[0],
@@ -120,7 +124,7 @@ describe('Async test', () => {
             const ctx = {
                 postMessage,
             } as unknown as Window;
-            runAsync(ctx, () => {});
+            runAsync(ctx, () => {}, 'test');
 
             eventHandlerOn.firstCall.args[2]({
                 data: 'random_event_data',

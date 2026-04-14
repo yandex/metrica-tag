@@ -129,7 +129,12 @@ describe('sendRetransmitRequests', () => {
 
         setTimeout(() => {
             sinon.assert.calledOnce(mockRunAsync);
-            sinon.assert.calledWith(mockRunAsync, mockCtx, sinon.match.func);
+            sinon.assert.calledWith(
+                mockRunAsync,
+                mockCtx,
+                sinon.match.func,
+                sinon.match.string,
+            );
             done();
         }, 0);
     });
@@ -152,8 +157,8 @@ describe('sendRetransmitRequests', () => {
             mockCtx,
             mockRequests,
             sinon.match.func,
+            'rts.a',
             sinon.match.number,
-            sinon.match.string,
         );
     });
 

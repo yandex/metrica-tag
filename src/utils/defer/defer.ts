@@ -3,8 +3,6 @@ import { errorLogger } from 'src/utils/errorLogger/errorLogger';
 import { AnyFunc } from 'src/utils/function/types';
 import { getNativeFunction } from '../function/isNativeFunction/getNativeFunction';
 
-const SCOPE_KEY = 'def';
-
 export const clearDefer = (ctx: Window, deferId: number) => {
     const clearTimeout: Window['clearTimeout'] = getNativeFunction(
         'clearTimeout',
@@ -18,11 +16,11 @@ export const setDefer = (
     ctx: Window,
     fn: AnyFunc,
     timeOut: number,
-    errorScope?: string,
+    errorScope: string,
 ) => {
     return setDeferBase(
         ctx,
-        errorLogger(ctx, `d.err.${errorScope || SCOPE_KEY}`, fn),
+        errorLogger(ctx, `${errorScope}.d.err`, fn),
         timeOut,
     );
 };
@@ -31,10 +29,10 @@ export const setDeferInterval = (
     ctx: Window,
     fn: AnyFunc,
     timeOut: number,
-    errorScope?: string,
+    errorScope: string,
 ) => {
     return ctx.setInterval(
-        errorLogger(ctx, `i.err.${errorScope || SCOPE_KEY}`, fn),
+        errorLogger(ctx, `${errorScope}.i.err`, fn),
         timeOut,
     );
 };

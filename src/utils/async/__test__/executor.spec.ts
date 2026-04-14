@@ -34,7 +34,7 @@ describe('Async Executor', () => {
             ],
             call,
         );
-        const task = executeIterator(window, iterator, 0);
+        const task = executeIterator(window, iterator, 'test', 0);
         task(taskFork(noop, () => done()) as any);
     });
     it('execIter callTasks sync', (done) => {
@@ -63,7 +63,7 @@ describe('Async Executor', () => {
             ],
             call,
         );
-        const task = executeIterator(window, iterator, Infinity);
+        const task = executeIterator(window, iterator, 'test', Infinity);
         task(taskFork(noop, () => done()) as any);
     });
 });

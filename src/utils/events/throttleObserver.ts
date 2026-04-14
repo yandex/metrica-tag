@@ -6,6 +6,7 @@ export const throttleObserver = <T, U>(
     ctx: Window,
     rawObserver: Observer<T, U>,
     timeOut: number,
+    errorScope: string,
 ) => {
     const throttledObserver: Observer<T, U> = observer(ctx);
     let timer: number;
@@ -15,7 +16,7 @@ export const throttleObserver = <T, U>(
         timer = 0;
         if (callNextTime) {
             callNextTime = false;
-            timer = setDefer(ctx, cb, timeOut);
+            timer = setDefer(ctx, cb, timeOut, `${errorScope}.to.d`);
             throttledObserver.trigger(latestData);
         }
     };

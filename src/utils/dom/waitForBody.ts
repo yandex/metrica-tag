@@ -6,6 +6,7 @@ import { bindArg } from '../function/bind';
 export const TIMEOUT_FOR_BODY = 100;
 export const waitForBodyTask = (
     ctx: Window,
+    errorScope: string,
     target: Window | HTMLIFrameElement = ctx,
 ) => {
     const pathToBody = `${
@@ -40,7 +41,12 @@ export const waitForBodyTask = (
         if (getPath(target, pathToBody) && isIFrameLoaded(target)) {
             resolve();
         } else {
-            setDefer(ctx, bindArg(resolve, wait), TIMEOUT_FOR_BODY);
+            setDefer(
+                ctx,
+                bindArg(resolve, wait),
+                TIMEOUT_FOR_BODY,
+                `${errorScope}.wfb`,
+            );
         }
     };
     return task((_, resolve) => {

@@ -237,11 +237,12 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
                     ctx,
                     asyncProvidersInit,
                     callProvider,
-                    ASYNC_PROVIDERS_MAX_EXEC_TIME,
                     'a.i',
+                    ASYNC_PROVIDERS_MAX_EXEC_TIME,
                 ],
                 iterateTaskWithConstraints<ProviderFunction>,
             ),
+            'a.ra',
         );
 
         cForEach(callProvider, providersSync);

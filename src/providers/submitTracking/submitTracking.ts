@@ -148,6 +148,7 @@ export const handleClick = (
                     handleSubmit,
                 ),
                 CLICK_DELAY,
+                's.t.s',
             );
         }
     }

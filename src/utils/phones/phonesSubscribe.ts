@@ -17,7 +17,10 @@ export const phoneSubscribeMutation = (
     ctx: Window,
     observerObj: Observer<unknown, unknown>,
 ) => {
-    waitForBodyTask(ctx)(
+    waitForBodyTask(
+        ctx,
+        'ph.s',
+    )(
         taskFork(noop, () => {
             const target = ctx.document.body;
             const config = {

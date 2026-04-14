@@ -62,7 +62,7 @@ export const waitParentDuid = (
             }
         };
 
-        setDefer(ctx, purge, WAIT_PARENT_FRAME_INIT_TIMEOUT);
+        setDefer(ctx, purge, WAIT_PARENT_FRAME_INIT_TIMEOUT, 'w.p.d.p');
         iframeConnector.emitter.on([INIT_MESSAGE_CHILD], purge);
     }
 

@@ -8,11 +8,16 @@ export const iterateTaskWithConstraints = <T>(
     ctx: Window,
     collection: T[],
     callback: (item: T) => void,
+    errorNamespace: string,
     maxTime = 1,
-    errorNamespace = 'itc',
     resolveCallback = noop,
 ) => {
     const iterator = iterForOf(collection, callback);
-    const task = executeIterator(ctx, iterator, maxTime);
+    const task = executeIterator(
+        ctx,
+        iterator,
+        `${errorNamespace}.itc`,
+        maxTime,
+    );
     task(taskFork(errorLogger(ctx, errorNamespace), resolveCallback));
 };

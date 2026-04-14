@@ -147,7 +147,10 @@ export const watchFramesRemoval = (ctx: Window) => {
         }, cKeys(children));
     });
 
-    waitForBodyTask(ctx)(
+    waitForBodyTask(
+        ctx,
+        'if.wf',
+    )(
         taskFork(noop, () => {
             mutationObserver.observe(ctx.document.body, {
                 subtree: true,

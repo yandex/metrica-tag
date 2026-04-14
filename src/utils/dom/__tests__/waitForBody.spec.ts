@@ -23,13 +23,14 @@ describe('waitForBody', () => {
         const ctx = {
             document: {},
         } as Window;
-        waitForBodyTask(ctx)(taskFork(noop, done));
+        waitForBodyTask(ctx, 'test')(taskFork(noop, done));
 
         sinon.assert.calledOnceWithExactly(
             setDeferStub,
             ctx,
             sinon.match.func,
             TIMEOUT_FOR_BODY,
+            'test.wfb',
         );
         ctx.document.body = {} as HTMLElement;
         setDeferStub.yield();
@@ -51,13 +52,14 @@ describe('waitForBody', () => {
             },
         } as HTMLIFrameElement;
 
-        waitForBodyTask(ctx, targetIframe)(taskFork(noop, done));
+        waitForBodyTask(ctx, 'test', targetIframe)(taskFork(noop, done));
 
         sinon.assert.calledOnceWithExactly(
             setDeferStub,
             ctx,
             sinon.match.func,
             TIMEOUT_FOR_BODY,
+            'w.f.b.test',
         );
         setDeferStub.yield();
     });

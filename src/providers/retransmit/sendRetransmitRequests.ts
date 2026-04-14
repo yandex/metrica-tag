@@ -66,11 +66,12 @@ export const sendRetransmitRequests = (
                     ctx,
                     requests,
                     makeRetransmit,
-                    ASYNC_PROVIDERS_MAX_EXEC_TIME,
                     'rts.a',
+                    ASYNC_PROVIDERS_MAX_EXEC_TIME,
                 ],
                 iterateTaskWithConstraints<RetransmitInfo>,
             ),
+            'rts.mr',
         );
     }).then(noop, errorCatcher);
 };

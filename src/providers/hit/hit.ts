@@ -108,6 +108,7 @@ export const useRawHitProvider = (ctx: Window, counterOpt: CounterOptions) => {
                     ],
                     setSettings,
                 ),
+                'h.ss',
             );
         })
         .catch(errorLogger(ctx, 'h.g.s'));

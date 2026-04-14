@@ -176,7 +176,12 @@ export const hidePhones = (
     );
 
     const rawObserver = observer(ctx);
-    const throttledObserver = throttleObserver(ctx, rawObserver, THROTTLE_TIME);
+    const throttledObserver = throttleObserver(
+        ctx,
+        rawObserver,
+        THROTTLE_TIME,
+        'ph',
+    );
     const listener = bindArg(formattedPhones, replacePhonesDom);
     throttledObserver.on(listener);
 

@@ -25,11 +25,16 @@ const addTaskToQueue = (taskExecFunction: TaskExecutionFunction) => {
     }
 };
 
-const runNextTask = (ctx: Window) => {
+const runNextTask = (ctx: Window, errorScope: string) => {
     if (taskExecQueue.length) {
         const taskExecFunction = taskExecQueue.shift();
         if (!sync) {
-            setDefer(ctx, taskExecFunction!, EXEC_TIMEOUT);
+            setDefer(
+                ctx,
+                taskExecFunction!,
+                EXEC_TIMEOUT,
+                `${errorScope}.ei.rnt`,
+            );
         } else {
             taskExecFunction!();
         }
@@ -49,6 +54,7 @@ const runNextTask = (ctx: Window) => {
 export const executeIterator = <T>(
     ctx: Window,
     iterFn: <R>(a: (b: IterParams<T, any>) => R) => R,
+    errorScope: string,
     maxTime = 1,
     iterLoop:
         | typeof iterForEachUntilMaxTime
@@ -73,15 +79,20 @@ export const executeIterator = <T>(
             iterFn(iterResume);
             if (iterFn(iterIsEnd)) {
                 resolve(result);
-                return runNextTask(ctx);
+                return runNextTask(ctx, errorScope);
             }
 
             if (!sync) {
-                setDefer(ctx, taskExecFunction, EXEC_TIMEOUT);
+                setDefer(
+                    ctx,
+                    taskExecFunction,
+                    EXEC_TIMEOUT,
+                    `${errorScope}.ei`,
+                );
             } else {
                 iterFn(iterLoop(ctx, 10000));
                 resolve(result);
-                runNextTask(ctx);
+                runNextTask(ctx, errorScope);
             }
 
             return undefined;

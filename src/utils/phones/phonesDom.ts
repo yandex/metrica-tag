@@ -223,7 +223,10 @@ export const createPhoneDomReplacer = (
                 reject();
             }
             phoneChangeMap = genPhoneMap()(substitutions);
-            waitForBodyTask(ctx)(
+            waitForBodyTask(
+                ctx,
+                'ph.r',
+            )(
                 taskFork(bindArg({ phones: [], perf: 0 }, resolve), () => {
                     const timer = TimeOne(ctx);
                     const startTime = timer(getMs);
