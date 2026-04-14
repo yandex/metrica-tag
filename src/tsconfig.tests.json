@@ -1,0 +1,18 @@
+{
+    "extends": "../tsconfig.base",
+    "compilerOptions": {
+        "module": "node16",
+        "moduleResolution": "node16",
+        "lib": ["esnext", "dom"],
+        "types": ["mocha", "chai"],
+        "importHelpers": true,
+        "baseUrl": "..",
+        "paths": {
+            "@inject": ["./src/inject/inject.test.ts"],
+            "src/*": ["./src/*"]
+        }
+    },
+    "ts-node": {
+        "transpileOnly": true,
+    }
+}

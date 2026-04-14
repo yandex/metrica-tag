@@ -1,0 +1,12 @@
+{
+    "extends": "../tsconfig.base",
+    "compilerOptions": {
+        "module": "node16",
+        "moduleResolution": "node16",
+        "lib": ["esnext", "dom"],
+        "types": [],
+        "baseUrl": "..",
+        "paths": { "@inject": ["./src/inject"] }
+    },
+    "exclude": ["**/__tests__/**", "**/*.spec.ts", "**/*.test.ts"]
+}

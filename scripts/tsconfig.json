@@ -1,0 +1,15 @@
+{
+    "extends": "../tsconfig.base",
+    "compilerOptions": {
+        "module": "node16",
+        "moduleResolution": "node16",
+        "lib": ["esnext"],
+        "types": ["node"]
+    },
+    "ts-node": {
+        "files": false,
+        "swc": true,
+        "require": ["tsconfig-paths/register"],
+        "compilerOptions": { "module": "commonjs" }
+    }
+}

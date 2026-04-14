@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "incremental": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "ignoreDeprecations": "5.0",
+        "noUnusedLocals": true,
+        "noEmit": true,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "checkJs": false,
+        "typeRoots": ["./node_modules/@types"],
+    }
+}

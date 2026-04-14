@@ -1,5 +1,6 @@
 /* global require, module, __dirname */
 const { defineConfig, globalIgnores } = require('eslint/config');
+const path = require('path');
 
 const ban = require('eslint-plugin-ban');
 const n = require('eslint-plugin-n');
@@ -28,9 +29,6 @@ module.exports = defineConfig([
         languageOptions: {
             ecmaVersion: 2021,
             parserOptions: {
-                projectService: {
-                    allowDefaultProject: ['*.js'],
-                },
                 tsconfigRootDir: __dirname,
             },
 
@@ -251,6 +249,7 @@ module.exports = defineConfig([
         '_build',
         'coverage',
         'hooks',
+        'types',
         '**/node_modules',
         '!**/.*',
         'closure-compiler.js',
@@ -278,6 +277,11 @@ module.exports = defineConfig([
                 env: 'readonly',
             },
             parserOptions: {
+                project: [
+                    path.resolve(__dirname, 'src/tsconfig.json'),
+                    path.resolve(__dirname, 'src/tsconfig.tests.json'),
+                    path.resolve(__dirname, 'scripts/tsconfig.json'),
+                ],
                 tsconfigRootDir: __dirname,
             },
         },

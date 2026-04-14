@@ -23,8 +23,7 @@ function main() {
     const joinedFiles = files?.join(' ');
 
     if (typecheck !== undefined || shouldRunAll) {
-        const project = options.typecheck || 'tsconfig.json';
-        const tscCommand = `tsc --project ${project}`;
+        const tscCommand = `tsc -b`;
         processCommand(tscCommand);
     }
 

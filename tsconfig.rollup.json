@@ -1,8 +1,8 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "module": "es2015",
-    "moduleResolution": "bundler",
-    "target": "ES6"
-  }
+    "extends": "./src",
+    "compilerOptions": {
+        "module": "es2015",
+        "moduleResolution": "bundler",
+        "target": "ES6"
+    }
 }

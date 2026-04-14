@@ -22,7 +22,7 @@
     "setup-hooks": "cp -f hooks/pre-commit .git/hooks/pre-commit",
     "test:unit": "npm run test:unit:coverage -- './src/**/*.spec.ts'",
     "test:unit:coverage": "npm run test:unit:mocha -- --reporter=mochawesome --reporter-options reportDir=test/unit/coverage,reportFilename=index.html",
-    "test:unit:mocha": "TS_NODE_PROJECT=tsconfig.unit.json mocha -r ts-node/register -r tsconfig-paths/register"
+    "test:unit:mocha": "TS_NODE_PROJECT=src/tsconfig.tests.json mocha -r ts-node/register -r tsconfig-paths/register"
   },
   "dependencies": {
     "promise-polyfill": "8.1.3",
