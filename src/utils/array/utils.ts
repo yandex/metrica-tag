@@ -41,6 +41,15 @@ export const toArray = <Item>(
         return smth;
     }
 
+    // Convert Set
+    if (
+        typeof (smth as PolySetInterface<Item>).size === 'number' &&
+        (smth as PolySetInterface<Item>).size >= 0 &&
+        isFunction((smth as PolySetInterface<Item>).add)
+    ) {
+        return convertSetToArray(smth as PolySetInterface<Item>);
+    }
+
     if (arrayFrom) {
         return arrayFrom(smth as ArrayLike<Item>);
     }
@@ -50,15 +59,6 @@ export const toArray = <Item>(
         (smth as Item[]).length >= 0
     ) {
         return arrayFromPoly(smth);
-    }
-
-    // Convert Set
-    if (
-        typeof (smth as PolySetInterface<Item>).size === 'number' &&
-        (smth as PolySetInterface<Item>).size >= 0 &&
-        isFunction((smth as PolySetInterface<Item>).add)
-    ) {
-        return convertSetToArray(smth as PolySetInterface<Item>);
     }
 
     return [];

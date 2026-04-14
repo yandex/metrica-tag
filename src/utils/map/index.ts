@@ -6,7 +6,7 @@ import { PolyMapConstructor } from './types';
 
 const getPolyMap = (): PolyMapConstructor => {
     if (flags.POLYFILLS_ES6_FEATURE) {
-        const NativeMap = Map;
+        const NativeMap = window.Map;
         const construct = toNativeOrFalse(NativeMap as any, 'Map');
         if (!construct) {
             return MapPoly;

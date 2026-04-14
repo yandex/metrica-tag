@@ -6,7 +6,7 @@ import { SetPoly } from './polyfill';
 
 const getPolySet = (): PolySetConstructor => {
     if (flags.POLYFILLS_ES6_FEATURE) {
-        const NativeSet = Set;
+        const NativeSet = window.Set;
         const construct = toNativeOrFalse(NativeSet as any, 'Set');
         if (!construct) {
             return SetPoly;
