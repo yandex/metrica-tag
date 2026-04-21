@@ -12,6 +12,7 @@ import { cSome, somePoly } from '../some';
 import { cFind, findPoly } from '../find';
 import { exclude, getRange, toArray } from '../utils';
 import { PolySet } from 'src/utils/set';
+import { SetPoly } from 'src/utils/set/polyfill';
 
 describe('Array utils', () => {
     const sandbox = sinon.createSandbox();
@@ -163,6 +164,121 @@ describe('Array utils', () => {
         ]);
         chai.expect(toArray(null as unknown as unknown[])).to.deep.equal([]);
         chai.expect(toArray(new PolySet([1, 2]))).to.deep.equal([1, 2]);
+    });
+
+    describe('toArray with native Array.from', () => {
+        let originalArrayFrom: typeof Array.from;
+        let arrayFromStub: sinon.SinonStub<
+            Parameters<typeof Array.from>,
+            ReturnType<typeof Array.from>
+        >;
+
+        beforeEach(() => {
+            originalArrayFrom = Array.from;
+        });
+
+        afterEach(() => {
+            if (originalArrayFrom) {
+                Array.from = originalArrayFrom;
+            }
+            if (arrayFromStub) {
+                arrayFromStub.restore();
+            }
+        });
+
+        it('works with native Set when Array.from is available', () => {
+            const set = new Set([1, 2, 3]);
+            chai.expect(toArray(set)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with PolySet when Array.from is available', () => {
+            const polySet = new PolySet([1, 2, 3]);
+            chai.expect(toArray(polySet)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with SetPoly when Array.from uses Symbol.iterator', () => {
+            const setPoly = new SetPoly([1, 2, 3]);
+            chai.expect(toArray(setPoly)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with iterable objects when Array.from is available', () => {
+            const iterable = {
+                *[Symbol.iterator]() {
+                    yield 1;
+                    yield 2;
+                    yield 3;
+                },
+            };
+            chai.expect(toArray(iterable)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with array-like objects when Array.from is available', () => {
+            const arrayLike = { 0: 'a', 1: 'b', length: 2 };
+            chai.expect(toArray(arrayLike)).to.deep.equal(['a', 'b']);
+        });
+
+        it('works with Set polyfill without native Symbol.Iterator', () => {
+            const globalAny = globalThis as any;
+            const symbolStub = sandbox
+                .stub(globalAny, 'Symbol')
+                .value(undefined);
+
+            const setPoly = new SetPoly([1, 2, 3]);
+            const res = toArray(setPoly);
+
+            // Symbol is required for chai
+            symbolStub.restore();
+            chai.expect(res).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with native Set without native Symbol.Iterator', () => {
+            const globalAny = globalThis as any;
+            const symbolStub = sandbox
+                .stub(globalAny, 'Symbol')
+                .value(undefined);
+
+            const setPoly = new PolySet([1, 2, 3]);
+            const res = toArray(setPoly);
+
+            // Symbol is required for chai
+            symbolStub.restore();
+            chai.expect(res).to.deep.equal([1, 2, 3]);
+        });
+    });
+
+    describe('toArray without native Array.from', () => {
+        let originalArrayFrom: typeof Array.from;
+
+        beforeEach(() => {
+            originalArrayFrom = Array.from;
+            (Array.from as any) = undefined;
+        });
+
+        afterEach(() => {
+            if (originalArrayFrom) {
+                Array.from = originalArrayFrom;
+            }
+        });
+
+        it('works with native Set when Array.from is not available', () => {
+            const set = new Set([1, 2, 3]);
+            chai.expect(toArray(set)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with PolySet when Array.from is not available', () => {
+            const polySet = new PolySet([1, 2, 3]);
+            chai.expect(toArray(polySet)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with SetPoly when Array.from is not available', () => {
+            const setPoly = new SetPoly([1, 2, 3]);
+            chai.expect(toArray(setPoly)).to.deep.equal([1, 2, 3]);
+        });
+
+        it('works with array-like objects when Array.from is not available', () => {
+            const arrayLike = { 0: 'a', 1: 'b', length: 2 };
+            chai.expect(toArray(arrayLike)).to.deep.equal(['a', 'b']);
+        });
     });
 
     it('cSome', () => {

@@ -9,7 +9,8 @@ import { isArray } from './isArray';
 import { ctxPath } from '../object/path';
 import { PolySetInterface } from '../set/types';
 import { isFunction } from '../object';
-import { convertSetToArray } from '../set/polyfill';
+import { SetPoly, convertSetToArray } from '../set/polyfill';
+import { flags } from '@inject';
 
 export const getRange = (n: number) => {
     if (n < 0) {
@@ -41,17 +42,21 @@ export const toArray = <Item>(
         return smth;
     }
 
-    // Convert Set
-    if (
-        typeof (smth as PolySetInterface<Item>).size === 'number' &&
-        (smth as PolySetInterface<Item>).size >= 0 &&
-        isFunction((smth as PolySetInterface<Item>).add)
-    ) {
-        return convertSetToArray(smth as PolySetInterface<Item>);
+    if (flags.POLYFILLS_ES6_FEATURE && smth instanceof SetPoly) {
+        return smth._values.slice();
     }
 
     if (arrayFrom) {
-        return arrayFrom(smth as ArrayLike<Item>);
+        try {
+            return arrayFrom(smth as ArrayLike<Item>);
+        } catch {}
+    }
+
+    if (
+        typeof (smth as PolySetInterface<Item>).size === 'number' &&
+        isFunction((smth as PolySetInterface<Item>).add)
+    ) {
+        return convertSetToArray(smth as PolySetInterface<Item>);
     }
 
     if (

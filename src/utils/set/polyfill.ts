@@ -8,7 +8,7 @@ import { PolySetInterface } from './types';
  * so two NaN values will not be the same as well as -0 and +0.
  */
 export class SetPoly<T> implements PolySetInterface<T> {
-    private _values: T[] = [];
+    _values: T[] = [];
     size = 0;
 
     constructor(values?: readonly T[] | null) {
