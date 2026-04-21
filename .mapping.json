@@ -560,6 +560,7 @@
   "src/utils/set/types.ts":"metrika/frontend/watch/public/src/utils/set/types.ts",
   "src/utils/string/__test__/remove.spec.ts":"metrika/frontend/watch/public/src/utils/string/__test__/remove.spec.ts",
   "src/utils/string/__test__/string.spec.ts":"metrika/frontend/watch/public/src/utils/string/__test__/string.spec.ts",
+  "src/utils/string/__tests__/stringLastIndexOf.spec.ts":"metrika/frontend/watch/public/src/utils/string/__tests__/stringLastIndexOf.spec.ts",
   "src/utils/string/index.ts":"metrika/frontend/watch/public/src/utils/string/index.ts",
   "src/utils/string/remove.ts":"metrika/frontend/watch/public/src/utils/string/remove.ts",
   "src/utils/string/repeat.ts":"metrika/frontend/watch/public/src/utils/string/repeat.ts",

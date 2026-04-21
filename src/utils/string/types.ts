@@ -3,4 +3,9 @@ export type StringIndexOf = (
     searchString: string,
 ) => number;
 
+export type StringLastIndexOf = (
+    inputString: string,
+    searchString: string,
+) => number;
+
 export type Repeat = (inputString: string, count: number) => string;
