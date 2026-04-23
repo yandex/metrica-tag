@@ -44,6 +44,7 @@ const HASH: Partial<Record<Identifier, boolean>> = {};
 if (
     flags.SUBMIT_TRACKING_FEATURE ||
     flags.PREPROD_FEATURE ||
+    flags.EXPERIMENTAL_FEATURE ||
     flags.LOCAL_FEATURE
 ) {
     SIZE_LIMITS[PATH] = 500;

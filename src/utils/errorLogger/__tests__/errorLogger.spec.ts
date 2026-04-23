@@ -7,6 +7,7 @@ import {
     DEBUG_CONSOLE_FEATURE,
     LOCAL_FEATURE,
     PREPROD_FEATURE,
+    EXPERIMENTAL_FEATURE,
 } from 'generated/features';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
 import * as execTimeErrDecorator from '../executionTimeErrorDecorator';
@@ -51,6 +52,7 @@ describe('errorLogger', () => {
             [DEBUG_CONSOLE_FEATURE]: false,
             [LOCAL_FEATURE]: true,
             [PREPROD_FEATURE]: true,
+            [EXPERIMENTAL_FEATURE]: true,
         });
         isNativeFunctionStub = sandbox.stub(
             isNativeFunctionUtils,

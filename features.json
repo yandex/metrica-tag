@@ -74,6 +74,12 @@
     "desc": "Feature that indicates that bundle is used for limited production deployment (i.g. experiments or stability checks)"
   },
   {
+    "code": "EXPERIMENTAL_FEATURE",
+    "disabled": true,
+    "exp": true,
+    "desc": "Experimental features"
+  },
+  {
     "code": "POLYFILLS_FEATURE",
     "desc": "Enables polyfills for some js native functions and components if they aren't present or non-native"
   },

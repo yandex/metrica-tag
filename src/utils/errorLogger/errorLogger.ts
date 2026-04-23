@@ -13,7 +13,7 @@ export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
 ): FN => {
     const defaultFn: any = throwFunction;
     let callFn = fn || defaultFn;
-    if (flags.PREPROD_FEATURE) {
+    if (flags.PREPROD_FEATURE || flags.EXPERIMENTAL_FEATURE) {
         callFn = fn
             ? executionTimeErrorDecorator(callFn, scopeName, ctx, callContext)
             : callFn;

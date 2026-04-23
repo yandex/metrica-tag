@@ -53,7 +53,7 @@ if (flags.TELEMETRY_FEATURE) {
         };
     }
 
-    if (flags.PREPROD_FEATURE) {
+    if (flags.PREPROD_FEATURE || flags.EXPERIMENTAL_FEATURE) {
         TELEMETRY_FLAG_GETTERS[MAIN_THREAD_BLOCKING_TIME_TEL_FEATURE] =
             getMainThreadBlockingTime;
     }
