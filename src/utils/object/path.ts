@@ -1,5 +1,4 @@
-import { cReduce, dirtyReduce } from 'src/utils/array/reduce';
-import { isNil } from './assertions';
+import { dirtyReduce } from 'src/utils/array/reduce';
 import { curry2SwapArgs } from '../function/curry';
 import { has } from './has';
 
@@ -28,23 +27,22 @@ export function getPath<Value, Path extends string>(
     if (!value) {
         return null;
     }
-    return cReduce<string, GetPath<Value, Path>>(
-        (out, step) => {
-            if (isNil(out)) {
+    const steps = path.split('.');
+    const len = steps.length;
+    let out: any = value;
+    let i = 0;
+    try {
+        while (i < len) {
+            if (out === null || out === undefined) {
                 return out;
             }
-
-            try {
-                return (out as any)[step];
-            } catch (e) {
-                // empty
-            }
-
-            return null;
-        },
-        value as any,
-        path.split('.'),
-    );
+            out = out[steps[i]];
+            i += 1;
+        }
+    } catch (e) {
+        return null;
+    }
+    return out;
 }
 
 type CtxPath = {

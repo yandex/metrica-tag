@@ -1,16 +1,17 @@
 import { F as Func } from 'ts-toolbelt';
-import { cReduce } from 'src/utils/array/reduce';
-import { argsToArray } from './args';
-import { cCont } from './cont';
-import { AnyFunc } from './types';
 
-export const pipe: Func.Pipe = function b<Fns extends AnyFunc[]>() {
-    const fnList: Func.Piper<Fns> = argsToArray(arguments) as any;
-    const firstFn = fnList.shift();
+export const pipe: Func.Pipe = function b() {
+    const fns = arguments;
+    const firstFn = fns[0];
     return function pipeStartFunction() {
-        // @ts-ignore
-        const firstResult = firstFn!(...arguments);
-        return cReduce(cCont, firstResult, fnList);
+        let out = firstFn.apply(null, arguments as unknown as unknown[]);
+        const len = fns.length;
+        let i = 1;
+        while (i < len) {
+            out = fns[i](out);
+            i += 1;
+        }
+        return out;
     };
 };
 
