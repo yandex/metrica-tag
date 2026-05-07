@@ -90,6 +90,62 @@ describe('errorLogger', () => {
         );
     });
 
+    describe('execution-time decorator gating', () => {
+        const noop = () => {};
+
+        const setFlags = (overrides: Record<string, boolean>) => {
+            sandbox.stub(flags, 'flags').value({
+                [DEBUG_FEATURE]: false,
+                [DEBUG_CONSOLE_FEATURE]: false,
+                [LOCAL_FEATURE]: true,
+                [PREPROD_FEATURE]: false,
+                [EXPERIMENTAL_FEATURE]: false,
+                ...overrides,
+            });
+        };
+
+        beforeEach(() => {
+            sandbox.restore();
+            sandbox
+                .stub(execTimeErrDecorator, 'executionTimeErrorDecorator')
+                .callsFake((f, scopeName, ctx, callContext?) => {
+                    return f.bind(callContext);
+                });
+        });
+
+        it('does not wrap with timing when no timing flag is enabled', () => {
+            setFlags({});
+            errorLogger(window, scope, noop);
+            sinon.assert.notCalled(
+                execTimeErrDecorator.executionTimeErrorDecorator as sinon.SinonStub,
+            );
+        });
+
+        it('wraps with timing when PREPROD_FEATURE is enabled regardless of extraTimingFlag', () => {
+            setFlags({ [PREPROD_FEATURE]: true });
+            errorLogger(window, scope, noop, undefined, null, false);
+            sinon.assert.calledOnce(
+                execTimeErrDecorator.executionTimeErrorDecorator as sinon.SinonStub,
+            );
+        });
+
+        it('wraps with timing when extraTimingFlag is true', () => {
+            setFlags({});
+            errorLogger(window, scope, noop, undefined, null, true);
+            sinon.assert.calledOnce(
+                execTimeErrDecorator.executionTimeErrorDecorator as sinon.SinonStub,
+            );
+        });
+
+        it('does not wrap with timing when extraTimingFlag is false', () => {
+            setFlags({});
+            errorLogger(window, scope, noop, undefined, null, false);
+            sinon.assert.notCalled(
+                execTimeErrDecorator.executionTimeErrorDecorator as sinon.SinonStub,
+            );
+        });
+    });
+
     it('ignore specific errors and KNOWN ERROR', () => {
         IGNORED_ERRORS.forEach((error) => {
             const catchFn = errorLogger(

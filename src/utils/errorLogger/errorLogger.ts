@@ -4,19 +4,31 @@ import { handleError } from './handleError';
 import { throwFunction } from './throwFunction';
 import { executionTimeErrorDecorator } from './executionTimeErrorDecorator';
 
+/**
+ * @param extraTimingFlag — opt-in for collecting execution-time metrics for a specific
+ * scope when PREPROD_FEATURE / EXPERIMENTAL_FEATURE are disabled.
+ */
 export const errorLogger = <FN extends (...args: any) => ReturnType<FN>>(
     ctx: Window,
     scopeName: string,
     fn?: FN,
     defaultReturn?: any,
     callContext?: any,
+    extraTimingFlag?: boolean,
 ): FN => {
     const defaultFn: any = throwFunction;
     let callFn = fn || defaultFn;
-    if (flags.PREPROD_FEATURE || flags.EXPERIMENTAL_FEATURE) {
-        callFn = fn
-            ? executionTimeErrorDecorator(callFn, scopeName, ctx, callContext)
-            : callFn;
+
+    if (
+        fn &&
+        (flags.PREPROD_FEATURE || flags.EXPERIMENTAL_FEATURE || extraTimingFlag)
+    ) {
+        callFn = executionTimeErrorDecorator(
+            callFn,
+            scopeName,
+            ctx,
+            callContext,
+        );
     }
 
     return function logger() {
