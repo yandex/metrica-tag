@@ -1,6 +1,6 @@
 import { flags } from '@inject';
 import { RETRANSMIT_BRINFO_KEY } from 'src/api/common';
-import { config, host } from 'src/config';
+import { cProtocol, host } from 'src/config';
 import { MiddlewareGetter } from 'src/middleware/types';
 import { SenderInfo } from 'src/sender/SenderInfo';
 import { CounterOptions } from 'src/utils/counterOptions';
@@ -47,7 +47,7 @@ export const registerRequest = (
     brInfo.setOrNot(RETRANSMIT_BRINFO_KEY, 1);
 
     const retransmitRequest: RetransmitInfo = {
-        [LS_PROTOCOL]: config.cProtocol,
+        [LS_PROTOCOL]: cProtocol,
         [LS_HOST]: host,
         [LS_RESOURCE]: senderParams.urlInfo!.resource!, // The resource shall be always set within provider middleware.
         [LS_POST]: transportInfo.rBody,

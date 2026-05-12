@@ -1,27 +1,21 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { PAGE_VIEW_BR_KEY } from 'src/api/watch';
-import {
-    CounterOptions,
-    getCounterKey,
-    Params,
-} from 'src/utils/counterOptions';
-import { browserInfo } from 'src/utils/browserInfo/browserInfo';
-import { SenderInfo } from 'src/sender/SenderInfo';
+import type { ParamsHandler } from 'src/providers/params/const';
+import type { SenderInfo } from 'src/sender/SenderInfo';
 import * as storage from 'src/storage/global/getGlobal';
-import * as config from 'src/config';
-import * as json from 'src/utils/json';
-import * as debug from 'src/utils/debugEvents';
-import { getRange } from 'src/utils/array/utils';
 import type { GlobalStorage } from 'src/storage/global/global';
+import { getRange } from 'src/utils/array/utils';
+import { browserInfo } from 'src/utils/browserInfo/browserInfo';
+import type { CounterObject } from 'src/utils/counter/type';
+import { getCounterKey } from 'src/utils/counterOptions/getCounterKey';
+import type { CounterOptions, Params } from 'src/utils/counterOptions/types';
+import * as debug from 'src/utils/debugEvents';
+import * as json from 'src/utils/json';
 import { paramsMiddleware } from '../params';
 
 describe('params middleware', () => {
-    const win = () => {
-        return {
-            JSON,
-        } as unknown as Window;
-    };
+    const win = () => ({ JSON }) as Window;
     const sandbox = sinon.createSandbox();
     const params = { hi: 1 };
     const counterOptions: CounterOptions = {
@@ -55,6 +49,7 @@ describe('params middleware', () => {
             });
         }
     });
+
     it('send nothing if stringify broken', (done) => {
         const winInfo = win();
         const brInfo = browserInfo();
@@ -74,27 +69,23 @@ describe('params middleware', () => {
             });
         }
     });
-    it("doesn't call a heavy callback", (done) => {
+
+    it("doesn't call a heavy callback", () => {
         const winInfo = win();
         const brInfo = browserInfo();
         brInfo.setVal(PAGE_VIEW_BR_KEY, 1);
-        const stubConf = sandbox.stub(config, 'config').value({
-            MAX_LEN_SITE_INFO: 1,
-        });
-        const stubStorage = sandbox.stub(storage, 'getGlobalStorage').returns({
-            getVal: () => {
-                return {
-                    [getCounterKey(counterOptions)]: {
-                        params: () => {
-                            stubConf.restore();
-                            stubStorage.restore();
-                            done();
-                        },
-                    },
-                };
-            },
+        const paramsStub = sandbox.stub<
+            Parameters<ParamsHandler<CounterObject>>,
+            ReturnType<ParamsHandler<CounterObject>>
+        >();
+        sandbox.stub(storage, 'getGlobalStorage').returns({
+            getVal: () => ({
+                [getCounterKey(counterOptions)]: {
+                    params: paramsStub,
+                },
+            }),
         } as unknown as GlobalStorage);
-        const bigParams = Array(getRange(100)).reduce(
+        const bigParams = getRange(500).reduce(
             (acc, x, i) => Object.assign(acc, { [i]: params }),
             {} as Params,
         );
@@ -114,7 +105,9 @@ describe('params middleware', () => {
             });
         }
         if (middleware.afterRequest) {
-            middleware.afterRequest(senderParams, () => {});
+            middleware.afterRequest(senderParams, () => {
+                sinon.assert.calledOnceWithExactly(paramsStub, bigParams);
+            });
         }
     });
 });

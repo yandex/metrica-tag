@@ -29,7 +29,6 @@
   "scripts/tsconfig.json":"metrika/frontend/watch/public/scripts/tsconfig.json",
   "scripts/utils/fs.ts":"metrika/frontend/watch/public/scripts/utils/fs.ts",
   "scripts/utils/proc.ts":"metrika/frontend/watch/public/scripts/utils/proc.ts",
-  "src/__tests__/config.spec.ts":"metrika/frontend/watch/public/src/__tests__/config.spec.ts",
   "src/__tests__/utils/jsdom.ts":"metrika/frontend/watch/public/src/__tests__/utils/jsdom.ts",
   "src/__tests__/utils/syncPromise.ts":"metrika/frontend/watch/public/src/__tests__/utils/syncPromise.ts",
   "src/api/README.md":"metrika/frontend/watch/public/src/api/README.md",

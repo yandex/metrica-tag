@@ -1,6 +1,6 @@
 import { flags } from '@inject';
 import { initImports } from 'generated/init';
-import { config } from 'src/config';
+import { constructorName } from 'src/config';
 import { callbackInit } from 'src/providers/callbackInit';
 import {
     getOriginalOptions,
@@ -261,8 +261,6 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
 cForEach(curry2SwapArgs(call)(window), windowProviderInitializers);
 
 if (window[yaNamespace] && MetrikaCounter) {
-    const { constructorName } = config;
-
     window[yaNamespace]![constructorName] = MetrikaCounter;
     callbackInit(window);
 

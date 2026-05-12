@@ -28,7 +28,7 @@ import {
     NOINDEX_PARAM,
 } from 'src/api/watch';
 import { toOneOrNull } from 'src/utils/boolean';
-import { config } from 'src/config';
+import { NOINDEX, buildVersion } from 'src/config';
 import { counterLocalStorage } from 'src/storage/localStorage/localStorage';
 import { arrayJoin } from 'src/utils/array/join';
 import {
@@ -74,13 +74,13 @@ export const BRINFO_FLAG_GETTERS: FlagGettersHash = {
         const { middlewareInfo, urlParams } = senderParams;
         const noIndex = middlewareInfo && middlewareInfo.noIndex;
         if (urlParams && (isYandexDomain(ctx) || options.ut || noIndex)) {
-            urlParams[NOINDEX_PARAM] = config.NOINDEX;
+            urlParams[NOINDEX_PARAM] = NOINDEX;
         }
 
         return null;
     },
     [BUILD_VERSION_BR_KEY]: bindArg(
-        config.buildVersion,
+        buildVersion,
         firstArg as FirstArgOfType<string>,
     ),
     [COUNTER_NUMBER_BR_KEY]: getCounterNumber,

@@ -12,7 +12,7 @@ describe('sender utils / middleware / returnFullHost', () => {
     const sandbox = sinon.createSandbox();
 
     beforeEach(() => {
-        sandbox.stub(config, 'config').value({ cProtocol });
+        sandbox.stub(config, 'cProtocol').value(cProtocol);
         sandbox.stub(config, 'host').value(defaultHost);
     });
 

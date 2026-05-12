@@ -1,11 +1,11 @@
-import { WATCH_URL_PARAM, WATCH_REFERER_PARAM } from 'src/api/watch';
+import { WATCH_REFERER_PARAM, WATCH_URL_PARAM } from 'src/api/watch';
+import { arrayJoin } from 'src/utils/array/join';
+import { isIE } from 'src/utils/browser/browser';
 import { getLocation } from 'src/utils/location/location';
+import { isUndefined } from 'src/utils/object';
 import { isString, stringIndexOf } from 'src/utils/string';
 import { trimRegexp } from 'src/utils/string/remove';
-import { config } from 'src/config';
-import { isUndefined } from 'src/utils/object';
-import { arrayJoin } from 'src/utils/array/join';
-import { MiddlewareGetter } from '../types';
+import type { MiddlewareGetter } from '../types';
 
 const PROTOCOL_REGEXP = /^[a-z][\w.+-]+:/i;
 
@@ -77,10 +77,8 @@ export const prepareUrlMiddleware: MiddlewareGetter = (ctx, options) => ({
             delete urlParams[WATCH_REFERER_PARAM];
         }
 
-        urlParams[WATCH_URL_PARAM] = prepare(ctx, url).slice(
-            0,
-            config.MAX_LEN_URL,
-        );
+        const MAX_LEN_URL = isIE(ctx) ? 512 : 2048;
+        urlParams[WATCH_URL_PARAM] = prepare(ctx, url).slice(0, MAX_LEN_URL);
         return next();
     },
 });

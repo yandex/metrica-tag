@@ -1,10 +1,10 @@
 import * as chai from 'chai';
-import { config } from 'src/config';
+import { buildVersion } from 'src/config';
 import { createKnownError, throwKnownError, isKnownError } from '../knownError';
 import { KNOWN_ERROR } from '../consts';
 
 describe('known error', () => {
-    const defaultMessage = `${KNOWN_ERROR}(${config.buildVersion})`;
+    const defaultMessage = `${KNOWN_ERROR}(${buildVersion})`;
     const genRandomMessage = () => {
         return Math.random().toString().slice(2);
     };

@@ -1,4 +1,4 @@
-import { config } from 'src/config';
+import { buildVersion } from 'src/config';
 import { bindThisForMethodTest } from 'src/utils/function/bind';
 import { isArray } from 'src/utils/array/isArray';
 import { arrayJoin } from 'src/utils/array/join';
@@ -18,7 +18,7 @@ export const createKnownError = (moreInfo?: Message | Message[]) => {
     } else if (isString(moreInfo)) {
         data = moreInfo;
     }
-    const errorMessage = `${KNOWN_ERROR}(${config.buildVersion})${data}`;
+    const errorMessage = `${KNOWN_ERROR}(${buildVersion})${data}`;
 
     return createError(errorMessage);
 };

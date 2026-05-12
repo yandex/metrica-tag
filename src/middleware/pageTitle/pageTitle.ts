@@ -1,12 +1,12 @@
+import { flags } from '@inject';
 import { TITLE_BR_KEY } from 'src/api/watch';
 import type { MiddlewareGetter } from 'src/middleware/types';
 import type { SenderInfo } from 'src/sender/SenderInfo';
+import { isIE } from 'src/utils/browser/browser';
 import type { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
-import { getPath } from 'src/utils/object';
-import { getNativeFunction } from 'src/utils/function/isNativeFunction';
-import { config } from 'src/config';
 import type { CounterOptions } from 'src/utils/counterOptions';
-import { flags } from '@inject';
+import { getNativeFunction } from 'src/utils/function/isNativeFunction';
+import { getPath } from 'src/utils/object';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {
@@ -39,7 +39,7 @@ export const setTitle = (
             title = '';
         }
     }
-    title = title.slice(0, config.MAX_LEN_TITLE);
+    title = title.slice(0, isIE(ctx) ? 100 : 400);
     brInfo.setVal(TITLE_BR_KEY, title);
 };
 

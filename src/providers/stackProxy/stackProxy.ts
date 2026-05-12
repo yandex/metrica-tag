@@ -1,4 +1,4 @@
-import { config } from 'src/config';
+import { constructorName } from 'src/config';
 import { yaNamespace } from 'src/const';
 import {
     DEFAULT_COUNTER_TYPE,
@@ -96,7 +96,7 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
 
     const counterOptions = getCounterOptions(counterKeyOrStaticMethod);
     const anyCtx = ctx as any;
-    const MetrikaConstructor = anyCtx[yaNamespace][config.constructorName];
+    const MetrikaConstructor = anyCtx[yaNamespace][constructorName];
     if (!counterOptions) {
         // Maybe static method
         const method = counterKeyOrStaticMethod;

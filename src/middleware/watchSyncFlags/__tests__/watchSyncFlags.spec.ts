@@ -18,7 +18,7 @@ import {
     NOINDEX_BR_KEY,
 } from 'src/api/watch';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
-import { config } from 'src/config';
+import { buildVersion } from 'src/config';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import * as timeFlags from 'src/middleware/watchSyncFlags/brinfoFlags/timeFlags';
 import * as timeUtils from 'src/utils/time/time';
@@ -149,7 +149,7 @@ describe('watchSyncFlags', () => {
                 counterOpt,
                 senderParams,
             ),
-        ).to.be.equal(config.buildVersion);
+        ).to.be.equal(buildVersion);
     });
 
     it(`sets ${COOKIES_ENABLED_BR_KEY}`, () => {
@@ -366,6 +366,6 @@ describe('watchSyncFlags', () => {
         const flagVal = flags.map((flag) => {
             return brInfo.getVal(flag);
         });
-        chai.expect(flagVal).to.include.all.members([2, config.buildVersion]);
+        chai.expect(flagVal).to.include.all.members([2, buildVersion]);
     });
 });

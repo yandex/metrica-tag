@@ -1,26 +1,23 @@
 import { flags } from '@inject';
 import { DEFER_KEY, PAGE_VIEW_BR_KEY, REQUEST_BODY_KEY } from 'src/api/watch';
-import { config } from 'src/config';
-import { MiddlewareGetter } from 'src/middleware/types';
-import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
+import type { MiddlewareGetter } from 'src/middleware/types';
 import { METHOD_NAME_PARAMS } from 'src/providers/params/const';
 import type { SenderInfo } from 'src/sender/SenderInfo';
-import { head, indexOfWin } from 'src/utils/array/utils';
 import { cFilter } from 'src/utils/array/filter';
 import { cForEach } from 'src/utils/array/map';
-import { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
+import { head, indexOfWin } from 'src/utils/array/utils';
+import { isIE } from 'src/utils/browser/browser';
+import type { BrowserInfo } from 'src/utils/browserInfo/browserInfo';
 import { getCounterInstance } from 'src/utils/counter/getInstance';
-import {
-    CounterOptions,
-    getCounterKey,
-    Params,
-} from 'src/utils/counterOptions';
+import { getCounterKey } from 'src/utils/counterOptions/getCounterKey';
+import type { CounterOptions, Params } from 'src/utils/counterOptions/types';
+import { dispatchDebuggerEvent } from 'src/utils/debugEvents';
 import { constructArray } from 'src/utils/function/construct';
+import { equal } from 'src/utils/function/curry';
 import { memo } from 'src/utils/function/memo';
 import { pipe } from 'src/utils/function/pipe';
 import { stringify } from 'src/utils/json';
 import { setTurboInfo } from 'src/utils/turboParams';
-import { equal } from 'src/utils/function/curry';
 
 declare module 'src/sender/SenderInfo' {
     interface MiddlewareInfo {
@@ -75,7 +72,7 @@ const handleParams = (
                 senderParams.privateSenderInfo.noRedirect = true;
             } else if (
                 encodeURIComponent(paramsString).length >
-                config.MAX_LEN_SITE_INFO
+                (isIE(ctx) ? 512 : 2048)
             ) {
                 state.push([senderParams.brInfo, params]);
             } else {

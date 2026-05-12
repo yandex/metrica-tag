@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import sinon from 'sinon';
-import { config } from 'src/config';
+import { constructorName } from 'src/config';
 import { yaNamespace } from 'src/const';
 import { METHOD_NAME_HIT } from 'src/providers/artificialHit/const';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
@@ -49,7 +49,7 @@ describe('stackProxy', () => {
         const counters: Record<string, CounterObject> = {};
         const win = {
             [yaNamespace]: {
-                [config.constructorName]: constructorSpy,
+                [constructorName]: constructorSpy,
                 [metrikaNamespace]: {
                     [COUNTERS_GLOBAL_KEY]: counters,
                 },
@@ -103,7 +103,7 @@ describe('stackProxy', () => {
         const staticMethodName = 'someStaticMethod' as StaticMethods;
         const win = {
             [yaNamespace]: {
-                [config.constructorName]: {
+                [constructorName]: {
                     [staticMethodName]: staticMethodSpy,
                 },
             },
