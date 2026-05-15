@@ -53,7 +53,9 @@ const iterateTransports = (
         opt.rBody = bodyToQuery(opt.rBody as string);
     }
 
-    opt.verb = opt.rBody ? 'POST' : 'GET';
+    if (!opt.verb) {
+        opt.verb = opt.rBody ? 'POST' : 'GET';
+    }
     opt.rQuery = createQuery(ctx, senderInfo, id);
     opt.resource = (senderInfo.urlInfo || {}).resource;
     opt.debugStack.push(id);

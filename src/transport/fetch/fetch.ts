@@ -45,9 +45,14 @@ const request = (
         credentials: opt.withCreds === false ? 'omit' : 'include',
         headers: opt.rHeaders,
         signal: abortController.signal,
+        cache: opt.cache,
     });
 
     const knownErr = bindArg(opt.debugStack, createKnownError);
+    const timeoutErr = bindArg(
+        opt.debugStack.concat('timeout'),
+        createKnownError,
+    );
 
     return new PolyPromise((resolve, reject) => {
         if (opt.timeOut) {
@@ -59,7 +64,7 @@ const request = (
                     } catch (e) {
                         // empty
                     }
-                    reject(knownErr());
+                    reject(timeoutErr());
                 },
                 opt.timeOut,
             );

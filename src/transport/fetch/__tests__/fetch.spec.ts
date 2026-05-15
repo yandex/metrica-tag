@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { REQUEST_MODE_KEY } from 'src/api/common';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
@@ -20,8 +20,32 @@ describe('Fetch', () => {
     const defaultWatchMode = `${REQUEST_MODE_KEY}=${WATCH_WMODE_JSON}`;
     const someTestResult = { result: 'result' };
     const sandbox = sinon.createSandbox();
-    let createKnownErrStub: sinon.SinonStub;
+
+    let createKnownErrStub: sinon.SinonStub<
+        Parameters<typeof knownErrorUtils.createKnownError>,
+        ReturnType<typeof knownErrorUtils.createKnownError>
+    >;
+    let setDeferBaseStub: sinon.SinonStub<
+        Parameters<typeof deferBase.setDeferBase>,
+        ReturnType<typeof deferBase.setDeferBase>
+    >;
+    let fetchStub: sinon.SinonStub<
+        Parameters<NonNullable<Window['fetch']>>,
+        ReturnType<NonNullable<Window['fetch']>>
+    >;
+    let abortControllerStub: sinon.SinonStub<[], AbortController>;
+    let abortStub: sinon.SinonStub<
+        Parameters<AbortController['abort']>,
+        ReturnType<AbortController['abort']>
+    >;
+
+    let isOk: boolean;
+    let json: (() => Promise<unknown>) | undefined;
+    let jsonResult: unknown;
     let debugStack: string[];
+
+    let ctx: Window;
+
     const createRandomDebugStack = () => {
         debugStack = new Array(3)
             .fill(undefined)
@@ -30,43 +54,63 @@ describe('Fetch', () => {
     };
     const checkDebugStack = () => {
         const [actualDebugStack] = createKnownErrStub.getCall(0).args;
-        expect(actualDebugStack).to.deep.eq(debugStack);
+        chai.expect(actualDebugStack).to.deep.eq(debugStack);
     };
-    let isOk: any;
-    let json: any;
-    let jsonResult: any;
-    const fetchPsy = sinon.spy(
-        (input: RequestInfo, init?: RequestInit | undefined) =>
+    const checkTimeoutDebugStack = () => {
+        const [actualDebugStack] = createKnownErrStub.getCall(0).args;
+        chai.expect(actualDebugStack).to.deep.eq([...debugStack, 'timeout']);
+    };
+
+    beforeEach(() => {
+        isOk = false;
+        json = undefined;
+        jsonResult = undefined;
+
+        setDeferBaseStub = sandbox.stub(deferBase, 'setDeferBase').callsFake(((
+            _ctx,
+            fn,
+        ) => {
+            fn();
+            return 0;
+        }) as typeof deferBase.setDeferBase);
+        createKnownErrStub = sandbox.stub(knownErrorUtils, 'createKnownError');
+
+        fetchStub = sandbox.stub<
+            Parameters<NonNullable<Window['fetch']>>,
+            ReturnType<NonNullable<Window['fetch']>>
+        >();
+        fetchStub.callsFake(() =>
             Promise.resolve({
                 ok: isOk,
                 json: json || (() => Promise.resolve(jsonResult)),
-            }),
-    );
-    const AbortControllerFake = sinon.fake.returns({
-        abort: () => {
-            throw new Error(badFetchError);
-        },
-    });
-    const ctx = {
-        fetch: fetchPsy,
-        AbortController: AbortControllerFake,
-    } as unknown as Window;
+            } as Response),
+        );
 
-    beforeEach(() => {
-        sandbox.stub(deferBase, 'setDeferBase').callsFake((_, fn) => fn());
-        createKnownErrStub = sandbox.stub(knownErrorUtils, 'createKnownError');
+        abortStub = sandbox.stub<
+            Parameters<AbortController['abort']>,
+            ReturnType<AbortController['abort']>
+        >();
+        abortStub.throws(new Error(badFetchError));
+
+        abortControllerStub = sandbox.stub<[], AbortController>().returns({
+            abort: abortStub,
+        } as unknown as AbortController);
+
+        ctx = {
+            fetch: fetchStub,
+            AbortController: abortControllerStub,
+        } as unknown as Window;
     });
 
     afterEach(() => {
-        fetchPsy.resetHistory();
-        AbortControllerFake.resetHistory();
         sandbox.restore();
     });
 
     it('should check fetch in ctx', () => {
         const checkResult = useFetch({} as Window, opt);
-        expect(checkResult).to.be.not.ok;
+        chai.expect(checkResult).to.be.not.ok;
     });
+
     it('should fine with broken abort', (done) => {
         const checkResult = useFetch(ctx, opt);
 
@@ -76,16 +120,18 @@ describe('Fetch', () => {
                 timeOut: 100,
             })
                 .then(() => {
-                    assert.fail('Wrong check');
+                    chai.assert.fail('Wrong check');
                 })
                 .catch(() => {
-                    checkDebugStack();
+                    checkTimeoutDebugStack();
+                    sinon.assert.calledOnce(abortStub);
                     done();
                 });
         } else {
-            assert.fail('Wrong check');
+            chai.assert.fail('Wrong check');
         }
     });
+
     it('should fail with timeOut', (done) => {
         const checkResult = useFetch(ctx, opt);
 
@@ -95,16 +141,18 @@ describe('Fetch', () => {
                 timeOut: 100,
             })
                 .then(() => {
-                    assert.fail('Wrong check');
+                    chai.assert.fail('Wrong check');
                 })
                 .catch(() => {
-                    checkDebugStack();
+                    checkTimeoutDebugStack();
+                    sinon.assert.calledOnce(setDeferBaseStub);
                     done();
                 });
         } else {
-            assert.fail('Wrong check');
+            chai.assert.fail('Wrong check');
         }
     });
+
     it('should call fetch from ctx', (done) => {
         isOk = true;
         jsonResult = someTestResult;
@@ -114,19 +162,19 @@ describe('Fetch', () => {
             checkResult(someTestUrl, { debugStack: [], wmode: true })
                 .then((result) => {
                     sinon.assert.calledOnceWithExactly(
-                        fetchPsy,
+                        fetchStub,
                         `${someTestUrl}?${defaultWatchMode}`,
                         sinon.match.object,
                     );
 
-                    expect(result).to.eq(someTestResult);
+                    chai.expect(result).to.eq(someTestResult);
                     done();
                 })
-                .catch((e) => {
-                    assert.fail('Error');
+                .catch(() => {
+                    chai.assert.fail('Error');
                 });
         } else {
-            assert.fail('Wrong check');
+            chai.assert.fail('Wrong check');
         }
     });
 
@@ -136,18 +184,18 @@ describe('Fetch', () => {
         if (checkResult) {
             checkResult(someTestUrl, { debugStack: [] })
                 .then((result) => {
-                    expect(result).to.eq(null);
+                    chai.expect(result).to.eq(null);
                     done();
                 })
                 .catch((e) => done(e));
         } else {
-            assert.fail('Wrong check');
+            chai.assert.fail('Wrong check');
         }
     });
 
     it('should fail if json parse error', (done) => {
         isOk = true;
-        json = Promise.reject(KNOWN_ERROR).catch(() => {});
+        json = () => Promise.reject(KNOWN_ERROR);
         const checkResult = useFetch(ctx, opt);
         if (checkResult) {
             checkResult(someTestUrl, {
@@ -155,14 +203,14 @@ describe('Fetch', () => {
                 wmode: true,
             })
                 .then(() => {
-                    expect.fail('Wrong check');
+                    chai.assert.fail('Wrong check');
                 })
                 .catch(() => {
                     checkDebugStack();
                     done();
                 });
         } else {
-            assert.fail('Wrong check');
+            chai.assert.fail('Wrong check');
         }
     });
 });

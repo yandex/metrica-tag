@@ -25,6 +25,11 @@ export interface TransportOptions {
     returnRawResponse?: boolean;
     /** Needed for some transports that do not require full url */
     resource?: string;
+    /**
+     * A string indicating how the request will interact with the browser's cache to set request's cache.
+     * Works only with fetch
+     */
+    cache?: RequestCache;
 }
 
 export type TransportResponse = Record<string, unknown> | string | null;
