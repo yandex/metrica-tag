@@ -290,7 +290,7 @@ export const iframeConnector = (
     );
     const state = getIframeState(ctx);
     const hasPostMessage = checkIframe(ctx);
-    const emitterObj = emitter<EventInfo, void>(ctx);
+    const emitterObj = emitter<EventInfo, void>(ctx, 'ifc');
     const events = cEvent(ctx);
     if (!getElems || !hasPostMessage) {
         return null;

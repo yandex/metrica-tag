@@ -104,7 +104,7 @@ export const innerDataLayerObserver = (
     array: any[],
     initCallback: (e: Emitter<MessageData, void>) => void = firstArg,
 ) => {
-    const eventEmitter = emitter<MessageData, void>(ctx);
+    const eventEmitter = emitter<MessageData, void>(ctx, 'idlo');
     initCallback(eventEmitter);
     const handler = bindArg(eventEmitter, toInner);
     dataLayerObserver<MessageData, void>(

@@ -36,7 +36,7 @@ describe('wait for parent duid', () => {
 
         const ctx = {} as Window;
         const iframeConnector = {
-            emitter: emitter<EventInfo, void>(ctx),
+            emitter: emitter<EventInfo, void>(ctx, 'test'),
         };
         sandbox
             .stub(frameConnectorUtils, 'counterIframeConnector')

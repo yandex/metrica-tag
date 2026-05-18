@@ -9,7 +9,10 @@ export type Emitter<T, U> = {
     trigger: (a: string, d?: T) => U[];
 };
 
-export const emitter = <T, U>(ctx: Window): Emitter<T, U> => {
+export const emitter = <T, U>(
+    ctx: Window,
+    errorScope: string,
+): Emitter<T, U> => {
     const observers: Record<string, Observer<T, U>> = {};
 
     return {
@@ -32,7 +35,7 @@ export const emitter = <T, U>(ctx: Window): Emitter<T, U> => {
             getPath(observers, eventName)
                 ? errorLogger(
                       ctx,
-                      `e.${eventName}`,
+                      `${errorScope}.emt.${eventName}`,
                       observers[eventName].trigger,
                       [],
                   )(event)

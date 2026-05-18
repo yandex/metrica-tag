@@ -10,7 +10,7 @@ const win = () => {
 describe('emitter', () => {
     it('calls event handlers on trigger', (done) => {
         const winInfo = win();
-        const eventEmitter = emitter(winInfo);
+        const eventEmitter = emitter(winInfo, 'test');
         const eventName = 'testEmitterEvent';
         const eventData = 'testData';
         let handleCounter = 0;
