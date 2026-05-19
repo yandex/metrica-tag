@@ -166,8 +166,23 @@ const bannedProperties = [
             'Use includes from utils for arrays and stringIncludes for strings',
     },
 ].map((f) => ({ property: f.name, message: f.message }));
+
+/**
+ * Restricted syntax that bans the spread operator for shallow copying
+ * of objects. Rest parameters (e.g. `function f(...rest) {}` or
+ * `const [a, ...rest] = arr`) and joining arrays are available.
+ */
+const bannedSpreadSyntax = [
+    {
+        selector: 'ObjectExpression > SpreadElement',
+        message:
+            'Spread for shallow object copy is not allowed. Use mix from src/utils/object instead.',
+    },
+];
+
 module.exports = {
     bannedFunctions,
     bannedProperties,
+    bannedSpreadSyntax,
     defaultRestrictedProperties,
 };

@@ -43,12 +43,14 @@ export const callPoly = (
 const nativeBind = toNativeOrFalse(Function.prototype.bind, 'bind');
 
 export const bindPoly = function b() {
-    const bindArgs = argsToArray(arguments);
-    const [fn, ctx, ...topArgs] = bindArgs;
+    const [fn, ctx, ...topArgs] = arguments;
     return function a() {
-        const args = [...topArgs, ...argsToArray(arguments)];
+        const args = [...topArgs, ...arguments];
         if (Function.prototype.call) {
-            return Function.prototype.call.apply(fn, [ctx, ...args]);
+            return Function.prototype.call.apply(
+                fn,
+                [ctx].concat(args) as [thisArg: any, ...argArray: any[]],
+            );
         }
         if (ctx) {
             let fnName = `_b`;
