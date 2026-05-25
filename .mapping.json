@@ -451,6 +451,7 @@
   "src/utils/errorLogger/createError.ts":"metrika/frontend/watch/public/src/utils/errorLogger/createError.ts",
   "src/utils/errorLogger/errorLogger.ts":"metrika/frontend/watch/public/src/utils/errorLogger/errorLogger.ts",
   "src/utils/errorLogger/executionTimeErrorDecorator.ts":"metrika/frontend/watch/public/src/utils/errorLogger/executionTimeErrorDecorator.ts",
+  "src/utils/errorLogger/executionTimingBuffer.ts":"metrika/frontend/watch/public/src/utils/errorLogger/executionTimingBuffer.ts",
   "src/utils/errorLogger/handleError.ts":"metrika/frontend/watch/public/src/utils/errorLogger/handleError.ts",
   "src/utils/errorLogger/knownError.ts":"metrika/frontend/watch/public/src/utils/errorLogger/knownError.ts",
   "src/utils/errorLogger/onError.ts":"metrika/frontend/watch/public/src/utils/errorLogger/onError.ts",

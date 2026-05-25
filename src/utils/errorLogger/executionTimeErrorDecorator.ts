@@ -3,6 +3,7 @@ import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from './consts';
 import { isNativeFunction } from '../function/isNativeFunction/isNativeFunction';
 import { throwFunction } from './throwFunction';
 import { runOnErrorCallbacks } from './onError';
+import { pushExecutionTiming } from './executionTimingBuffer';
 
 /**
  * Tracks the current nesting level of decorated function calls
@@ -58,13 +59,16 @@ export const executionTimeErrorDecorator = <
                 canThrowExecTimeErrors
             ) {
                 executionTimeExceededOnLevel = currentLevel;
-                if (hasPerformance && !(endTime % 100)) {
-                    runOnErrorCallbacks(
-                        'perf',
-                        TOO_LONG_ERROR_NAME,
-                        scopeName,
-                        `${execTime}`,
-                    );
+                if (hasPerformance) {
+                    if (!(endTime % 100)) {
+                        runOnErrorCallbacks(
+                            'perf',
+                            TOO_LONG_ERROR_NAME,
+                            scopeName,
+                            `${execTime}`,
+                        );
+                    }
+                    pushExecutionTiming(scopeName, startTime, endTime);
                 }
             }
 
