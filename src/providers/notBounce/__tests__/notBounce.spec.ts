@@ -1,9 +1,6 @@
 import * as flags from '@inject';
 import * as chai from 'chai';
-import {
-    ACCURATE_TRACK_BOUNCE_METHOD_FEATURE,
-    PREPROD_FEATURE,
-} from 'generated/features';
+import { ACCURATE_TRACK_BOUNCE_METHOD_FEATURE } from 'generated/features';
 import * as sinon from 'sinon';
 import {
     ARTIFICIAL_BR_KEY,
@@ -87,7 +84,6 @@ describe('notBounce', () => {
         });
 
         sandbox.stub(flags, 'flags').value({
-            [PREPROD_FEATURE]: false,
             [ACCURATE_TRACK_BOUNCE_METHOD_FEATURE]: true,
         });
         sandbox.stub(time, 'TimeOne').returns(<R>() => 0 as unknown as R);

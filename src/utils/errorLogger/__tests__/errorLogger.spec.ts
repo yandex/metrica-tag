@@ -6,7 +6,6 @@ import {
     DEBUG_FEATURE,
     DEBUG_CONSOLE_FEATURE,
     LOCAL_FEATURE,
-    PREPROD_FEATURE,
     EXPERIMENTAL_FEATURE,
 } from 'generated/features';
 import { JSDOMWrapper } from 'src/__tests__/utils/jsdom';
@@ -51,7 +50,6 @@ describe('errorLogger', () => {
             [DEBUG_FEATURE]: false,
             [DEBUG_CONSOLE_FEATURE]: false,
             [LOCAL_FEATURE]: true,
-            [PREPROD_FEATURE]: true,
             [EXPERIMENTAL_FEATURE]: true,
         });
         isNativeFunctionStub = sandbox.stub(
@@ -98,7 +96,6 @@ describe('errorLogger', () => {
                 [DEBUG_FEATURE]: false,
                 [DEBUG_CONSOLE_FEATURE]: false,
                 [LOCAL_FEATURE]: true,
-                [PREPROD_FEATURE]: false,
                 [EXPERIMENTAL_FEATURE]: false,
                 ...overrides,
             });
@@ -121,8 +118,8 @@ describe('errorLogger', () => {
             );
         });
 
-        it('wraps with timing when PREPROD_FEATURE is enabled regardless of extraTimingFlag', () => {
-            setFlags({ [PREPROD_FEATURE]: true });
+        it('wraps with timing when EXPERIMENTAL_FEATURE is enabled regardless of extraTimingFlag', () => {
+            setFlags({ [EXPERIMENTAL_FEATURE]: true });
             errorLogger(window, scope, noop, undefined, null, false);
             sinon.assert.calledOnce(
                 execTimeErrDecorator.executionTimeErrorDecorator as sinon.SinonStub,
