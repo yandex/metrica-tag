@@ -572,6 +572,7 @@
   "src/utils/time/__tests__/time.spec.ts":"metrika/frontend/watch/public/src/utils/time/__tests__/time.spec.ts",
   "src/utils/time/performance.ts":"metrika/frontend/watch/public/src/utils/time/performance.ts",
   "src/utils/time/time.ts":"metrika/frontend/watch/public/src/utils/time/time.ts",
+  "src/utils/treeWalker/__tests__/treeWalker.spec.ts":"metrika/frontend/watch/public/src/utils/treeWalker/__tests__/treeWalker.spec.ts",
   "src/utils/treeWalker/index.ts":"metrika/frontend/watch/public/src/utils/treeWalker/index.ts",
   "src/utils/treeWalker/treeWalker.ts":"metrika/frontend/watch/public/src/utils/treeWalker/treeWalker.ts",
   "src/utils/turboParams/index.ts":"metrika/frontend/watch/public/src/utils/turboParams/index.ts",

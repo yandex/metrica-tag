@@ -1,6 +1,6 @@
 import { isTextNode } from 'src/utils/dom/dom';
 import { arrayMerge } from 'src/utils/array/merge';
-import { isNil, isFunction } from 'src/utils/object';
+import { isNil, isFunction, getPath } from 'src/utils/object';
 import { pipe } from 'src/utils/function/pipe';
 import { FirstArgOfType, firstArg } from 'src/utils/function/identity';
 import { bindThisForMethod } from 'src/utils/function/bind';
@@ -110,10 +110,24 @@ export const getAllNodes = (
     const result: Node[] = [];
 
     if (root) {
-        if (ctx.document.documentElement.contains(root)) {
-            walkTree(ctx, root, bindThisForMethod('push', result), filterCb);
-        } else {
-            arrayMerge(result, nodeToArray(ctx, root, filterCb));
+        try {
+            const documentElement = getPath(ctx, 'document.documentElement');
+            if (documentElement && documentElement.contains(root)) {
+                walkTree(
+                    ctx,
+                    root,
+                    bindThisForMethod('push', result),
+                    filterCb,
+                );
+            } else {
+                arrayMerge(result, nodeToArray(ctx, root, filterCb));
+            }
+        } catch (e) {
+            /**
+             * root is not an instance of Node.
+             * Do not use a global object for the type guard (e.g. instanceof Node) because they can also be overridden
+             */
+            return [];
         }
     }
 
