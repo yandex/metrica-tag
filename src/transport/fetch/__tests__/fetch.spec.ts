@@ -5,6 +5,7 @@ import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
 import { WATCH_WMODE_JSON } from 'src/transport/watchModes';
 import type { CounterOptions } from 'src/utils/counterOptions/types';
 import * as deferBase from 'src/utils/defer/base';
+import * as defer from 'src/utils/defer/defer';
 import { KNOWN_ERROR } from 'src/utils/errorLogger/consts';
 import * as knownErrorUtils from 'src/utils/errorLogger/knownError';
 import { useFetch } from '..';
@@ -29,6 +30,10 @@ describe('Fetch', () => {
         Parameters<typeof deferBase.setDeferBase>,
         ReturnType<typeof deferBase.setDeferBase>
     >;
+    let clearDeferStub: sinon.SinonStub<
+        Parameters<typeof defer.clearDefer>,
+        ReturnType<typeof defer.clearDefer>
+    >;
     let fetchStub: sinon.SinonStub<
         Parameters<NonNullable<Window['fetch']>>,
         ReturnType<NonNullable<Window['fetch']>>
@@ -52,27 +57,13 @@ describe('Fetch', () => {
             .map(() => Math.random().toString().slice(0, 3));
         return debugStack;
     };
-    const checkDebugStack = () => {
-        const [actualDebugStack] = createKnownErrStub.getCall(0).args;
-        chai.expect(actualDebugStack).to.deep.eq(debugStack);
-    };
-    const checkTimeoutDebugStack = () => {
-        const [actualDebugStack] = createKnownErrStub.getCall(0).args;
-        chai.expect(actualDebugStack).to.deep.eq([...debugStack, 'timeout']);
-    };
-
     beforeEach(() => {
         isOk = false;
         json = undefined;
         jsonResult = undefined;
 
-        setDeferBaseStub = sandbox.stub(deferBase, 'setDeferBase').callsFake(((
-            _ctx,
-            fn,
-        ) => {
-            fn();
-            return 0;
-        }) as typeof deferBase.setDeferBase);
+        setDeferBaseStub = sandbox.stub(deferBase, 'setDeferBase').returns(0);
+        clearDeferStub = sandbox.stub(defer, 'clearDefer');
         createKnownErrStub = sandbox.stub(knownErrorUtils, 'createKnownError');
 
         fetchStub = sandbox.stub<
@@ -123,10 +114,14 @@ describe('Fetch', () => {
                     chai.assert.fail('Wrong check');
                 })
                 .catch(() => {
-                    checkTimeoutDebugStack();
+                    sinon.assert.calledWith(
+                        createKnownErrStub,
+                        debugStack.concat('timeout'),
+                    );
                     sinon.assert.calledOnce(abortStub);
                     done();
                 });
+            setDeferBaseStub.yield();
         } else {
             chai.assert.fail('Wrong check');
         }
@@ -144,13 +139,96 @@ describe('Fetch', () => {
                     chai.assert.fail('Wrong check');
                 })
                 .catch(() => {
-                    checkTimeoutDebugStack();
+                    sinon.assert.calledWith(
+                        createKnownErrStub,
+                        debugStack.concat('timeout'),
+                    );
                     sinon.assert.calledOnce(setDeferBaseStub);
                     done();
                 });
+            setDeferBaseStub.yield();
         } else {
             chai.assert.fail('Wrong check');
         }
+    });
+
+    it('should not abort subsequent requests when a previous one times out', async () => {
+        // Each AbortController instance owns its own signal that flips on abort().
+        abortControllerStub.reset();
+        abortControllerStub.callsFake(() => {
+            const signal = { aborted: false };
+            return {
+                signal,
+                abort: () => {
+                    signal.aborted = true;
+                },
+            } as AbortController;
+        });
+
+        // fetch rejects immediately if it is handed an already-aborted signal,
+        // mirroring the real browser behavior.
+        fetchStub.reset();
+        fetchStub.callsFake((_url, init) => {
+            if (init?.signal?.aborted) {
+                return Promise.reject(new Error('aborted'));
+            }
+            return Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve(someTestResult),
+            } as Response);
+        });
+
+        const checkResult = useFetch(ctx, opt);
+        if (!checkResult) {
+            chai.assert.fail('Wrong check');
+        }
+
+        // First request times out: fire the registered timeout callback -> abort().
+        const firstRequest = checkResult(someTestUrl, {
+            debugStack: createRandomDebugStack(),
+            timeOut: 100,
+        });
+        setDeferBaseStub.yield();
+        await firstRequest.then(
+            () => chai.assert.fail('first request should time out'),
+            () => {
+                sinon.assert.calledWith(
+                    createKnownErrStub,
+                    debugStack.concat('timeout'),
+                );
+            },
+        );
+
+        // The backend is healthy and the second request has no timeout, so it
+        // must not be poisoned by the previous request's abort.
+        const secondResult = await checkResult(someTestUrl, {
+            debugStack: createRandomDebugStack(),
+            wmode: true,
+        });
+
+        chai.expect(secondResult).to.eq(someTestResult);
+    });
+
+    it('should clear the timeout once the request settles', async () => {
+        isOk = true;
+        jsonResult = someTestResult;
+
+        const timeoutId = 42;
+        setDeferBaseStub.returns(timeoutId);
+
+        const checkResult = useFetch(ctx, opt);
+        if (!checkResult) {
+            chai.assert.fail('Wrong check');
+        }
+
+        const result = await checkResult(someTestUrl, {
+            debugStack: createRandomDebugStack(),
+            timeOut: 100,
+            wmode: true,
+        });
+
+        chai.expect(result).to.eq(someTestResult);
+        sinon.assert.calledOnceWithExactly(clearDeferStub, ctx, timeoutId);
     });
 
     it('should call fetch from ctx', (done) => {
@@ -206,7 +284,7 @@ describe('Fetch', () => {
                     chai.assert.fail('Wrong check');
                 })
                 .catch(() => {
-                    checkDebugStack();
+                    sinon.assert.calledWith(createKnownErrStub, debugStack);
                     done();
                 });
         } else {

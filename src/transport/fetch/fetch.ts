@@ -6,6 +6,7 @@ import type {
 } from 'src/transport/types';
 import type { CounterOptions } from 'src/utils/counterOptions';
 import { setDeferBase } from 'src/utils/defer/base';
+import { clearDefer } from 'src/utils/defer/defer';
 import { makeHttpError } from 'src/utils/errorLogger/createError';
 import {
     createKnownError,
@@ -22,10 +23,13 @@ import { WATCH_WMODE_JSON } from '../watchModes';
 
 const request = (
     ctx: Window,
-    rawAbortController: AbortController | undefined,
+    AbortControllerConstructor: typeof AbortController | undefined,
     url: string,
     opt: InternalTransportOptions,
 ): Promise<TransportResponse> => {
+    const rawAbortController = AbortControllerConstructor
+        ? new AbortControllerConstructor()
+        : undefined;
     const query = mix(
         opt.wmode
             ? {
@@ -55,8 +59,9 @@ const request = (
     );
 
     return new PolyPromise((resolve, reject) => {
+        let timeoutId: number | undefined;
         if (opt.timeOut) {
-            setDeferBase(
+            timeoutId = setDeferBase(
                 ctx,
                 () => {
                     try {
@@ -69,6 +74,11 @@ const request = (
                 opt.timeOut,
             );
         }
+        const clearTimeoutDefer = () => {
+            if (timeoutId) {
+                clearDefer(ctx, timeoutId);
+            }
+        };
         return fetchRequest
             .then((resp) => {
                 if (!resp.ok) {
@@ -87,7 +97,8 @@ const request = (
                 return null;
             })
             .then(resolve)
-            .catch(bindArg(knownErr(), reject));
+            .catch(bindArg(knownErr(), reject))
+            .then(clearTimeoutDefer);
     });
 };
 
@@ -97,10 +108,7 @@ const useFetch: CheckTransport = (
 ) => {
     if (ctx.fetch) {
         const Abort = getPath(ctx, 'AbortController');
-        const requestFn = bindArgs(
-            [ctx, Abort ? new Abort() : undefined],
-            request,
-        );
+        const requestFn = bindArgs([ctx, Abort], request);
         return requestFn;
     }
     return false;
