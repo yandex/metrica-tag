@@ -218,7 +218,9 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             provider(ctx, counterOptions);
         }, prioritizedProviders);
 
-        cForEach(callProvider, beforeHitProviders);
+        errorLogger(ctx, 'c.i.bh', () => {
+            cForEach(callProvider, beforeHitProviders);
+        })();
 
         // hit
         callProvider(useHitProvider);
@@ -245,7 +247,9 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
             'a.ra',
         );
 
-        cForEach(callProvider, providersSync);
+        errorLogger(ctx, 'c.i.ps', () => {
+            cForEach(callProvider, providersSync);
+        })();
         if (flags.DEBUG_EVENTS_FEATURE) {
             dispatchDebuggerEvent(ctx, {
                 ['counterKey']: getCounterKey(counterOptions),
@@ -258,7 +262,9 @@ const MetrikaCounter: MetrikaCounterConstructor = function MetrikaCounter(
     })();
 };
 
-cForEach(curry2SwapArgs(call)(window), windowProviderInitializers);
+errorLogger(window, 'wp.i', () => {
+    cForEach(curry2SwapArgs(call)(window), windowProviderInitializers);
+})();
 
 if (window[yaNamespace] && MetrikaCounter) {
     window[yaNamespace]![constructorName] = MetrikaCounter;
