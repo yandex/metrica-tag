@@ -3,6 +3,7 @@ import * as chai from 'chai';
 import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
 import * as onError from '../onError';
 import * as decorator from '../executionTimeErrorDecorator';
+import { getExecutionTimingBuffer } from '../executionTimingBuffer';
 import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from '../consts';
 
 const { executionTimeErrorDecorator, getMainThreadBlockingTime } = decorator;
@@ -42,6 +43,7 @@ describe('executionTimeErrorDecorator', () => {
         };
         sandbox.stub(func, 'isNativeFunction').returns(true);
         runOnErrorCallbacks = sandbox.stub(onError, 'runOnErrorCallbacks');
+        getExecutionTimingBuffer().flush();
     });
 
     afterEach(() => {
@@ -123,6 +125,40 @@ describe('executionTimeErrorDecorator', () => {
         decorated(arg1, arg2, arg3);
         sinon.assert.calledOnceWithExactly(cb, arg1, arg2, arg3);
         sinon.assert.calledOn(cb, callCtx);
+        sinon.assert.notCalled(runOnErrorCallbacks);
+    });
+
+    it('pushes a timing sample for a function over the sample threshold but below the error threshold', () => {
+        performanceStub.onFirstCall().returns(0);
+        performanceStub.onSecondCall().returns(60);
+        const cb = sinon.stub();
+        const decorated = executionTimeErrorDecorator(
+            cb,
+            'sampleScope',
+            ctx,
+            callCtx,
+        );
+        decorated(arg1, arg2, arg3);
+
+        chai.expect(getExecutionTimingBuffer().slice()).to.deep.equal([
+            { scope: 'sampleScope', startTime: 0, endTime: 60 },
+        ]);
+        sinon.assert.notCalled(runOnErrorCallbacks);
+    });
+
+    it('does not push a timing sample for a function below the sample threshold', () => {
+        performanceStub.onFirstCall().returns(0);
+        performanceStub.onSecondCall().returns(40);
+        const cb = sinon.stub();
+        const decorated = executionTimeErrorDecorator(
+            cb,
+            'sampleScope',
+            ctx,
+            callCtx,
+        );
+        decorated(arg1, arg2, arg3);
+
+        chai.expect(getExecutionTimingBuffer().slice()).to.have.length(0);
         sinon.assert.notCalled(runOnErrorCallbacks);
     });
 });

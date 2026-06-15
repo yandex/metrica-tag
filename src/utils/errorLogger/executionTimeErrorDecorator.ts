@@ -59,17 +59,18 @@ export const executionTimeErrorDecorator = <
                 canThrowExecTimeErrors
             ) {
                 executionTimeExceededOnLevel = currentLevel;
-                if (hasPerformance) {
-                    if (!(endTime % 100)) {
-                        runOnErrorCallbacks(
-                            'perf',
-                            TOO_LONG_ERROR_NAME,
-                            scopeName,
-                            `${execTime}`,
-                        );
-                    }
-                    pushExecutionTiming(scopeName, startTime, endTime);
+                if (hasPerformance && !(endTime % 100)) {
+                    runOnErrorCallbacks(
+                        'perf',
+                        TOO_LONG_ERROR_NAME,
+                        scopeName,
+                        `${execTime}`,
+                    );
                 }
+            }
+
+            if (hasPerformance && execTime >= MAIN_THREAD_BLOCKING_THRESHOLD) {
+                pushExecutionTiming(scopeName, startTime, endTime);
             }
 
             if (
