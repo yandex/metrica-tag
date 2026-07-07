@@ -27,12 +27,12 @@ import {
 import { handleGtagEcommerce } from './handleGtagEcommerce';
 import { ECOMMERCE_PARAMS_KEY } from './const';
 
-const handleEvent = (
-    ctx: Window,
-    counterKey: string,
-    sendParams: undefined | ((params: any) => void),
-    event: unknown,
-) => {
+const handleEvent = (ctx: Window, opt: CounterOptions) => (event: unknown) => {
+    const counter = getCounterInstance(ctx, opt);
+    if (!counter) {
+        return;
+    }
+    const sendParams = counter[METHOD_NAME_PARAMS];
     if (!sendParams) {
         return;
     }
@@ -48,7 +48,7 @@ const handleEvent = (
 
     if (flags.DEBUG_EVENTS_FEATURE) {
         dispatchDebuggerEvent(ctx, {
-            ['counterKey']: counterKey,
+            ['counterKey']: getCounterKey(opt),
             ['name']: 'ecommerce',
             ['data']: result,
         });
@@ -94,14 +94,10 @@ export const ecommerce = ctxErrorLogger(
             return undefined;
         }
         const globalStorage = getGlobalStorage(ctx);
-        const sendParams = counter[METHOD_NAME_PARAMS];
-        const handle: (event: unknown) => void = errorLogger(
+        const handle = errorLogger(
             ctx,
             'h.ee',
-            bindArgs(
-                [ctx, getCounterKey(counterOptions), sendParams],
-                handleEvent,
-            ),
+            handleEvent(ctx, counterOptions),
         );
 
         if (counterOptions.ecommerce) {
