@@ -4,8 +4,15 @@ import {
     staticMethodInitializers,
 } from 'src/providersEntrypoint';
 import { getGlobalStorage } from 'src/storage/global/getGlobal';
-import { StaticMethodInitializer } from 'src/types';
-import { GLOBAL_COUNTERS_METHOD_NAME, METHOD_NAME_COUNTERS } from './const';
+import { telemetryCallCountDecorator } from 'src/utils/methodDecorators/telCallCount';
+import { METHODS_TELEMETRY_KEYS_MAP } from 'src/utils/methodDecorators/telCallCount/const';
+import type { CounterOptions } from 'src/utils/counterOptions/types';
+import {
+    GLOBAL_COUNTERS_METHOD_NAME,
+    METHOD_NAME_COUNTERS,
+    TELEMETRY_KEY_COUNTERS_CTOR,
+    TELEMETRY_KEY_COUNTERS_STORE,
+} from './const';
 import { createCountersGetter, getCountersProvider } from './getCounters';
 import { GetCountersMethod } from './types';
 
@@ -32,10 +39,34 @@ export const initProvider = () => {
     }
 
     if (flags.COUNTERS_FEATURE) {
-        staticMethodInitializers.push(((ctx: Window, counterConstructor) => {
-            counterConstructor[METHOD_NAME_COUNTERS] = globalStorage.getVal(
-                GLOBAL_COUNTERS_METHOD_NAME,
-            ) as GetCountersMethod;
-        }) as StaticMethodInitializer);
+        METHODS_TELEMETRY_KEYS_MAP[TELEMETRY_KEY_COUNTERS_CTOR] = 'cntc';
+        METHODS_TELEMETRY_KEYS_MAP[TELEMETRY_KEY_COUNTERS_STORE] = 'cnts';
+
+        staticMethodInitializers.push(
+            (ctx: Window, counterConstructor, staticMethodsStore) => {
+                const rawMethod = globalStorage.getVal(
+                    GLOBAL_COUNTERS_METHOD_NAME,
+                ) as GetCountersMethod | undefined;
+                if (!rawMethod) {
+                    return;
+                }
+
+                const ctorMethod = telemetryCallCountDecorator(
+                    ctx,
+                    {} as CounterOptions,
+                    TELEMETRY_KEY_COUNTERS_CTOR,
+                    rawMethod,
+                ) as GetCountersMethod;
+                counterConstructor[METHOD_NAME_COUNTERS] = ctorMethod;
+
+                const storeMethod = telemetryCallCountDecorator(
+                    ctx,
+                    {} as CounterOptions,
+                    TELEMETRY_KEY_COUNTERS_STORE,
+                    rawMethod,
+                ) as GetCountersMethod;
+                staticMethodsStore[METHOD_NAME_COUNTERS] = storeMethod;
+            },
+        );
     }
 };

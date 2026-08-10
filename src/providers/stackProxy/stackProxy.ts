@@ -4,6 +4,8 @@ import {
     DEFAULT_COUNTER_TYPE,
     RSYA_COUNTER_TYPE,
 } from 'src/providers/counterOptions/const';
+import { STATIC_METHODS_KEY } from 'src/storage/global/consts';
+import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import { cForEach } from 'src/utils/array/map';
 import { toArray } from 'src/utils/array/utils';
 import { getCounterInstance } from 'src/utils/counter/getInstance';
@@ -15,6 +17,7 @@ import { constructObject } from 'src/utils/function/construct';
 import { curry2 } from 'src/utils/function/curry';
 import { memo } from 'src/utils/function/memo';
 import { pipe } from 'src/utils/function/pipe';
+import type { AnyFunc } from 'src/utils/function/types';
 import { parseDecimalInt } from 'src/utils/number/number';
 import { ctxPath, getPath, isFunction, mix } from 'src/utils/object';
 import { stringIndexOf } from 'src/utils/string';
@@ -100,11 +103,14 @@ export const handleCall = curry2((ctx: Window, item: StackCall) => {
     if (!counterOptions) {
         // Maybe static method
         const method = counterKeyOrStaticMethod;
-        if (!isFunction(MetrikaConstructor[method])) {
+        const staticMethodsStore = getGlobalStorage(ctx).getVal<
+            Record<string, AnyFunc>
+        >(STATIC_METHODS_KEY, {});
+        const staticMethod = staticMethodsStore[method];
+        if (!isFunction(staticMethod)) {
             return;
         }
-
-        MetrikaConstructor[method](...rest);
+        staticMethod(...rest);
         return;
     }
 

@@ -4,6 +4,7 @@ import { constructorName } from 'src/config';
 import { yaNamespace } from 'src/const';
 import { METHOD_NAME_HIT } from 'src/providers/artificialHit/const';
 import { DEFAULT_COUNTER_TYPE } from 'src/providers/counterOptions/const';
+import { STATIC_METHODS_KEY } from 'src/storage/global/consts';
 import { metrikaNamespace } from 'src/storage/global/global';
 import * as counterInstance from 'src/utils/counter/getInstance';
 import { COUNTERS_GLOBAL_KEY } from 'src/utils/counter/getInstance';
@@ -98,7 +99,26 @@ describe('stackProxy', () => {
         sinon.assert.calledTwice(hitSpy);
     });
 
-    it('handles static methods', () => {
+    it('handles static methods from registry', () => {
+        const staticMethodSpy = sinon.stub<unknown[], void>();
+        const staticMethodName = 'someStaticMethod' as StaticMethods;
+        const staticMethodsStore = {
+            [staticMethodName]: staticMethodSpy,
+        };
+        const win = {
+            [yaNamespace]: {
+                [constructorName]: {},
+                [metrikaNamespace]: {
+                    [STATIC_METHODS_KEY]: staticMethodsStore,
+                },
+            },
+        } as unknown as Window;
+        const args = [1, 'a', []];
+        handleCall(win)([staticMethodName, ...args]);
+        sinon.assert.calledOnceWithExactly(staticMethodSpy, ...args);
+    });
+
+    it('skips static method call when not in registry', () => {
         const staticMethodSpy = sinon.stub<unknown[], void>();
         const staticMethodName = 'someStaticMethod' as StaticMethods;
         const win = {
@@ -106,11 +126,12 @@ describe('stackProxy', () => {
                 [constructorName]: {
                     [staticMethodName]: staticMethodSpy,
                 },
+                [metrikaNamespace]: {},
             },
         } as unknown as Window;
         const args = [1, 'a', []];
         handleCall(win)([staticMethodName, ...args]);
-        sinon.assert.calledOnceWithExactly(staticMethodSpy, ...args);
+        sinon.assert.notCalled(staticMethodSpy);
     });
 
     it('add counters info when it inited', () => {

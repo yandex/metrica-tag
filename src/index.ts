@@ -17,13 +17,18 @@ import {
     staticMethodInitializers,
     windowProviderInitializers,
 } from 'src/providersEntrypoint';
-import { HIT_PARAMS_KEY, LAST_REFERRER_KEY } from 'src/storage/global/consts';
+import {
+    HIT_PARAMS_KEY,
+    LAST_REFERRER_KEY,
+    STATIC_METHODS_KEY,
+} from 'src/storage/global/consts';
 import { getGlobalStorage } from 'src/storage/global/getGlobal';
 import {
     MetrikaCounterConstructor,
     ProviderFunction,
     ProviderResult,
     ProviderResultPromised,
+    StaticMethodsStore,
 } from 'src/types';
 import { cForEach, cMap } from 'src/utils/array/map';
 import { runAsync } from 'src/utils/async/async';
@@ -55,18 +60,18 @@ import { selfReturnDecorator } from './utils/methodDecorators/selfReturn';
 
 import { ASYNC_PROVIDERS_MAX_EXEC_TIME, yaNamespace } from './const';
 import { DUPLICATE_COUNTERS_CONSOLE_MESSAGE } from './providers/consoleRenderer/dictionary';
+import {
+    STACK_FN_NAME,
+    STACK_TIMESTAMP_NAME,
+} from './providers/stackProxy/const';
 import { stackProxy } from './providers/stackProxy/stackProxy';
 import { getCounterOptionsState } from './utils/counterOptions/counterOptionsStore';
 import { counterTimingStore } from './utils/counterTimings';
 import { throwKnownError } from './utils/errorLogger/knownError';
 import { throwFunction } from './utils/errorLogger/throwFunction';
+import { isNumber } from './utils/number/number';
 import { TimeOne, getMs } from './utils/time/time';
 import { setTurboInfo } from './utils/turboParams/turboParams';
-import { isNumber } from './utils/number/number';
-import {
-    STACK_FN_NAME,
-    STACK_TIMESTAMP_NAME,
-} from './providers/stackProxy/const';
 
 type CounterMethod = keyof CounterObject;
 const globalConfig = getGlobalStorage(window);
@@ -272,8 +277,15 @@ if (window[yaNamespace] && MetrikaCounter) {
 
     const counterConstructor = window[yaNamespace]![constructorName];
 
+    globalConfig.setSafe(STATIC_METHODS_KEY, {});
+    const staticMethodsStore =
+        globalConfig.getVal<StaticMethodsStore>(STATIC_METHODS_KEY);
+
     cForEach(
-        pipe(ctxBindArgs([window, counterConstructor]), call),
+        pipe(
+            ctxBindArgs([window, counterConstructor, staticMethodsStore]),
+            call,
+        ),
         staticMethodInitializers,
     );
 }

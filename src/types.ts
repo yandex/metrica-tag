@@ -33,9 +33,11 @@ export type ProviderFunction =
           counterOptions: CounterOptions,
       ) => ProviderResult | ProviderResultPromised);
 export type WindowProviderInitializer = (ctx: Window) => void;
+export type StaticMethodsStore = Record<string, AnyFunc>;
 export type StaticMethodInitializer = (
     ctx: Window,
     constructor: MetrikaCounter,
+    staticMethodsStore: StaticMethodsStore,
 ) => void;
 
 export type Constructor = string;
