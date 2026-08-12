@@ -1,29 +1,41 @@
-import { cReduce } from 'src/utils/array/reduce';
+import { flags } from '@inject';
+import { getSameSiteCookieInfo } from 'src/providers/sameSite';
+import { ENABLED_COOKIE_KEY } from 'src/storage/cookie/const';
+import { isArray } from 'src/utils/array/isArray';
 import { arrayJoin } from 'src/utils/array/join';
 import { cForEach } from 'src/utils/array/map';
+import { cReduce } from 'src/utils/array/reduce';
+import { last } from 'src/utils/array/utils';
 import { globalMemoWin } from 'src/utils/function/globalMemo';
-import { getLocation } from 'src/utils/location/location';
-import { getSameSiteCookieInfo } from 'src/providers/sameSite';
-import { flags } from '@inject';
-import { ENABLED_COOKIE_KEY } from 'src/storage/cookie/const';
-import { CookieGetter } from 'src/storage/cookie/types';
-import { trimText } from 'src/utils/string/remove';
-import { isNil } from 'src/utils/object';
-import { safeDecodeURIComponent } from 'src/utils/querystring';
 import { memo } from 'src/utils/function/memo';
+import { getLocation } from 'src/utils/location/location';
+import { isNil } from 'src/utils/object';
+import { has } from 'src/utils/object/has';
+import { safeDecodeURIComponent } from 'src/utils/querystring';
+import { trimText } from 'src/utils/string/remove';
 import { isCookieAllowed } from './isAllowed';
+import type { CookieGetter, CookieStorageGetter } from './types';
 
 export const parseCookie = (ctx: Window) => {
     try {
         const { cookie } = ctx.document;
         if (!isNil(cookie)) {
-            const result: Record<string, string> = {};
+            const result: Record<string, string | string[]> = {};
             cForEach(
                 (part) => {
                     const [name, value] = part.split('=');
-                    result[trimText(name)] = trimText(
-                        safeDecodeURIComponent(value),
-                    );
+                    const cookieName = trimText(name);
+                    const cookieValue = trimText(safeDecodeURIComponent(value));
+                    if (has(result, cookieName)) {
+                        const existing = result[cookieName];
+                        if (isArray(existing)) {
+                            existing.push(cookieValue);
+                        } else {
+                            result[cookieName] = [existing, cookieValue];
+                        }
+                    } else {
+                        result[cookieName] = cookieValue;
+                    }
                 },
                 (cookie || '').split(';'),
             );
@@ -39,14 +51,28 @@ export const parseCookie = (ctx: Window) => {
 export const COOKIE_STORAGE_KEY = 'gsc';
 export const getCookieState = globalMemoWin(COOKIE_STORAGE_KEY, parseCookie);
 
-export const getCookie: CookieGetter = (ctx: Window, name: string) => {
+export const getCookie: CookieGetter = ((
+    ctx: Window,
+    name: string,
+    multi?: boolean,
+) => {
     const state = getCookieState(ctx);
-    if (state) {
-        return state[name] || null;
+    if (!state || !has(state, name)) {
+        return null;
     }
 
-    return null;
-};
+    const value = state[name];
+    if (!isArray(value)) {
+        return multi ? [value] : value;
+    }
+
+    if (multi) {
+        return value;
+    }
+
+    const lastValue = last(value);
+    return isNil(lastValue) ? null : lastValue;
+}) as CookieGetter;
 
 const PORT_REGEXP = /:\d+$/;
 
@@ -81,7 +107,19 @@ export const setCookie = (
             ctx.document.cookie = cookie;
             if (!ignoreState) {
                 const state = getCookieState(ctx);
-                state![name] = val;
+                if (state) {
+                    // The browser may overwrite a cookie (if previous value set from the same domain/path)
+                    // or add a duplicate (if previous value set from a parent domain/path).
+                    // So refresh from the actual document state.
+                    const parsedState = parseCookie(ctx);
+                    if (parsedState) {
+                        if (has(parsedState, name)) {
+                            state[name] = parsedState[name];
+                        } else {
+                            delete state[name];
+                        }
+                    }
+                }
             }
         } catch (e) {
             // empty
@@ -156,9 +194,12 @@ function cookieStorage(
             );
             return this;
         },
-        getVal(name: string): string | null {
-            return getCookie(ctx, `${prefix}${name}${cookieKey}`);
-        },
+        getVal: ((name: string, multi?: boolean) =>
+            getCookie(
+                ctx,
+                `${prefix}${name}${cookieKey}`,
+                multi,
+            )) as CookieStorageGetter,
         setVal(
             name: string,
             val: string,
@@ -183,4 +224,4 @@ export const globalCookieStorage = memo(cookieStorage);
 
 export type CookieStorage = ReturnType<typeof cookieStorage>;
 
-export { deleteCookie, cookieStorage };
+export { cookieStorage, deleteCookie };
