@@ -6,6 +6,7 @@ export type ScriptOptions = {
     type?: string;
     charset?: string;
     async?: boolean;
+    crossOrigin?: boolean;
     dataAttributes?: Record<string, string>;
 };
 
@@ -19,6 +20,9 @@ export const insertScript = (
     }
     const { document: doc } = ctx;
     const scriptTag = createFn('script');
+    if (options.crossOrigin) {
+        scriptTag.crossOrigin = 'anonymous';
+    }
     scriptTag.src = options.src;
     scriptTag.type = options.type || 'text/javascript';
     scriptTag.charset = options.charset || 'utf-8';

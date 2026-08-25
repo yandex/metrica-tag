@@ -63,4 +63,14 @@ describe('dom / utils - insertScript', () => {
             chai.expect(scriptTag.dataset.testId).to.be.eq('12345678');
         }
     });
+    it('sets cross origin', () => {
+        const scriptTag = scriptUtils.insertScript(window, {
+            ...options,
+            crossOrigin: true,
+        });
+        chai.expect(scriptTag).to.be.ok;
+        if (scriptTag) {
+            chai.expect(scriptTag.crossOrigin).to.be.equal('anonymous');
+        }
+    });
 });
