@@ -180,9 +180,28 @@ const bannedSpreadSyntax = [
     },
 ];
 
+/**
+ * Restricted syntax that bans dynamic `import()` expressions,
+ * both as runtime calls (`import('./x').then(...)`) and as type-level
+ * references (`import('./x').Type` in type positions).
+ */
+const bannedDynamicImportSyntax = [
+    {
+        selector: 'ImportExpression',
+        message:
+            'Dynamic import() is not allowed. Use a top-level static import instead.',
+    },
+    {
+        selector: 'TSImportType',
+        message:
+            'Dynamic import() type is not allowed. Use a top-level static type import instead.',
+    },
+];
+
 module.exports = {
     bannedFunctions,
     bannedProperties,
     bannedSpreadSyntax,
+    bannedDynamicImportSyntax,
     defaultRestrictedProperties,
 };

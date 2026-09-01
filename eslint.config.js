@@ -15,6 +15,7 @@ const {
     bannedFunctions,
     bannedProperties,
     bannedSpreadSyntax,
+    bannedDynamicImportSyntax,
     defaultRestrictedProperties,
 } = require('./eslintBannedFunctions');
 
@@ -292,7 +293,11 @@ module.exports = defineConfig([
             'ban/ban': bannedFunctions,
             'no-restricted-properties':
                 defaultRestrictedProperties.concat(bannedProperties),
-            'no-restricted-syntax': ['error', ...bannedSpreadSyntax],
+            'no-restricted-syntax': [
+                'error',
+                ...bannedSpreadSyntax,
+                ...bannedDynamicImportSyntax,
+            ],
             '@typescript-eslint/prefer-interface': 'off',
             curly: 'error',
             'dot-notation': 'off',
@@ -400,7 +405,7 @@ module.exports = defineConfig([
             'import/namespace': 'off',
             'ban/ban': 'off',
             'no-restricted-properties': defaultRestrictedProperties,
-            'no-restricted-syntax': 'off',
+            'no-restricted-syntax': ['error', ...bannedDynamicImportSyntax],
             'no-unused-expressions': 'off',
 
             'no-only-tests/no-only-tests': [
@@ -430,7 +435,7 @@ module.exports = defineConfig([
         rules: {
             'ban/ban': 'off',
             'no-restricted-properties': defaultRestrictedProperties,
-            'no-restricted-syntax': 'off',
+            'no-restricted-syntax': ['error', ...bannedDynamicImportSyntax],
             'n/no-process-env': 'off',
             'no-console': 'off',
             'no-await-in-loop': 'off',
