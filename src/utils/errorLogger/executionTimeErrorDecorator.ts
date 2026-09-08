@@ -1,5 +1,9 @@
 import { getPerformance } from 'src/utils/time/performance';
-import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from './consts';
+import {
+    EXECUTION_TIMING_SAMPLING_RATE,
+    TOO_LONG_ERROR_NAME,
+    TOO_LONG_FUNCTION_EXECUTION,
+} from './consts';
 import { isNativeFunction } from '../function/isNativeFunction/isNativeFunction';
 import { throwFunction } from './throwFunction';
 import { runOnErrorCallbacks } from './onError';
@@ -26,6 +30,9 @@ let totalMainThreadBlocking = 0;
 export const getMainThreadBlockingTime = () => {
     return Math.min(totalMainThreadBlocking, 100000);
 };
+
+export const shouldReportExecutionTiming = (ctx: Window) =>
+    ctx.Math.random() < EXECUTION_TIMING_SAMPLING_RATE;
 
 export const executionTimeErrorDecorator = <
     FN extends (...args: unknown[]) => ReturnType<FN>,
@@ -59,7 +66,7 @@ export const executionTimeErrorDecorator = <
                 canThrowExecTimeErrors
             ) {
                 executionTimeExceededOnLevel = currentLevel;
-                if (hasPerformance && !(endTime % 100)) {
+                if (shouldReportExecutionTiming(ctx)) {
                     runOnErrorCallbacks(
                         'perf',
                         TOO_LONG_ERROR_NAME,

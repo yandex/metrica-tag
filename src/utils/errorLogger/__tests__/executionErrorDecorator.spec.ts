@@ -4,7 +4,11 @@ import * as func from 'src/utils/function/isNativeFunction/isNativeFunction';
 import * as onError from '../onError';
 import * as decorator from '../executionTimeErrorDecorator';
 import { getExecutionTimingBuffer } from '../executionTimingBuffer';
-import { TOO_LONG_ERROR_NAME, TOO_LONG_FUNCTION_EXECUTION } from '../consts';
+import {
+    EXECUTION_TIMING_SAMPLING_RATE,
+    TOO_LONG_ERROR_NAME,
+    TOO_LONG_FUNCTION_EXECUTION,
+} from '../consts';
 
 const { executionTimeErrorDecorator, getMainThreadBlockingTime } = decorator;
 describe('executionTimeErrorDecorator', () => {
@@ -23,6 +27,10 @@ describe('executionTimeErrorDecorator', () => {
         Parameters<typeof onError.runOnErrorCallbacks>,
         ReturnType<typeof onError.runOnErrorCallbacks>
     >;
+    let randomStub: sinon.SinonStub<
+        Parameters<typeof Math.random>,
+        ReturnType<typeof Math.random>
+    >;
 
     const arg1 = 'a';
     const arg2 = 'b';
@@ -35,11 +43,20 @@ describe('executionTimeErrorDecorator', () => {
                 ReturnType<typeof window.performance.now>
             >()
             .returns(0);
+        randomStub = sandbox
+            .stub<
+                Parameters<typeof Math.random>,
+                ReturnType<typeof Math.random>
+            >()
+            .returns(EXECUTION_TIMING_SAMPLING_RATE / 2);
         ctx = {
             ...ctx,
             performance: {
                 now: performanceStub,
             } as unknown as Performance,
+            Math: {
+                random: randomStub,
+            } as unknown as Math,
         };
         sandbox.stub(func, 'isNativeFunction').returns(true);
         runOnErrorCallbacks = sandbox.stub(onError, 'runOnErrorCallbacks');
@@ -159,6 +176,56 @@ describe('executionTimeErrorDecorator', () => {
         decorated(arg1, arg2, arg3);
 
         chai.expect(getExecutionTimingBuffer().slice()).to.have.length(0);
+        sinon.assert.notCalled(runOnErrorCallbacks);
+    });
+
+    it('does not report an execution that falls outside the sample, but still buffers its timing', () => {
+        randomStub.returns(EXECUTION_TIMING_SAMPLING_RATE);
+        performanceStub.onFirstCall().returns(0);
+        performanceStub.onSecondCall().returns(TOO_LONG_FUNCTION_EXECUTION);
+        const decorated = executionTimeErrorDecorator(
+            sinon.stub(),
+            'sampleScope',
+            ctx,
+            callCtx,
+        );
+        decorated(arg1, arg2, arg3);
+
+        sinon.assert.notCalled(runOnErrorCallbacks);
+        chai.expect(getExecutionTimingBuffer().slice()).to.deep.equal([
+            {
+                scope: 'sampleScope',
+                startTime: 0,
+                endTime: TOO_LONG_FUNCTION_EXECUTION,
+            },
+        ]);
+    });
+
+    it('suppresses the outer level even when the inner one falls outside the sample', () => {
+        randomStub.onFirstCall().returns(EXECUTION_TIMING_SAMPLING_RATE);
+        randomStub.returns(EXECUTION_TIMING_SAMPLING_RATE / 2);
+        performanceStub.onCall(0).returns(0);
+        performanceStub.onCall(1).returns(0);
+        performanceStub.onCall(2).returns(TOO_LONG_FUNCTION_EXECUTION);
+        performanceStub.onCall(3).returns(TOO_LONG_FUNCTION_EXECUTION);
+
+        executionTimeErrorDecorator(
+            () => {
+                executionTimeErrorDecorator(
+                    () => {
+                        // do nothing
+                    },
+                    'innerNs',
+                    ctx,
+                    callCtx,
+                )();
+            },
+            'outerNs',
+            ctx,
+            callCtx,
+        )();
+
+        sinon.assert.calledOnce(randomStub);
         sinon.assert.notCalled(runOnErrorCallbacks);
     });
 });
