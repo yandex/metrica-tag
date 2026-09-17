@@ -9,7 +9,7 @@ import {
     UTILS_SELECT_KEY,
 } from 'src/providers/remoteControl/remoteControl';
 import * as events from 'src/utils/events/events';
-import * as domUtils from 'src/utils/dom/insertScript';
+import * as domUtils from 'src/utils/dom/loadScript';
 import type { EventSetter } from 'src/utils/events/types';
 import * as globalUtils from 'src/storage/global/getGlobal';
 import type { GlobalStorage } from 'src/storage/global/global';
@@ -25,9 +25,9 @@ describe('remoteControl / inline', () => {
         Parameters<EventSetter['un']>,
         ReturnType<EventSetter['un']>
     >;
-    let insertScriptStub: sinon.SinonStub<
-        Parameters<typeof domUtils.insertScript>,
-        ReturnType<typeof domUtils.insertScript>
+    let loadScriptStub: sinon.SinonStub<
+        Parameters<typeof domUtils.loadScript>,
+        ReturnType<typeof domUtils.loadScript>
     >;
     let setValSpy: sinon.SinonSpy<
         Parameters<GlobalStorage['setVal']>,
@@ -51,7 +51,7 @@ describe('remoteControl / inline', () => {
             un: eventHandlerUn,
         } as EventSetter);
 
-        insertScriptStub = sandbox.stub(domUtils, 'insertScript');
+        loadScriptStub = sandbox.stub(domUtils, 'loadScript');
 
         setValSpy = sandbox.spy(
             (name: string, value: unknown) => ({}) as GlobalStorage,
@@ -104,9 +104,12 @@ describe('remoteControl / inline', () => {
 
         remoteControl(windowStub);
 
-        sinon.assert.calledWith(insertScriptStub, windowStub, {
-            src: createResourcePath('form'),
-        });
+        sinon.assert.calledWith(
+            loadScriptStub,
+            windowStub,
+            createResourcePath('form'),
+            sinon.match.func,
+        );
         checkUtils('form');
     });
 
@@ -118,9 +121,12 @@ describe('remoteControl / inline', () => {
 
         remoteControl(windowStub);
 
-        sinon.assert.calledWith(insertScriptStub, windowStub, {
-            src: createResourcePath('button'),
-        });
+        sinon.assert.calledWith(
+            loadScriptStub,
+            windowStub,
+            createResourcePath('button'),
+            sinon.match.func,
+        );
         checkUtils('button');
     });
 });

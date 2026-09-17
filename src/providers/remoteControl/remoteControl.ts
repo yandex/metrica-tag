@@ -24,6 +24,8 @@ import {
     selectTextContainer,
 } from 'src/utils/dom/block';
 import { insertScript } from 'src/utils/dom/insertScript';
+import { loadScript } from 'src/utils/dom/loadScript';
+import { noop } from 'src/utils/function/noop';
 import { getCachedTags } from 'src/utils/dom/element';
 import { curry2 } from 'src/utils/function/curry';
 import { pipe } from 'src/utils/function/pipe';
@@ -253,7 +255,7 @@ export const setupUtilsAndLoadScript = (
     }
 
     if (src) {
-        insertScript(ctx, { src });
+        loadScript(ctx, src, noop);
     }
 };
 
