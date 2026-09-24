@@ -105,7 +105,7 @@ ${featureBlocks
 
 const GEN_DIR = './generated';
 const run = async () => {
-    fs.mkdir(GEN_DIR, { recursive: true });
+    await fs.mkdir(GEN_DIR, { recursive: true });
 
     const allFeatures: FeatureType[] = files
         .flatMap((filePath) =>
