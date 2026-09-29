@@ -16,6 +16,8 @@ import {
     VIEWPORT_SIZE_BR_KEY,
     SCREEN_SIZE_BR_KEY,
     NOINDEX_BR_KEY,
+    SECONDS_BR_KEY,
+    EVENT_TIME_MS_BR_KEY,
 } from 'src/api/watch';
 import { browserInfo } from 'src/utils/browserInfo/browserInfo';
 import { buildVersion } from 'src/config';
@@ -42,6 +44,7 @@ describe('watchSyncFlags', () => {
         counterType: '0',
     };
     const nowMs = 100;
+    const navigationStartMs = 1758801234000;
     const senderParams: SenderInfo = {};
     const sandbox = sinon.createSandbox();
     let globalStorageStub: sinon.SinonStub<
@@ -347,6 +350,102 @@ describe('watchSyncFlags', () => {
                 senderParams,
             ),
         ).to.be.equal(null);
+    });
+
+    // `timeSeconds`/`timeMilliseconds` capture `TimeOne` via `pipe` at import
+    // time, so `timeOneStub` does not affect them and time comes from the
+    // context's Performance API. `TimeOne` is memoized per context, hence a
+    // fresh context in every test.
+    const perfCtx = (now: () => number) =>
+        ({
+            performance: {
+                timing: { navigationStart: navigationStartMs },
+                now,
+            },
+        }) as unknown as Window;
+
+    it(`sets ${EVENT_TIME_MS_BR_KEY}`, () => {
+        chai.expect(
+            BRINFO_FLAG_GETTERS[EVENT_TIME_MS_BR_KEY](
+                perfCtx(() => 567),
+                counterOpt,
+                senderParams,
+            ),
+        ).to.be.equal(navigationStartMs + 567);
+    });
+
+    it('uses registered event time getters', () => {
+        const secondsGetter = sandbox
+            .stub(BRINFO_FLAG_GETTERS, SECONDS_BR_KEY)
+            .returns(1);
+        const millisecondsGetter = sandbox
+            .stub(BRINFO_FLAG_GETTERS, EVENT_TIME_MS_BR_KEY)
+            .returns(1234);
+        const brInfo = browserInfo();
+        const nextFn = sandbox.spy();
+
+        watchSyncFlags([SECONDS_BR_KEY, EVENT_TIME_MS_BR_KEY])(
+            perfCtx(() => 567),
+            counterOpt,
+        ).beforeRequest!({ brInfo, urlParams: {} }, nextFn);
+
+        chai.expect(brInfo.getVal(SECONDS_BR_KEY)).to.equal(1);
+        chai.expect(brInfo.getVal(EVENT_TIME_MS_BR_KEY)).to.equal(1234);
+        sinon.assert.calledOnce(secondsGetter);
+        sinon.assert.calledOnce(millisecondsGetter);
+        sinon.assert.calledOnce(nextFn);
+    });
+
+    it('rounds event time to seconds when the clock is fixed', () => {
+        const ctx = perfCtx(() => 567);
+        chai.expect(
+            BRINFO_FLAG_GETTERS[EVENT_TIME_MS_BR_KEY](
+                ctx,
+                counterOpt,
+                senderParams,
+            ),
+        ).to.equal(navigationStartMs + 567);
+        chai.expect(
+            BRINFO_FLAG_GETTERS[SECONDS_BR_KEY](ctx, counterOpt, senderParams),
+        ).to.equal(1758801235);
+    });
+
+    it('refreshes both event time flags when reusing request parameters', () => {
+        const nowStub = sandbox.stub<[], number>().returns(499);
+        const brInfo = browserInfo();
+        const request = { brInfo, urlParams: {} };
+        const nextFn = sandbox.spy();
+        const middleware = watchSyncFlags([
+            SECONDS_BR_KEY,
+            EVENT_TIME_MS_BR_KEY,
+        ])(perfCtx(nowStub), counterOpt);
+
+        middleware.beforeRequest!(request, nextFn);
+        chai.expect(brInfo.getVal(EVENT_TIME_MS_BR_KEY)).to.equal(
+            navigationStartMs + 499,
+        );
+        chai.expect(brInfo.getVal(SECONDS_BR_KEY)).to.equal(1758801234);
+
+        nowStub.returns(1500);
+        middleware.beforeRequest!(request, nextFn);
+        chai.expect(brInfo.getVal(EVENT_TIME_MS_BR_KEY)).to.equal(
+            navigationStartMs + 1500,
+        );
+        chai.expect(brInfo.getVal(SECONDS_BR_KEY)).to.equal(1758801236);
+        sinon.assert.calledTwice(nextFn);
+    });
+
+    it(`does not memoize ${EVENT_TIME_MS_BR_KEY}`, () => {
+        let elapsed = 0;
+        const ctx = perfCtx(() => {
+            elapsed += 100;
+            return elapsed;
+        });
+        const fn = BRINFO_FLAG_GETTERS[EVENT_TIME_MS_BR_KEY];
+        const first = fn(ctx, counterOpt, senderParams) as number;
+        chai.expect(
+            (fn(ctx, counterOpt, senderParams) as number) - first,
+        ).to.be.equal(100);
     });
 
     it('sets determined flags', () => {

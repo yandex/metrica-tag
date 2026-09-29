@@ -9,6 +9,7 @@ export {
     TIMEZONE_BR_KEY,
     TIMESTAMP_BR_KEY,
     SECONDS_BR_KEY,
+    EVENT_TIME_MS_BR_KEY,
     VIEWPORT_SIZE_BR_KEY,
 } from '../common/browserInfo';
 

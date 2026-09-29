@@ -50,6 +50,13 @@ export const TIMESTAMP_BR_KEY = 'i';
 export const SECONDS_BR_KEY = 'et';
 
 /**
+ * Event initialization time in milliseconds
+ *
+ * Value Type: number
+ */
+export const EVENT_TIME_MS_BR_KEY = 'etms';
+
+/**
  * Viewport size
  *
  * Value Type: string

@@ -11,6 +11,7 @@ import {
     TIMEZONE_BR_KEY,
     TIMESTAMP_BR_KEY,
     SECONDS_BR_KEY,
+    EVENT_TIME_MS_BR_KEY,
     COOKIES_ENABLED_BR_KEY,
     RANDOM_NUMBER_BR_KEY,
     VIEWPORT_SIZE_BR_KEY,
@@ -55,7 +56,12 @@ import { isFalseURL } from './falseUrl';
 import { getHid } from './hid';
 import { getParentHid } from './parentHid';
 import { getUidFlag } from './uid';
-import { timeZone, timeStamp, timeSeconds } from './timeFlags';
+import {
+    timeZone,
+    timeStamp,
+    timeSeconds,
+    timeMilliseconds,
+} from './timeFlags';
 import { LS_ID_KEY, FlagGettersHash } from '../const';
 import { numRequests } from './numRequests';
 import { getDesktopFlag } from './desktop';
@@ -102,6 +108,7 @@ export const BRINFO_FLAG_GETTERS: FlagGettersHash = {
     [TIMEZONE_BR_KEY]: timeZone,
     [TIMESTAMP_BR_KEY]: timeStamp,
     [SECONDS_BR_KEY]: timeSeconds,
+    [EVENT_TIME_MS_BR_KEY]: timeMilliseconds,
     [COOKIES_ENABLED_BR_KEY]: pipe(
         ctxPath('navigator.cookieEnabled'),
         toOneOrNull,

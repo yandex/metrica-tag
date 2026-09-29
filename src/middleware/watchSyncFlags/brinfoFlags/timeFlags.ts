@@ -6,6 +6,7 @@ import {
     getTimezone,
     getTimestamp,
     getSec,
+    getMs,
     getNs,
     TimeState,
 } from 'src/utils/time/time';
@@ -20,6 +21,10 @@ export const timeStamp = pipe(
 export const timeSeconds = pipe(
     TimeOne,
     cont<(timeState: TimeState) => number, number>(getSec),
+);
+export const timeMilliseconds = pipe(
+    TimeOne,
+    cont<(timeState: TimeState) => number, number>(getMs),
 );
 export const timeNavigationStart = memo(
     pipe(TimeOne, cont<(timeState: TimeState) => number, number>(getNs)),
