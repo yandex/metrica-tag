@@ -424,7 +424,6 @@
   "src/utils/dom/dom.ts":"metrika/frontend/watch/public/src/utils/dom/dom.ts",
   "src/utils/dom/element.ts":"metrika/frontend/watch/public/src/utils/dom/element.ts",
   "src/utils/dom/form.ts":"metrika/frontend/watch/public/src/utils/dom/form.ts",
-  "src/utils/dom/hiddenIframe.ts":"metrika/frontend/watch/public/src/utils/dom/hiddenIframe.ts",
   "src/utils/dom/identifiers.ts":"metrika/frontend/watch/public/src/utils/dom/identifiers.ts",
   "src/utils/dom/insertScript.ts":"metrika/frontend/watch/public/src/utils/dom/insertScript.ts",
   "src/utils/dom/isRemovedFromDoc.ts":"metrika/frontend/watch/public/src/utils/dom/isRemovedFromDoc.ts",
