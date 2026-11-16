@@ -16,10 +16,13 @@ type FeatureType = FeatureTypeRaw & {
     providerDir: string;
 };
 
-const { disableFeatures, files } = commandLineArgs([
+const { disableFeatures, files, strict } = commandLineArgs([
     { name: 'disableFeatures', alias: 'd', type: Boolean, defaultValue: false },
     { name: 'files', alias: 'f', type: String, multiple: true },
-]) as { disableFeatures: boolean; files: string[] };
+    { name: 'strict', alias: 's', type: Boolean, defaultValue: false },
+]) as { disableFeatures: boolean; files: string[]; strict: boolean };
+
+const isStrict = strict || process.env.FEATURES_STRICT === '1';
 
 if (!files || !files.length) {
     console.error(
@@ -44,6 +47,23 @@ const featureName = (feature: FeatureType) => {
 };
 
 const filterFeaturesWithProviders = (f: FeatureType) => f.path;
+
+const readFeaturesFile = (filePath: string): FeatureTypeRaw[] => {
+    try {
+        return readAsJSON<FeatureTypeRaw[]>(filePath);
+    } catch (error: unknown) {
+        if (isStrict) {
+            console.error(
+                `Unable to read features from ${filePath}: ${String(error)}.`,
+            );
+            process.exit(1);
+        }
+        console.warn(
+            `Unable to read features from ${filePath}: ${String(error)}. Skipping it.`,
+        );
+        return [];
+    }
+};
 
 const generateFeaturesCode = (features: FeatureType[]) => {
     const featureCodes: string[] = [];
@@ -109,7 +129,7 @@ const run = async () => {
 
     const allFeatures: FeatureType[] = files
         .flatMap((filePath) =>
-            readAsJSON<FeatureTypeRaw[]>(filePath).map((feature) => {
+            readFeaturesFile(filePath).map((feature) => {
                 return {
                     weight: 0,
                     ...feature,
